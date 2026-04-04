@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 
 export const metadata: Metadata = {
@@ -166,6 +166,31 @@ export default function PlayPointRecordsPage() {
             </div>
           </section>
 
+
+          <section className="border-t border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
+            <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
+              <div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Supporting Visual</div>
+                <h2 className="mt-3 text-3xl font-black text-white">Promo art for the current release.</h2>
+                <p className="mt-4 max-w-xl text-sm leading-7 text-white/72">
+                  The square cover is the main release image. This cassette promo sits underneath it as the supporting campaign visual for Nothing Can Separate.
+                </p>
+                <div className="mt-5 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white/78">
+                  Best use: release posts, label promotion, and supporting marketing around the current single.
+                </div>
+              </div>
+
+              <div className="overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.03] p-3 shadow-[0_18px_50px_rgba(0,0,0,0.22)]">
+                <Image
+                  src="/images/music/nothing-can-separate-cassette.jpg"
+                  alt="Nothing Can Separate cassette promo art"
+                  width={1080}
+                  height={1350}
+                  className="h-auto w-full rounded-[24px]"
+                />
+              </div>
+            </div>
+          </section>
           <section id="bio" className="border-t border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
             <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
               <div>
@@ -225,3 +250,4 @@ export default function PlayPointRecordsPage() {
     </main>
   );
 }
+
