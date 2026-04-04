@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 
 export const metadata: Metadata = {
@@ -43,6 +43,16 @@ const featuredArtist = {
   bio: "Country Christian artist blending storytelling, faith-driven lyrics, and modern production tools into songs about redemption and truth.",
 };
 
+const founderContact = {
+  name: "Channing Stovall",
+  title: "Founder & Creator - Shot Caddy(TM)",
+  company: "Play Point Systems, LLC",
+  summary: "Creator of Shot Caddy(TM) - a live-play side game for disc golf and golf.",
+  email: "channing@playpointsystems.com",
+  phone: "(256) 649-PLAY",
+  website: "https://playpointsystems.com",
+};
+
 export default function PlayPointSystemsPage() {
   return (
     <main className="min-h-screen bg-[#050912] text-white">
@@ -69,6 +79,9 @@ export default function PlayPointSystemsPage() {
                   className="rounded-full border border-white/10 px-4 py-2 transition hover:bg-white/5"
                 >
                   Records
+                </a>
+                <a href="#contact" className="rounded-full border border-white/10 px-4 py-2 transition hover:bg-white/5">
+                  Contact
                 </a>
                 <a
                   href="https://shotcaddy.net"
@@ -101,6 +114,12 @@ export default function PlayPointSystemsPage() {
                     className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12"
                   >
                     Explore the divisions
+                  </a>
+                  <a
+                    href="#contact"
+                    className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12"
+                  >
+                    Contact Play Point Systems
                   </a>
                   <a
                     href="https://shotcaddy.net"
@@ -223,6 +242,56 @@ export default function PlayPointSystemsPage() {
                         </a>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="contact" className="border-t border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
+            <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
+              <div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Contact</div>
+                <h2 className="mt-3 text-3xl font-black text-white">Reach the founder directly.</h2>
+                <p className="mt-4 max-w-xl text-sm leading-7 text-white/72">
+                  For parent company, Shot Caddy, and Play Point Records conversations, the cleanest contact point right now is directly through Channing Stovall.
+                </p>
+              </div>
+
+              <div className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.22)]">
+                <div className="rounded-[24px] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6">
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">Primary Contact</div>
+                  <div className="mt-4 text-4xl font-black text-white">{founderContact.name}</div>
+                  <div className="mt-3 text-2xl font-semibold text-white/86">{founderContact.title}</div>
+                  <div className="mt-2 text-lg font-semibold text-white/62">{founderContact.company}</div>
+                  <p className="mt-4 text-sm leading-7 text-white/72">{founderContact.summary}</p>
+
+                  <div className="mt-6 grid gap-4">
+                    <a
+                      href={`mailto:${founderContact.email}`}
+                      className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 transition hover:bg-black/28"
+                    >
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/50">Email</div>
+                      <div className="mt-2 text-lg font-black text-white">{founderContact.email}</div>
+                    </a>
+
+                    <a
+                      href={`tel:${founderContact.phone.replace(/[^0-9]/g, "")}`}
+                      className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 transition hover:bg-black/28"
+                    >
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/50">Phone</div>
+                      <div className="mt-2 text-lg font-black text-white">{founderContact.phone}</div>
+                    </a>
+
+                    <a
+                      href={founderContact.website}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 transition hover:bg-black/28"
+                    >
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/50">Website</div>
+                      <div className="mt-2 text-lg font-black text-white">playpointsystems.com</div>
+                    </a>
                   </div>
                 </div>
               </div>
