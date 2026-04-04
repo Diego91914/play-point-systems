@@ -4,22 +4,13 @@ import { siteLinks } from "../site-content";
 
 export const metadata: Metadata = {
   title: "Shot Caddy",
-  description: "The software division of Play Point Systems, built for live-play competition on the course.",
+  description: "The software division of Play Point Systems, currently being positioned as a private product brand.",
 };
 
-const audiences = [
-  {
-    title: "For Players",
-    body: "Make the round more engaging with structured play, side-game energy, and modes that feel owned instead of rented.",
-  },
-  {
-    title: "For Leagues",
-    body: "Add repeatable formats, live side games, and more reasons for players to come back every week.",
-  },
-  {
-    title: "For Directors",
-    body: "Run doubles, clubhouse boards, and event layers that make a tournament or league feel different on purpose.",
-  },
+const focusAreas = [
+  "A private product in development under the Play Point Systems umbrella.",
+  "Built around memorable shared experiences in sport.",
+  "Launching publicly only when the positioning and product timing are right.",
 ];
 
 export default function ShotCaddyPage() {
@@ -32,10 +23,10 @@ export default function ShotCaddyPage() {
           </div>
           <h1 className="mt-5 text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">Shot Caddy</h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 text-white/76 sm:text-xl">
-            Shot Caddy is a live-play game system built to layer fun, competition, and structure onto disc golf and golf without replacing the sport itself.
+            Shot Caddy is a private sports product being developed under Play Point Systems.
           </p>
           <p className="mt-4 max-w-3xl text-sm leading-7 text-white/72">
-            Under Play Point Systems, Shot Caddy stands as its own product identity. It is the software lane of the parent company, built for players, leagues, directors, and events that want more energy in the round.
+            Public details are intentionally limited while the product, positioning, and rollout are still being finalized. What matters right now is that Shot Caddy is the software lane of the parent company and will launch under its own identity when the time is right.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <a href={siteLinks.shotCaddy} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
@@ -47,10 +38,9 @@ export default function ShotCaddyPage() {
 
       <section className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
         <div className="grid gap-5 md:grid-cols-3">
-          {audiences.map((audience) => (
-            <article key={audience.title} className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
-              <h2 className="text-2xl font-black text-white">{audience.title}</h2>
-              <p className="mt-4 text-sm leading-7 text-white/72">{audience.body}</p>
+          {focusAreas.map((item) => (
+            <article key={item} className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
+              <p className="text-sm leading-7 text-white/72">{item}</p>
             </article>
           ))}
         </div>
@@ -59,18 +49,18 @@ export default function ShotCaddyPage() {
       <section className="px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
         <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
           <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">What it is</div>
-            <h2 className="mt-4 text-3xl font-black text-white">A product built to make the round feel alive.</h2>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">What can be said right now</div>
+            <h2 className="mt-4 text-3xl font-black text-white">A product built to create stronger live experiences.</h2>
             <p className="mt-4 text-sm leading-7 text-white/72">
-              Shot Caddy is not just a scorekeeping idea. It is a product system built around modes, challenges, side games, doubles tools, and organizer utility. The goal is simple: create something golfers feel and talk about instead of just tolerate.
+              Shot Caddy is being built around the idea that sport can feel more memorable, more connected, and more alive when the experience itself is designed with intention.
             </p>
           </div>
 
           <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.08),rgba(255,255,255,0.03))] p-6">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Why it fits here</div>
-            <h2 className="mt-4 text-3xl font-black text-white">Shot Caddy belongs under Play Point Systems because it is built experience-first.</h2>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Why details are limited</div>
+            <h2 className="mt-4 text-3xl font-black text-white">The product is real. The specifics are intentionally held back.</h2>
             <p className="mt-4 text-sm leading-7 text-white/72">
-              The same creator mindset that shapes story and emotion in music shows up here through competition, pacing, atmosphere, and memorable gameplay. Different lane, same standard.
+              That is not vagueness for the sake of vagueness. It is a deliberate choice while the product remains in private development and launch planning. The public site should confirm the division exists without giving away the playbook too early.
             </p>
           </div>
         </div>

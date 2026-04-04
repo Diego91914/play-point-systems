@@ -6,7 +6,7 @@ import { artist, divisions, founder, hero, principles, siteLinks } from "./site-
 
 export const metadata: Metadata = {
   title: "Play Point Systems",
-  description: "Parent company for Shot Caddy and Play Point Records, created by Channing Stovall.",
+  description: "Parent company for creator-led product and music divisions, created by Channing Stovall.",
 };
 
 export default function PlayPointSystemsPage() {
@@ -91,7 +91,7 @@ export default function PlayPointSystemsPage() {
                 Play Point Systems was founded by {founder.name} - a creator driven by a passion for building meaningful experiences.
               </p>
               <p>
-                From developing Shot Caddy as a new way to experience competition on the course to producing faith-driven country music under Play Point Records, every project is built with purpose.
+                From developing a private sports product under Shot Caddy to producing faith-driven country music under Play Point Records, every project is built with purpose.
               </p>
               <p>
                 Whether through gameplay or song, the goal is the same: <span className="font-semibold text-white">create something people feel</span>.
@@ -118,10 +118,10 @@ export default function PlayPointSystemsPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Featured now</div>
-            <h2 className="mt-3 text-3xl font-black text-white">A live product and a live release.</h2>
+            <h2 className="mt-3 text-3xl font-black text-white">A private product and a live release.</h2>
           </div>
           <div className="max-w-xl text-sm leading-7 text-white/68">
-            The point is not to say we do many things. The point is to show that both divisions are already active and public-facing.
+            The point is not to explain the full product publicly. The point is to show that both divisions are real and moving.
           </div>
         </div>
 
@@ -130,7 +130,7 @@ export default function PlayPointSystemsPage() {
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Software spotlight</div>
             <h3 className="mt-3 text-3xl font-black text-white">Shot Caddy</h3>
             <p className="mt-4 text-sm leading-7 text-white/72">
-              A competitive and casual game system layered onto disc golf and golf, built for players, leagues, directors, and events. Shot Caddy is the sports product under the Play Point Systems umbrella, but it is meant to feel like its own brand in the wild.
+              Shot Caddy is the private sports product under the Play Point Systems umbrella. Public details stay intentionally general for now while the launch path, positioning, and timing are still being protected.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <a href={siteLinks.shotCaddy} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
@@ -180,8 +180,8 @@ export default function PlayPointSystemsPage() {
           <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5">
               <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Shot Caddy</div>
-              <div className="mt-3 text-2xl font-black text-white">Explore the product</div>
-              <p className="mt-3 text-sm leading-7 text-white/72">See the software division, the product role, and where Shot Caddy is headed.</p>
+              <div className="mt-3 text-2xl font-black text-white">Explore the product brand</div>
+              <p className="mt-3 text-sm leading-7 text-white/72">See where the software division fits without publishing the private playbook too early.</p>
               <Link href="/shot-caddy" className="mt-5 inline-flex rounded-2xl border border-white/15 bg-white/8 px-4 py-3 text-sm font-black text-white transition hover:bg-white/12">
                 Go to Shot Caddy
               </Link>

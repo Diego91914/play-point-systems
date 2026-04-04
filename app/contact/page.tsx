@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 const inquiryTypes = [
-  "Shot Caddy product and launch conversations",
+  "Private product and launch conversations",
   "Play Point Records and music inquiries",
   "Parent-company partnerships or business questions",
 ];
@@ -23,7 +23,7 @@ export default function ContactPage() {
           </div>
           <h1 className="mt-5 text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">Reach the founder directly.</h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 text-white/76 sm:text-xl">
-            For Shot Caddy, Play Point Records, or broader Play Point Systems conversations, the cleanest contact lane right now is directly through {founder.name}.
+            For private product, music, or broader Play Point Systems conversations, the cleanest contact lane right now is directly through {founder.name}.
           </p>
         </div>
       </section>

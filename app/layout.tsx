@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     default: "Play Point Systems",
     template: "%s | Play Point Systems",
   },
-  description: "Parent company for Shot Caddy and Play Point Records, created by Channing Stovall.",
+  description: "Parent company for creator-led product and music divisions, created by Channing Stovall.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

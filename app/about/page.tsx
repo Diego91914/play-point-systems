@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 const focusAreas = [
-  "Software experiences that create memorable play and stronger event energy.",
+  "Creator-led product and brand building.",
   "Faith-driven country music with real-life storytelling and conviction.",
   "A parent-company structure that keeps both divisions aligned without burying either one.",
 ];
@@ -23,7 +23,7 @@ export default function AboutPage() {
           </div>
           <h1 className="mt-5 text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">Built by {founder.name}</h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 text-white/76 sm:text-xl">
-            {founder.name} is the founder of Play Point Systems, creator and developer of Shot Caddy, and the creative force behind music released through Play Point Records.
+            {founder.name} is the founder of Play Point Systems, the creator behind Shot Caddy, and the creative force behind music released through Play Point Records.
           </p>
         </div>
       </section>
@@ -35,7 +35,7 @@ export default function AboutPage() {
               The core of Play Point Systems is not software plus music as two random categories. It is one creator building meaningful experiences in different formats.
             </p>
             <p className="mt-4">
-              Shot Caddy came from a desire to make competition on the course feel more alive. Play Point Records exists to carry music that is rooted in faith, story, and truth without sounding detached from real life.
+              Shot Caddy came from a desire to build a stronger, more memorable experience around sport. Play Point Records exists to carry music that is rooted in faith, story, and truth without sounding detached from real life.
             </p>
             <p className="mt-4">
               The formats are different, but the standard is the same: create something clear, honest, memorable, and worth coming back to.

@@ -27,8 +27,8 @@ export const divisions = [
     name: "Shot Caddy",
     eyebrow: "Software Division",
     description:
-      "A live-play game system built for disc golf and golf, with modes, side games, and organizer tools that add energy to the round without losing the sport.",
-    points: ["Player-owned modes", "Clubhouse and event tools", "Built for players, leagues, and directors"],
+      "A private sports product in development, built around memorable play experiences and launching under its own public brand when the time is right.",
+    points: ["Private product in development", "Built for memorable shared experiences", "Launching under its own public identity"],
     href: "/shot-caddy",
     cta: "Explore Shot Caddy",
   },
