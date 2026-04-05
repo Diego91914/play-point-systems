@@ -1,5 +1,9 @@
-﻿import Link from "next/link";
+﻿"use client";
+
+import Image from "next/image";
+import Link from "next/link";
 import type { ReactNode } from "react";
+import { useState } from "react";
 
 type SiteShellProps = {
   children: ReactNode;
@@ -7,7 +11,6 @@ type SiteShellProps = {
 };
 
 const navItems = [
-  { label: "Home", href: "/", key: "home" },
   { label: "Shot Caddy", href: "/shot-caddy", key: "shot-caddy" },
   { label: "Music", href: "/music", key: "music" },
   { label: "About", href: "/about", key: "about" },
@@ -15,6 +18,8 @@ const navItems = [
 ] as const;
 
 export function SiteShell({ children, current }: SiteShellProps) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   return (
     <main className="min-h-screen bg-[#050912] text-white">
       <div className="pointer-events-none fixed inset-0">
@@ -24,32 +29,91 @@ export function SiteShell({ children, current }: SiteShellProps) {
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <div className="rounded-[34px] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] shadow-[0_30px_120px_rgba(0,0,0,0.4)]">
-          <header className="border-b border-white/10 px-5 py-5 sm:px-8 lg:px-10">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <div className="text-[11px] font-semibold uppercase tracking-[0.32em] text-white/52">Play Point Systems LLC</div>
-                <div className="mt-2 text-2xl font-black tracking-tight text-white">Software, music, and storytelling under one roof.</div>
+        <div className="rounded-[36px] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] shadow-[0_30px_120px_rgba(0,0,0,0.4)]">
+          <header className="sticky top-4 z-50 px-4 pt-4 sm:px-6 lg:px-8">
+            <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.92),rgba(8,15,28,0.72))] px-4 py-4 shadow-[0_18px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:px-6">
+              <div className="flex items-center justify-between gap-4">
+                <Link href="/" className="flex min-w-0 items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] sm:h-16 sm:w-16">
+                    <Image
+                      src="/images/pps-logo.png"
+                      alt="Play Point Systems logo"
+                      width={120}
+                      height={120}
+                      className="h-full w-full object-contain"
+                      priority
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/50">Play Point Systems</div>
+                    <div className="mt-1 truncate text-lg font-black tracking-tight text-white sm:text-2xl">Creator-led parent company</div>
+                  </div>
+                </Link>
+
+                <div className="hidden items-center gap-3 lg:flex">
+                  <nav className="flex flex-wrap gap-2 text-sm font-semibold text-white/76">
+                    {navItems.map((item) => {
+                      const active = current === item.key;
+                      const className = active
+                        ? "rounded-full border border-cyan-300/25 bg-cyan-400/10 px-4 py-2 text-cyan-50"
+                        : "rounded-full border border-white/10 px-4 py-2 transition hover:bg-white/5 hover:text-white";
+
+                      return (
+                        <Link key={item.label} href={item.href} className={className}>
+                          {item.label}
+                        </Link>
+                      );
+                    })}
+                  </nav>
+
+                  <Link
+                    href="/shot-caddy"
+                    className="inline-flex rounded-full border border-cyan-300/30 bg-cyan-400/12 px-4 py-2 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/18"
+                  >
+                    Explore Shot Caddy
+                  </Link>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setMobileOpen((value) => !value)}
+                  className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white transition hover:bg-white/10 lg:hidden"
+                  aria-expanded={mobileOpen}
+                  aria-label="Toggle navigation menu"
+                >
+                  <span className="text-xl leading-none">{mobileOpen ? "×" : "≡"}</span>
+                </button>
               </div>
 
-              <nav className="flex flex-wrap gap-3 text-sm font-semibold text-white/76">
-                {navItems.map((item) => {
-                  const active = current === item.key;
-                  const className = active
-                    ? "rounded-full border border-cyan-300/25 bg-cyan-400/10 px-4 py-2 text-cyan-50"
-                    : "rounded-full border border-white/10 px-4 py-2 transition hover:bg-white/5";
+              {mobileOpen ? (
+                <div className="mt-4 rounded-[24px] border border-white/10 bg-black/20 p-3 lg:hidden">
+                  <nav className="grid gap-2 text-sm font-semibold text-white/80">
+                    {navItems.map((item) => {
+                      const active = current === item.key;
+                      const className = active
+                        ? "rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-4 py-3 text-cyan-50"
+                        : "rounded-2xl border border-white/10 px-4 py-3 transition hover:bg-white/5";
 
-                  return (
-                    <Link key={item.label} href={item.href} className={className}>
-                      {item.label}
+                      return (
+                        <Link key={item.label} href={item.href} className={className} onClick={() => setMobileOpen(false)}>
+                          {item.label}
+                        </Link>
+                      );
+                    })}
+                    <Link
+                      href="/shot-caddy"
+                      className="rounded-2xl border border-cyan-300/30 bg-cyan-400/12 px-4 py-3 text-cyan-50"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      Explore Shot Caddy
                     </Link>
-                  );
-                })}
-              </nav>
+                  </nav>
+                </div>
+              ) : null}
             </div>
           </header>
 
-          {children}
+          <div className="px-1 pb-1 sm:px-2 sm:pb-2">{children}</div>
 
           <footer className="border-t border-white/10 px-5 py-6 sm:px-8 lg:px-10">
             <div className="flex flex-col gap-4 text-sm text-white/56 sm:flex-row sm:items-center sm:justify-between">

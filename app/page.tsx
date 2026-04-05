@@ -12,56 +12,79 @@ export const metadata: Metadata = {
 export default function PlayPointSystemsPage() {
   return (
     <SiteShell current="home">
-      <section className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-12">
-        <div className="grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-end">
+      <section className="px-5 pb-12 pt-10 sm:px-8 sm:pb-16 sm:pt-12 lg:px-10 lg:pb-20 lg:pt-14">
+        <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
           <div className="max-w-4xl">
             <div className="inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/72">
               Creator-led parent company
             </div>
-            <h1 className="mt-5 text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">{hero.headline}</h1>
-            <p className="mt-5 text-xl font-semibold leading-8 text-cyan-100/88 sm:text-2xl">{hero.subheadline}</p>
-            <p className="mt-5 max-w-3xl text-lg leading-8 text-white/76 sm:text-xl">{hero.intro}</p>
-            <div className="mt-6 flex flex-wrap gap-3">
+            <h1 className="mt-6 max-w-4xl text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-[5.3rem] xl:leading-[0.95]">
+              {hero.headline}
+            </h1>
+            <p className="mt-6 max-w-3xl text-xl font-semibold leading-8 text-cyan-100/88 sm:text-2xl sm:leading-9">
+              {hero.subheadline}
+            </p>
+            <p className="mt-6 max-w-3xl text-lg leading-8 text-white/76 sm:text-xl">
+              {hero.intro}
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/shot-caddy"
-                className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16"
+                className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16"
               >
                 Explore Shot Caddy
               </Link>
               <Link
                 href="/music"
-                className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12"
+                className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-6 py-3.5 text-sm font-black text-white transition hover:bg-white/12"
               >
                 Listen to Music
               </Link>
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            {divisions.map((division) => (
-              <article key={division.name} className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.22)]">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">{division.eyebrow}</div>
-                <div className="mt-3 text-3xl font-black text-white">{division.name}</div>
-                <p className="mt-3 text-sm leading-7 text-white/72">{division.description}</p>
-              </article>
-            ))}
+          <div className="grid gap-4">
+            <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.28)]">
+              <div className="flex items-center gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-2.5">
+                  <Image src="/images/pps-logo.png" alt="Play Point Systems logo" width={120} height={120} className="h-full w-full object-contain" />
+                </div>
+                <div>
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">Play Point Systems</div>
+                  <div className="mt-2 text-2xl font-black text-white">Two divisions. One standard.</div>
+                </div>
+              </div>
+              <p className="mt-5 text-sm leading-7 text-white/72">
+                Built to hold a private product brand and a public music division without flattening either one into generic corporate language.
+              </p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {divisions.map((division) => (
+                <article key={division.name} className="rounded-[26px] border border-white/10 bg-black/20 p-5">
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">{division.eyebrow}</div>
+                  <div className="mt-3 text-2xl font-black text-white">{division.name}</div>
+                  <p className="mt-3 text-sm leading-7 text-white/72">{division.description}</p>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
-        <div className="grid gap-6 lg:grid-cols-[0.96fr_1.04fr]">
+      <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
+        <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Two worlds, one creator</div>
-            <h2 className="mt-3 text-3xl font-black text-white">One company that holds two distinct experiences.</h2>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Company overview</div>
+            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Two worlds, one creator.</h2>
             <p className="mt-4 max-w-xl text-sm leading-7 text-white/72">
-              Play Point Systems should not feel like a faceless umbrella. It should feel like the clearest possible explanation of who is building what, and why both lanes matter.
+              Play Point Systems should feel less like a generic umbrella and more like a clear explanation of who is building what. The structure matters because both lanes are different, and both need space to carry their own weight.
             </p>
           </div>
 
           <div className="grid gap-5 lg:grid-cols-2">
             {divisions.map((division) => (
-              <article key={division.name} className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
+              <article key={division.name} className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/52">{division.eyebrow}</div>
                 <div className="mt-3 text-3xl font-black text-white">{division.name}</div>
                 <ul className="mt-5 grid gap-3 text-sm text-white/78">
@@ -81,12 +104,12 @@ export default function PlayPointSystemsPage() {
         </div>
       </section>
 
-      <section className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
-        <div className="grid gap-6 lg:grid-cols-[1.02fr_0.98fr]">
-          <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.08),rgba(255,255,255,0.03))] p-6">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Your story</div>
-            <h2 className="mt-4 text-3xl font-black text-white">Built by {founder.name}</h2>
-            <div className="mt-5 space-y-4 text-sm leading-7 text-white/74">
+      <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
+        <div className="grid gap-8 lg:grid-cols-[1.06fr_0.94fr] lg:items-start">
+          <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.1),rgba(255,255,255,0.03))] p-7 shadow-[0_24px_70px_rgba(0,0,0,0.2)]">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Founder story</div>
+            <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl">Built by {founder.name}</h2>
+            <div className="mt-6 space-y-4 text-base leading-8 text-white/76">
               <p>
                 Play Point Systems was founded by {founder.name} - a creator driven by a passion for building meaningful experiences.
               </p>
@@ -99,9 +122,9 @@ export default function PlayPointSystemsPage() {
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
+          <div className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6">
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">What we build by</div>
-            <h2 className="mt-4 text-3xl font-black text-white">Principles that keep both lanes aligned.</h2>
+            <h2 className="mt-4 text-3xl font-black text-white">Purpose, clarity, and conviction.</h2>
             <div className="mt-6 grid gap-3">
               {principles.map((principle) => (
                 <div key={principle.title} className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
@@ -114,19 +137,19 @@ export default function PlayPointSystemsPage() {
         </div>
       </section>
 
-      <section className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
+      <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Featured now</div>
-            <h2 className="mt-3 text-3xl font-black text-white">A private product and a live release.</h2>
+            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">A private product and a live release.</h2>
           </div>
           <div className="max-w-xl text-sm leading-7 text-white/68">
-            The point is not to explain the full product publicly. The point is to show that both divisions are real and moving.
+            The point is not to explain the full product publicly. The point is to show that both divisions are real, active, and moving with intention.
           </div>
         </div>
 
-        <div className="mt-6 grid gap-6 lg:grid-cols-[0.98fr_1.02fr]">
-          <article className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
+        <div className="mt-8 grid gap-6 lg:grid-cols-[0.84fr_1.16fr]">
+          <article className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6">
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Software spotlight</div>
             <h3 className="mt-3 text-3xl font-black text-white">Shot Caddy</h3>
             <p className="mt-4 text-sm leading-7 text-white/72">
@@ -142,17 +165,20 @@ export default function PlayPointSystemsPage() {
             </div>
           </article>
 
-          <article className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,204,142,0.12),rgba(255,255,255,0.03))] p-6">
-            <div className="grid gap-5 md:grid-cols-[0.54fr_1.46fr] md:items-center">
+          <article className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,204,142,0.14),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)]">
+            <div className="grid gap-6 md:grid-cols-[0.46fr_1.54fr] md:items-center">
               <div className="overflow-hidden rounded-[24px] border border-white/10 bg-black/20">
                 <Image src="/images/music/run-back-home.png" alt="Run Back Home cover art" width={900} height={900} className="h-auto w-full" />
               </div>
               <div>
-                <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Music spotlight</div>
-                <h3 className="mt-3 text-3xl font-black text-white">{artist.nextRelease}</h3>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Release spotlight</div>
+                <h3 className="mt-3 text-4xl font-black text-white">{artist.nextRelease}</h3>
                 <p className="mt-3 text-sm leading-7 text-white/72">
                   The next Play Point Records release arrives on <span className="font-semibold text-white">{artist.nextReleaseDate}</span>, continuing the same faith-driven project world established by Nothing Can Separate.
                 </p>
+                <div className="mt-5 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white/78">
+                  {artist.name} continues to give the records division a real public anchor through actual release cadence, not placeholder language.
+                </div>
                 <div className="mt-5 flex flex-wrap gap-3">
                   <Link href="/music" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
                     Open the music division
@@ -167,13 +193,13 @@ export default function PlayPointSystemsPage() {
         </div>
       </section>
 
-      <section className="px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
-        <div className="grid gap-6 lg:grid-cols-[0.88fr_1.12fr] lg:items-center">
+      <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
+        <div className="grid gap-8 lg:grid-cols-[0.86fr_1.14fr] lg:items-start">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Follow the journey</div>
-            <h2 className="mt-3 text-3xl font-black text-white">Products, songs, story, and direct contact.</h2>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Lower navigation</div>
+            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Explore the product, the music, the story, and the contact path.</h2>
             <p className="mt-4 max-w-xl text-sm leading-7 text-white/72">
-              If you want the product, the music, or the person behind both, this site should give you the clearest possible path instead of hiding the story behind generic corporate language.
+              The lower section should feel like a clean set of next steps instead of another wall of equal cards. It is here to help visitors move with confidence.
             </p>
           </div>
 
@@ -202,11 +228,11 @@ export default function PlayPointSystemsPage() {
                 Go to About
               </Link>
             </div>
-            <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5">
+            <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.08),rgba(255,255,255,0.03))] p-5">
               <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Contact</div>
               <div className="mt-3 text-2xl font-black text-white">Reach {founder.name}</div>
               <p className="mt-3 text-sm leading-7 text-white/72">For product, label, or business conversations, use the direct founder contact lane.</p>
-              <Link href="/contact" className="mt-5 inline-flex rounded-2xl border border-white/15 bg-white/8 px-4 py-3 text-sm font-black text-white transition hover:bg-white/12">
+              <Link href="/contact" className="mt-5 inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-4 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
                 Go to Contact
               </Link>
             </div>
