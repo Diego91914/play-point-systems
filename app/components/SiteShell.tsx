@@ -68,7 +68,7 @@ export function SiteShell({ children, current }: SiteShellProps) {
 
                   <Link
                     href="/shot-caddy"
-                    className="inline-flex rounded-full border border-cyan-300/30 bg-cyan-400/12 px-4 py-2 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/18"
+                    className="inline-flex rounded-full border border-cyan-300/30 bg-cyan-400/12 px-4 py-2 text-sm font-bold text-cyan-50 transition hover:bg-cyan-400/18"
                   >
                     Explore Shot Caddy
                   </Link>
@@ -136,3 +136,4 @@ export function SiteShell({ children, current }: SiteShellProps) {
     </main>
   );
 }
+

@@ -21,13 +21,13 @@ export default function PlayPointSystemsPage() {
             <h1 className="mt-6 max-w-4xl text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-[5.3rem] xl:leading-[0.95]">
               {hero.headline}
             </h1>
-            <p className="mt-6 max-w-3xl text-xl font-semibold leading-8 text-cyan-100/88 sm:text-2xl sm:leading-9">
+            <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-cyan-100/88 sm:text-xl sm:leading-8">
               {hero.subheadline}
             </p>
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-white/76 sm:text-xl">
+            <p className="mt-5 max-w-3xl text-base leading-8 text-white/76 sm:text-lg">
               {hero.intro}
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 href="/shot-caddy"
                 className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16"
@@ -63,7 +63,7 @@ export default function PlayPointSystemsPage() {
               {divisions.map((division) => (
                 <article key={division.name} className="rounded-[26px] border border-white/10 bg-black/20 p-5">
                   <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">{division.eyebrow}</div>
-                  <div className="mt-3 text-2xl font-black text-white">{division.name}</div>
+                  <div className="mt-3 text-xl font-black text-white sm:text-2xl">{division.name}</div>
                   <p className="mt-3 text-sm leading-7 text-white/72">{division.description}</p>
                 </article>
               ))}
@@ -242,3 +242,4 @@ export default function PlayPointSystemsPage() {
     </SiteShell>
   );
 }
+
