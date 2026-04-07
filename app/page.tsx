@@ -46,10 +46,8 @@ export default function PlayPointSystemsPage() {
           <div className="grid gap-4">
             <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.28)]">
               <div className="flex items-center gap-4">
-                <div className="relative flex h-16 w-[5.3rem] items-center justify-center">
-                  <div className="absolute inset-0 rounded-[22px] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.16),rgba(255,255,255,0.05)_60%,transparent_100%)]" />
-                  <div className="absolute inset-[3px] rounded-[19px] bg-[linear-gradient(180deg,rgba(10,16,26,0.88),rgba(10,16,26,0.52))] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]" />
-                  <Image src="/images/pps-logo.png" alt="Play Point Systems logo" width={180} height={120} className="relative h-auto w-[82%] object-contain drop-shadow-[0_8px_22px_rgba(255,255,255,0.1)]" />
+                <div className="flex h-14 w-14 items-center justify-center sm:h-16 sm:w-16">
+                  <Image src="/images/pps-logo.png" alt="Play Point Systems logo" width={160} height={160} className="h-auto w-full object-contain" />
                 </div>
                 <div>
                   <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">Play Point Systems</div>
