@@ -34,14 +34,15 @@ export function SiteShell({ children, current }: SiteShellProps) {
             <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.92),rgba(8,15,28,0.72))] px-4 py-4 shadow-[0_18px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:px-6">
               <div className="flex items-center justify-between gap-4">
                 <Link href="/" className="flex min-w-0 items-center gap-3 sm:gap-4">
-                  <div className="relative flex h-14 w-[4.9rem] items-center justify-center sm:h-16 sm:w-[5.8rem]">
-                    <div className="absolute inset-0 rounded-[22px] bg-white/[0.03] blur-[1px]" />
+                  <div className="relative flex h-14 w-[5.25rem] items-center justify-center sm:h-16 sm:w-[6.1rem]">
+                    <div className="absolute inset-0 rounded-[22px] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.18),rgba(255,255,255,0.06)_58%,transparent_100%)]" />
+                    <div className="absolute inset-[3px] rounded-[19px] bg-[linear-gradient(180deg,rgba(9,17,29,0.9),rgba(9,17,29,0.55))] shadow-[inset_0_1px_0_rgba(255,255,255,0.09)]" />
                     <Image
                       src="/images/pps-logo.png"
                       alt="Play Point Systems logo"
                       width={260}
                       height={180}
-                      className="relative h-auto w-full object-contain drop-shadow-[0_6px_18px_rgba(255,255,255,0.08)]"
+                      className="relative h-auto w-[84%] object-contain drop-shadow-[0_8px_22px_rgba(255,255,255,0.12)]"
                       priority
                     />
                   </div>
