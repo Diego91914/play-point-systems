@@ -33,20 +33,21 @@ export function SiteShell({ children, current }: SiteShellProps) {
           <header className="sticky top-4 z-50 px-4 pt-4 sm:px-6 lg:px-8">
             <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.92),rgba(8,15,28,0.72))] px-4 py-4 shadow-[0_18px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:px-6">
               <div className="flex items-center justify-between gap-4">
-                <Link href="/" className="flex min-w-0 items-center gap-3">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] sm:h-16 sm:w-16">
+                <Link href="/" className="flex min-w-0 items-center gap-3 sm:gap-4">
+                  <div className="relative flex h-14 w-[4.9rem] items-center justify-center sm:h-16 sm:w-[5.8rem]">
+                    <div className="absolute inset-0 rounded-[22px] bg-white/[0.03] blur-[1px]" />
                     <Image
                       src="/images/pps-logo.png"
                       alt="Play Point Systems logo"
-                      width={120}
-                      height={120}
-                      className="h-full w-full object-contain"
+                      width={260}
+                      height={180}
+                      className="relative h-auto w-full object-contain drop-shadow-[0_6px_18px_rgba(255,255,255,0.08)]"
                       priority
                     />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/50">Play Point Systems</div>
-                    <div className="mt-1 truncate text-lg font-black tracking-tight text-white sm:text-2xl">Creator-led parent company</div>
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/50">Parent company</div>
+                    <div className="mt-1 truncate text-base font-black tracking-[0.01em] text-white sm:text-xl">Play Point Systems</div>
                   </div>
                 </Link>
 
@@ -136,4 +137,3 @@ export function SiteShell({ children, current }: SiteShellProps) {
     </main>
   );
 }
-
