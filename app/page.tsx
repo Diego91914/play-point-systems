@@ -44,11 +44,24 @@ export default function PlayPointSystemsPage() {
           </div>
 
           <div className="grid gap-4">
+            <div className="rounded-[30px] border border-cyan-200/14 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.28)] sm:p-8">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">Parent company mark</div>
+              <div className="mt-4 flex min-h-[240px] items-center justify-center rounded-[26px] border border-white/10 bg-[radial-gradient(circle_at_center,rgba(126,213,255,0.14),rgba(6,14,27,0.4)_58%,rgba(6,14,27,0.15)_100%)] p-6 sm:min-h-[300px]">
+                <Image
+                  src="/images/pps-logo.png"
+                  alt="Play Point Systems logo"
+                  width={520}
+                  height={520}
+                  className="h-auto w-[72%] max-w-[340px] object-contain drop-shadow-[0_16px_42px_rgba(64,193,255,0.28)]"
+                />
+              </div>
+              <p className="mt-4 text-sm leading-7 text-white/72">
+                The parent logo now anchors the hero right column so the brand reads clearly without leaving dead space.
+              </p>
+            </div>
+
             <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.28)]">
               <div className="flex items-center gap-4">
-                <div className="flex h-14 w-14 items-center justify-center sm:h-16 sm:w-16">
-                  <Image src="/images/pps-logo.png" alt="Play Point Systems logo" width={160} height={160} className="h-full w-full object-cover object-[center_38%]" />
-                </div>
                 <div>
                   <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">Play Point Systems</div>
                   <div className="mt-2 text-2xl font-black text-white">Two divisions. One standard.</div>
