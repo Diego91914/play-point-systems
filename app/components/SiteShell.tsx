@@ -69,11 +69,11 @@ export function SiteShell({ children, current }: SiteShellProps) {
                 <button
                   type="button"
                   onClick={() => setMobileOpen((value) => !value)}
-                  className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white transition hover:bg-white/10 lg:hidden"
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/12 bg-white/5 text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 lg:hidden"
                   aria-expanded={mobileOpen}
                   aria-label="Toggle navigation menu"
                 >
-                  <span className="text-xl leading-none">{mobileOpen ? "×" : "≡"}</span>
+                  <span className="text-lg leading-none">{mobileOpen ? "×" : "≡"}</span>
                 </button>
               </div>
 
@@ -107,20 +107,29 @@ export function SiteShell({ children, current }: SiteShellProps) {
 
           <div className="px-1 pb-1 sm:px-2 sm:pb-2">{children}</div>
 
-          <footer className="border-t border-white/10 px-5 py-6 sm:px-8 lg:px-10">
-            <div className="flex flex-col gap-4 text-sm text-white/56 sm:flex-row sm:items-center sm:justify-between">
-              <div>Play Point Systems is the umbrella. Shot Caddy and Play Point Records carry their own identity underneath it.</div>
-              <div className="flex flex-wrap gap-4 text-white/72">
-                <Link href="/shot-caddy" className="transition hover:text-white">
+          <footer className="border-t border-white/10 px-5 py-8 sm:px-8 lg:px-10">
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <div className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/36">Play Point Systems</div>
+                <div className="mt-2 max-w-md text-sm leading-7 text-white/52">The parent company for Shot Caddy and Play Point Records. Creator-led, purpose-built, and honest about the work.</div>
+              </div>
+              <nav className="flex flex-wrap items-center gap-1.5">
+                <Link href="/shot-caddy" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/40">
                   Shot Caddy
                 </Link>
-                <Link href="/music" className="transition hover:text-white">
+                <Link href="/music" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/40">
                   Music
                 </Link>
-                <Link href="/contact" className="transition hover:text-white">
+                <Link href="/about" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/40">
+                  About
+                </Link>
+                <Link href="/contact" className="rounded-full border border-cyan-300/25 bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-50 transition hover:border-cyan-300/35 hover:bg-cyan-400/16 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400">
                   Contact
                 </Link>
-              </div>
+              </nav>
+            </div>
+            <div className="mt-6 border-t border-white/8 pt-5 text-[11px] text-white/30">
+              © {new Date().getFullYear()} Play Point Systems LLC · Built by Channing Stovall
             </div>
           </footer>
         </div>

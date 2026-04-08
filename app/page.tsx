@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 export default function PlayPointSystemsPage() {
   return (
     <SiteShell current="home">
-      <section className="px-5 pb-12 pt-10 sm:px-8 sm:pb-16 sm:pt-12 lg:px-10 lg:pb-20 lg:pt-14">
-        <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+      <section className="px-5 pb-12 pt-10 sm:px-8 sm:pb-16 sm:pt-12 lg:px-10 lg:pb-24 lg:pt-16 xl:pb-28 xl:pt-20">
+        <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end xl:gap-14">
           <div className="max-w-4xl reveal-up">
             <div className="inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/72">
               Creator-led parent company
@@ -27,31 +27,31 @@ export default function PlayPointSystemsPage() {
             <p className="mt-5 max-w-3xl text-base leading-8 text-white/76 sm:text-lg">
               {hero.intro}
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div className="mt-7 flex flex-col gap-3 xs:flex-row sm:flex-row">
               <Link
                 href="/shot-caddy"
-                className="inline-flex rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110"
+                className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
               >
                 Explore Shot Caddy
               </Link>
               <Link
                 href="/music"
-                className="inline-flex rounded-2xl border border-white/20 bg-black/25 px-6 py-3.5 text-sm font-semibold text-white/90 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
+                className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-black/25 px-6 py-3.5 text-sm font-semibold text-white/90 transition hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50"
               >
                 Listen to Music
               </Link>
             </div>
 
-            <div className="mt-7 grid gap-3 rounded-2xl border border-white/12 bg-[linear-gradient(120deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-4 py-3 sm:grid-cols-3 sm:gap-2 sm:px-5">
-              <div className="rounded-xl border border-white/8 bg-black/15 px-3 py-2">
+            <div className="mt-7 grid gap-3 rounded-2xl border border-white/12 bg-[linear-gradient(120deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-4 py-3 sm:grid-cols-3 sm:gap-0 sm:divide-x sm:divide-white/10 sm:px-0">
+              <div className="px-4 py-2.5">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Founder</div>
                 <div className="mt-1 text-sm font-semibold text-white/90">{founder.name}</div>
               </div>
-              <div className="rounded-xl border border-white/8 bg-black/15 px-3 py-2">
+              <div className="px-4 py-2.5">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Operating model</div>
                 <div className="mt-1 text-sm font-semibold text-white/90">Two divisions. One standard.</div>
               </div>
-              <div className="rounded-xl border border-white/8 bg-black/15 px-3 py-2">
+              <div className="px-4 py-2.5">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Release cadence</div>
                 <div className="mt-1 text-sm font-semibold text-white/90">{artist.nextRelease} · {artist.nextReleaseDate}</div>
               </div>
