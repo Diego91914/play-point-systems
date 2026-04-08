@@ -36,7 +36,7 @@ export function SiteShell({ children, current }: SiteShellProps) {
                 <Link href="/" className="flex min-w-0 items-center gap-3 sm:gap-4">
                   <div className="flex h-12 w-12 items-center justify-center sm:h-14 sm:w-14">
                     <Image
-                      src="/images/PPS Logos/pps-log-transp-no words.png"
+                      src="/images/pps-logo.png"
                       alt="Play Point Systems logo"
                       width={160}
                       height={160}

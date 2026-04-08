@@ -47,7 +47,7 @@ export default function PlayPointSystemsPage() {
             <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.28)]">
               <div className="flex items-center gap-4">
                 <div className="flex h-14 w-14 items-center justify-center sm:h-16 sm:w-16">
-                  <Image src="/images/PPS Logos/pps-log-transp-no words.png" alt="Play Point Systems logo" width={160} height={160} className="h-full w-full object-cover object-[center_38%]" />
+                  <Image src="/images/pps-logo.png" alt="Play Point Systems logo" width={160} height={160} className="h-full w-full object-cover object-[center_38%]" />
                 </div>
                 <div>
                   <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">Play Point Systems</div>
