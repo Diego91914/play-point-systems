@@ -14,7 +14,7 @@ export default function PlayPointSystemsPage() {
     <SiteShell current="home">
       <section className="px-5 pb-12 pt-10 sm:px-8 sm:pb-16 sm:pt-12 lg:px-10 lg:pb-20 lg:pt-14">
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-          <div className="max-w-4xl">
+          <div className="max-w-4xl reveal-up">
             <div className="inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/72">
               Creator-led parent company
             </div>
@@ -41,10 +41,25 @@ export default function PlayPointSystemsPage() {
                 Listen to Music
               </Link>
             </div>
+
+            <div className="mt-7 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/50">Founder-led</div>
+                <div className="mt-1 text-sm font-semibold text-white/86">Built by Channing Stovall</div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/50">Divisions</div>
+                <div className="mt-1 text-sm font-semibold text-white/86">Software and Music</div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/50">Operating style</div>
+                <div className="mt-1 text-sm font-semibold text-white/86">Selective disclosure by design</div>
+              </div>
+            </div>
           </div>
 
-          <div className="grid gap-5">
-            <div className="flex min-h-[300px] items-center justify-center lg:min-h-[380px]">
+          <div className="grid gap-5 reveal-up reveal-up-delay">
+            <div className="flex min-h-[300px] items-center justify-center rounded-[30px] border border-white/8 bg-[radial-gradient(circle_at_center,rgba(136,212,255,0.16),rgba(9,18,35,0.25)_62%,rgba(9,18,35,0.08)_100%)] lg:min-h-[380px]">
               <Image
                 src="/images/pps-logo.png"
                 alt="Play Point Systems logo"
@@ -56,7 +71,7 @@ export default function PlayPointSystemsPage() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               {divisions.map((division) => (
-                <article key={division.name} className="rounded-[26px] border border-white/10 bg-black/20 p-5">
+                <article key={division.name} className="rounded-[26px] border border-white/10 bg-black/15 p-5 transition duration-300 hover:border-white/20 hover:bg-black/22">
                   <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">{division.eyebrow}</div>
                   <div className="mt-3 text-xl font-black text-white sm:text-2xl">{division.name}</div>
                   <p className="mt-3 text-sm leading-7 text-white/72">{division.description}</p>

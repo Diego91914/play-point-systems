@@ -33,9 +33,12 @@ export function SiteShell({ children, current }: SiteShellProps) {
             <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.92),rgba(8,15,28,0.72))] px-4 py-4 shadow-[0_18px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:px-6">
               <div className="flex items-center justify-between gap-4">
                 <Link href="/" className="flex min-w-0 items-center gap-3 sm:gap-4">
+                  <div className="relative h-8 w-8 shrink-0 rounded-full border border-cyan-200/35 bg-[radial-gradient(circle_at_35%_30%,rgba(255,236,153,0.75),rgba(82,154,255,0.15)_48%,rgba(9,18,35,0.95)_100%)] shadow-[0_0_26px_rgba(92,180,255,0.26)]">
+                    <div className="absolute inset-[5px] rounded-full border border-white/20" />
+                  </div>
                   <div className="min-w-0">
                     <div className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/50">Parent company</div>
-                    <div className="mt-1 truncate text-base font-black tracking-[0.01em] text-white sm:text-xl">Play Point Systems</div>
+                    <div className="mt-1 truncate text-base font-extrabold tracking-[0.005em] text-white sm:text-xl">Play Point Systems</div>
                   </div>
                 </Link>
 
