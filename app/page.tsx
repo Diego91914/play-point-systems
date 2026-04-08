@@ -30,30 +30,30 @@ export default function PlayPointSystemsPage() {
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 href="/shot-caddy"
-                className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16"
+                className="inline-flex rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110"
               >
                 Explore Shot Caddy
               </Link>
               <Link
                 href="/music"
-                className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-6 py-3.5 text-sm font-black text-white transition hover:bg-white/12"
+                className="inline-flex rounded-2xl border border-white/20 bg-black/25 px-6 py-3.5 text-sm font-semibold text-white/90 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
               >
                 Listen to Music
               </Link>
             </div>
 
-            <div className="mt-7 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
-                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/50">Founder-led</div>
-                <div className="mt-1 text-sm font-semibold text-white/86">Built by Channing Stovall</div>
+            <div className="mt-7 grid gap-3 rounded-2xl border border-white/12 bg-[linear-gradient(120deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-4 py-3 sm:grid-cols-3 sm:gap-2 sm:px-5">
+              <div className="rounded-xl border border-white/8 bg-black/15 px-3 py-2">
+                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Founder</div>
+                <div className="mt-1 text-sm font-semibold text-white/90">{founder.name}</div>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
-                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/50">Divisions</div>
-                <div className="mt-1 text-sm font-semibold text-white/86">Software and Music</div>
+              <div className="rounded-xl border border-white/8 bg-black/15 px-3 py-2">
+                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Operating model</div>
+                <div className="mt-1 text-sm font-semibold text-white/90">Two divisions. One standard.</div>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
-                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/50">Operating style</div>
-                <div className="mt-1 text-sm font-semibold text-white/86">Selective disclosure by design</div>
+              <div className="rounded-xl border border-white/8 bg-black/15 px-3 py-2">
+                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Release cadence</div>
+                <div className="mt-1 text-sm font-semibold text-white/90">{artist.nextRelease} · {artist.nextReleaseDate}</div>
               </div>
             </div>
           </div>

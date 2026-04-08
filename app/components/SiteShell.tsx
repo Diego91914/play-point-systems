@@ -30,7 +30,7 @@ export function SiteShell({ children, current }: SiteShellProps) {
       <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="rounded-[36px] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] shadow-[0_30px_120px_rgba(0,0,0,0.4)]">
           <header className="sticky top-4 z-50 px-4 pt-4 sm:px-6 lg:px-8">
-            <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.92),rgba(8,15,28,0.72))] px-4 py-4 shadow-[0_18px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:px-6">
+            <div className="rounded-[28px] border border-white/12 bg-[linear-gradient(180deg,rgba(8,15,28,0.95),rgba(8,15,28,0.78))] px-4 py-3 shadow-[0_18px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:px-6">
               <div className="flex items-center justify-between gap-4">
                 <Link href="/" className="flex min-w-0 items-center gap-3 sm:gap-4">
                   <div className="relative h-8 w-8 shrink-0 rounded-full border border-cyan-200/35 bg-[radial-gradient(circle_at_35%_30%,rgba(255,236,153,0.75),rgba(82,154,255,0.15)_48%,rgba(9,18,35,0.95)_100%)] shadow-[0_0_26px_rgba(92,180,255,0.26)]">
@@ -42,13 +42,13 @@ export function SiteShell({ children, current }: SiteShellProps) {
                   </div>
                 </Link>
 
-                <div className="hidden items-center gap-3 lg:flex">
-                  <nav className="flex flex-wrap gap-2 text-sm font-semibold text-white/76">
+                <div className="hidden items-center gap-2 lg:flex">
+                  <nav className="flex flex-wrap gap-1.5 text-sm font-semibold text-white/84">
                     {navItems.map((item) => {
                       const active = current === item.key;
                       const className = active
-                        ? "rounded-full border border-cyan-300/25 bg-cyan-400/10 px-4 py-2 text-cyan-50"
-                        : "rounded-full border border-white/10 px-4 py-2 transition hover:bg-white/5 hover:text-white";
+                        ? "rounded-full border border-cyan-300/35 bg-cyan-400/14 px-4 py-2 text-cyan-50"
+                        : "rounded-full border border-white/15 bg-black/20 px-4 py-2 transition hover:border-white/25 hover:bg-white/8 hover:text-white";
 
                       return (
                         <Link key={item.label} href={item.href} className={className}>
@@ -60,7 +60,7 @@ export function SiteShell({ children, current }: SiteShellProps) {
 
                   <Link
                     href="/shot-caddy"
-                    className="inline-flex rounded-full border border-cyan-300/30 bg-cyan-400/12 px-4 py-2 text-sm font-bold text-cyan-50 transition hover:bg-cyan-400/18"
+                    className="inline-flex rounded-full border border-cyan-200/40 bg-[linear-gradient(120deg,rgba(118,225,255,0.34),rgba(120,170,255,0.2))] px-4 py-2 text-sm font-bold text-white shadow-[0_8px_22px_rgba(92,180,255,0.2)] transition hover:brightness-110"
                   >
                     Explore Shot Caddy
                   </Link>
