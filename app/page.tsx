@@ -43,27 +43,15 @@ export default function PlayPointSystemsPage() {
             </div>
           </div>
 
-          <div className="grid gap-4">
-            <div className="flex min-h-[280px] items-center justify-center lg:min-h-[340px]">
+          <div className="grid gap-5">
+            <div className="flex min-h-[300px] items-center justify-center lg:min-h-[380px]">
               <Image
                 src="/images/pps-logo.png"
                 alt="Play Point Systems logo"
                 width={520}
                 height={520}
-                className="h-auto w-[62%] max-w-[300px] object-contain drop-shadow-[0_18px_46px_rgba(64,193,255,0.32)]"
+                className="h-auto w-[68%] max-w-[340px] object-contain drop-shadow-[0_20px_56px_rgba(64,193,255,0.34)]"
               />
-            </div>
-
-            <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.28)]">
-              <div className="flex items-center gap-4">
-                <div>
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">Play Point Systems</div>
-                  <div className="mt-2 text-2xl font-black text-white">Two divisions. One standard.</div>
-                </div>
-              </div>
-              <p className="mt-5 text-sm leading-7 text-white/72">
-                Built to hold a private product brand and a public music division without flattening either one into generic corporate language.
-              </p>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
