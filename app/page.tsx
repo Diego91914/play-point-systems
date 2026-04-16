@@ -177,17 +177,23 @@ export default function PlayPointSystemsPage() {
 
           <article className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,204,142,0.14),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)]">
             <div className="grid gap-6 md:grid-cols-[0.46fr_1.54fr] md:items-center">
-              <div className="overflow-hidden rounded-[24px] border border-white/10 bg-black/20">
-                <Image src="/images/music/run-back-home.png" alt="Run Back Home cover art" width={900} height={900} className="h-auto w-full" />
+              <div className="overflow-hidden rounded-[24px] border border-white/10 bg-black/20 md:max-h-[560px]">
+                <Image
+                  src="/images/music/run-back-home-billboard.png"
+                  alt="Run Back Home release billboard"
+                  width={1080}
+                  height={1920}
+                  className="h-full w-full object-cover object-top"
+                />
               </div>
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Release spotlight</div>
                 <h3 className="mt-3 text-4xl font-black text-white">{artist.nextRelease}</h3>
                 <p className="mt-3 text-sm leading-7 text-white/72">
-                  The next Play Point Records release arrives on <span className="font-semibold text-white">{artist.nextReleaseDate}</span>, continuing the same faith-driven project world established by Nothing Can Separate.
+                  The next Play Point Records release goes live at midnight on <span className="font-semibold text-white">{artist.nextReleaseDate}</span>, continuing the same faith-driven project world established by Nothing Can Separate.
                 </p>
                 <div className="mt-5 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white/78">
-                  {artist.name} continues to give the records division a real public anchor through actual release cadence, not placeholder language.
+                  The new billboard creative is now part of the release push so visitors can see the campaign art before the song flips live.
                 </div>
                 <div className="mt-5 flex flex-wrap gap-3">
                   <Link href="/music" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
