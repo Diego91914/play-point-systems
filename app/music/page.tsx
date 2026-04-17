@@ -54,6 +54,9 @@ export default function MusicPage() {
               <a href={siteLinks.spotify} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-5 py-3 text-sm font-black text-emerald-50 transition hover:bg-emerald-400/16">
                 Open on Spotify
               </a>
+              <a href={siteLinks.appleMusic} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-rose-300/20 bg-rose-400/10 px-5 py-3 text-sm font-black text-rose-50 transition hover:bg-rose-400/16">
+                Open on Apple Music
+              </a>
               <a href={siteLinks.youtube} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-red-300/20 bg-red-400/10 px-5 py-3 text-sm font-black text-red-50 transition hover:bg-red-400/16">
                 Listen on YouTube
               </a>
@@ -196,6 +199,9 @@ export default function MusicPage() {
               <a href={siteLinks.spotify} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-4 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-400/16">
                 Channing Stovall on Spotify
               </a>
+              <a href={siteLinks.appleMusic} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-rose-300/20 bg-rose-400/10 px-4 py-4 text-sm font-semibold text-rose-50 transition hover:bg-rose-400/16">
+                Channing Stovall on Apple Music
+              </a>
               <a href={siteLinks.youtube} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-red-300/20 bg-red-400/10 px-4 py-4 text-sm font-semibold text-red-50 transition hover:bg-red-400/16">
                 Channing Stovall on YouTube
               </a>
@@ -299,6 +305,9 @@ export default function MusicPage() {
                     </a>
                     <a href={siteLinks.spotify} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-sm font-black text-emerald-50 transition hover:bg-emerald-400/16">
                       Spotify
+                    </a>
+                    <a href={siteLinks.appleMusic} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-rose-300/20 bg-rose-400/10 px-4 py-3 text-sm font-black text-rose-50 transition hover:bg-rose-400/16">
+                      Apple Music
                     </a>
                     <a href={siteLinks.youtube} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-red-300/20 bg-red-400/10 px-4 py-3 text-sm font-black text-red-50 transition hover:bg-red-400/16">
                       YouTube

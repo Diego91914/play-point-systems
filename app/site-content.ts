@@ -3,6 +3,7 @@
   runBackHome: "https://open.spotify.com/album/6eliw7N7GZgPygV8ahLwxc",
   nothingCanSeparate: "https://distrokid.com/hyperfollow/channingstovall/nothing-can-separate?ref=release",
   spotify: "https://open.spotify.com/album/6eliw7N7GZgPygV8ahLwxc",
+  appleMusic: "https://music.apple.com/us/artist/channing-stovall/1886380599",
   youtube: "https://www.youtube.com/results?search_query=channing+stovall",
   website: "https://playpointsystems.com",
 };
