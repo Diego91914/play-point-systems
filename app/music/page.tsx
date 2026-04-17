@@ -8,31 +8,20 @@ export const metadata: Metadata = {
   description: "Play Point Records, the music division of Play Point Systems, featuring Channing Stovall releases.",
 };
 
-const releases = [
-  {
-    eyebrow: "Newest release",
-    title: artist.currentRelease,
-    type: artist.currentReleaseType,
-    href: siteLinks.runBackHome,
-    imageSrc: "/images/music/run-back-home.png",
-    imageAlt: "Run Back Home cover art",
-    body: "The current lead song on the page and the clearest starting point for new listeners.",
-    accentClass: "border-cyan-300/18 bg-cyan-400/[0.06]",
-    buttonClass:
-      "border border-cyan-300/25 bg-cyan-400/10 text-cyan-50 hover:bg-cyan-400/16",
-  },
-  {
-    eyebrow: "First release",
-    title: artist.previousRelease,
-    type: artist.previousReleaseType,
-    href: siteLinks.nothingCanSeparate,
-    imageSrc: "/images/music/nothing-can-separate.png",
-    imageAlt: "Nothing Can Separate cover art",
-    body: "The foundation song in the current sequence, still active and still part of the story being told.",
-    accentClass: "border-white/10 bg-white/[0.03]",
-    buttonClass: "border border-white/15 bg-white/8 text-white hover:bg-white/12",
-  },
-] as const;
+const releases = artist.catalog.slice(0, 2).map((release, index) => ({
+  eyebrow: index === 0 ? "Newest release" : "First release",
+  title: release.title,
+  type: index === 0 ? artist.currentReleaseType : artist.previousReleaseType,
+  href: release.href,
+  imageSrc: release.imageSrc,
+  imageAlt: release.imageAlt,
+  body: release.summary,
+  accentClass: index === 0 ? "border-cyan-300/18 bg-cyan-400/[0.06]" : "border-white/10 bg-white/[0.03]",
+  buttonClass:
+    index === 0
+      ? "border border-cyan-300/25 bg-cyan-400/10 text-cyan-50 hover:bg-cyan-400/16"
+      : "border border-white/15 bg-white/8 text-white hover:bg-white/12",
+}));
 
 export default function MusicPage() {
   return (
@@ -62,6 +51,12 @@ export default function MusicPage() {
               <a href={siteLinks.nothingCanSeparate} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
                 Listen to Nothing Can Separate
               </a>
+              <a href={siteLinks.spotify} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-5 py-3 text-sm font-black text-emerald-50 transition hover:bg-emerald-400/16">
+                Open on Spotify
+              </a>
+              <a href={siteLinks.youtube} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-red-300/20 bg-red-400/10 px-5 py-3 text-sm font-black text-red-50 transition hover:bg-red-400/16">
+                Listen on YouTube
+              </a>
               <a href="#bio" className="inline-flex rounded-2xl border border-white/15 bg-black/20 px-5 py-3 text-sm font-black text-white transition hover:bg-black/28">
                 Read the artist bio
               </a>
@@ -69,6 +64,9 @@ export default function MusicPage() {
             <div className="mt-4 flex flex-wrap gap-3 text-sm font-semibold text-white/68">
               <a href="#listen-now" className="transition hover:text-white">
                 Jump to all listening links
+              </a>
+              <a href="#catalog" className="transition hover:text-white">
+                Jump to the full song catalog
               </a>
               <a href="#album-arc" className="transition hover:text-white">
                 Jump to the album story
@@ -187,7 +185,7 @@ export default function MusicPage() {
           <article className="rounded-[28px] border border-amber-300/16 bg-[linear-gradient(180deg,rgba(255,204,142,0.12),rgba(255,255,255,0.03))] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Quick access</div>
             <div className="mt-2 text-3xl font-black text-white">Streaming links</div>
-            <p className="mt-3 text-sm leading-7 text-white/72">These stay grouped in one place for visitors who just want the fastest path to the music.</p>
+            <p className="mt-3 text-sm leading-7 text-white/72">These stay grouped in one place for visitors who just want the fastest path to the music, including YouTube.</p>
             <div className="mt-5 space-y-3">
               <a href={siteLinks.runBackHome} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm font-semibold text-white transition hover:bg-black/28">
                 Run Back Home
@@ -195,8 +193,17 @@ export default function MusicPage() {
               <a href={siteLinks.nothingCanSeparate} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm font-semibold text-white transition hover:bg-black/28">
                 Nothing Can Separate
               </a>
+              <a href={siteLinks.spotify} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-4 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-400/16">
+                Channing Stovall on Spotify
+              </a>
+              <a href={siteLinks.youtube} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-red-300/20 bg-red-400/10 px-4 py-4 text-sm font-semibold text-red-50 transition hover:bg-red-400/16">
+                Channing Stovall on YouTube
+              </a>
               <a href={siteLinks.runBackHome} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-cyan-300/20 bg-cyan-400/8 px-4 py-4 text-sm font-semibold text-cyan-50 transition hover:bg-cyan-400/14">
                 Start with the newest release
+              </a>
+              <a href="#catalog" className="flex rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm font-semibold text-white transition hover:bg-black/28">
+                Browse the full song catalog
               </a>
             </div>
           </article>
@@ -204,12 +211,22 @@ export default function MusicPage() {
       </section>
 
       <section id="album-arc" className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
+        <div className="rounded-[30px] border border-amber-300/16 bg-[linear-gradient(180deg,rgba(255,204,142,0.12),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)]">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Album statement</div>
+          <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">{artist.albumWrapLines[0]}</h2>
+          <div className="mt-5 max-w-3xl space-y-3 text-base leading-8 text-white/78">
+            {artist.albumWrapLines.slice(1).map((line) => (
+              <p key={line}>{line}</p>
+            ))}
+          </div>
+        </div>
+
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Album arc</div>
+            <div className="mt-8 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Album arc</div>
             <h2 className="mt-3 text-3xl font-black text-white">The first two tracks are meant to be heard together.</h2>
           </div>
-          <div className="max-w-2xl text-sm leading-7 text-white/68">This is not being framed as a pile of unrelated singles. The rollout is being organized like the opening movement of a larger album story.</div>
+          <div className="max-w-2xl text-sm leading-7 text-white/68">These are the first two tracks of the album, and this section explains how they connect to the bigger story being built.</div>
         </div>
 
         <div className="mt-8 grid gap-5 lg:grid-cols-2">
@@ -232,22 +249,68 @@ export default function MusicPage() {
         </div>
       </section>
 
-      <section className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
-        <div className="rounded-[30px] border border-amber-300/16 bg-[linear-gradient(180deg,rgba(255,204,142,0.12),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)]">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Project statement</div>
-          <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Real music. Real story. A clear message.</h2>
-          <div className="mt-5 max-w-3xl space-y-3 text-base leading-8 text-white/78">
-            <p>This project is being built around songs that carry grace, conviction, redemption, and truth without sounding detached from real life.</p>
-            <p>The aim is not to bury the message under hype. The aim is to make music people can actually feel, then let the story speak for itself.</p>
+      <section id="catalog" className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Growing catalog</div>
+            <h2 className="mt-3 text-3xl font-black text-white">Every live song gets a permanent home here.</h2>
           </div>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <a href={siteLinks.runBackHome} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
-              Listen to Run Back Home
-            </a>
-            <a href={siteLinks.nothingCanSeparate} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
-              Listen to Nothing Can Separate
-            </a>
+          <div className="max-w-2xl text-sm leading-7 text-white/68">
+            This section is built to grow over time. As new songs release, they can be added to the catalog source and they will show up here with their live links.
           </div>
+        </div>
+
+        <div className="mt-8 grid gap-5 lg:grid-cols-2">
+          {artist.catalog.map((song, index) => (
+            <article
+              key={song.title}
+              className={`rounded-[30px] border p-5 shadow-[0_18px_50px_rgba(0,0,0,0.18)] ${
+                index === 0 ? "border-cyan-300/18 bg-cyan-400/[0.06]" : "border-white/10 bg-white/[0.03]"
+              }`}
+            >
+              <div className="grid gap-5 sm:grid-cols-[160px_1fr] sm:items-start">
+                <a href={song.href} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-[24px] border border-white/10 transition hover:opacity-95">
+                  <Image src={song.imageSrc} alt={song.imageAlt} width={900} height={900} className="h-auto w-full" />
+                </a>
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/72">
+                      {song.status}
+                    </span>
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-white/44">{song.type}</span>
+                  </div>
+                  <a href={song.href} target="_blank" rel="noreferrer" className="mt-3 block text-3xl font-black text-white transition hover:text-cyan-100">
+                    {song.title}
+                  </a>
+                  <div className="mt-2 text-sm font-semibold text-white/62">{song.releaseDate}</div>
+                  <p className="mt-4 text-sm leading-7 text-white/72">{song.summary}</p>
+                  <div className="mt-5 flex flex-wrap gap-3">
+                    <a
+                      href={song.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={`inline-flex rounded-2xl px-4 py-3 text-sm font-black transition ${
+                        index === 0
+                          ? "border border-cyan-300/25 bg-cyan-400/10 text-cyan-50 hover:bg-cyan-400/16"
+                          : "border border-white/15 bg-white/8 text-white hover:bg-white/12"
+                      }`}
+                    >
+                      Listen to {song.title}
+                    </a>
+                    <a href={siteLinks.spotify} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-sm font-black text-emerald-50 transition hover:bg-emerald-400/16">
+                      Spotify
+                    </a>
+                    <a href={siteLinks.youtube} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-red-300/20 bg-red-400/10 px-4 py-3 text-sm font-black text-red-50 transition hover:bg-red-400/16">
+                      YouTube
+                    </a>
+                    <a href="#listen-now" className="inline-flex rounded-2xl border border-white/15 bg-black/20 px-4 py-3 text-sm font-black text-white transition hover:bg-black/28">
+                      Back to quick links
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
         </div>
       </section>
 

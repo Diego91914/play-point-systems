@@ -1,7 +1,9 @@
 ﻿export const siteLinks = {
   shotCaddy: "https://shotcaddy.net",
-  runBackHome: "https://distrokid.com/hyperfollow/channingstovall/run-back-home?ref=release",
+  runBackHome: "https://open.spotify.com/album/6eliw7N7GZgPygV8ahLwxc",
   nothingCanSeparate: "https://distrokid.com/hyperfollow/channingstovall/nothing-can-separate?ref=release",
+  spotify: "https://open.spotify.com/album/6eliw7N7GZgPygV8ahLwxc",
+  youtube: "https://www.youtube.com/results?search_query=channing+stovall",
   website: "https://playpointsystems.com",
 };
 
@@ -89,14 +91,42 @@ export const artist = {
       title: "Nothing Can Separate",
       summary: "This is where it starts.",
       body:
-        "Before anything changes, before you take a step back, the foundation has to be clear: nothing you have done has put you too far out of reach. This song carries the truth everything else is built on.",
+        "Before anything changes... before you take a step back... you have to understand one thing: nothing you've done has put you too far out of reach. This song is the foundation. The truth everything else is built on.",
     },
     {
       number: "Track 2",
       title: "Run Back Home",
-      summary: "This is the turning-point decision.",
+      summary: "This is the moment of decision.",
       body:
-        "Once you realize you are not too far gone, you are faced with a choice. Do you stay where you are, or do you turn around? This song lives in that moment when you stop running and start heading back.",
+        "Once you realize you're not too far gone... you're faced with a choice. Do you stay where you are... or do you turn around? This song is about that moment, when you finally decide to stop running and start heading back.",
+    },
+  ],
+  albumWrapLines: [
+    "This album isn't about having it all figured out.",
+    "It's about the journey of coming back...",
+    "learning who God is...",
+    "and figuring out how to walk with Him every day after.",
+  ],
+  catalog: [
+    {
+      title: "Run Back Home",
+      releaseDate: "April 17, 2026",
+      status: "Newest release",
+      type: "Single",
+      href: siteLinks.runBackHome,
+      imageSrc: "/images/music/run-back-home.png",
+      imageAlt: "Run Back Home cover art",
+      summary: "The newest live release and the clearest current entry point for listeners landing on the page.",
+    },
+    {
+      title: "Nothing Can Separate",
+      releaseDate: "Out now",
+      status: "Catalog release",
+      type: "Single",
+      href: siteLinks.nothingCanSeparate,
+      imageSrc: "/images/music/nothing-can-separate.png",
+      imageAlt: "Nothing Can Separate cover art",
+      summary: "The first public release in the current project arc, still live and still part of the active listening path.",
     },
   ],
   bioParagraphs: [
