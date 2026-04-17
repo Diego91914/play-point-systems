@@ -151,7 +151,8 @@ export default function MusicPage() {
         </div>
       </section>
 
-      <section id="listen-now" className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
+      <section id="stream" className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
+        <div id="listen-now" className="sr-only" aria-hidden="true" />
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Listen now</div>
