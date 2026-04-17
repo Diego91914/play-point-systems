@@ -4,6 +4,7 @@
   nothingCanSeparate: "https://distrokid.com/hyperfollow/channingstovall/nothing-can-separate?ref=release",
   spotify: "https://open.spotify.com/album/6eliw7N7GZgPygV8ahLwxc",
   appleMusic: "https://music.apple.com/us/artist/channing-stovall/1886380599",
+  amazonMusic: "https://music.amazon.com/artists/B0GT55BDC6/channing-stovall",
   youtube: "https://www.youtube.com/results?search_query=channing+stovall",
   website: "https://playpointsystems.com",
 };
