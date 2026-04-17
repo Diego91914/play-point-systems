@@ -53,7 +53,7 @@ export default function PlayPointSystemsPage() {
               </div>
               <div className="px-4 py-2.5">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Release cadence</div>
-                <div className="mt-1 text-sm font-semibold text-white/90">{artist.nextRelease} · {artist.nextReleaseDate}</div>
+                <div className="mt-1 text-sm font-semibold text-white/90">Two live releases · {artist.currentRelease} just dropped</div>
               </div>
             </div>
           </div>
@@ -151,7 +151,7 @@ export default function PlayPointSystemsPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Featured now</div>
-            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">A private product and a live release.</h2>
+            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">A private product and two live releases.</h2>
           </div>
           <div className="max-w-xl text-sm leading-7 text-white/68">
             The point is not to explain the full product publicly. The point is to show that both divisions are real, active, and moving with intention.
@@ -188,19 +188,31 @@ export default function PlayPointSystemsPage() {
               </div>
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Release spotlight</div>
-                <h3 className="mt-3 text-4xl font-black text-white">{artist.nextRelease}</h3>
+                <h3 className="mt-3 text-4xl font-black text-white">{artist.currentRelease}</h3>
                 <p className="mt-3 text-sm leading-7 text-white/72">
-                  The next Play Point Records release goes live at midnight on <span className="font-semibold text-white">{artist.nextReleaseDate}</span>, continuing the same faith-driven project world established by Nothing Can Separate.
+                  Run Back Home released on <span className="font-semibold text-white">{artist.currentReleaseDate}</span> and now leads the announcement push, while Nothing Can Separate remains a live part of the same rollout.
                 </p>
-                <div className="mt-5 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white/78">
-                  The new billboard creative is now part of the release push so visitors can see the campaign art before the song flips live.
+                <div className="mt-5 grid gap-3 border-t border-white/10 pt-5 text-sm text-white/78 sm:grid-cols-2">
+                  <div>
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Out now</div>
+                    <div className="mt-1 font-semibold text-white">{artist.currentRelease}</div>
+                    <div className="mt-1 text-white/70">{artist.currentReleaseDate}</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Also out now</div>
+                    <div className="mt-1 font-semibold text-white">{artist.previousRelease}</div>
+                    <div className="mt-1 text-white/70">Available on all platforms</div>
+                  </div>
                 </div>
                 <div className="mt-5 flex flex-wrap gap-3">
                   <Link href="/music" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
                     Open the music division
                   </Link>
-                  <a href={siteLinks.musicRelease} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-white/15 bg-black/20 px-5 py-3 text-sm font-black text-white transition hover:bg-black/28">
-                    Current release link
+                  <a href={siteLinks.runBackHome} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-amber-300/20 bg-black/20 px-5 py-3 text-sm font-black text-white transition hover:bg-black/28">
+                    Listen to Run Back Home
+                  </a>
+                  <a href={siteLinks.nothingCanSeparate} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-white/15 bg-black/20 px-5 py-3 text-sm font-black text-white transition hover:bg-black/28">
+                    Listen to Nothing Can Separate
                   </a>
                 </div>
               </div>

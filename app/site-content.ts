@@ -1,6 +1,7 @@
 ﻿export const siteLinks = {
   shotCaddy: "https://shotcaddy.net",
-  musicRelease: "https://distrokid.com/hyperfollow/channingstovall/nothing-can-separate?ref=release",
+  runBackHome: "https://distrokid.com/hyperfollow/channingstovall/run-back-home?ref=release",
+  nothingCanSeparate: "https://distrokid.com/hyperfollow/channingstovall/nothing-can-separate?ref=release",
   website: "https://playpointsystems.com",
 };
 
@@ -68,16 +69,36 @@ export const principles = [
 
 export const artist = {
   name: "Channing Stovall",
-  currentRelease: "Nothing Can Separate",
-  nextRelease: "Run Back Home",
-  nextReleaseDate: "April 17, 2026",
-  project: "Nothing Can Separate",
-  currentReleaseType: "Track 1 | Out now",
-  nextReleaseType: "Track 2 | Releasing April 17, 2026",
+  currentRelease: "Run Back Home",
+  currentReleaseStatus: "Out now",
+  currentReleaseDate: "April 17, 2026",
+  previousRelease: "Nothing Can Separate",
+  previousReleaseStatus: "Earlier release",
+  project: "Album in progress",
+  currentReleaseType: "Newest single | Out now",
+  previousReleaseType: "Previous release | Out now",
+  albumArc:
+    "These first two songs introduce the opening movement of a larger album story: first the truth that grace still reaches you, then the choice to turn around and come back.",
   shortBio:
     "Country Christian artist blending faith-driven lyrics, real-life storytelling, and modern production tools into songs about grace, conviction, redemption, and truth.",
   about:
-    "From the redemption arc of Run Back Home to the conviction of Everything Was About Me and the warmth of The House With The Lights On, Channing Stovall is building a catalog designed to connect first and point listeners back to truth.",
+    "The current release focus is split across the opening two tracks of an album in progress: Nothing Can Separate lays the foundation, and Run Back Home released on April 17, 2026 as the next turning-point chapter. The catalog is being built to connect first and point listeners back to truth.",
+  trackJourney: [
+    {
+      number: "Track 1",
+      title: "Nothing Can Separate",
+      summary: "This is where it starts.",
+      body:
+        "Before anything changes, before you take a step back, the foundation has to be clear: nothing you have done has put you too far out of reach. This song carries the truth everything else is built on.",
+    },
+    {
+      number: "Track 2",
+      title: "Run Back Home",
+      summary: "This is the turning-point decision.",
+      body:
+        "Once you realize you are not too far gone, you are faced with a choice. Do you stay where you are, or do you turn around? This song lives in that moment when you stop running and start heading back.",
+    },
+  ],
   bioParagraphs: [
     "Channing Stovall is a country Christian artist and songwriter focused on one mission: telling real stories that point people back to God.",
     "Blending modern tools with traditional storytelling, Channing writes deeply personal lyrics rooted in faith, life experience, and truth. He uses AI as part of his creative process, then refines, restructures, and shapes each track through BandLab and other production tools to build the final sound. The result is music that feels innovative but stays grounded in message first and method second.",
