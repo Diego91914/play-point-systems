@@ -124,7 +124,7 @@ export default function PlayPointSystemsPage() {
                 Play Point Systems was founded by {founder.name} - a creator driven by a passion for building meaningful experiences.
               </p>
               <p>
-                From developing a private sports product under Shot Caddy to producing faith-driven country music under Play Point Records, every project is built with purpose.
+                From developing a private sports product under Shot Caddy to producing faith-driven music under Play Point Records, every project is built with purpose.
               </p>
               <p>
                 Whether through gameplay or song, the goal is the same: <span className="font-semibold text-white">create something people feel</span>.

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const focusAreas = [
   "Creator-led product and brand building.",
-  "Faith-driven country music with real-life storytelling and conviction.",
+  "Faith-driven music with real-life storytelling and conviction.",
   "A parent-company structure that keeps both divisions aligned without burying either one.",
 ];
 
