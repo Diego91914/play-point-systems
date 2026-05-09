@@ -124,8 +124,8 @@ export const artist = {
       status: "Just released",
       type: "Single",
       href: siteLinks.houseWithTheLightsOn,
-      imageSrc: "",
-      imageAlt: "House With The Lights On release card",
+      imageSrc: "/images/music/house-with-the-lights-on.png",
+      imageAlt: "House With The Lights On cover art",
       summary: "The newest live release and the clearest current starting point for listeners landing on the page right now.",
     },
     {

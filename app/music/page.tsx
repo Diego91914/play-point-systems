@@ -37,30 +37,20 @@ export default function MusicPage() {
     <SiteShell current="music">
       <section className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-12">
         <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
-          <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(160deg,rgba(255,214,153,0.18),rgba(255,255,255,0.03))] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.28)]">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Now leading the page</div>
-            <h2 className="mt-4 text-4xl font-black tracking-tight text-white sm:text-5xl">House With The Lights On</h2>
-            <p className="mt-4 max-w-lg text-sm leading-7 text-white/74">
-              The music section now reads as a live three-song catalog instead of a two-song launch stub. The newest release leads, while the earlier two stay easy to reach from the same page.
-            </p>
-            <div className="mt-6 grid gap-3">
-              {artist.catalog.map((song, index) => (
-                <a
-                  key={song.title}
-                  href={song.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={`rounded-[22px] border px-4 py-4 text-left transition hover:bg-white/[0.08] ${
-                    index === 0
-                      ? "border-cyan-300/25 bg-cyan-400/[0.08]"
-                      : "border-white/10 bg-black/20"
-                  }`}
-                >
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/48">{song.status}</div>
-                  <div className="mt-1 text-xl font-black text-white">{song.title}</div>
-                  <div className="mt-1 text-sm text-white/62">{song.releaseDate}</div>
-                </a>
-              ))}
+          <div className="overflow-hidden rounded-[30px] border border-white/10 bg-black/25 p-3 shadow-[0_30px_80px_rgba(0,0,0,0.28)]">
+            <Image
+              src="/images/music/house-with-the-lights-on.png"
+              alt="House With The Lights On cover art"
+              width={1280}
+              height={1280}
+              className="h-auto w-full rounded-[24px]"
+            />
+            <div className="mt-4 rounded-[24px] border border-white/10 bg-white/[0.03] px-5 py-4">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Now leading the page</div>
+              <div className="mt-2 text-2xl font-black text-white">House With The Lights On</div>
+              <div className="mt-2 text-sm leading-7 text-white/74">
+                The newest release now has its own visual anchor, while the earlier two songs remain accessible throughout the page.
+              </div>
             </div>
           </div>
 
