@@ -166,9 +166,6 @@ export default function PlayPointSystemsPage() {
               Shot Caddy is the private sports product under the Play Point Systems umbrella. Public details stay intentionally general for now while the launch path, positioning, and timing are still being protected.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <a href={siteLinks.shotCaddy} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
-                Visit Shot Caddy
-              </a>
               <Link href="/shot-caddy" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
                 Learn more
               </Link>
