@@ -8,35 +8,67 @@ export const metadata: Metadata = {
   description: "Play Point Records, the music division of Play Point Systems, featuring Channing Stovall releases.",
 };
 
-const releases = artist.catalog.slice(0, 2).map((release, index) => ({
-  eyebrow: index === 0 ? "Newest release" : "First release",
+const releases = artist.catalog.slice(0, 3).map((release, index) => ({
+  eyebrow: index === 0 ? "Just released" : index === 1 ? "Recent release" : "Earlier release",
   title: release.title,
-  type: index === 0 ? artist.currentReleaseType : artist.previousReleaseType,
+  type: index === 0 ? artist.currentReleaseType : index === 1 ? artist.previousReleaseType : "Catalog single | Out now",
   href: release.href,
   imageSrc: release.imageSrc,
   imageAlt: release.imageAlt,
   body: release.summary,
-  accentClass: index === 0 ? "border-cyan-300/18 bg-cyan-400/[0.06]" : "border-white/10 bg-white/[0.03]",
+  accentClass:
+    index === 0
+      ? "border-cyan-300/18 bg-cyan-400/[0.06]"
+      : index === 1
+      ? "border-white/10 bg-white/[0.03]"
+      : "border-amber-300/16 bg-amber-300/[0.06]",
   buttonClass:
     index === 0
       ? "border border-cyan-300/25 bg-cyan-400/10 text-cyan-50 hover:bg-cyan-400/16"
-      : "border border-white/15 bg-white/8 text-white hover:bg-white/12",
+      : index === 1
+      ? "border border-white/15 bg-white/8 text-white hover:bg-white/12"
+      : "border border-amber-300/25 bg-amber-400/10 text-amber-50 hover:bg-amber-400/16",
 }));
+
+const releaseHrefByTitle = new Map(artist.catalog.map((song) => [song.title, song.href]));
 
 export default function MusicPage() {
   return (
     <SiteShell current="music">
       <section className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-12">
         <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
-          <div className="overflow-hidden rounded-[30px] border border-white/10 bg-black/25 p-3 shadow-[0_30px_80px_rgba(0,0,0,0.28)]">
-            <Image src="/images/music/run-back-home.png" alt="Run Back Home cover art" width={900} height={900} className="h-auto w-full rounded-[24px]" />
+          <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(160deg,rgba(255,214,153,0.18),rgba(255,255,255,0.03))] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.28)]">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Now leading the page</div>
+            <h2 className="mt-4 text-4xl font-black tracking-tight text-white sm:text-5xl">House With The Lights On</h2>
+            <p className="mt-4 max-w-lg text-sm leading-7 text-white/74">
+              The music section now reads as a live three-song catalog instead of a two-song launch stub. The newest release leads, while the earlier two stay easy to reach from the same page.
+            </p>
+            <div className="mt-6 grid gap-3">
+              {artist.catalog.map((song, index) => (
+                <a
+                  key={song.title}
+                  href={song.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`rounded-[22px] border px-4 py-4 text-left transition hover:bg-white/[0.08] ${
+                    index === 0
+                      ? "border-cyan-300/25 bg-cyan-400/[0.08]"
+                      : "border-white/10 bg-black/20"
+                  }`}
+                >
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/48">{song.status}</div>
+                  <div className="mt-1 text-xl font-black text-white">{song.title}</div>
+                  <div className="mt-1 text-sm text-white/62">{song.releaseDate}</div>
+                </a>
+              ))}
+            </div>
           </div>
 
           <div className="max-w-3xl">
             <div className="inline-flex rounded-full border border-cyan-300/25 bg-cyan-400/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-cyan-50/88">
               {artist.currentReleaseStatus}
             </div>
-            <h1 className="mt-5 text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">Run Back Home is live now.</h1>
+            <h1 className="mt-5 text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">House With The Lights On is live now.</h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-white/78 sm:text-xl">
               Play Point Records is the music lane of Play Point Systems, and {artist.currentRelease} now leads the page as the newest release from {artist.name}.
             </p>
@@ -45,7 +77,10 @@ export default function MusicPage() {
               {artist.albumArc}
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
-              <a href={siteLinks.runBackHome} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
+              <a href={siteLinks.houseWithTheLightsOn} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
+                Listen to House With The Lights On
+              </a>
+              <a href={siteLinks.runBackHome} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
                 Listen to Run Back Home
               </a>
               <a href={siteLinks.nothingCanSeparate} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
@@ -86,7 +121,7 @@ export default function MusicPage() {
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Now streaming</div>
             <div className="mt-3 text-2xl font-black text-white">{artist.currentRelease}</div>
             <p className="mt-2 text-sm leading-7 text-white/72">{artist.currentReleaseDate}</p>
-            <a href={siteLinks.runBackHome} target="_blank" rel="noreferrer" className="mt-4 inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-4 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
+            <a href={siteLinks.houseWithTheLightsOn} target="_blank" rel="noreferrer" className="mt-4 inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-4 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
               Open latest song
             </a>
           </article>
@@ -94,16 +129,16 @@ export default function MusicPage() {
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Also live</div>
             <div className="mt-3 text-2xl font-black text-white">{artist.previousRelease}</div>
             <p className="mt-2 text-sm leading-7 text-white/72">Still part of the current rollout and still easy to reach from this page.</p>
-            <a href={siteLinks.nothingCanSeparate} target="_blank" rel="noreferrer" className="mt-4 inline-flex rounded-2xl border border-white/15 bg-white/8 px-4 py-3 text-sm font-black text-white transition hover:bg-white/12">
-              Open first song
+            <a href={siteLinks.runBackHome} target="_blank" rel="noreferrer" className="mt-4 inline-flex rounded-2xl border border-white/15 bg-white/8 px-4 py-3 text-sm font-black text-white transition hover:bg-white/12">
+              Open recent song
             </a>
           </article>
           <article className="rounded-[26px] border border-amber-300/16 bg-amber-300/8 p-5">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Project</div>
-            <div className="mt-3 text-2xl font-black text-white">{artist.project}</div>
-            <p className="mt-2 text-sm leading-7 text-white/72">These first releases are being presented as the opening chapters of a larger story.</p>
-            <a href="#listen-now" className="mt-4 inline-flex rounded-2xl border border-white/15 bg-black/20 px-4 py-3 text-sm font-black text-white transition hover:bg-black/28">
-              See all listening options
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Catalog live now</div>
+            <div className="mt-3 text-2xl font-black text-white">Nothing Can Separate</div>
+            <p className="mt-2 text-sm leading-7 text-white/72">The first public release stays visible so the opening sequence can still be heard in order.</p>
+            <a href={siteLinks.nothingCanSeparate} target="_blank" rel="noreferrer" className="mt-4 inline-flex rounded-2xl border border-white/15 bg-black/20 px-4 py-3 text-sm font-black text-white transition hover:bg-black/28">
+              Open first song
             </a>
           </article>
         </div>
@@ -115,7 +150,7 @@ export default function MusicPage() {
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Release focus</div>
             <h2 className="mt-4 text-4xl font-black text-white sm:text-5xl">The music page is centered on what is current.</h2>
             <p className="mt-4 text-sm leading-7 text-white/72">
-              {artist.currentRelease} is the headline release now that it is officially out, while {artist.previousRelease} stays visible as the first step in the same album arc.
+              {artist.currentRelease} is the headline release now that it is officially out, while {artist.previousRelease} and Nothing Can Separate stay visible as the earlier steps in the same album arc.
             </p>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <div className="rounded-[22px] border border-white/10 bg-black/20 p-4">
@@ -128,24 +163,27 @@ export default function MusicPage() {
               </div>
             </div>
             <div className="mt-5 flex flex-wrap gap-3">
-              <a href={siteLinks.runBackHome} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
+              <a href={siteLinks.houseWithTheLightsOn} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
                 Open the latest release
               </a>
-              <a href={siteLinks.nothingCanSeparate} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
-                Open the earlier release
+              <a href={siteLinks.runBackHome} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
+                Open the recent release
               </a>
             </div>
           </article>
 
-          <div className="overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,204,142,0.12),rgba(255,255,255,0.03))] p-3 shadow-[0_24px_60px_rgba(0,0,0,0.28)]">
-            <div className="overflow-hidden rounded-[24px] border border-white/10 bg-black/20">
-              <Image
-                src="/images/music/run-back-home-billboard.png"
-                alt="Run Back Home release billboard"
-                width={1080}
-                height={1920}
-                className="h-auto w-full"
-              />
+          <div className="overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,204,142,0.12),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.28)]">
+            <div className="rounded-[24px] border border-white/10 bg-black/20 p-5">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Three-song listening path</div>
+              <div className="mt-4 space-y-3">
+                {artist.catalog.map((song, index) => (
+                  <a key={song.title} href={song.href} target="_blank" rel="noreferrer" className="block rounded-[20px] border border-white/10 bg-white/[0.03] px-4 py-4 transition hover:bg-white/[0.06]">
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/44">Track {index + 1}</div>
+                    <div className="mt-1 text-2xl font-black text-white">{song.title}</div>
+                    <div className="mt-1 text-sm text-white/62">{song.status}</div>
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -156,17 +194,24 @@ export default function MusicPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Listen now</div>
-            <h2 className="mt-3 text-3xl font-black text-white">Two live releases, with direct links all over the page.</h2>
+            <h2 className="mt-3 text-3xl font-black text-white">Three live releases, with direct links all over the page.</h2>
           </div>
-          <div className="max-w-2xl text-sm leading-7 text-white/68">If someone lands here ready to listen, they should be able to get there fast. These cards keep both songs visible and clickable.</div>
+          <div className="max-w-2xl text-sm leading-7 text-white/68">If someone lands here ready to listen, they should be able to get there fast. These cards keep all three songs visible and clickable.</div>
         </div>
 
-        <div className="mt-8 grid gap-5 lg:grid-cols-3">
+        <div className="mt-8 grid gap-5 lg:grid-cols-4">
           {releases.map((release) => (
             <article key={release.title} className={`rounded-[28px] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.18)] ${release.accentClass}`}>
-              <a href={release.href} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-[24px] border border-white/10 transition hover:opacity-95">
-                <Image src={release.imageSrc} alt={release.imageAlt} width={900} height={900} className="h-auto w-full" />
-              </a>
+              {release.imageSrc ? (
+                <a href={release.href} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-[24px] border border-white/10 transition hover:opacity-95">
+                  <Image src={release.imageSrc} alt={release.imageAlt ?? release.title} width={900} height={900} className="h-auto w-full" />
+                </a>
+              ) : (
+                <a href={release.href} target="_blank" rel="noreferrer" className="block rounded-[24px] border border-white/10 bg-[linear-gradient(160deg,rgba(255,214,153,0.12),rgba(255,255,255,0.03))] px-5 py-8 transition hover:bg-white/[0.08]">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/48">New single</div>
+                  <div className="mt-3 text-3xl font-black leading-tight text-white">{release.title}</div>
+                </a>
+              )}
               <div className="mt-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">{release.eyebrow}</div>
               <a href={release.href} target="_blank" rel="noreferrer" className="mt-2 block text-3xl font-black text-white transition hover:text-cyan-100">
                 {release.title}
@@ -194,6 +239,9 @@ export default function MusicPage() {
             <div className="mt-2 text-3xl font-black text-white">Streaming links</div>
             <p className="mt-3 text-sm leading-7 text-white/72">These stay grouped in one place for visitors who just want the fastest path to the music, including YouTube.</p>
             <div className="mt-5 space-y-3">
+              <a href={siteLinks.houseWithTheLightsOn} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm font-semibold text-white transition hover:bg-black/28">
+                House With The Lights On
+              </a>
               <a href={siteLinks.runBackHome} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm font-semibold text-white transition hover:bg-black/28">
                 Run Back Home
               </a>
@@ -212,7 +260,7 @@ export default function MusicPage() {
               <a href={siteLinks.youtube} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-red-300/20 bg-red-400/10 px-4 py-4 text-sm font-semibold text-red-50 transition hover:bg-red-400/16">
                 Channing Stovall on YouTube
               </a>
-              <a href={siteLinks.runBackHome} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-cyan-300/20 bg-cyan-400/8 px-4 py-4 text-sm font-semibold text-cyan-50 transition hover:bg-cyan-400/14">
+              <a href={siteLinks.houseWithTheLightsOn} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-cyan-300/20 bg-cyan-400/8 px-4 py-4 text-sm font-semibold text-cyan-50 transition hover:bg-cyan-400/14">
                 Start with the newest release
               </a>
               <a href="#catalog" className="flex rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm font-semibold text-white transition hover:bg-black/28">
@@ -237,12 +285,12 @@ export default function MusicPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="mt-8 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Album arc</div>
-            <h2 className="mt-3 text-3xl font-black text-white">The first two tracks are meant to be heard together.</h2>
+            <h2 className="mt-3 text-3xl font-black text-white">The first three tracks now form the opening run.</h2>
           </div>
-          <div className="max-w-2xl text-sm leading-7 text-white/68">These are the first two tracks of the album, and this section explains how they connect to the bigger story being built.</div>
+          <div className="max-w-2xl text-sm leading-7 text-white/68">These are the first three public tracks of the album arc, and this section explains how they connect to the bigger story being built.</div>
         </div>
 
-        <div className="mt-8 grid gap-5 lg:grid-cols-2">
+        <div className="mt-8 grid gap-5 lg:grid-cols-3">
           {artist.trackJourney.map((track) => (
             <article key={track.title} className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
               <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">{track.number}</div>
@@ -250,7 +298,7 @@ export default function MusicPage() {
               <div className="mt-3 text-base font-semibold text-cyan-100/88">{track.summary}</div>
               <p className="mt-4 text-sm leading-7 text-white/74">{track.body}</p>
               <a
-                href={track.title === artist.currentRelease ? siteLinks.runBackHome : siteLinks.nothingCanSeparate}
+                href={releaseHrefByTitle.get(track.title) ?? siteLinks.houseWithTheLightsOn}
                 target="_blank"
                 rel="noreferrer"
                 className="mt-5 inline-flex rounded-2xl border border-white/15 bg-black/20 px-4 py-3 text-sm font-black text-white transition hover:bg-black/28"
@@ -282,9 +330,16 @@ export default function MusicPage() {
               }`}
             >
               <div className="grid gap-5 sm:grid-cols-[160px_1fr] sm:items-start">
-                <a href={song.href} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-[24px] border border-white/10 transition hover:opacity-95">
-                  <Image src={song.imageSrc} alt={song.imageAlt} width={900} height={900} className="h-auto w-full" />
-                </a>
+                {song.imageSrc ? (
+                  <a href={song.href} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-[24px] border border-white/10 transition hover:opacity-95">
+                    <Image src={song.imageSrc} alt={song.imageAlt ?? song.title} width={900} height={900} className="h-auto w-full" />
+                  </a>
+                ) : (
+                  <a href={song.href} target="_blank" rel="noreferrer" className="block rounded-[24px] border border-white/10 bg-[linear-gradient(160deg,rgba(255,214,153,0.12),rgba(255,255,255,0.03))] px-4 py-8 transition hover:bg-white/[0.06]">
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/44">Newest release</div>
+                    <div className="mt-3 text-2xl font-black leading-tight text-white">{song.title}</div>
+                  </a>
+                )}
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="inline-flex rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/72">

@@ -53,7 +53,7 @@ export default function PlayPointSystemsPage() {
               </div>
               <div className="px-4 py-2.5">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Release cadence</div>
-                <div className="mt-1 text-sm font-semibold text-white/90">Two live releases · {artist.currentRelease} just dropped</div>
+                <div className="mt-1 text-sm font-semibold text-white/90">Three live releases · {artist.currentRelease} just dropped</div>
               </div>
             </div>
           </div>
@@ -151,7 +151,7 @@ export default function PlayPointSystemsPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Featured now</div>
-            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">A private product and two live releases.</h2>
+            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">A private product and three live releases.</h2>
           </div>
           <div className="max-w-xl text-sm leading-7 text-white/68">
             The point is not to explain the full product publicly. The point is to show that both divisions are real, active, and moving with intention.
@@ -174,42 +174,45 @@ export default function PlayPointSystemsPage() {
 
           <article className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,204,142,0.14),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)]">
             <div className="grid gap-6 md:grid-cols-[0.46fr_1.54fr] md:items-center">
-              <div className="overflow-hidden rounded-[24px] border border-white/10 bg-black/20 md:max-h-[560px]">
-                <Image
-                  src="/images/music/run-back-home-billboard.png"
-                  alt="Run Back Home release billboard"
-                  width={1080}
-                  height={1920}
-                  className="h-full w-full object-cover object-top"
-                />
+              <div className="rounded-[24px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,215,150,0.25),rgba(255,255,255,0.03)_48%,rgba(0,0,0,0.28)_100%)] p-6 md:min-h-[360px]">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/48">Now streaming</div>
+                <div className="mt-3 text-4xl font-black leading-tight text-white">House With The Lights On</div>
+                <div className="mt-3 max-w-xs text-sm leading-7 text-white/72">
+                  The newest release now leads the music lane, with two earlier songs still live underneath it as part of the same rollout.
+                </div>
+                <div className="mt-6 grid gap-2 text-sm text-white/78">
+                  <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">House With The Lights On</div>
+                  <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">Run Back Home</div>
+                  <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">Nothing Can Separate</div>
+                </div>
               </div>
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Release spotlight</div>
                 <h3 className="mt-3 text-4xl font-black text-white">{artist.currentRelease}</h3>
                 <p className="mt-3 text-sm leading-7 text-white/72">
-                  Run Back Home released on <span className="font-semibold text-white">{artist.currentReleaseDate}</span> and now leads the announcement push, while Nothing Can Separate remains a live part of the same rollout.
+                  {artist.currentRelease} released on <span className="font-semibold text-white">{artist.currentReleaseDate}</span> and now leads the announcement push, while {artist.previousRelease} and Nothing Can Separate remain live as part of the same rollout.
                 </p>
                 <div className="mt-5 grid gap-3 border-t border-white/10 pt-5 text-sm text-white/78 sm:grid-cols-2">
                   <div>
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Out now</div>
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Just released</div>
                     <div className="mt-1 font-semibold text-white">{artist.currentRelease}</div>
                     <div className="mt-1 text-white/70">{artist.currentReleaseDate}</div>
                   </div>
                   <div>
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Also out now</div>
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Catalog live now</div>
                     <div className="mt-1 font-semibold text-white">{artist.previousRelease}</div>
-                    <div className="mt-1 text-white/70">Available on all platforms</div>
+                    <div className="mt-1 text-white/70">Plus Nothing Can Separate still live</div>
                   </div>
                 </div>
                 <div className="mt-5 flex flex-wrap gap-3">
                   <Link href="/music" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
                     Open the music division
                   </Link>
-                  <a href={siteLinks.runBackHome} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-amber-300/20 bg-black/20 px-5 py-3 text-sm font-black text-white transition hover:bg-black/28">
-                    Listen to Run Back Home
+                  <a href={siteLinks.houseWithTheLightsOn} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-amber-300/20 bg-black/20 px-5 py-3 text-sm font-black text-white transition hover:bg-black/28">
+                    Listen to House With The Lights On
                   </a>
-                  <a href={siteLinks.nothingCanSeparate} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-white/15 bg-black/20 px-5 py-3 text-sm font-black text-white transition hover:bg-black/28">
-                    Listen to Nothing Can Separate
+                  <a href={siteLinks.runBackHome} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-white/15 bg-black/20 px-5 py-3 text-sm font-black text-white transition hover:bg-black/28">
+                    Listen to Run Back Home
                   </a>
                 </div>
               </div>

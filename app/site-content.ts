@@ -1,4 +1,5 @@
 ﻿export const siteLinks = {
+  houseWithTheLightsOn: "https://distrokid.com/hyperfollow/channingstovall/house-with-the-lights-on?ref=release",
   runBackHome: "https://open.spotify.com/album/6eliw7N7GZgPygV8ahLwxc",
   nothingCanSeparate: "https://distrokid.com/hyperfollow/channingstovall/nothing-can-separate?ref=release",
   spotify: "https://open.spotify.com/album/6eliw7N7GZgPygV8ahLwxc",
@@ -72,20 +73,21 @@ export const principles = [
 
 export const artist = {
   name: "Channing Stovall",
-  currentRelease: "Run Back Home",
-  currentReleaseStatus: "Out now",
-  currentReleaseDate: "April 17, 2026",
-  previousRelease: "Nothing Can Separate",
-  previousReleaseStatus: "Earlier release",
+  currentRelease: "House With The Lights On",
+  currentReleaseStatus: "Just released",
+  currentReleaseDate: "May 8, 2026",
+  previousRelease: "Run Back Home",
+  previousReleaseStatus: "Earlier in current rollout",
+  catalogCount: 3,
   project: "Album in progress",
-  currentReleaseType: "Newest single | Out now",
-  previousReleaseType: "Previous release | Out now",
+  currentReleaseType: "Newest single | Just released",
+  previousReleaseType: "Recent single | Out now",
   albumArc:
-    "These first two songs introduce the opening movement of a larger album story: first the truth that grace still reaches you, then the choice to turn around and come back.",
+    "These first three songs now frame the opening movement of a larger story: first the truth that grace still reaches you, then the decision to turn around, and now the picture of a place still lit up and waiting when you come home.",
   shortBio:
     "Country Christian artist blending faith-driven lyrics, real-life storytelling, and modern production tools into songs about grace, conviction, redemption, and truth.",
   about:
-    "The current release focus is split across the opening two tracks of an album in progress: Nothing Can Separate lays the foundation, and Run Back Home released on April 17, 2026 as the next turning-point chapter. The catalog is being built to connect first and point listeners back to truth.",
+    "The current release focus now spans three live songs in an album-in-progress arc: Nothing Can Separate lays the foundation, Run Back Home captures the turn, and House With The Lights On is the newest chapter now leading the page. The catalog is being built to connect first and point listeners back to truth.",
   trackJourney: [
     {
       number: "Track 1",
@@ -101,6 +103,13 @@ export const artist = {
       body:
         "Once you realize you're not too far gone... you're faced with a choice. Do you stay where you are... or do you turn around? This song is about that moment, when you finally decide to stop running and start heading back.",
     },
+    {
+      number: "Track 3",
+      title: "House With The Lights On",
+      summary: "This is the picture of welcome after the turn.",
+      body:
+        "After the decision to come back, this song turns that return into an image you can see: a house still lit, still open, and still waiting. It carries the emotional landing point of the opening run of songs and gives the page a stronger present-tense center.",
+    },
   ],
   albumWrapLines: [
     "This album isn't about having it all figured out.",
@@ -110,14 +119,24 @@ export const artist = {
   ],
   catalog: [
     {
+      title: "House With The Lights On",
+      releaseDate: "May 8, 2026",
+      status: "Just released",
+      type: "Single",
+      href: siteLinks.houseWithTheLightsOn,
+      imageSrc: "",
+      imageAlt: "House With The Lights On release card",
+      summary: "The newest live release and the clearest current starting point for listeners landing on the page right now.",
+    },
+    {
       title: "Run Back Home",
       releaseDate: "April 17, 2026",
-      status: "Newest release",
+      status: "Recent release",
       type: "Single",
       href: siteLinks.runBackHome,
       imageSrc: "/images/music/run-back-home.png",
       imageAlt: "Run Back Home cover art",
-      summary: "The newest live release and the clearest current entry point for listeners landing on the page.",
+      summary: "The second chapter in the rollout and still a key entry point for listeners moving through the catalog.",
     },
     {
       title: "Nothing Can Separate",
