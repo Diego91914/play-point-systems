@@ -1,5 +1,4 @@
 ﻿export const siteLinks = {
-  shotCaddy: "https://shotcaddy.net",
   runBackHome: "https://open.spotify.com/album/6eliw7N7GZgPygV8ahLwxc",
   nothingCanSeparate: "https://distrokid.com/hyperfollow/channingstovall/nothing-can-separate?ref=release",
   spotify: "https://open.spotify.com/album/6eliw7N7GZgPygV8ahLwxc",

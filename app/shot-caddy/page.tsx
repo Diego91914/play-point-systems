@@ -1,6 +1,5 @@
 ﻿import type { Metadata } from "next";
 import { SiteShell } from "../components/SiteShell";
-import { siteLinks } from "../site-content";
 
 export const metadata: Metadata = {
   title: "Shot Caddy",
@@ -28,10 +27,8 @@ export default function ShotCaddyPage() {
           <p className="mt-4 max-w-3xl text-sm leading-7 text-white/72">
             Public details are intentionally limited while the product, positioning, and rollout are still being finalized. What matters right now is that Shot Caddy is the software lane of the parent company and will launch under its own identity when the time is right.
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <a href={siteLinks.shotCaddy} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
-              Visit Shot Caddy
-            </a>
+          <div className="mt-6 rounded-2xl border border-amber-300/25 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
+            Public gameplay links are temporarily paused while access updates are being finalized.
           </div>
         </div>
       </section>

@@ -18,6 +18,7 @@ const navItems = [
 
 export function SiteShell({ children, current }: SiteShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showAccessBanner, setShowAccessBanner] = useState(true);
 
   return (
     <main className="min-h-screen bg-[#050912] text-white">
@@ -133,6 +134,27 @@ export function SiteShell({ children, current }: SiteShellProps) {
             </div>
           </footer>
         </div>
+
+        {showAccessBanner ? (
+          <div className="fixed bottom-5 right-5 z-[80] w-[min(92vw,440px)] rounded-2xl border border-amber-300/35 bg-[linear-gradient(160deg,rgba(120,64,0,0.92),rgba(32,18,0,0.96))] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-md">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-200/85">Access Notice</div>
+                <div className="mt-1 text-sm leading-6 text-amber-50">
+                  Shot Caddy live gameplay links are temporarily paused while access updates are in progress.
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAccessBanner(false)}
+                className="shrink-0 rounded-lg border border-amber-200/30 bg-amber-100/10 px-2 py-1 text-xs font-semibold text-amber-100 transition hover:bg-amber-100/20"
+                aria-label="Dismiss access notice"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        ) : null}
       </div>
     </main>
   );
