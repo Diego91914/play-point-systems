@@ -173,17 +173,25 @@ export default function PlayPointSystemsPage() {
           </article>
 
           <article className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,204,142,0.14),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)]">
-            <div className="grid gap-6 md:grid-cols-[0.46fr_1.54fr] md:items-center">
-              <div className="rounded-[24px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,215,150,0.25),rgba(255,255,255,0.03)_48%,rgba(0,0,0,0.28)_100%)] p-6 md:min-h-[360px]">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/48">Now streaming</div>
-                <div className="mt-3 text-4xl font-black leading-tight text-white">House With The Lights On</div>
-                <div className="mt-3 max-w-xs text-sm leading-7 text-white/72">
-                  The newest release now leads the music lane, with two earlier songs still live underneath it as part of the same rollout.
+            <div className="grid gap-6 md:grid-cols-[0.54fr_1.46fr] md:items-center">
+              <div className="rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-4 md:min-h-[360px]">
+                <div className="overflow-hidden rounded-[18px] border border-white/10 bg-black/20">
+                  <Image
+                    src="/images/music/house-with-the-lights-on.png"
+                    alt="House With The Lights On cover art"
+                    width={1280}
+                    height={1280}
+                    className="h-auto w-full"
+                  />
                 </div>
-                <div className="mt-6 grid gap-2 text-sm text-white/78">
-                  <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">House With The Lights On</div>
-                  <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">Run Back Home</div>
-                  <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">Nothing Can Separate</div>
+                <div className="mt-4 flex items-center justify-between gap-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/58">
+                  <span>Available now</span>
+                  <span>Play Point Records</span>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/78">
+                  <span className="rounded-full border border-emerald-400/25 bg-emerald-400/12 px-3 py-2 text-emerald-100">Spotify</span>
+                  <span className="rounded-full border border-white/15 bg-white/8 px-3 py-2 text-white">Apple Music</span>
+                  <span className="rounded-full border border-red-400/25 bg-red-400/12 px-3 py-2 text-red-100">YouTube</span>
                 </div>
               </div>
               <div>
