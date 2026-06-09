@@ -85,10 +85,10 @@ export default function PlayPointSystemsPage() {
       <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
         <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Company overview</div>
-            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Two worlds, one creator.</h2>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Parent company overview</div>
+            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">One parent brand, two focused divisions.</h2>
             <p className="mt-4 max-w-xl text-sm leading-7 text-white/72">
-              Play Point Systems should feel less like a generic umbrella and more like a clear explanation of who is building what. The structure matters because both lanes are different, and both need space to carry their own weight.
+              Play Point Systems exists to make the structure clear. This site is the parent-company hub, while Shot Caddy and Play Point Records each carry their own lane and identity.
             </p>
           </div>
 
@@ -150,11 +150,11 @@ export default function PlayPointSystemsPage() {
       <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Featured now</div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Division activity</div>
             <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">A private product and three live releases.</h2>
           </div>
           <div className="max-w-xl text-sm leading-7 text-white/68">
-            The point is not to explain the full product publicly. The point is to show that both divisions are real, active, and moving with intention.
+            The goal here is visibility, not gameplay. This parent page confirms both divisions are active and gives visitors the right next path.
           </div>
         </div>
 
@@ -163,7 +163,7 @@ export default function PlayPointSystemsPage() {
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Software spotlight</div>
             <h3 className="mt-3 text-3xl font-black text-white">Shot Caddy</h3>
             <p className="mt-4 text-sm leading-7 text-white/72">
-              Shot Caddy is the private sports product under the Play Point Systems umbrella. Public details stay intentionally general for now while the launch path, positioning, and timing are still being protected.
+              Shot Caddy is the software division under the Play Point Systems umbrella. This page is the parent-level overview, with product specifics intentionally limited during private development.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href="/shot-caddy" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
@@ -232,10 +232,10 @@ export default function PlayPointSystemsPage() {
       <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
         <div className="grid gap-8 lg:grid-cols-[0.86fr_1.14fr] lg:items-start">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Lower navigation</div>
-            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Explore the product, the music, the story, and the contact path.</h2>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Next destinations</div>
+            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Choose the division or context you want.</h2>
             <p className="mt-4 max-w-xl text-sm leading-7 text-white/72">
-              The lower section should feel like a clean set of next steps instead of another wall of equal cards. It is here to help visitors move with confidence.
+              These links move visitors from the parent-company view into the exact destination they need.
             </p>
           </div>
 

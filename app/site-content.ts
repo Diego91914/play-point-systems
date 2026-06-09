@@ -21,10 +21,10 @@ export const founder = {
 };
 
 export const hero = {
-  headline: "Building meaningful experiences through software, sport, and music.",
-  subheadline: "Play Point Systems is the home of Shot Caddy and Play Point Records, created by Channing Stovall.",
+  headline: "The parent company behind Shot Caddy and Play Point Records.",
+  subheadline: "Play Point Systems is the umbrella brand created by Channing Stovall to hold both the product and music divisions.",
   intro:
-    "This is a creator-led parent company built to hold distinct brands with clarity. Shot Caddy carries the product lane. Play Point Records carries the music lane. Both are built with the same standard: create something people actually feel.",
+    "This is not the gameplay destination. It is the parent-company home that explains where each division belongs: Shot Caddy carries the software lane, and Play Point Records carries the music lane. Both are built to the same standard: create something people actually feel.",
 };
 
 export const divisions = [
