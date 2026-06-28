@@ -6,10 +6,11 @@ import { useState } from "react";
 
 type SiteShellProps = {
   children: ReactNode;
-  current?: "home" | "shot-caddy" | "music" | "about" | "contact";
+  current?: "home" | "games" | "shot-caddy" | "music" | "about" | "contact";
 };
 
 const navItems = [
+  { label: "Games", href: "/games", key: "games" },
   { label: "Shot Caddy", href: "/shot-caddy", key: "shot-caddy" },
   { label: "Music", href: "/music", key: "music" },
   { label: "About", href: "/about", key: "about" },
@@ -60,10 +61,10 @@ export function SiteShell({ children, current }: SiteShellProps) {
                   </nav>
 
                   <Link
-                    href="/shot-caddy"
+                    href="/games"
                     className="inline-flex rounded-full border border-cyan-200/40 bg-[linear-gradient(120deg,rgba(118,225,255,0.34),rgba(120,170,255,0.2))] px-4 py-2 text-sm font-bold text-white shadow-[0_8px_22px_rgba(92,180,255,0.2)] transition hover:brightness-110"
                   >
-                    Explore Shot Caddy
+                    Explore Games
                   </Link>
                 </div>
 
@@ -94,11 +95,11 @@ export function SiteShell({ children, current }: SiteShellProps) {
                       );
                     })}
                     <Link
-                      href="/shot-caddy"
+                      href="/games"
                       className="rounded-2xl border border-cyan-300/30 bg-cyan-400/12 px-4 py-3 text-cyan-50"
                       onClick={() => setMobileOpen(false)}
                     >
-                      Explore Shot Caddy
+                      Explore Games
                     </Link>
                   </nav>
                 </div>
@@ -115,6 +116,9 @@ export function SiteShell({ children, current }: SiteShellProps) {
                 <div className="mt-2 max-w-md text-sm leading-7 text-white/52">The parent company for Shot Caddy and Play Point Records. Creator-led, purpose-built, and honest about the work.</div>
               </div>
               <nav className="flex flex-wrap items-center gap-1.5">
+                <Link href="/games" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/40">
+                  Games
+                </Link>
                 <Link href="/shot-caddy" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/40">
                   Shot Caddy
                 </Link>

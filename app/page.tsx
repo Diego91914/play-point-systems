@@ -6,7 +6,7 @@ import { artist, divisions, founder, hero, principles, siteLinks } from "./site-
 
 export const metadata: Metadata = {
   title: "Play Point Systems",
-  description: "Parent company for creator-led product and music divisions, created by Channing Stovall.",
+  description: "Parent company for Play Point Games, Shot Caddy, and Play Point Records, created by Channing Stovall.",
 };
 
 export default function PlayPointSystemsPage() {
@@ -29,10 +29,16 @@ export default function PlayPointSystemsPage() {
             </p>
             <div className="mt-7 flex flex-col gap-3 xs:flex-row sm:flex-row">
               <Link
-                href="/shot-caddy"
+                href="/games"
                 className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
               >
-                Explore Shot Caddy
+                Explore Games
+              </Link>
+              <Link
+                href="/games/trivia"
+                className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-black/25 px-6 py-3.5 text-sm font-semibold text-white/90 transition hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50"
+              >
+                Explore Play Point Trivia
               </Link>
               <Link
                 href="/music"
@@ -49,7 +55,7 @@ export default function PlayPointSystemsPage() {
               </div>
               <div className="px-4 py-2.5">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Operating model</div>
-                <div className="mt-1 text-sm font-semibold text-white/90">Two divisions. One standard.</div>
+                <div className="mt-1 text-sm font-semibold text-white/90">Games and music. One standard.</div>
               </div>
               <div className="px-4 py-2.5">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Release cadence</div>
@@ -86,9 +92,9 @@ export default function PlayPointSystemsPage() {
         <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Parent company overview</div>
-            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">One parent brand, two focused divisions.</h2>
+            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">One parent brand, focused creative divisions and products.</h2>
             <p className="mt-4 max-w-xl text-sm leading-7 text-white/72">
-              Play Point Systems exists to make the structure clear. This site is the parent-company hub, while Shot Caddy and Play Point Records each carry their own lane and identity.
+              Play Point Systems exists to make the structure clear. This site is the parent-company hub, while Play Point Games, Shot Caddy, and Play Point Records each carry their own lane and identity.
             </p>
           </div>
 
@@ -151,23 +157,26 @@ export default function PlayPointSystemsPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Division activity</div>
-            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">A private product and three live releases.</h2>
+            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">An active games portfolio and three live releases.</h2>
           </div>
           <div className="max-w-xl text-sm leading-7 text-white/68">
-            The goal here is visibility, not gameplay. This parent page confirms both divisions are active and gives visitors the right next path.
+            The goal here is visibility, not runtime depth. This parent page confirms the portfolio is active and gives visitors the right next path.
           </div>
         </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[0.84fr_1.16fr]">
           <article className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Software spotlight</div>
-            <h3 className="mt-3 text-3xl font-black text-white">Shot Caddy</h3>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Games spotlight</div>
+            <h3 className="mt-3 text-3xl font-black text-white">Play Point Games</h3>
             <p className="mt-4 text-sm leading-7 text-white/72">
-              Shot Caddy is the software division under the Play Point Systems umbrella. This page is the parent-level overview, with product specifics intentionally limited during private development.
+              The games portfolio now includes Shot Caddy as a standalone product brand and Play Point Trivia as the first active sellable game path being built for launch.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/shot-caddy" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
-                Learn more
+              <Link href="/games" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
+                Explore Games
+              </Link>
+              <Link href="/games/trivia" className="inline-flex rounded-2xl border border-cyan-300/20 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
+                Open Play Point Trivia
               </Link>
             </div>
           </article>
@@ -240,6 +249,14 @@ export default function PlayPointSystemsPage() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.08),rgba(255,255,255,0.03))] p-5">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Games</div>
+              <div className="mt-3 text-2xl font-black text-white">Explore the games portfolio</div>
+              <p className="mt-3 text-sm leading-7 text-white/72">See how Shot Caddy, Play Point Trivia, and future game products fit under one portfolio.</p>
+              <Link href="/games" className="mt-5 inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-4 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
+                Go to Games
+              </Link>
+            </div>
             <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5">
               <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Shot Caddy</div>
               <div className="mt-3 text-2xl font-black text-white">Explore the product brand</div>
@@ -264,7 +281,7 @@ export default function PlayPointSystemsPage() {
                 Go to About
               </Link>
             </div>
-            <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.08),rgba(255,255,255,0.03))] p-5">
+            <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5">
               <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Contact</div>
               <div className="mt-3 text-2xl font-black text-white">Reach {founder.name}</div>
               <p className="mt-3 text-sm leading-7 text-white/72">For product, label, or business conversations, use the direct founder contact lane.</p>
