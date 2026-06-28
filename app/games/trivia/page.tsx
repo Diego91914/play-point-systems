@@ -54,7 +54,7 @@ export default function GamesTriviaPage() {
                 href="/games/trivia/play"
                 className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
               >
-                Play the Bible Gold Demo
+                Play the Vault-Fed Demo
               </Link>
               <Link
                 href="/contact"
@@ -163,7 +163,7 @@ export default function GamesTriviaPage() {
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link href="/games/trivia/play" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
-              Open the Playable Demo
+              Open the Vault-Fed Demo
             </Link>
             <Link href="/contact" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
               Contact About Play Point Trivia

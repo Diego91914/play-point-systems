@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteShell } from "../../../components/SiteShell";
-import { TriviaPlayExperience } from "./TriviaPlayExperience";
+import { VaultTriviaPlayExperience } from "./VaultTriviaPlayExperience";
 
 export const metadata: Metadata = {
   title: "Play Point Trivia Demo",
-  description: "Play a hosted-room Bible Gold demo of Play Point Trivia directly on Play Point Systems.",
+  description: "Play a vault-fed hosted-room demo of Play Point Trivia directly on Play Point Systems.",
 };
 
 export default function TriviaPlayPage() {
@@ -18,10 +18,10 @@ export default function TriviaPlayPage() {
               Play Point Trivia Demo
             </div>
             <h1 className="mt-6 max-w-4xl text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-[5rem] xl:leading-[0.96]">
-              A playable first pass of the trivia game.
+              A playable vault-fed pass of the trivia game.
             </h1>
             <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-cyan-100/88 sm:text-xl sm:leading-8">
-              This route turns the product page into a real hosted-room demo with Bible Gold content, round structure, and penalty scoring.
+              This route turns the product page into a real hosted-room demo with vault-backed category selection, difficulty filtering, round structure, and penalty scoring.
             </p>
             <p className="mt-5 max-w-3xl text-base leading-8 text-white/76 sm:text-lg">
               It is intentionally word-first, because every category needs to work without relying on stored movie clips, music clips, or heavy video assets.
@@ -67,7 +67,7 @@ export default function TriviaPlayPage() {
         </div>
       </section>
 
-      <TriviaPlayExperience />
+      <VaultTriviaPlayExperience />
     </SiteShell>
   );
 }
