@@ -51,16 +51,16 @@ export default function GamesTriviaPage() {
             </p>
             <div className="mt-7 flex flex-col gap-3 xs:flex-row sm:flex-row">
               <Link
-                href="/contact"
+                href="/games/trivia/play"
                 className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
               >
-                Ask About Launch Access
+                Play the Bible Gold Demo
               </Link>
               <Link
-                href="/games"
+                href="/contact"
                 className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-black/25 px-6 py-3.5 text-sm font-semibold text-white/90 transition hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50"
               >
-                Back to Games
+                Ask About Launch Access
               </Link>
             </div>
           </div>
@@ -162,11 +162,11 @@ export default function GamesTriviaPage() {
             Join the first wave of hosts, venues, and event leaders bringing a sharper kind of trivia into the room.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/contact" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
-              Contact About Play Point Trivia
+            <Link href="/games/trivia/play" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
+              Open the Playable Demo
             </Link>
-            <Link href="/games" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
-              Back to Games
+            <Link href="/contact" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
+              Contact About Play Point Trivia
             </Link>
           </div>
         </div>
