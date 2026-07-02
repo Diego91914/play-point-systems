@@ -225,7 +225,7 @@ export function TriviaPlayExperience() {
               </div>
               <div className="rounded-[26px] border border-cyan-300/20 bg-black/20 px-4 py-4 text-sm text-cyan-50">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-100/70">Demo format</div>
-                <div className="mt-2 font-semibold">{DEMO_CARDS.length} questions | 4 rounds | wrong answers lose points</div>
+                <div className="mt-2 font-semibold">{DEMO_CARDS.length} questions | 4 rounds | 1,000-point questions on a 10-second clock</div>
               </div>
             </div>
 
@@ -269,7 +269,7 @@ export function TriviaPlayExperience() {
                   <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">What this proves</div>
                   <div className="mt-4 grid gap-3 text-sm text-white/78">
                     <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
-                      Multiple-choice can still feel tense when a wrong guess costs points.
+                      Multiple-choice can still feel tense when the score burns down in real time.
                     </div>
                     <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
                       The vault can stay word-first across categories without relying on stored media clips.
@@ -285,7 +285,7 @@ export function TriviaPlayExperience() {
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-100/70">Session complete</div>
                 <h3 className="mt-3 text-3xl font-black text-white">Winner: {leaderboard[0]?.name ?? "No winner yet"}</h3>
                 <p className="mt-4 max-w-2xl text-sm leading-7 text-white/74">
-                  The hosted demo is complete. This first pass proves the format with local player tracking, Gold-reviewed Bible content, and round-by-round scoring pressure that can later expand into online accounts, hosting dashboards, and sellable packs.
+                  The hosted demo is complete. This first pass proves the format with local player tracking, Gold-reviewed Bible content, and countdown-based scoring that can later expand into online accounts, hosting dashboards, and sellable packs.
                 </p>
                 <div className="mt-6 grid gap-3">
                   {leaderboard.map((player, index) => (
@@ -335,7 +335,7 @@ export function TriviaPlayExperience() {
                     <div className="rounded-[24px] border border-white/10 bg-white/5 px-4 py-4 text-sm text-white/78">
                       <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">Scoring this round</div>
                       <div className="mt-2 font-semibold text-white">
-                        {formatDelta(currentCard.scoring.correct)} right | {formatDelta(currentCard.scoring.wrong)} wrong | {formatDelta(currentCard.scoring.skip)} skip
+                        10-second clock | starts at {currentCard.scoring.correct} | {formatDelta(currentCard.scoring.wrong)} wrong | {formatDelta(currentCard.scoring.skip)} skip
                       </div>
                     </div>
                   </div>
@@ -397,7 +397,6 @@ export function TriviaPlayExperience() {
                                   key={choice.slot}
                                   type="button"
                                   onClick={() => chooseResponse(player.id, choice.slot)}
-                                  aria-pressed={active}
                                   className={
                                     active
                                       ? "rounded-2xl border border-cyan-300/45 bg-cyan-400/18 px-4 py-2.5 text-sm font-black text-cyan-50"
@@ -411,7 +410,6 @@ export function TriviaPlayExperience() {
                             <button
                               type="button"
                               onClick={() => chooseResponse(player.id, "skip")}
-                              aria-pressed={selected === "skip"}
                               className={
                                 selected === "skip"
                                   ? "rounded-2xl border border-amber-300/45 bg-amber-400/16 px-4 py-2.5 text-sm font-black text-amber-50"
@@ -503,7 +501,7 @@ export function TriviaPlayExperience() {
                 <span className="font-semibold text-white">Multiple choice stays fun</span> because every team can stay involved.
               </div>
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
-                <span className="font-semibold text-white">Wrong answers matter</span> so random guessing is not always safe.
+                <span className="font-semibold text-white">The countdown stays visible</span> so the room can feel the points drop in real time.
               </div>
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
                 <span className="font-semibold text-white">Word-first content scales</span> across Bible, sports, music, movies, and future sponsored packs without expensive media storage.
@@ -572,7 +570,7 @@ export function TriviaPlayExperience() {
                     <div className="mt-2 text-lg font-black text-white">{round.label}</div>
                     <div className="mt-2 text-sm leading-7 text-white/68">{round.intro}</div>
                     <div className="mt-3 text-xs uppercase tracking-[0.18em] text-white/46">
-                      {formatDelta(round.scoring.correct)} / {formatDelta(round.scoring.wrong)} / {formatDelta(round.scoring.skip)}
+                      10s / {formatDelta(round.scoring.correct)} start / {formatDelta(round.scoring.wrong)} wrong / {formatDelta(round.scoring.skip)} skip
                     </div>
                   </div>
                 );

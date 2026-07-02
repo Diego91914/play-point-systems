@@ -38,16 +38,16 @@ const portfolioCards: readonly PortfolioCard[] = [
     eyebrow: "First sellable product",
     title: "Play Point Trivia",
     description:
-      "A hosted multiple-choice trivia game built for live rooms, recurring events, fast pacing, and replay value.",
+      "A hosted multiple-choice trivia game built for live rooms, recurring events, phone sign-in, fast pacing, and replay value.",
     points: [
-      "Wrong answers lose points",
+      "Phone join with room code and QR",
       "Gold-reviewed vault content behind the game",
-      "Built for venues, churches, schools, and hosted events",
+      "Speed rewards fast correct answers without punishing misses",
     ],
     primaryHref: "/games/trivia",
     primaryLabel: "Explore Play Point Trivia",
-    secondaryHref: "/games/trivia/play",
-    secondaryLabel: "Play the Demo",
+    secondaryHref: "/games/trivia/builder",
+    secondaryLabel: "Open Builder",
   },
   {
     eyebrow: "Future expansion",
@@ -98,10 +98,10 @@ export default function GamesPage() {
             </p>
             <div className="mt-7 flex flex-col gap-3 xs:flex-row sm:flex-row">
               <Link
-                href="/games/trivia/play"
+                href="/games/trivia/builder"
                 className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
               >
-                Play Trivia Demo
+                Open Trivia Builder
               </Link>
               <Link
                 href="/shot-caddy"

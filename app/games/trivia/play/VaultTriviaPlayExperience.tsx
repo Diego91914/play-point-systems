@@ -419,7 +419,7 @@ export function VaultTriviaPlayExperience() {
                       </div>
                     ) : null}
                     <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
-                      Mixed Ladder uses the vault across multiple difficulties. Exact filters let the room focus on one lane when enough content exists.
+                      Each question starts at 1,000 points on a 10-second clock. The available score drops by 100 every second and wrong answers do not subtract.
                     </div>
                     <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
                       {catalogGeneratedAt
@@ -484,7 +484,7 @@ export function VaultTriviaPlayExperience() {
                     <div className="rounded-[24px] border border-white/10 bg-white/5 px-4 py-4 text-sm text-white/78">
                       <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">Scoring this round</div>
                       <div className="mt-2 font-semibold text-white">
-                        {formatDelta(currentCard.scoring.correct)} right | {formatDelta(currentCard.scoring.wrong)} wrong | {formatDelta(currentCard.scoring.skip)} skip
+                        10-second clock | starts at {formatDelta(currentCard.scoring.correct)} | {formatDelta(currentCard.scoring.wrong)} wrong | {formatDelta(currentCard.scoring.skip)} skip
                       </div>
                     </div>
                   </div>
@@ -546,7 +546,6 @@ export function VaultTriviaPlayExperience() {
                                   key={choice.slot}
                                   type="button"
                                   onClick={() => chooseResponse(player.id, choice.slot)}
-                                  aria-pressed={active}
                                   className={
                                     active
                                       ? "rounded-2xl border border-cyan-300/45 bg-cyan-400/18 px-4 py-2.5 text-sm font-black text-cyan-50"
@@ -560,7 +559,6 @@ export function VaultTriviaPlayExperience() {
                             <button
                               type="button"
                               onClick={() => chooseResponse(player.id, "skip")}
-                              aria-pressed={selected === "skip"}
                               className={
                                 selected === "skip"
                                   ? "rounded-2xl border border-amber-300/45 bg-amber-400/16 px-4 py-2.5 text-sm font-black text-amber-50"
@@ -652,7 +650,7 @@ export function VaultTriviaPlayExperience() {
                 <span className="font-semibold text-white">Multiple choice stays fun</span> because every team can stay involved.
               </div>
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
-                <span className="font-semibold text-white">Wrong answers matter</span> so random guessing is not always safe.
+                <span className="font-semibold text-white">The countdown matters</span> because every second trims 100 points off the available score.
               </div>
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
                 <span className="font-semibold text-white">Word-first content scales</span> across Bible, sports, music, movies, and future sponsored packs without expensive media storage.
@@ -729,7 +727,7 @@ export function VaultTriviaPlayExperience() {
                     <div className="mt-2 text-lg font-black text-white">{round.label}</div>
                     <div className="mt-2 text-sm leading-7 text-white/68">{round.intro}</div>
                     <div className="mt-3 text-xs uppercase tracking-[0.18em] text-white/46">
-                      {formatDelta(round.scoring.correct)} / {formatDelta(round.scoring.wrong)} / {formatDelta(round.scoring.skip)}
+                      10s / {formatDelta(round.scoring.correct)} start / {formatDelta(round.scoring.wrong)} wrong / {formatDelta(round.scoring.skip)} skip
                       {session ? ` | ${round.questionCount} q` : ""}
                     </div>
                   </div>

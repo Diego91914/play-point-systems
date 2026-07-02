@@ -47,10 +47,10 @@ export const DEMO_ROUNDS: readonly DemoRound[] = [
   {
     slug: "hook-round",
     label: "Hook Round",
-    intro: "Fast questions teach the room the rules before the pressure climbs.",
+    intro: "Fast questions teach the room the 10-second countdown before the bigger swings later on.",
     scoring: {
-      correct: 100,
-      wrong: -25,
+      correct: 1000,
+      wrong: 0,
       skip: 0,
     },
     questions: [
@@ -98,10 +98,10 @@ export const DEMO_ROUNDS: readonly DemoRound[] = [
   {
     slug: "pressure-board",
     label: "Pressure Board",
-    intro: "The room knows the game now, so a bad guess starts to sting.",
+    intro: "The room knows the rhythm now, so every second becomes part of the strategy.",
     scoring: {
-      correct: 150,
-      wrong: -50,
+      correct: 1000,
+      wrong: 0,
       skip: 0,
     },
     questions: [
@@ -149,10 +149,10 @@ export const DEMO_ROUNDS: readonly DemoRound[] = [
   {
     slug: "spotlight-sprint",
     label: "Spotlight Sprint",
-    intro: "Now the swing questions hit and the scoreboard can move fast.",
+    intro: "The scoreboard can swing fast when players answer early and protect more of the available points.",
     scoring: {
-      correct: 225,
-      wrong: -100,
+      correct: 1000,
+      wrong: 0,
       skip: 0,
     },
     questions: [
@@ -200,10 +200,10 @@ export const DEMO_ROUNDS: readonly DemoRound[] = [
   {
     slug: "final-word",
     label: "Final Word",
-    intro: "The last round pays big, but the wrong guess hurts even more.",
+    intro: "The last round uses the same 10-second clock, so every second still matters.",
     scoring: {
-      correct: 300,
-      wrong: -150,
+      correct: 1000,
+      wrong: 0,
       skip: 0,
     },
     questions: [
