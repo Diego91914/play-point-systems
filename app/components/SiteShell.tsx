@@ -6,11 +6,12 @@ import { useState } from "react";
 
 type SiteShellProps = {
   children: ReactNode;
-  current?: "home" | "games" | "shot-caddy" | "music" | "about" | "contact";
+  current?: "home" | "games" | "live" | "shot-caddy" | "music" | "about" | "contact";
 };
 
 const navItems = [
   { label: "Games", href: "/games", key: "games" },
+  { label: "Live", href: "/live", key: "live" },
   { label: "Shot Caddy", href: "/shot-caddy", key: "shot-caddy" },
   { label: "Music", href: "/music", key: "music" },
   { label: "About", href: "/about", key: "about" },
@@ -112,12 +113,15 @@ export function SiteShell({ children, current }: SiteShellProps) {
           <footer className="border-t border-white/10 px-5 py-8 sm:px-8 lg:px-10">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <div className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/36">Play Point Systems</div>
-                <div className="mt-2 max-w-md text-sm leading-7 text-white/52">The parent company for Shot Caddy and Play Point Records. Creator-led, purpose-built, and honest about the work.</div>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/36">Play Point Systems</div>
+                <div className="mt-2 max-w-md text-sm leading-7 text-white/52">The parent company for Play Point Live, Shot Caddy, and Play Point Records. Creator-led, purpose-built, and honest about the work.</div>
               </div>
               <nav className="flex flex-wrap items-center gap-1.5">
                 <Link href="/games" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/40">
                   Games
+                </Link>
+                <Link href="/live" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/40">
+                  Live
                 </Link>
                 <Link href="/shot-caddy" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/40">
                   Shot Caddy

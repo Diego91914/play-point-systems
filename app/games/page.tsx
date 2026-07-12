@@ -20,14 +20,29 @@ type PortfolioCard = {
 
 const portfolioCards: readonly PortfolioCard[] = [
   {
+    eyebrow: "Flagship product",
+    title: "Play Point Live",
+    description:
+      "The multi-sport live experience platform for venues, private clubs, and recurring seasons under Play Point Systems.",
+    points: [
+      "Public product home now lives under Play Point Systems",
+      "Built to grow beyond one sport or one venue format",
+      "Anchored by shared Play Point Core contracts",
+    ],
+    primaryHref: "/live",
+    primaryLabel: "Explore Play Point Live",
+    secondaryHref: "https://shotcaddy.net/play-point-live",
+    secondaryLabel: "Open Current Board Bridge",
+  },
+  {
     eyebrow: "Standalone brand",
     title: "Shot Caddy",
     description:
-      "A separate product brand inside the Play Point Games portfolio, built for memorable sports play experiences.",
+      "A separate product brand inside the Play Point Games portfolio, built for memorable golf-first play experiences.",
     points: [
       "Independent public identity",
+      "Disc golf remains the center of gravity",
       "Still part of the Play Point Systems portfolio",
-      "Built for shared, memorable play",
     ],
     primaryHref: "/shot-caddy",
     primaryLabel: "Explore Shot Caddy",
@@ -35,32 +50,19 @@ const portfolioCards: readonly PortfolioCard[] = [
     secondaryLabel: "Visit ShotCaddy.net",
   },
   {
-    eyebrow: "First sellable product",
+    eyebrow: "Hosted runtime",
     title: "Play Point Trivia",
     description:
-      "A hosted multiple-choice trivia game built for live rooms, recurring events, phone sign-in, fast pacing, and replay value.",
+      "A hosted multiple-choice trivia game that already proves several Play Point Core patterns inside the parent-company codebase.",
     points: [
       "Phone join with room code and QR",
-      "Gold-reviewed vault content behind the game",
-      "Speed rewards fast correct answers without punishing misses",
+      "Live host board and room scoreboard",
+      "A strong first direct consumer of the shared event model",
     ],
     primaryHref: "/games/trivia",
     primaryLabel: "Explore Play Point Trivia",
     secondaryHref: "/games/trivia/builder",
     secondaryLabel: "Open Builder",
-  },
-  {
-    eyebrow: "Future expansion",
-    title: "Play Point Live",
-    description:
-      "A future lane for real-time hosted event experiences once the trivia core is fully public and commercially active.",
-    points: [
-      "Live-room identity",
-      "High-energy hosted pacing",
-      "Best treated as a trivia mode first",
-    ],
-    primaryHref: "/games/trivia",
-    primaryLabel: "See the Trivia Foundation",
   },
   {
     eyebrow: "Future expansion",
@@ -87,7 +89,7 @@ export default function GamesPage() {
               Play Point Systems
             </div>
             <h1 className="mt-6 max-w-4xl text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-[5rem] xl:leading-[0.96]">
-              Games built for real people in real rooms.
+              Games built for real people in real rooms and real seasons.
             </h1>
             <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-cyan-100/88 sm:text-xl sm:leading-8">
               Play Point Games is the interactive entertainment portfolio inside Play Point Systems.
@@ -98,10 +100,10 @@ export default function GamesPage() {
             </p>
             <div className="mt-7 flex flex-col gap-3 xs:flex-row sm:flex-row">
               <Link
-                href="/games/trivia/builder"
+                href="/live"
                 className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
               >
-                Open Trivia Builder
+                Explore Play Point Live
               </Link>
               <Link
                 href="/shot-caddy"
@@ -118,7 +120,7 @@ export default function GamesPage() {
               </div>
               <div className="px-4 py-2.5">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Immediate focus</div>
-                <div className="mt-1 text-sm font-semibold text-white/90">Turn trivia into the first online, sellable game.</div>
+                <div className="mt-1 text-sm font-semibold text-white/90">Put Play Point Live in the right home while Trivia proves the hosted runtime.</div>
               </div>
               <div className="px-4 py-2.5">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Build standard</div>
@@ -129,23 +131,23 @@ export default function GamesPage() {
 
           <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)]">
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">Best immediate direction</div>
-            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Sell one strong game first.</h2>
+            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Separate the products before scaling them.</h2>
             <p className="mt-4 text-sm leading-7 text-white/72">
-              The cleanest launch path is to make <span className="font-semibold text-white">Play Point Trivia</span> the first active
-              product while Shot Caddy remains its own brand inside the same portfolio.
+              The cleanest portfolio path is to make <span className="font-semibold text-white">Play Point Live</span> the flagship multi-sport product
+              under Play Point Systems while Shot Caddy remains its own golf-first brand and Trivia continues proving the live-room runtime.
             </p>
             <ul className="mt-5 grid gap-3 text-sm text-white/78">
               <li className="flex items-start gap-3 rounded-2xl border border-white/8 bg-black/20 px-4 py-3">
                 <span className="mt-1 h-2.5 w-2.5 rounded-full bg-amber-300" />
-                <span>`Games` becomes the portfolio doorway on the parent site.</span>
+                <span>`/live` becomes the flagship product doorway on the parent site.</span>
               </li>
               <li className="flex items-start gap-3 rounded-2xl border border-white/8 bg-black/20 px-4 py-3">
                 <span className="mt-1 h-2.5 w-2.5 rounded-full bg-amber-300" />
-                <span>`Play Point Trivia` becomes the first conversion-focused product page.</span>
+                <span>`Shot Caddy` keeps the disc golf lane without carrying the multi-sport platform story.</span>
               </li>
               <li className="flex items-start gap-3 rounded-2xl border border-white/8 bg-black/20 px-4 py-3">
                 <span className="mt-1 h-2.5 w-2.5 rounded-full bg-amber-300" />
-                <span>`app.playpointsystems.com/trivia` can become the future runtime destination.</span>
+                <span>`Play Point Core` becomes the shared contract layer for runtime work.</span>
               </li>
             </ul>
           </div>

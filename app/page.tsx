@@ -6,7 +6,7 @@ import { artist, divisions, founder, hero, principles, siteLinks } from "./site-
 
 export const metadata: Metadata = {
   title: "Play Point Systems",
-  description: "Parent company for Play Point Games, Shot Caddy, and Play Point Records, created by Channing Stovall.",
+  description: "Parent company for Play Point Live, Shot Caddy, and Play Point Records, created by Channing Stovall.",
 };
 
 export default function PlayPointSystemsPage() {
@@ -29,16 +29,16 @@ export default function PlayPointSystemsPage() {
             </p>
             <div className="mt-7 flex flex-col gap-3 xs:flex-row sm:flex-row">
               <Link
-                href="/games"
+                href="/live"
                 className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
               >
-                Explore Games
+                Explore Play Point Live
               </Link>
               <Link
-                href="/games/trivia"
+                href="/games"
                 className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-black/25 px-6 py-3.5 text-sm font-semibold text-white/90 transition hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50"
               >
-                Explore Play Point Trivia
+                Explore Games
               </Link>
               <Link
                 href="/music"
@@ -55,7 +55,7 @@ export default function PlayPointSystemsPage() {
               </div>
               <div className="px-4 py-2.5">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Operating model</div>
-                <div className="mt-1 text-sm font-semibold text-white/90">Games and music. One standard.</div>
+                <div className="mt-1 text-sm font-semibold text-white/90">Live products, standalone brands, and music. One standard.</div>
               </div>
               <div className="px-4 py-2.5">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/48">Release cadence</div>
@@ -94,7 +94,7 @@ export default function PlayPointSystemsPage() {
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Parent company overview</div>
             <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">One parent brand, focused creative divisions and products.</h2>
             <p className="mt-4 max-w-xl text-sm leading-7 text-white/72">
-              Play Point Systems exists to make the structure clear. This site is the parent-company hub, while Play Point Games, Shot Caddy, and Play Point Records each carry their own lane and identity.
+              Play Point Systems exists to make the structure clear. This site is the parent-company hub, while Play Point Live, Shot Caddy, and Play Point Records each carry their own lane and identity.
             </p>
           </div>
 
@@ -130,7 +130,7 @@ export default function PlayPointSystemsPage() {
                 Play Point Systems was founded by {founder.name} - a creator driven by a passion for building meaningful experiences.
               </p>
               <p>
-                From developing a private sports product under Shot Caddy to producing faith-driven music under Play Point Records, every project is built with purpose.
+                From building the Play Point Live product path and shaping Shot Caddy into its own brand to producing faith-driven music under Play Point Records, every project is built with purpose.
               </p>
               <p>
                 Whether through gameplay or song, the goal is the same: <span className="font-semibold text-white">create something people feel</span>.
@@ -167,13 +167,13 @@ export default function PlayPointSystemsPage() {
         <div className="mt-8 grid gap-6 lg:grid-cols-[0.84fr_1.16fr]">
           <article className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6">
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Games spotlight</div>
-            <h3 className="mt-3 text-3xl font-black text-white">Play Point Games</h3>
+            <h3 className="mt-3 text-3xl font-black text-white">Play Point Live</h3>
             <p className="mt-4 text-sm leading-7 text-white/72">
-              The games portfolio now includes Shot Caddy as a standalone product brand and Play Point Trivia as the first active sellable game path being built for launch.
+              The games portfolio now includes Play Point Live as the flagship multi-sport path, Shot Caddy as a standalone golf-first brand, and Play Point Trivia as an active hosted-game runtime inside the same portfolio.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/games" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
-                Explore Games
+              <Link href="/live" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
+                Explore Play Point Live
               </Link>
               <Link href="/games/trivia" className="inline-flex rounded-2xl border border-cyan-300/20 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
                 Open Play Point Trivia
@@ -252,7 +252,7 @@ export default function PlayPointSystemsPage() {
             <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.08),rgba(255,255,255,0.03))] p-5">
               <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Games</div>
               <div className="mt-3 text-2xl font-black text-white">Explore the games portfolio</div>
-              <p className="mt-3 text-sm leading-7 text-white/72">See how Shot Caddy, Play Point Trivia, and future game products fit under one portfolio.</p>
+              <p className="mt-3 text-sm leading-7 text-white/72">See how Play Point Live, Shot Caddy, Play Point Trivia, and future game products fit under one portfolio.</p>
               <Link href="/games" className="mt-5 inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-4 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
                 Go to Games
               </Link>

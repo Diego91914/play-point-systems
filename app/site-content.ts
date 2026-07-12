@@ -21,28 +21,28 @@ export const founder = {
 };
 
 export const hero = {
-  headline: "The parent company behind Play Point Games and Play Point Records.",
-  subheadline: "Play Point Systems is the umbrella brand created by Channing Stovall to hold both the games and music divisions.",
+  headline: "The parent company behind Play Point Live, Shot Caddy, and Play Point Records.",
+  subheadline: "Play Point Systems is the umbrella brand created by Channing Stovall to hold the live-games portfolio, standalone product brands, and music division.",
   intro:
-    "This is the parent-company home that explains where each division belongs: Play Point Games carries the product lane, and Play Point Records carries the music lane. Both are built to the same standard: create something people actually feel.",
+    "This is the parent-company home that explains where each lane belongs: Play Point Live now leads the multi-sport live experience path, Shot Caddy stays focused on golf-first products, and Play Point Records carries the music lane. Each one should have its own identity without losing the portfolio story.",
 };
 
 export const divisions = [
   {
-    name: "Play Point Games",
-    eyebrow: "Games Division",
+    name: "Play Point Live",
+    eyebrow: "Flagship Games Product",
     description:
-      "A growing portfolio of products built for shared play, live rooms, repeat entertainment, and real commercial launch potential.",
-    points: ["Play Point Trivia in active build", "Shot Caddy under the same portfolio", "Built for live, replayable experiences"],
-    href: "/games",
-    cta: "Explore Games",
+      "A multi-sport live experience platform for venues, private clubs, and recurring seasons under the Play Point Systems umbrella.",
+    points: ["Multi-sport live-event direction", "Shared platform contracts now live in Play Point Core", "Flagship home at /live"],
+    href: "/live",
+    cta: "Explore Play Point Live",
   },
   {
     name: "Shot Caddy",
     eyebrow: "Flagship Product Brand",
     description:
-      "A private sports product in development, built around memorable play experiences and launching under its own public brand when the time is right.",
-    points: ["Private product in development", "Built for memorable shared experiences", "Launching under its own public identity"],
+      "A standalone product brand focused on disc golf, golf overlays, organizer tooling, and backyard scorekeeping.",
+    points: ["ShotCaddy.net remains the public home", "Disc golf stays the center of gravity", "No longer the product home for Play Point Live"],
     href: "/shot-caddy",
     cta: "Explore Shot Caddy",
   },
