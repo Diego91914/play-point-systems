@@ -34,7 +34,7 @@ function createTriggerFromBody(body: TriggerRequestBody): PlayPointTrigger {
 }
 
 export async function GET() {
-  const { seed, repository, notifications } = footballMvpRuntime;
+  const { seed, repository, notifications, persistencePath } = footballMvpRuntime;
   const eventId = seed.events?.[0]?.id;
   const seasonId = seed.seasons?.[0]?.id;
 
@@ -42,6 +42,7 @@ export async function GET() {
     seededEvents: seed.events ?? [],
     seededContests: seed.contests ?? [],
     seededEntries: eventId ? await repository.listEventEntries(eventId) : [],
+    persistencePath,
     triggers: repository.listTriggers(),
     resolutions: repository.listResolutions(),
     rewards: repository.listRewards(),

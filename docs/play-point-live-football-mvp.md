@@ -8,9 +8,11 @@ The next layer after the runtime kernel is a narrow football MVP slice that prov
 - a contest resolution service in `lib/play-point-core/contest-resolution-service.ts`
 - a correction service in `lib/play-point-core/correction-service.ts`
 - a football result trigger policy in `lib/play-point-core/football-trigger-policy.ts`
-- an in-memory repository stub plus seeded event, contests, and entries in `lib/play-point-core/football-mvp-repository.ts`
+- a file-backed MVP repository built on top of the in-memory repository shape in `lib/play-point-core/football-mvp-repository.ts`
+- a lightweight JSON persistence helper in `lib/play-point-core/football-mvp-persistence.ts`
 - a shared football MVP runtime context in `lib/play-point-core/football-mvp-runtime.ts`
 - a Next API route at `app/api/live/football/mvp/triggers/route.ts`
+- a Next API route at `app/api/live/football/mvp/entries/route.ts`
 
 ## Why this layer exists
 
@@ -24,16 +26,15 @@ We can validate:
 - how idempotency is enforced in the service boundary
 - how resolver dispatch works for winner pick, final score, and squares
 - how a bad trigger can be superseded without mutating history in place
-- how repository contracts feel before locking in persistence
+- how repository contracts feel before locking in a full database layer
 
 ## Current limitations
 
-- repository state is in memory only
+- the MVP now persists to a local JSON file, not a relational database
 - seeded sample data is for architecture and route validation, not production
-- repository state is process-local and resets with a fresh server instance
-- standings are rebuilt from in-memory resolution rows rather than persisted projections
+- standings are rebuilt from stored resolution rows rather than persisted projection tables
 - rewards are still represented through resolution rows and progression summaries, not a full stored reward ledger
-- corrections currently supersede prior resolution rows in memory and then rebuild standings from the surviving rows
+- corrections supersede prior resolution rows and then rebuild standings from the surviving rows
 
 ## MVP sample seed
 
@@ -46,6 +47,10 @@ The current sample seed includes:
 - two players with entries in each contest
 
 Use the `GET /api/live/football/mvp/triggers` endpoint to inspect the seeded IDs before posting a trigger.
+
+The MVP persistence file now lives at:
+
+- `data/play-point-live/football-mvp-state.json`
 
 ## Current route behavior
 
@@ -61,6 +66,12 @@ Recommended examples:
   - `payload: { "homeTeamKey": "bears", "awayTeamKey": "packers", "homeScore": 24, "awayScore": 20 }`
 
 To accept a trigger without settling it yet, send `settle: false`.
+
+To save or update player picks, send `POST /api/live/football/mvp/entries` with:
+
+- `eventId`
+- `userId`
+- `selections`
 
 To correct a previously scored trigger, send a new `POST` body with:
 

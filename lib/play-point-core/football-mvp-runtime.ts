@@ -11,6 +11,11 @@ import {
   createFootballMvpSeedData,
   InMemoryPlayPointRepository,
 } from "./football-mvp-repository";
+import {
+  getFootballMvpPersistencePath,
+  loadFootballMvpPersistedState,
+  saveFootballMvpPersistedState,
+} from "./football-mvp-persistence";
 import { FootballResultTriggerPolicy } from "./football-trigger-policy";
 import { CoreProgressionService } from "./progression-service";
 import { StaticResolverRegistry } from "./resolver-registry";
@@ -59,8 +64,12 @@ class InMemoryNotificationPublisher implements NotificationPublisher {
 }
 
 export function createFootballMvpRuntime() {
-  const seed = createFootballMvpSeedData();
-  const repository = new InMemoryPlayPointRepository(seed);
+  const fallbackSeed = createFootballMvpSeedData();
+  const seed = loadFootballMvpPersistedState(fallbackSeed);
+  const repository = new InMemoryPlayPointRepository(
+    seed,
+    saveFootballMvpPersistedState,
+  );
   const notifications = new InMemoryNotificationPublisher();
   const triggerPolicy = new FootballResultTriggerPolicy();
   const policies = new StaticTriggerPolicySelector([
@@ -254,6 +263,7 @@ export function createFootballMvpRuntime() {
 
   return {
     seed,
+    persistencePath: getFootballMvpPersistencePath(),
     repository,
     notifications,
     resolverRegistry,

@@ -45,8 +45,14 @@ export class InMemoryPlayPointRepository implements PlayPointRepository {
   private readonly triggers = new Map<string, PlayPointTrigger>();
   private readonly resolutions = new Map<string, ResolutionRow>();
   private readonly rewards = new Map<string, RewardRow>();
+  private readonly persist?: (seed: InMemoryPlayPointRepositorySeed) => void;
 
-  constructor(seed: InMemoryPlayPointRepositorySeed = {}) {
+  constructor(
+    seed: InMemoryPlayPointRepositorySeed = {},
+    persist?: (seed: InMemoryPlayPointRepositorySeed) => void,
+  ) {
+    this.persist = persist;
+
     for (const club of seed.clubs ?? []) {
       this.clubs.set(club.id, club);
     }
@@ -126,16 +132,20 @@ export class InMemoryPlayPointRepository implements PlayPointRepository {
 
   async saveEntry(entry: PlayPointEntry): Promise<void> {
     this.entries.set(entry.id, entry);
+    this.persistState();
   }
 
   async saveTrigger(trigger: PlayPointTrigger): Promise<void> {
     this.triggers.set(trigger.id, trigger);
+    this.persistState();
   }
 
   async saveResolutions(rows: ResolutionRow[]): Promise<void> {
     for (const row of rows) {
       this.resolutions.set(row.id, row);
     }
+
+    this.persistState();
   }
 
   async supersedeResolutionsByTrigger(triggerId: string): Promise<void> {
@@ -147,12 +157,16 @@ export class InMemoryPlayPointRepository implements PlayPointRepository {
         });
       }
     }
+
+    this.persistState();
   }
 
   async saveRewards(rows: RewardRow[]): Promise<void> {
     for (const row of rows) {
       this.rewards.set(row.id, row);
     }
+
+    this.persistState();
   }
 
   async rebuildEventStandings(eventId: string): Promise<EventStanding[]> {
@@ -349,6 +363,23 @@ export class InMemoryPlayPointRepository implements PlayPointRepository {
 
   listRewards(): RewardRow[] {
     return [...this.rewards.values()];
+  }
+
+  toSeed(): InMemoryPlayPointRepositorySeed {
+    return {
+      clubs: [...this.clubs.values()],
+      seasons: [...this.seasons.values()],
+      events: [...this.events.values()],
+      contests: [...this.contests.values()],
+      entries: [...this.entries.values()],
+      triggers: [...this.triggers.values()],
+      resolutions: [...this.resolutions.values()],
+      rewards: [...this.rewards.values()],
+    };
+  }
+
+  private persistState() {
+    this.persist?.(this.toSeed());
   }
 }
 

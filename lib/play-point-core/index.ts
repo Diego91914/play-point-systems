@@ -7,6 +7,7 @@ export * from "./trigger-ingestion-service";
 export * from "./contest-resolution-service";
 export * from "./correction-service";
 export * from "./football-mvp-repository";
+export * from "./football-mvp-persistence";
 export * from "./football-mvp-runtime";
 export * from "./progression-service";
 export * from "./trivia-adapter";
