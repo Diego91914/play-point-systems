@@ -56,6 +56,12 @@ export default function PlayPointLivePage() {
               >
                 Explore the Games Portfolio
               </Link>
+              <Link
+                href="/live/football-mvp"
+                className="inline-flex items-center justify-center rounded-2xl border border-emerald-300/22 bg-emerald-400/10 px-6 py-3.5 text-sm font-black text-emerald-50 transition hover:bg-emerald-400/16"
+              >
+                Open Football MVP Host Demo
+              </Link>
             </div>
           </div>
 
