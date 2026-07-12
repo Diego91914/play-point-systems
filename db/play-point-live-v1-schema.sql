@@ -6,6 +6,7 @@ create extension if not exists pgcrypto;
 
 create table ppl_users (
   id uuid primary key default gen_random_uuid(),
+  runtime_id text not null unique,
   handle text not null unique,
   display_name text not null,
   email text,
@@ -30,6 +31,7 @@ create table ppl_profiles (
 
 create table ppl_clubs (
   id uuid primary key default gen_random_uuid(),
+  runtime_id text not null unique,
   slug text not null unique,
   name text not null,
   description text,
@@ -54,6 +56,7 @@ create table ppl_club_members (
 
 create table ppl_seasons (
   id uuid primary key default gen_random_uuid(),
+  runtime_id text not null unique,
   club_id uuid not null references ppl_clubs(id) on delete cascade,
   slug text not null,
   name text not null,
@@ -79,6 +82,7 @@ create table ppl_seasons (
 
 create table ppl_events (
   id uuid primary key default gen_random_uuid(),
+  runtime_id text not null unique,
   season_id uuid references ppl_seasons(id) on delete set null,
   external_event_key text,
   sport text not null,
@@ -106,6 +110,7 @@ create unique index ppl_events_external_event_key_idx
 
 create table ppl_contests (
   id uuid primary key default gen_random_uuid(),
+  runtime_id text not null unique,
   event_id uuid not null references ppl_events(id) on delete cascade,
   slug text not null,
   name text not null,
@@ -176,6 +181,7 @@ create table ppl_contests (
 
 create table ppl_entries (
   id uuid primary key default gen_random_uuid(),
+  runtime_id text not null unique,
   contest_id uuid not null references ppl_contests(id) on delete cascade,
   user_id uuid not null references ppl_users(id) on delete cascade,
   entry_status text not null default 'active',
@@ -189,6 +195,7 @@ create table ppl_entries (
 
 create table ppl_triggers (
   id uuid primary key default gen_random_uuid(),
+  runtime_id text not null unique,
   event_id uuid not null references ppl_events(id) on delete cascade,
   trigger_type text not null,
   source text not null,
@@ -234,6 +241,7 @@ create unique index ppl_triggers_dedupe_idx
 
 create table ppl_resolutions (
   id uuid primary key default gen_random_uuid(),
+  runtime_id text not null unique,
   contest_id uuid not null references ppl_contests(id) on delete cascade,
   trigger_id uuid not null references ppl_triggers(id) on delete cascade,
   resolution_status text not null default 'applied',
@@ -247,6 +255,7 @@ create table ppl_resolutions (
 
 create table ppl_rewards (
   id uuid primary key default gen_random_uuid(),
+  runtime_id text not null unique,
   resolution_id uuid not null references ppl_resolutions(id) on delete cascade,
   contest_id uuid not null references ppl_contests(id) on delete cascade,
   user_id uuid not null references ppl_users(id) on delete cascade,

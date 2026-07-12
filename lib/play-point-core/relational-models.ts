@@ -55,7 +55,9 @@ export type PplResolutionType =
 
 export interface PplEventRow {
   id: string;
+  runtime_id: string;
   season_id: string | null;
+  season_runtime_id?: string | null;
   external_event_key: string | null;
   sport: string;
   league: string | null;
@@ -74,7 +76,9 @@ export interface PplEventRow {
 
 export interface PplContestRow {
   id: string;
+  runtime_id: string;
   event_id: string;
+  event_runtime_id?: string | null;
   slug: string;
   name: string;
   contest_type: PplContestType;
@@ -93,8 +97,11 @@ export interface PplContestRow {
 
 export interface PplEntryRow {
   id: string;
+  runtime_id: string;
   contest_id: string;
+  contest_runtime_id?: string | null;
   user_id: string;
+  user_runtime_id?: string | null;
   entry_status: PplEntryStatus;
   selection: Record<string, unknown>;
   submitted_at: string;
@@ -103,7 +110,9 @@ export interface PplEntryRow {
 
 export interface PplTriggerRow {
   id: string;
+  runtime_id: string;
   event_id: string;
+  event_runtime_id?: string | null;
   trigger_type: string;
   source: string;
   source_mode: PplSourceMode;
@@ -118,6 +127,7 @@ export interface PplTriggerRow {
 
 export interface PplResolutionRow {
   id: string;
+  runtime_id: string;
   contest_id: string;
   trigger_id: string;
   resolution_status: PplResolutionStatus;

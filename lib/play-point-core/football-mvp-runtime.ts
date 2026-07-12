@@ -8,16 +8,15 @@ import {
   FootballWinnerPickResolver,
 } from "./football-resolvers";
 import {
-  createFootballMvpSeedData,
-  InMemoryPlayPointRepository,
-} from "./football-mvp-repository";
-import {
-  getFootballMvpPersistencePath,
-  loadFootballMvpPersistedState,
-  saveFootballMvpPersistedState,
-} from "./football-mvp-persistence";
+  type CreateFootballMvpRepositoryOptions,
+  createFootballMvpRepositoryBinding,
+  type FootballMvpRuntimeDebugState,
+} from "./football-mvp-repository-factory";
+import type { InMemoryPlayPointRepositorySeed } from "./football-mvp-repository";
+import type { FootballMvpStorageMode } from "./football-mvp-storage";
 import { FootballResultTriggerPolicy } from "./football-trigger-policy";
 import { CoreProgressionService } from "./progression-service";
+import type { SqlQueryRunner } from "./relational-models";
 import { StaticResolverRegistry } from "./resolver-registry";
 import {
   CoreTriggerIngestionService,
@@ -38,6 +37,13 @@ import type {
 interface PlayerEntrySelectionInput {
   contestId: string;
   selection: Record<string, unknown>;
+}
+
+export interface CreateFootballMvpRuntimeOptions
+  extends CreateFootballMvpRepositoryOptions {
+  seed?: InMemoryPlayPointRepositorySeed;
+  storageMode?: FootballMvpStorageMode;
+  postgresRunner?: SqlQueryRunner;
 }
 
 class NoopAchievementService implements AchievementService {
@@ -63,13 +69,18 @@ class InMemoryNotificationPublisher implements NotificationPublisher {
   }
 }
 
-export function createFootballMvpRuntime() {
-  const fallbackSeed = createFootballMvpSeedData();
-  const seed = loadFootballMvpPersistedState(fallbackSeed);
-  const repository = new InMemoryPlayPointRepository(
+export function createFootballMvpRuntime(
+  options: CreateFootballMvpRuntimeOptions = {},
+) {
+  const repositoryBinding = createFootballMvpRepositoryBinding(options);
+  const {
     seed,
-    saveFootballMvpPersistedState,
-  );
+    repository,
+    storageMode,
+    requestedStorageMode,
+    persistencePath,
+    getDebugState,
+  } = repositoryBinding;
   const notifications = new InMemoryNotificationPublisher();
   const triggerPolicy = new FootballResultTriggerPolicy();
   const policies = new StaticTriggerPolicySelector([
@@ -261,9 +272,15 @@ export function createFootballMvpRuntime() {
     };
   }
 
+  function inspectDebugState(): FootballMvpRuntimeDebugState {
+    return getDebugState();
+  }
+
   return {
     seed,
-    persistencePath: getFootballMvpPersistencePath(),
+    storageMode,
+    requestedStorageMode,
+    persistencePath,
     repository,
     notifications,
     resolverRegistry,
@@ -275,6 +292,7 @@ export function createFootballMvpRuntime() {
     scoreTrigger,
     correctScoredTrigger,
     upsertPlayerEntries,
+    inspectDebugState,
   };
 }
 

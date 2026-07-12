@@ -4,10 +4,11 @@ This document is the bridge from the current file-backed football MVP into the p
 
 ## What is in the repo now
 
-- The current football MVP still runs through the JSON-backed repository for the live demo.
+- The current football MVP still defaults to the JSON-backed repository for the live demo.
 - The relational schema now lives in `db/play-point-live-v1-schema.sql`.
 - TypeScript row and enum scaffolding lives in `lib/play-point-core/relational-models.ts`.
 - The first database-backed repository seam lives in `lib/play-point-core/postgres-play-point-repository.ts`.
+- The runtime now resolves storage through `lib/play-point-core/football-mvp-repository-factory.ts`.
 
 ## Why this step matters
 
@@ -51,6 +52,61 @@ That can be done with whichever runtime the team chooses later:
 3. Finish the remaining `PostgresPlayPointRepository` methods one by one.
 4. Keep the current football MVP services and routes unchanged.
 5. Switch the runtime factory from the JSON repository to the Postgres repository behind a flag.
+
+## Supabase right now
+
+Yes, if you want Supabase to match the repo, you do need to run SQL there.
+
+- If this is a fresh Supabase project, run `db/play-point-live-v1-schema.sql`
+- If you already applied the older draft schema, run `db/play-point-live-v1-runtime-id-upgrade.sql`
+
+Important note:
+
+- the upgrade file backfills missing `runtime_id` columns with the current UUID values so the migration can complete safely
+- if you care about preserving human-readable public ids for existing prototype rows, you should manually update those `runtime_id` values after the upgrade
+- if the existing Supabase data is disposable, the cleanest path is often to recreate the draft tables from `db/play-point-live-v1-schema.sql`
+
+## Storage mode flag
+
+The football MVP runtime now reads `PLAY_POINT_LIVE_STORAGE_MODE`.
+
+- `json` is the default and continues to use `data/play-point-live/football-mvp-state.json`
+- `postgres` is now an explicit opt-in mode
+
+Important caveat:
+
+- `postgres` mode is intentionally fail-fast right now if no `SqlQueryRunner` is provided
+- the dashboard debug snapshot still only reflects the JSON demo repository
+- this keeps the storage seam honest instead of pretending the database wiring is already complete
+
+## Canonical identity policy
+
+Play Point Core should keep using stable runtime-facing ids such as:
+
+- `event-bears-packers-2026-week-01`
+- `contest-bears-packers-winner`
+- `alex`
+
+The relational store should keep UUID primary keys and foreign keys internally, but every runtime-facing entity should also carry a unique `runtime_id`.
+
+That means the database layer follows this split:
+
+- `id`: internal relational UUID for joins and constraints
+- `runtime_id`: canonical id used by Play Point Core, APIs, QR flows, TV mode, and future standalone game apps
+
+This pass applies that policy to the drafted relational schema, read-side row models, and the first write-side repository methods for entries, triggers, and resolutions.
+
+## Why this matters for future apps
+
+Route structure is a surface concern, not the canonical identity of a game or live event.
+
+Because the runtime keeps owning `runtime_id` values:
+
+- a game can start as `/live/football-mvp`
+- later move into a standalone app shell
+- and still refer to the same contests, events, joins, triggers, and leaderboards
+
+without changing the underlying Play Point Core identity model.
 
 ## Important design principle
 

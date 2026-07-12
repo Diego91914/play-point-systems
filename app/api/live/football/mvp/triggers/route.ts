@@ -34,18 +34,30 @@ function createTriggerFromBody(body: TriggerRequestBody): PlayPointTrigger {
 }
 
 export async function GET() {
-  const { seed, repository, notifications, persistencePath } = footballMvpRuntime;
+  const {
+    seed,
+    repository,
+    notifications,
+    storageMode,
+    requestedStorageMode,
+    persistencePath,
+    inspectDebugState,
+  } = footballMvpRuntime;
   const eventId = seed.events?.[0]?.id;
   const seasonId = seed.seasons?.[0]?.id;
+  const debugState = inspectDebugState();
 
   return NextResponse.json({
     seededEvents: seed.events ?? [],
     seededContests: seed.contests ?? [],
     seededEntries: eventId ? await repository.listEventEntries(eventId) : [],
+    storageMode,
+    requestedStorageMode,
     persistencePath,
-    triggers: repository.listTriggers(),
-    resolutions: repository.listResolutions(),
-    rewards: repository.listRewards(),
+    storageNotice: debugState.note ?? null,
+    triggers: debugState.triggers,
+    resolutions: debugState.resolutions,
+    rewards: debugState.rewards,
     eventStandings: eventId
       ? await repository.rebuildEventStandings(eventId)
       : [],

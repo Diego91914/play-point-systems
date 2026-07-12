@@ -22,6 +22,10 @@ type FootballMvpDashboardState = {
   seededEvents: PlayPointEvent[];
   seededContests: PlayPointContest[];
   seededEntries: PlayPointEntry[];
+  storageMode?: "json" | "postgres";
+  requestedStorageMode?: string | null;
+  persistencePath?: string | null;
+  storageNotice?: string | null;
   triggers: PlayPointTrigger[];
   resolutions: ResolutionRow[];
   rewards: unknown[];
@@ -34,6 +38,10 @@ const emptyDashboardState: FootballMvpDashboardState = {
   seededEvents: [],
   seededContests: [],
   seededEntries: [],
+  storageMode: "json",
+  requestedStorageMode: null,
+  persistencePath: null,
+  storageNotice: null,
   triggers: [],
   resolutions: [],
   rewards: [],
@@ -287,9 +295,19 @@ export function FootballMvpPlayerExperience() {
             </h2>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-white/74">
               This player view reads the same live MVP state as the host dashboard.
-              It now supports saving player picks into the in-memory event state while
+              It now supports saving player picks into the shared event state while
               still showing the trigger feed, standings, and correction-safe outcomes.
             </p>
+            <div className="mt-5 flex flex-wrap gap-3 text-xs text-white/58">
+              <div className="rounded-full border border-white/10 bg-black/20 px-3 py-2">
+                Storage mode {dashboard.storageMode ?? "json"}
+              </div>
+              {dashboard.storageNotice ? (
+                <div className="rounded-full border border-amber-300/20 bg-amber-400/10 px-3 py-2 text-amber-50">
+                  {dashboard.storageNotice}
+                </div>
+              ) : null}
+            </div>
 
             <div className="mt-6 grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
               <label className="grid gap-2 text-sm text-white/76">
@@ -676,7 +694,9 @@ export function FootballMvpPlayerExperience() {
                 Corrections stay trustworthy because superseded rows drop out of the active leaderboard.
               </div>
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
-                This preview is in-memory today, but the UI shape is already aligned with the shared Play Point Core engine.
+                This preview already reads through the shared Play Point Core runtime
+                seam, so the repository can move from JSON to relational storage
+                without changing the player surface contract.
               </div>
             </div>
           </article>

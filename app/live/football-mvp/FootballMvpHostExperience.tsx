@@ -23,6 +23,10 @@ type FootballMvpDashboardState = {
   seededEvents: PlayPointEvent[];
   seededContests: PlayPointContest[];
   seededEntries: PlayPointEntry[];
+  storageMode?: "json" | "postgres";
+  requestedStorageMode?: string | null;
+  persistencePath?: string | null;
+  storageNotice?: string | null;
   triggers: PlayPointTrigger[];
   resolutions: ResolutionRow[];
   rewards: unknown[];
@@ -50,6 +54,10 @@ const emptyDashboardState: FootballMvpDashboardState = {
   seededEvents: [],
   seededContests: [],
   seededEntries: [],
+  storageMode: "json",
+  requestedStorageMode: null,
+  persistencePath: null,
+  storageNotice: null,
   triggers: [],
   resolutions: [],
   rewards: [],
@@ -316,8 +324,8 @@ export function FootballMvpHostExperience() {
             </h2>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-white/72">
               This is the first thin host surface for Play Point Live. It talks to
-              the in-memory football MVP runtime, so you can submit quarter or final
-              triggers, settle contests, inspect standings, and correct a bad final.
+              the football MVP runtime, so you can submit quarter or final triggers,
+              settle contests, inspect standings, and correct a bad final.
             </p>
             <div className="mt-6 grid gap-3 md:grid-cols-3">
               <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
@@ -346,6 +354,28 @@ export function FootballMvpHostExperience() {
                 </div>
               </div>
             </div>
+            <div className="mt-4 flex flex-wrap gap-3 text-xs text-white/58">
+              <div className="rounded-full border border-white/10 bg-black/20 px-3 py-2">
+                Storage mode {dashboard.storageMode ?? "json"}
+              </div>
+              {dashboard.persistencePath ? (
+                <div className="rounded-full border border-white/10 bg-black/20 px-3 py-2">
+                  JSON store {dashboard.persistencePath}
+                </div>
+              ) : null}
+              {dashboard.requestedStorageMode &&
+              dashboard.requestedStorageMode !== dashboard.storageMode ? (
+                <div className="rounded-full border border-amber-300/20 bg-amber-400/10 px-3 py-2 text-amber-50">
+                  Unknown env mode "{dashboard.requestedStorageMode}" fell back to
+                  JSON
+                </div>
+              ) : null}
+            </div>
+            {dashboard.storageNotice ? (
+              <div className="mt-4 rounded-2xl border border-amber-300/20 bg-amber-400/10 px-4 py-3 text-sm text-amber-50">
+                {dashboard.storageNotice}
+              </div>
+            ) : null}
             <div className="mt-6 flex flex-wrap gap-3">
               <button
                 type="button"
