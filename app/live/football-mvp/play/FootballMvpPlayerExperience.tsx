@@ -109,7 +109,13 @@ export function FootballMvpPlayerExperience() {
   const [dashboard, setDashboard] = useState<FootballMvpDashboardState>(
     emptyDashboardState,
   );
-  const [selectedUserId, setSelectedUserId] = useState<string>("");
+  const [selectedUserId, setSelectedUserId] = useState("");
+  const [winnerPick, setWinnerPick] = useState("packers");
+  const [predictedHomeScore, setPredictedHomeScore] = useState("24");
+  const [predictedAwayScore, setPredictedAwayScore] = useState("20");
+  const [squareHomeDigit, setSquareHomeDigit] = useState("4");
+  const [squareAwayDigit, setSquareAwayDigit] = useState("0");
+  const [responseSummary, setResponseSummary] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -131,6 +137,16 @@ export function FootballMvpPlayerExperience() {
   }, [playerIds, selectedUserId]);
 
   const seededEvent = dashboard.seededEvents[0] ?? null;
+  const winnerContest =
+    dashboard.seededContests.find((contest) => contest.formatKey === "winner_pick") ??
+    null;
+  const finalScoreContest =
+    dashboard.seededContests.find((contest) => contest.formatKey === "final_score") ??
+    null;
+  const squaresContest =
+    dashboard.seededContests.find(
+      (contest) => contest.formatKey === "football_squares",
+    ) ?? null;
   const playerEntries = dashboard.seededEntries.filter(
     (entry) => entry.userId === selectedUserId,
   );
@@ -140,6 +156,40 @@ export function FootballMvpPlayerExperience() {
   const activeResolutionRows = dashboard.resolutions.filter(
     (row) => !row.supersededByResolutionId && row.userId === selectedUserId,
   );
+
+  useEffect(() => {
+    const winnerEntry = playerEntries.find(
+      (entry) => entry.contestId === winnerContest?.id,
+    );
+    const finalEntry = playerEntries.find(
+      (entry) => entry.contestId === finalScoreContest?.id,
+    );
+    const squaresEntry = playerEntries.find(
+      (entry) => entry.contestId === squaresContest?.id,
+    );
+
+    if (winnerEntry && typeof winnerEntry.selection.teamKey === "string") {
+      setWinnerPick(winnerEntry.selection.teamKey);
+    }
+
+    if (
+      finalEntry &&
+      typeof finalEntry.selection.homeScore === "number" &&
+      typeof finalEntry.selection.awayScore === "number"
+    ) {
+      setPredictedHomeScore(String(finalEntry.selection.homeScore));
+      setPredictedAwayScore(String(finalEntry.selection.awayScore));
+    }
+
+    if (
+      squaresEntry &&
+      typeof squaresEntry.selection.homeDigit === "number" &&
+      typeof squaresEntry.selection.awayDigit === "number"
+    ) {
+      setSquareHomeDigit(String(squaresEntry.selection.homeDigit));
+      setSquareAwayDigit(String(squaresEntry.selection.awayDigit));
+    }
+  }, [playerEntries, winnerContest?.id, finalScoreContest?.id, squaresContest?.id]);
 
   async function refreshDashboard() {
     const response = await fetch("/api/live/football/mvp/triggers", {
@@ -155,6 +205,75 @@ export function FootballMvpPlayerExperience() {
     setDashboard(payload);
   }
 
+  async function submitEntries() {
+    if (!seededEvent) {
+      setErrorMessage("No seeded football event is available yet.");
+      return;
+    }
+
+    if (!selectedUserId.trim()) {
+      setErrorMessage("Choose or type a player id before saving picks.");
+      return;
+    }
+
+    if (!winnerContest || !finalScoreContest || !squaresContest) {
+      setErrorMessage("The football MVP contests are not fully loaded yet.");
+      return;
+    }
+
+    setErrorMessage(null);
+    setResponseSummary(null);
+
+    const response = await fetch("/api/live/football/mvp/entries", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        eventId: seededEvent.id,
+        userId: selectedUserId.trim(),
+        selections: [
+          {
+            contestId: winnerContest.id,
+            selection: {
+              teamKey: winnerPick,
+            },
+          },
+          {
+            contestId: finalScoreContest.id,
+            selection: {
+              homeScore: Number(predictedHomeScore),
+              awayScore: Number(predictedAwayScore),
+            },
+          },
+          {
+            contestId: squaresContest.id,
+            selection: {
+              homeDigit: Number(squareHomeDigit),
+              awayDigit: Number(squareAwayDigit),
+            },
+          },
+        ],
+      }),
+    });
+
+    const payload = (await response.json()) as {
+      saved?: boolean;
+      error?: string;
+      savedEntries?: PlayPointEntry[];
+    };
+
+    if (!response.ok || !payload.saved) {
+      setErrorMessage(payload.error ?? "Unable to save player picks.");
+      return;
+    }
+
+    await refreshDashboard();
+    setResponseSummary(
+      `Saved ${payload.savedEntries?.length ?? 0} contest picks for ${selectedUserId.trim()}.`,
+    );
+  }
+
   return (
     <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
       <div className="grid gap-8 xl:grid-cols-[1.05fr_0.95fr] xl:items-start">
@@ -168,25 +287,25 @@ export function FootballMvpPlayerExperience() {
             </h2>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-white/74">
               This player view reads the same live MVP state as the host dashboard.
-              For now it uses the seeded football demo entries, but it already shows
-              the product loop from the player side: contest cards, trigger feed,
-              standings, and correction-safe outcomes.
+              It now supports saving player picks into the in-memory event state while
+              still showing the trigger feed, standings, and correction-safe outcomes.
             </p>
 
             <div className="mt-6 grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
               <label className="grid gap-2 text-sm text-white/76">
-                <span className="font-semibold text-white/88">Player preview</span>
-                <select
+                <span className="font-semibold text-white/88">Player id</span>
+                <input
                   value={selectedUserId}
                   onChange={(event) => setSelectedUserId(event.target.value)}
+                  list="football-mvp-player-ids"
                   className="rounded-2xl border border-white/12 bg-black/25 px-4 py-3 text-white outline-none transition focus:border-cyan-300/40"
-                >
+                  placeholder="alex"
+                />
+                <datalist id="football-mvp-player-ids">
                   {playerIds.map((playerId) => (
-                    <option key={playerId} value={playerId}>
-                      {playerId}
-                    </option>
+                    <option key={playerId} value={playerId} />
                   ))}
-                </select>
+                </datalist>
               </label>
               <button
                 type="button"
@@ -234,12 +353,107 @@ export function FootballMvpPlayerExperience() {
               </div>
             </div>
 
+            {responseSummary ? (
+              <div className="mt-5 rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-50">
+                {responseSummary}
+              </div>
+            ) : null}
             {errorMessage ? (
               <div className="mt-5 rounded-2xl border border-rose-300/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-50">
                 {errorMessage}
               </div>
             ) : null}
           </div>
+
+          <article className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/52">
+                  Entry form
+                </div>
+                <h3 className="mt-3 text-2xl font-black text-white">
+                  Submit or update picks
+                </h3>
+              </div>
+              <div className="text-sm text-white/62">
+                This writes winner pick, final score, and squares choices into the
+                same event state the host screen reads.
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-4">
+              <div className="grid gap-4 lg:grid-cols-3">
+                <label className="grid gap-2 text-sm text-white/76">
+                  <span className="font-semibold text-white/88">Winner pick</span>
+                  <select
+                    value={winnerPick}
+                    onChange={(event) => setWinnerPick(event.target.value)}
+                    className="rounded-2xl border border-white/12 bg-black/25 px-4 py-3 text-white outline-none transition focus:border-cyan-300/40"
+                  >
+                    <option value="bears">Bears</option>
+                    <option value="packers">Packers</option>
+                  </select>
+                </label>
+                <label className="grid gap-2 text-sm text-white/76">
+                  <span className="font-semibold text-white/88">Predicted Bears score</span>
+                  <input
+                    value={predictedHomeScore}
+                    onChange={(event) => setPredictedHomeScore(event.target.value)}
+                    inputMode="numeric"
+                    className="rounded-2xl border border-white/12 bg-black/25 px-4 py-3 text-white outline-none transition focus:border-cyan-300/40"
+                  />
+                </label>
+                <label className="grid gap-2 text-sm text-white/76">
+                  <span className="font-semibold text-white/88">Predicted Packers score</span>
+                  <input
+                    value={predictedAwayScore}
+                    onChange={(event) => setPredictedAwayScore(event.target.value)}
+                    inputMode="numeric"
+                    className="rounded-2xl border border-white/12 bg-black/25 px-4 py-3 text-white outline-none transition focus:border-cyan-300/40"
+                  />
+                </label>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="grid gap-2 text-sm text-white/76">
+                  <span className="font-semibold text-white/88">Squares home digit</span>
+                  <input
+                    value={squareHomeDigit}
+                    onChange={(event) => setSquareHomeDigit(event.target.value)}
+                    inputMode="numeric"
+                    className="rounded-2xl border border-white/12 bg-black/25 px-4 py-3 text-white outline-none transition focus:border-cyan-300/40"
+                  />
+                </label>
+                <label className="grid gap-2 text-sm text-white/76">
+                  <span className="font-semibold text-white/88">Squares away digit</span>
+                  <input
+                    value={squareAwayDigit}
+                    onChange={(event) => setSquareAwayDigit(event.target.value)}
+                    inputMode="numeric"
+                    className="rounded-2xl border border-white/12 bg-black/25 px-4 py-3 text-white outline-none transition focus:border-cyan-300/40"
+                  />
+                </label>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() =>
+                    startTransition(() => {
+                      void submitEntries().catch((error: unknown) => {
+                        setErrorMessage(
+                          error instanceof Error
+                            ? error.message
+                            : "Unable to save player picks.",
+                        );
+                      });
+                    })
+                  }
+                  className="inline-flex rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-5 py-3 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110"
+                >
+                  {isPending ? "Saving..." : "Save Picks"}
+                </button>
+              </div>
+            </div>
+          </article>
 
           <article className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -252,8 +466,7 @@ export function FootballMvpPlayerExperience() {
                 </h3>
               </div>
               <div className="text-sm text-white/62">
-                Demo entries are seeded for now, but this is the shape the player
-                surface will read from real submissions later.
+                These cards now reflect live repository state instead of the original static seed.
               </div>
             </div>
 
@@ -463,7 +676,7 @@ export function FootballMvpPlayerExperience() {
                 Corrections stay trustworthy because superseded rows drop out of the active leaderboard.
               </div>
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
-                This preview is seeded today, but the UI shape is already aligned with the shared Play Point Core engine.
+                This preview is in-memory today, but the UI shape is already aligned with the shared Play Point Core engine.
               </div>
             </div>
           </article>
