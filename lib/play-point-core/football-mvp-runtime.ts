@@ -272,7 +272,7 @@ export function createFootballMvpRuntime(
     };
   }
 
-  function inspectDebugState(): FootballMvpRuntimeDebugState {
+  async function inspectDebugState(): Promise<FootballMvpRuntimeDebugState> {
     return getDebugState();
   }
 

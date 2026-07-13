@@ -14,5 +14,6 @@ export * from "./football-mvp-runtime";
 export * from "./relational-models";
 export * from "./relational-mappers";
 export * from "./postgres-play-point-repository";
+export * from "./supabase-sql-runner";
 export * from "./progression-service";
 export * from "./trivia-adapter";

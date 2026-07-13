@@ -45,7 +45,7 @@ export async function GET() {
   } = footballMvpRuntime;
   const eventId = seed.events?.[0]?.id;
   const seasonId = seed.seasons?.[0]?.id;
-  const debugState = inspectDebugState();
+  const debugState = await inspectDebugState();
 
   return NextResponse.json({
     seededEvents: seed.events ?? [],

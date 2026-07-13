@@ -45,6 +45,9 @@ That can be done with whichever runtime the team chooses later:
 - `pg`
 - a query builder such as Drizzle or Kysely
 
+The repo now includes a first real Supabase-compatible runner in
+`lib/play-point-core/supabase-sql-runner.ts`.
+
 ## Recommended migration path
 
 1. Apply `db/play-point-live-v1-schema.sql` to the chosen relational store.
@@ -59,6 +62,8 @@ Yes, if you want Supabase to match the repo, you do need to run SQL there.
 
 - If this is a fresh Supabase project, run `db/play-point-live-v1-schema.sql`
 - If you already applied the older draft schema, run `db/play-point-live-v1-runtime-id-upgrade.sql`
+- If you already upgraded an existing prototype schema and want future achievement/season/event rewards to persist correctly, run `db/play-point-live-v1-reward-contract-upgrade.sql`
+- If you want the relational store to mirror the current football MVP demo data, run `db/play-point-live-football-mvp-seed.sql` after the schema/upgrade step
 
 Important note:
 
@@ -73,11 +78,20 @@ The football MVP runtime now reads `PLAY_POINT_LIVE_STORAGE_MODE`.
 - `json` is the default and continues to use `data/play-point-live/football-mvp-state.json`
 - `postgres` is now an explicit opt-in mode
 
+For the SQL runner, the runtime will look for one of these connection vars:
+
+- `PLAY_POINT_LIVE_DATABASE_URL`
+- `SUPABASE_DB_URL`
+- `DATABASE_URL`
+
+Optional:
+
+- `PLAY_POINT_LIVE_DATABASE_SSL=require|disable`
+
 Important caveat:
 
 - `postgres` mode is intentionally fail-fast right now if no `SqlQueryRunner` is provided
-- the dashboard debug snapshot still only reflects the JSON demo repository
-- this keeps the storage seam honest instead of pretending the database wiring is already complete
+- head-to-head weekly matchup finalization now expects `event.metadata.weekKey` or `event.metadata.week`, and optionally `event.metadata.matchups` for explicit pairings
 
 ## Canonical identity policy
 
@@ -94,7 +108,7 @@ That means the database layer follows this split:
 - `id`: internal relational UUID for joins and constraints
 - `runtime_id`: canonical id used by Play Point Core, APIs, QR flows, TV mode, and future standalone game apps
 
-This pass applies that policy to the drafted relational schema, read-side row models, and the first write-side repository methods for entries, triggers, and resolutions.
+This pass applies that policy to the drafted relational schema, read-side row models, and the first write-side repository methods for entries, triggers, resolutions, and rewards. It also includes a first weekly matchup finalizer for head-to-head seasons.
 
 ## Why this matters for future apps
 

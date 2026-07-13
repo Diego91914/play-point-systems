@@ -304,9 +304,35 @@ export class InMemoryPlayPointRepository implements PlayPointRepository {
     seasonId: string,
     weekKey: string,
   ): Promise<WeeklySeasonResult[]> {
-    void seasonId;
-    void weekKey;
-    return [];
+    const season = this.seasons.get(seasonId);
+
+    if (!season || season.formatKey !== "head_to_head") {
+      return [];
+    }
+
+    const results: WeeklySeasonResult[] = [];
+
+    for (const event of this.events.values()) {
+      if (event.seasonId !== seasonId) {
+        continue;
+      }
+
+      const eventWeekKey = readWeekKey(event.metadata);
+
+      if (eventWeekKey !== weekKey) {
+        continue;
+      }
+
+      const standings = await this.rebuildEventStandings(event.id);
+
+      if (standings.length === 0) {
+        continue;
+      }
+
+      results.push(...finalizeMatchupsForStandings(seasonId, weekKey, standings, event.metadata));
+    }
+
+    return results;
   }
 
   async rebuildPlayerCardAggregates(
@@ -381,6 +407,143 @@ export class InMemoryPlayPointRepository implements PlayPointRepository {
   private persistState() {
     this.persist?.(this.toSeed());
   }
+}
+
+function finalizeMatchupsForStandings(
+  seasonId: string,
+  weekKey: string,
+  standings: EventStanding[],
+  metadata?: Record<string, unknown>,
+): WeeklySeasonResult[] {
+  const matchupPairs = readMatchupPairs(metadata, standings);
+  const timestamp = new Date().toISOString();
+  const standingsByUserId = new Map(standings.map((standing) => [standing.userId, standing]));
+  const results: WeeklySeasonResult[] = [];
+  const coveredUsers = new Set<string>();
+
+  for (const [userId, opponentUserId] of matchupPairs) {
+    const userStanding = standingsByUserId.get(userId);
+    const opponentStanding = opponentUserId
+      ? standingsByUserId.get(opponentUserId)
+      : undefined;
+
+    if (!userStanding) {
+      continue;
+    }
+
+    coveredUsers.add(userId);
+    results.push({
+      seasonId,
+      weekKey,
+      userId,
+      opponentUserId: opponentUserId ?? null,
+      eventPoints: userStanding.pointsTotal,
+      eventVictories: userStanding.contestVictories,
+      result: resolveMatchupResult(userStanding, opponentStanding),
+      updatedAt: timestamp,
+    });
+  }
+
+  for (const standing of standings) {
+    if (coveredUsers.has(standing.userId)) {
+      continue;
+    }
+
+    results.push({
+      seasonId,
+      weekKey,
+      userId: standing.userId,
+      opponentUserId: null,
+      eventPoints: standing.pointsTotal,
+      eventVictories: standing.contestVictories,
+      result: "pending",
+      updatedAt: timestamp,
+    });
+  }
+
+  return results;
+}
+
+function readMatchupPairs(
+  metadata: Record<string, unknown> | undefined,
+  standings: EventStanding[],
+): Array<[string, string | null]> {
+  const value = metadata?.matchups;
+
+  if (Array.isArray(value)) {
+    const pairs: Array<[string, string | null]> = [];
+
+    for (const item of value) {
+      if (!item || typeof item !== "object" || Array.isArray(item)) {
+        continue;
+      }
+
+      const pair = item as Record<string, unknown>;
+      const userId = typeof pair.userId === "string" ? pair.userId : null;
+      const opponentUserId =
+        typeof pair.opponentUserId === "string" ? pair.opponentUserId : null;
+
+      if (userId) {
+        pairs.push([userId, opponentUserId]);
+      }
+    }
+
+    if (pairs.length > 0) {
+      return pairs;
+    }
+  }
+
+  if (standings.length === 2) {
+    return [
+      [standings[0].userId, standings[1].userId],
+      [standings[1].userId, standings[0].userId],
+    ];
+  }
+
+  return standings.map((standing) => [standing.userId, null]);
+}
+
+function resolveMatchupResult(
+  standing: EventStanding,
+  opponentStanding?: EventStanding,
+): WeeklySeasonResult["result"] {
+  if (!opponentStanding) {
+    return "pending";
+  }
+
+  if (standing.pointsTotal > opponentStanding.pointsTotal) {
+    return "win";
+  }
+
+  if (standing.pointsTotal < opponentStanding.pointsTotal) {
+    return "loss";
+  }
+
+  if (standing.playPointsTotal > opponentStanding.playPointsTotal) {
+    return "win";
+  }
+
+  if (standing.playPointsTotal < opponentStanding.playPointsTotal) {
+    return "loss";
+  }
+
+  return "tie";
+}
+
+function readWeekKey(metadata: Record<string, unknown> | undefined): string | null {
+  if (!metadata) {
+    return null;
+  }
+
+  if (typeof metadata.weekKey === "string") {
+    return metadata.weekKey;
+  }
+
+  if (typeof metadata.week === "string") {
+    return metadata.week;
+  }
+
+  return null;
 }
 
 export function createFootballMvpSeedData(): InMemoryPlayPointRepositorySeed {

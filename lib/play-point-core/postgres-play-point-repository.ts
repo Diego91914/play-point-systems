@@ -16,7 +16,9 @@ import type {
   PplContestRow,
   PplEntryRow,
   PplEventRow,
+  PplRewardRow,
   PplResolutionRow,
+  PplSeasonRow,
   PplTriggerRow,
   SqlQueryRunner,
 } from "./relational-models";
@@ -24,7 +26,9 @@ import {
   mapPplContestRowToRuntime,
   mapPplEntryRowToRuntime,
   mapPplEventRowToRuntime,
+  mapPplRewardRowToRuntime,
   mapPplResolutionRowToRuntime,
+  mapPplSeasonRowToRuntime,
   mapPplTriggerRowToRuntime,
 } from "./relational-mappers";
 
@@ -39,6 +43,30 @@ interface ContestLookupRow extends RuntimeIdLookupRow {
 interface StoredResolutionLookupRow extends PplResolutionRow {
   contest_runtime_id: string;
   trigger_runtime_id: string;
+}
+
+interface StoredTriggerDebugRow extends PplTriggerRow {
+  event_runtime_id: string;
+}
+
+interface ResolutionOutcomeAggregateRow {
+  outcome: Record<string, unknown>;
+  user_runtime_id: string | null;
+}
+
+interface EntryMetadataLookupRow {
+  user_runtime_id: string;
+  metadata: Record<string, unknown>;
+}
+
+interface RewardLookupRow extends PplRewardRow {
+  user_runtime_id: string;
+  contest_runtime_id: string | null;
+}
+
+interface ResolutionLinkRow extends RuntimeIdLookupRow {
+  contest_id: string;
+  contest_runtime_id: string;
 }
 
 export class PostgresPlayPointRepository implements PlayPointRepository {
@@ -62,8 +90,20 @@ export class PostgresPlayPointRepository implements PlayPointRepository {
   }
 
   async getSeason(seasonId: string): Promise<PlayPointSeason | null> {
-    void seasonId;
-    throw new Error("PostgresPlayPointRepository.getSeason is not wired yet.");
+    const rows = await this.runner.query<PplSeasonRow>(
+      `
+        select
+          s.*,
+          c.runtime_id as club_runtime_id
+        from ppl_seasons s
+        join ppl_clubs c on c.id = s.club_id
+        where s.runtime_id = $1
+        limit 1
+      `,
+      [seasonId],
+    );
+
+    return rows[0] ? mapPplSeasonRowToRuntime(rows[0]) : null;
   }
 
   async getContest(contestId: string): Promise<PlayPointContest | null> {
@@ -430,41 +470,373 @@ export class PostgresPlayPointRepository implements PlayPointRepository {
   }
 
   async saveRewards(rows: RewardRow[]): Promise<void> {
-    void rows;
-    throw new Error("PostgresPlayPointRepository.saveRewards is not wired yet.");
+    for (const row of rows) {
+      const userId = await this.resolveUserUuid(row.userId);
+      const rewardMetadata = readRecord(row.metadata);
+      let resolutionId: string | null = null;
+      let contestId: string | null = null;
+
+      if (row.sourceType === "contest_resolution") {
+        const resolutionLink = await this.resolveResolutionLink(row.sourceId);
+        resolutionId = resolutionLink.id;
+        contestId = resolutionLink.contest_id;
+      } else if (typeof rewardMetadata.resolutionId === "string") {
+        const resolutionLink = await this.resolveResolutionLink(
+          rewardMetadata.resolutionId,
+        );
+        resolutionId = resolutionLink.id;
+        contestId = resolutionLink.contest_id;
+      }
+
+      if (!contestId && typeof rewardMetadata.contestId === "string") {
+        contestId = await this.resolveContestUuid(rewardMetadata.contestId);
+      }
+
+      await this.runner.query(
+        `
+          insert into ppl_rewards (
+            runtime_id,
+            resolution_id,
+            contest_id,
+            user_id,
+            source_type,
+            source_runtime_id,
+            reward_type,
+            play_points_delta,
+            leaderboard_points_delta,
+            victory_credit,
+            achievement_key,
+            payload,
+            created_at
+          )
+          values (
+            $1,
+            $2,
+            $3,
+            $4,
+            $5,
+            $6,
+            $7,
+            $8,
+            $9,
+            $10,
+            $11,
+            $12::jsonb,
+            $13::timestamptz
+          )
+          on conflict (runtime_id) do update
+          set
+            resolution_id = excluded.resolution_id,
+            contest_id = excluded.contest_id,
+            user_id = excluded.user_id,
+            source_type = excluded.source_type,
+            source_runtime_id = excluded.source_runtime_id,
+            reward_type = excluded.reward_type,
+            play_points_delta = excluded.play_points_delta,
+            leaderboard_points_delta = excluded.leaderboard_points_delta,
+            victory_credit = excluded.victory_credit,
+            achievement_key = excluded.achievement_key,
+            payload = excluded.payload,
+            created_at = excluded.created_at
+        `,
+        [
+          row.id,
+          resolutionId,
+          contestId,
+          userId,
+          row.sourceType,
+          row.sourceId,
+          row.rewardType,
+          row.rewardType === "play_points" ? Math.trunc(row.amount ?? 0) : 0,
+          integerFromMetadata(rewardMetadata.leaderboardPointsDelta),
+          Boolean(rewardMetadata.victoryCredit),
+          typeof rewardMetadata.achievementKey === "string"
+            ? rewardMetadata.achievementKey
+            : row.sourceType === "achievement"
+              ? row.sourceId
+              : null,
+          JSON.stringify({
+            rewardType: row.rewardType,
+            amount: row.amount ?? null,
+            resolutionId:
+              typeof rewardMetadata.resolutionId === "string"
+                ? rewardMetadata.resolutionId
+                : null,
+            metadata: rewardMetadata,
+          }),
+          row.awardedAt,
+        ],
+      );
+    }
   }
 
   async rebuildEventStandings(eventId: string): Promise<EventStanding[]> {
-    void eventId;
-    throw new Error(
-      "PostgresPlayPointRepository.rebuildEventStandings is not wired yet.",
+    const rows = await this.runner.query<ResolutionOutcomeAggregateRow>(
+      `
+        select
+          r.outcome,
+          (r.outcome->>'userId') as user_runtime_id
+        from ppl_resolutions r
+        join ppl_contests c on c.id = r.contest_id
+        join ppl_events e on e.id = c.event_id
+        where e.runtime_id = $1
+          and r.resolution_status <> 'superseded'
+        order by r.applied_at asc
+      `,
+      [eventId],
     );
+
+    return rankEventStandings(eventId, rows);
   }
 
   async rebuildSeasonStandings(seasonId: string): Promise<SeasonStanding[]> {
-    void seasonId;
-    throw new Error(
-      "PostgresPlayPointRepository.rebuildSeasonStandings is not wired yet.",
+    const season = await this.getSeason(seasonId);
+
+    if (!season) {
+      return [];
+    }
+
+    const rows = await this.runner.query<ResolutionOutcomeAggregateRow>(
+      `
+        select
+          r.outcome,
+          (r.outcome->>'userId') as user_runtime_id
+        from ppl_resolutions r
+        join ppl_entries pe on pe.runtime_id = (r.outcome->>'entryId')
+        where pe.metadata->>'seasonId' = $1
+          and r.resolution_status <> 'superseded'
+        order by r.applied_at asc
+      `,
+      [seasonId],
     );
+
+    return rankSeasonStandings(season, rows);
   }
 
   async finalizeWeeklyMatchups(
     seasonId: string,
     weekKey: string,
   ): Promise<WeeklySeasonResult[]> {
-    void seasonId;
-    void weekKey;
-    throw new Error(
-      "PostgresPlayPointRepository.finalizeWeeklyMatchups is not wired yet.",
+    const season = await this.getSeason(seasonId);
+
+    if (!season || season.formatKey !== "head_to_head") {
+      return [];
+    }
+
+    const events = await this.runner.query<PplEventRow>(
+      `
+        select
+          e.*,
+          s.runtime_id as season_runtime_id
+        from ppl_events e
+        join ppl_seasons s on s.id = e.season_id
+        where s.runtime_id = $1
+        order by e.start_time asc nulls last, e.created_at asc
+      `,
+      [seasonId],
     );
+    const results: WeeklySeasonResult[] = [];
+
+    for (const row of events) {
+      if (readWeekKey(row.metadata) !== weekKey) {
+        continue;
+      }
+
+      const event = mapPplEventRowToRuntime(row);
+      const standings = await this.rebuildEventStandings(event.id);
+
+      if (standings.length === 0) {
+        continue;
+      }
+
+      results.push(...finalizeMatchupsForStandings(seasonId, weekKey, standings, event.metadata));
+    }
+
+    return results;
   }
 
   async rebuildPlayerCardAggregates(
     userIds: string[],
   ): Promise<PlayerCardAggregate[]> {
-    void userIds;
-    throw new Error(
-      "PostgresPlayPointRepository.rebuildPlayerCardAggregates is not wired yet.",
+    if (userIds.length === 0) {
+      return [];
+    }
+
+    const activeResolutions = await this.runner.query<ResolutionOutcomeAggregateRow>(
+      `
+        select
+          r.outcome,
+          (r.outcome->>'userId') as user_runtime_id
+        from ppl_resolutions r
+        where r.resolution_status <> 'superseded'
+          and (r.outcome->>'userId') = any($1)
+        order by r.applied_at asc
+      `,
+      [userIds],
+    );
+    const rewardRows = await this.runner.query<RewardLookupRow>(
+      `
+        select
+          rw.*,
+          u.runtime_id as user_runtime_id,
+          c.runtime_id as contest_runtime_id
+        from ppl_rewards rw
+        join ppl_users u on u.id = rw.user_id
+        left join ppl_contests c on c.id = rw.contest_id
+        where u.runtime_id = any($1)
+        order by rw.created_at asc
+      `,
+      [userIds],
+    );
+    const entryMetadataRows = await this.runner.query<EntryMetadataLookupRow>(
+      `
+        select
+          u.runtime_id as user_runtime_id,
+          pe.metadata
+        from ppl_entries pe
+        join ppl_users u on u.id = pe.user_id
+        where u.runtime_id = any($1)
+      `,
+      [userIds],
+    );
+    const eventRows = await this.runner.query<{ event_runtime_id: string }>(
+      `
+        select distinct pe.metadata->>'eventId' as event_runtime_id
+        from ppl_entries pe
+        join ppl_users u on u.id = pe.user_id
+        where u.runtime_id = any($1)
+          and pe.metadata->>'eventId' is not null
+      `,
+      [userIds],
+    );
+    const eventStandingsByEvent = new Map<string, EventStanding[]>();
+
+    for (const row of eventRows) {
+      if (!row.event_runtime_id) {
+        continue;
+      }
+
+      eventStandingsByEvent.set(
+        row.event_runtime_id,
+        await this.rebuildEventStandings(row.event_runtime_id),
+      );
+    }
+
+    return userIds.map((userId) => {
+      const userOutcomes = activeResolutions
+        .filter((row) => row.user_runtime_id === userId)
+        .map((row) => readOutcome(row.outcome));
+      const userRewards = rewardRows
+        .filter((row) => row.user_runtime_id === userId)
+        .map((row) =>
+          mapPplRewardRowToRuntime({
+            row,
+            userRuntimeId: userId,
+            contestRuntimeId: row.contest_runtime_id,
+          }),
+        );
+      const seasonIds = new Set(
+        entryMetadataRows
+          .filter((row) => row.user_runtime_id === userId)
+          .map((row) => {
+            const metadata = readRecord(row.metadata);
+            return typeof metadata.seasonId === "string" ? metadata.seasonId : null;
+          })
+          .filter((seasonEntryId): seasonEntryId is string => seasonEntryId !== null),
+      );
+      const careerEventWins = [...eventStandingsByEvent.values()].filter(
+        (rows) => rows[0]?.userId === userId,
+      ).length;
+
+      return {
+        userId,
+        clubId: null,
+        lifetimePlayPoints:
+          userOutcomes.reduce(
+            (sum, outcome) => sum + numberOrZero(outcome.playPointsDelta),
+            0,
+          ) +
+          userRewards.reduce((sum, reward) => sum + (reward.amount ?? 0), 0),
+        careerContestVictories: userOutcomes.filter((outcome) =>
+          Boolean(outcome.isVictory),
+        ).length,
+        careerEventWins,
+        seasonsPlayed: seasonIds.size,
+        bestActivityStreak: 0,
+        bestWinStreak: 0,
+        updatedAt: new Date().toISOString(),
+      };
+    });
+  }
+
+  async listEventTriggers(eventId: string): Promise<PlayPointTrigger[]> {
+    const rows = await this.runner.query<StoredTriggerDebugRow>(
+      `
+        select
+          t.*,
+          e.runtime_id as event_runtime_id
+        from ppl_triggers t
+        join ppl_events e on e.id = t.event_id
+        where e.runtime_id = $1
+        order by coalesce(t.provider_timestamp, t.ingested_at) desc
+      `,
+      [eventId],
+    );
+
+    return rows.map(mapPplTriggerRowToRuntime);
+  }
+
+  async listEventResolutions(eventId: string): Promise<ResolutionRow[]> {
+    const rows = await this.runner.query<StoredResolutionLookupRow>(
+      `
+        select
+          r.*,
+          c.runtime_id as contest_runtime_id,
+          t.runtime_id as trigger_runtime_id
+        from ppl_resolutions r
+        join ppl_contests c on c.id = r.contest_id
+        join ppl_triggers t on t.id = r.trigger_id
+        join ppl_events e on e.id = c.event_id
+        where e.runtime_id = $1
+        order by r.applied_at desc
+      `,
+      [eventId],
+    );
+
+    return rows.map((row) =>
+      mapPplResolutionRowToRuntime({
+        row,
+        triggerId: row.trigger_runtime_id,
+        contestId: row.contest_runtime_id,
+      }),
+    );
+  }
+
+  async listEventRewards(eventId: string): Promise<RewardRow[]> {
+    const rows = await this.runner.query<RewardLookupRow>(
+      `
+        select
+          rw.*,
+          u.runtime_id as user_runtime_id,
+          c.runtime_id as contest_runtime_id
+        from ppl_rewards rw
+        join ppl_users u on u.id = rw.user_id
+        left join ppl_contests c on c.id = rw.contest_id
+        left join ppl_events e on e.id = c.event_id
+        where e.runtime_id = $1
+          or rw.source_runtime_id = $1
+          or rw.payload->'metadata'->>'eventId' = $1
+        order by rw.created_at desc
+      `,
+      [eventId],
+    );
+
+    return rows.map((row) =>
+      mapPplRewardRowToRuntime({
+        row,
+        userRuntimeId: row.user_runtime_id,
+        contestRuntimeId: row.contest_runtime_id,
+      }),
     );
   }
 
@@ -494,6 +866,30 @@ export class PostgresPlayPointRepository implements PlayPointRepository {
     return rows[0].id;
   }
 
+  private async resolveResolutionLink(
+    resolutionRuntimeId: string,
+  ): Promise<ResolutionLinkRow> {
+    const rows = await this.runner.query<ResolutionLinkRow>(
+      `
+        select
+          r.id,
+          r.contest_id,
+          c.runtime_id as contest_runtime_id
+        from ppl_resolutions r
+        join ppl_contests c on c.id = r.contest_id
+        where r.runtime_id = $1
+        limit 1
+      `,
+      [resolutionRuntimeId],
+    );
+
+    if (!rows[0]) {
+      throw new Error(`Resolution "${resolutionRuntimeId}" was not found.`);
+    }
+
+    return rows[0];
+  }
+
   private async resolveUserUuid(userRuntimeId: string): Promise<string> {
     const rows = await this.runner.query<RuntimeIdLookupRow>(
       `select id from ppl_users where runtime_id = $1 limit 1`,
@@ -502,6 +898,19 @@ export class PostgresPlayPointRepository implements PlayPointRepository {
 
     if (!rows[0]) {
       throw new Error(`User "${userRuntimeId}" was not found.`);
+    }
+
+    return rows[0].id;
+  }
+
+  private async resolveContestUuid(contestRuntimeId: string): Promise<string> {
+    const rows = await this.runner.query<RuntimeIdLookupRow>(
+      `select id from ppl_contests where runtime_id = $1 limit 1`,
+      [contestRuntimeId],
+    );
+
+    if (!rows[0]) {
+      throw new Error(`Contest "${contestRuntimeId}" was not found.`);
     }
 
     return rows[0].id;
@@ -549,4 +958,291 @@ export class PostgresPlayPointRepository implements PlayPointRepository {
 
     return "manual";
   }
+}
+
+function rankEventStandings(
+  eventId: string,
+  rows: ResolutionOutcomeAggregateRow[],
+): EventStanding[] {
+  const aggregates = new Map<
+    string,
+    {
+      userId: string;
+      pointsTotal: number;
+      playPointsTotal: number;
+      contestVictories: number;
+      accuracyValues: number[];
+    }
+  >();
+
+  for (const row of rows) {
+    if (!row.user_runtime_id) {
+      continue;
+    }
+
+    const outcome = readOutcome(row.outcome);
+    const current = aggregates.get(row.user_runtime_id) ?? {
+      userId: row.user_runtime_id,
+      pointsTotal: 0,
+      playPointsTotal: 0,
+      contestVictories: 0,
+      accuracyValues: [],
+    };
+
+    current.pointsTotal += numberOrZero(outcome.scoreDelta);
+    current.playPointsTotal += numberOrZero(outcome.playPointsDelta);
+    current.contestVictories += Boolean(outcome.isVictory) ? 1 : 0;
+
+    if (typeof outcome.accuracyDelta === "number" && Number.isFinite(outcome.accuracyDelta)) {
+      current.accuracyValues.push(outcome.accuracyDelta);
+    }
+
+    aggregates.set(row.user_runtime_id, current);
+  }
+
+  const timestamp = new Date().toISOString();
+
+  return rankRows<EventStanding>(
+    [...aggregates.values()].map((row) => ({
+      eventId,
+      userId: row.userId,
+      pointsTotal: row.pointsTotal,
+      playPointsTotal: row.playPointsTotal,
+      contestVictories: row.contestVictories,
+      accuracyAverage:
+        row.accuracyValues.length > 0
+          ? row.accuracyValues.reduce((sum, value) => sum + value, 0) /
+            row.accuracyValues.length
+          : null,
+      tiebreakScore: row.playPointsTotal,
+      updatedAt: timestamp,
+    })),
+    (left, right) =>
+      right.pointsTotal - left.pointsTotal ||
+      right.playPointsTotal - left.playPointsTotal ||
+      right.contestVictories - left.contestVictories,
+  );
+}
+
+function rankSeasonStandings(
+  season: PlayPointSeason,
+  rows: ResolutionOutcomeAggregateRow[],
+): SeasonStanding[] {
+  const aggregates = new Map<
+    string,
+    {
+      userId: string;
+      pointsTotal: number;
+      playPointsTotal: number;
+      wins: number;
+    }
+  >();
+
+  for (const row of rows) {
+    if (!row.user_runtime_id) {
+      continue;
+    }
+
+    const outcome = readOutcome(row.outcome);
+    const current = aggregates.get(row.user_runtime_id) ?? {
+      userId: row.user_runtime_id,
+      pointsTotal: 0,
+      playPointsTotal: 0,
+      wins: 0,
+    };
+
+    current.pointsTotal += numberOrZero(outcome.scoreDelta);
+    current.playPointsTotal += numberOrZero(outcome.playPointsDelta);
+    current.wins += Boolean(outcome.isVictory) ? 1 : 0;
+    aggregates.set(row.user_runtime_id, current);
+  }
+
+  const timestamp = new Date().toISOString();
+
+  return rankRows<SeasonStanding>(
+    [...aggregates.values()].map((row) => ({
+      seasonId: season.id,
+      userId: row.userId,
+      formatKey: season.formatKey,
+      pointsTotal: row.pointsTotal,
+      playPointsTotal: row.playPointsTotal,
+      wins: row.wins,
+      losses: 0,
+      ties: 0,
+      pointsFor: row.pointsTotal,
+      pointsAgainst: 0,
+      currentStreak: null,
+      updatedAt: timestamp,
+    })),
+    (left, right) =>
+      right.pointsTotal - left.pointsTotal ||
+      right.playPointsTotal - left.playPointsTotal ||
+      right.wins - left.wins,
+  );
+}
+
+function rankRows<T extends { rank?: number | null }>(
+  rows: T[],
+  compare: (left: T, right: T) => number,
+): T[] {
+  const sorted = [...rows].sort(compare);
+  return sorted.map((row, index) => ({
+    ...row,
+    rank: index + 1,
+  }));
+}
+
+function readRecord(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+}
+
+function readOutcome(value: unknown): Record<string, unknown> {
+  return readRecord(value);
+}
+
+function numberOrZero(value: unknown): number {
+  return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
+
+function integerFromMetadata(value: unknown): number {
+  return typeof value === "number" && Number.isFinite(value) ? Math.trunc(value) : 0;
+}
+
+function finalizeMatchupsForStandings(
+  seasonId: string,
+  weekKey: string,
+  standings: EventStanding[],
+  metadata?: Record<string, unknown>,
+): WeeklySeasonResult[] {
+  const matchupPairs = readMatchupPairs(metadata, standings);
+  const timestamp = new Date().toISOString();
+  const standingsByUserId = new Map(standings.map((standing) => [standing.userId, standing]));
+  const results: WeeklySeasonResult[] = [];
+  const coveredUsers = new Set<string>();
+
+  for (const [userId, opponentUserId] of matchupPairs) {
+    const userStanding = standingsByUserId.get(userId);
+    const opponentStanding = opponentUserId
+      ? standingsByUserId.get(opponentUserId)
+      : undefined;
+
+    if (!userStanding) {
+      continue;
+    }
+
+    coveredUsers.add(userId);
+    results.push({
+      seasonId,
+      weekKey,
+      userId,
+      opponentUserId: opponentUserId ?? null,
+      eventPoints: userStanding.pointsTotal,
+      eventVictories: userStanding.contestVictories,
+      result: resolveMatchupResult(userStanding, opponentStanding),
+      updatedAt: timestamp,
+    });
+  }
+
+  for (const standing of standings) {
+    if (coveredUsers.has(standing.userId)) {
+      continue;
+    }
+
+    results.push({
+      seasonId,
+      weekKey,
+      userId: standing.userId,
+      opponentUserId: null,
+      eventPoints: standing.pointsTotal,
+      eventVictories: standing.contestVictories,
+      result: "pending",
+      updatedAt: timestamp,
+    });
+  }
+
+  return results;
+}
+
+function readMatchupPairs(
+  metadata: Record<string, unknown> | undefined,
+  standings: EventStanding[],
+): Array<[string, string | null]> {
+  const value = metadata?.matchups;
+
+  if (Array.isArray(value)) {
+    const pairs: Array<[string, string | null]> = [];
+
+    for (const item of value) {
+      if (!item || typeof item !== "object" || Array.isArray(item)) {
+        continue;
+      }
+
+      const pair = item as Record<string, unknown>;
+      const userId = typeof pair.userId === "string" ? pair.userId : null;
+      const opponentUserId =
+        typeof pair.opponentUserId === "string" ? pair.opponentUserId : null;
+
+      if (userId) {
+        pairs.push([userId, opponentUserId]);
+      }
+    }
+
+    if (pairs.length > 0) {
+      return pairs;
+    }
+  }
+
+  if (standings.length === 2) {
+    return [
+      [standings[0].userId, standings[1].userId],
+      [standings[1].userId, standings[0].userId],
+    ];
+  }
+
+  return standings.map((standing) => [standing.userId, null]);
+}
+
+function resolveMatchupResult(
+  standing: EventStanding,
+  opponentStanding?: EventStanding,
+): WeeklySeasonResult["result"] {
+  if (!opponentStanding) {
+    return "pending";
+  }
+
+  if (standing.pointsTotal > opponentStanding.pointsTotal) {
+    return "win";
+  }
+
+  if (standing.pointsTotal < opponentStanding.pointsTotal) {
+    return "loss";
+  }
+
+  if (standing.playPointsTotal > opponentStanding.playPointsTotal) {
+    return "win";
+  }
+
+  if (standing.playPointsTotal < opponentStanding.playPointsTotal) {
+    return "loss";
+  }
+
+  return "tie";
+}
+
+function readWeekKey(metadata: Record<string, unknown> | undefined): string | null {
+  if (!metadata) {
+    return null;
+  }
+
+  if (typeof metadata.weekKey === "string") {
+    return metadata.weekKey;
+  }
+
+  if (typeof metadata.week === "string") {
+    return metadata.week;
+  }
+
+  return null;
 }

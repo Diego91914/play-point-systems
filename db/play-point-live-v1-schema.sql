@@ -256,9 +256,11 @@ create table ppl_resolutions (
 create table ppl_rewards (
   id uuid primary key default gen_random_uuid(),
   runtime_id text not null unique,
-  resolution_id uuid not null references ppl_resolutions(id) on delete cascade,
-  contest_id uuid not null references ppl_contests(id) on delete cascade,
+  resolution_id uuid references ppl_resolutions(id) on delete cascade,
+  contest_id uuid references ppl_contests(id) on delete cascade,
   user_id uuid not null references ppl_users(id) on delete cascade,
+  source_type text not null,
+  source_runtime_id text not null,
   reward_type text not null,
   play_points_delta integer not null default 0,
   leaderboard_points_delta integer not null default 0,
@@ -266,8 +268,18 @@ create table ppl_rewards (
   achievement_key text,
   payload jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now(),
+  constraint ppl_rewards_source_type_check
+    check (
+      source_type in (
+        'contest_resolution',
+        'event_finish',
+        'season_result',
+        'achievement',
+        'streak'
+      )
+    ),
   constraint ppl_rewards_type_check
-    check (reward_type in ('play_points', 'leaderboard_points', 'victory', 'achievement', 'compound'))
+    check (reward_type in ('play_points', 'badge', 'title', 'trophy'))
 );
 
 create table ppl_standings (

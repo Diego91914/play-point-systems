@@ -53,6 +53,26 @@ export type PplResolutionType =
   | "advancement_match"
   | "weighted_points";
 
+export interface PplSeasonRow {
+  id: string;
+  runtime_id: string;
+  club_id: string;
+  club_runtime_id?: string | null;
+  slug: string;
+  name: string;
+  sport: string;
+  format: PplSeasonFormat;
+  scoring_mode: PplSourceMode;
+  status: "draft" | "scheduled" | "active" | "complete" | "archived";
+  starts_at: string | null;
+  ends_at: string | null;
+  playoff_size: number | null;
+  settings: Record<string, unknown>;
+  created_by_user_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface PplEventRow {
   id: string;
   runtime_id: string;
@@ -135,6 +155,28 @@ export interface PplResolutionRow {
   applied_at: string;
   applied_by_user_id: string | null;
   notes: string | null;
+}
+
+export interface PplRewardRow {
+  id: string;
+  runtime_id: string;
+  resolution_id: string | null;
+  contest_id: string | null;
+  user_id: string;
+  source_type:
+    | "contest_resolution"
+    | "event_finish"
+    | "season_result"
+    | "achievement"
+    | "streak";
+  source_runtime_id: string;
+  reward_type: "play_points" | "badge" | "title" | "trophy";
+  play_points_delta: number;
+  leaderboard_points_delta: number;
+  victory_credit: boolean;
+  achievement_key: string | null;
+  payload: Record<string, unknown>;
+  created_at: string;
 }
 
 export interface SqlQueryRunner {

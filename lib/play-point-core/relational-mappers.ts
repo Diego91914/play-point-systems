@@ -2,6 +2,8 @@ import type {
   PlayPointContest,
   PlayPointEntry,
   PlayPointEvent,
+  RewardRow,
+  PlayPointSeason,
   PlayPointTrigger,
   ResolutionRow,
 } from "./runtime-contracts";
@@ -9,9 +11,38 @@ import type {
   PplContestRow,
   PplEntryRow,
   PplEventRow,
+  PplRewardRow,
   PplResolutionRow,
+  PplSeasonRow,
   PplTriggerRow,
 } from "./relational-models";
+
+export function mapPplSeasonRowToRuntime(row: PplSeasonRow): PlayPointSeason {
+  const formatKey: PlayPointSeason["formatKey"] =
+    row.format === "points"
+      ? "total_points"
+      : row.format === "head_to_head"
+        ? "head_to_head"
+        : "championship_series";
+
+  const status: PlayPointSeason["status"] =
+    row.status === "complete"
+      ? "completed"
+      : row.status === "scheduled"
+        ? "draft"
+        : row.status;
+
+  return {
+    id: row.runtime_id,
+    clubId: row.club_runtime_id ?? row.club_id,
+    name: row.name,
+    sportKey: row.sport as PlayPointSeason["sportKey"],
+    formatKey,
+    status,
+    startsAt: row.starts_at,
+    endsAt: row.ends_at,
+  };
+}
 
 export function mapPplEventRowToRuntime(row: PplEventRow): PlayPointEvent {
   const status: PlayPointEvent["status"] =
@@ -164,6 +195,39 @@ export function mapPplResolutionRowToRuntime(args: {
   };
 }
 
+export function mapPplRewardRowToRuntime(args: {
+  row: PplRewardRow;
+  userRuntimeId: string;
+  contestRuntimeId?: string | null;
+}): RewardRow {
+  const payload = readRecord(args.row.payload);
+  const metadata = readRecord(payload.metadata);
+
+  return {
+    id: args.row.runtime_id,
+    userId: args.userRuntimeId,
+    sourceType: args.row.source_type,
+    sourceId: args.row.source_runtime_id,
+    rewardType: readRewardType(args.row.reward_type, payload),
+    amount:
+      args.row.reward_type === "play_points"
+        ? args.row.play_points_delta
+        : typeof payload.amount === "number" && Number.isFinite(payload.amount)
+          ? payload.amount
+          : null,
+    metadata: {
+      ...metadata,
+      contestId: args.contestRuntimeId ?? metadata.contestId ?? null,
+      resolutionId:
+        typeof payload.resolutionId === "string" ? payload.resolutionId : null,
+      leaderboardPointsDelta: args.row.leaderboard_points_delta,
+      victoryCredit: args.row.victory_credit,
+      achievementKey: args.row.achievement_key,
+    },
+    awardedAt: args.row.created_at,
+  };
+}
+
 function numberOrZero(value: unknown) {
   return typeof value === "number" && Number.isFinite(value) ? value : 0;
 }
@@ -188,6 +252,33 @@ function readTriggerLifecycleStatus(
     value === "corrected"
     ? value
     : "accepted";
+}
+
+function readRewardType(
+  storedType: string,
+  payload: Record<string, unknown>,
+): RewardRow["rewardType"] {
+  if (
+    storedType === "play_points" ||
+    storedType === "badge" ||
+    storedType === "title" ||
+    storedType === "trophy"
+  ) {
+    return storedType;
+  }
+
+  const payloadType = payload.rewardType;
+
+  if (
+    payloadType === "play_points" ||
+    payloadType === "badge" ||
+    payloadType === "title" ||
+    payloadType === "trophy"
+  ) {
+    return payloadType;
+  }
+
+  return "play_points";
 }
 
 function triggerIdOrFallback(row: PplResolutionRow, fallback: string) {

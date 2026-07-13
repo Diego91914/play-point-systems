@@ -13,6 +13,7 @@ import {
   type FootballMvpStorageMode,
 } from "./football-mvp-storage";
 import { PostgresPlayPointRepository } from "./postgres-play-point-repository";
+import { createSupabaseSqlRunnerFromEnv } from "./supabase-sql-runner";
 import type { SqlQueryRunner } from "./relational-models";
 import type {
   PlayPointRepository,
@@ -34,7 +35,7 @@ export interface FootballMvpRepositoryBinding {
   storageMode: FootballMvpStorageMode;
   requestedStorageMode: string | null;
   persistencePath: string | null;
-  getDebugState(): FootballMvpRuntimeDebugState;
+  getDebugState(): Promise<FootballMvpRuntimeDebugState>;
 }
 
 export interface CreateFootballMvpRepositoryOptions {
@@ -51,17 +52,10 @@ export function createFootballMvpRepositoryBinding(
   const seed = options.seed ?? createFootballMvpSeedData();
 
   if (storageMode === "postgres") {
-    if (!options.postgresRunner) {
-      throw new Error(
-        [
-          "PLAY_POINT_LIVE_STORAGE_MODE is set to postgres,",
-          "but no SqlQueryRunner was provided to createFootballMvpRuntime.",
-          "Wire a real database client before enabling postgres mode.",
-        ].join(" "),
-      );
-    }
-
-    const repository = new PostgresPlayPointRepository(options.postgresRunner);
+    const runner =
+      options.postgresRunner ?? createSupabaseSqlRunnerFromEnv(process.env);
+    const repository = new PostgresPlayPointRepository(runner);
+    const primaryEventId = seed.events?.[0]?.id ?? null;
 
     return {
       seed,
@@ -69,13 +63,21 @@ export function createFootballMvpRepositoryBinding(
       storageMode,
       requestedStorageMode: storageResolution.requestedMode,
       persistencePath: null,
-      getDebugState() {
+      async getDebugState() {
+        if (!primaryEventId) {
+          return {
+            triggers: [],
+            resolutions: [],
+            rewards: [],
+            note:
+              "Postgres mode is enabled, but no primary seed event is available for debug hydration.",
+          };
+        }
+
         return {
-          triggers: [],
-          resolutions: [],
-          rewards: [],
-          note:
-            "Postgres mode is enabled, but dashboard debug snapshots are still wired only for the JSON demo repository.",
+          triggers: await repository.listEventTriggers(primaryEventId),
+          resolutions: await repository.listEventResolutions(primaryEventId),
+          rewards: await repository.listEventRewards(primaryEventId),
         };
       },
     };
@@ -93,7 +95,7 @@ export function createFootballMvpRepositoryBinding(
     storageMode,
     requestedStorageMode: storageResolution.requestedMode,
     persistencePath: getFootballMvpPersistencePath(),
-    getDebugState() {
+    async getDebugState() {
       return {
         triggers: repository.listTriggers(),
         resolutions: repository.listResolutions(),
