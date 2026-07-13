@@ -103,6 +103,10 @@ function formatContestFormat(formatKey: PlayPointContest["formatKey"]) {
   return formatKey.replaceAll("_", " ");
 }
 
+function formatRuleKey(ruleKey: string) {
+  return ruleKey.replaceAll("_", " ");
+}
+
 function renderSelection(entry: PlayPointEntry) {
   if ("teamKey" in entry.selection && typeof entry.selection.teamKey === "string") {
     return `Pick: ${entry.selection.teamKey}`;
@@ -321,15 +325,15 @@ export function FootballMvpPlayerExperience() {
               Game Night Player
             </div>
             <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">
-              Join fast, follow your square, stay for the reveal.
+              Make 3 quick picks, then stay for the Q3 reveal.
             </h2>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-white/74">
-              This side is for guests. Make your picks quickly, watch the live square,
-              and see whether the Q3 reveal turns your square into a real bar reward.
+              This side is for guests. Pick the winner, predict the final score,
+              choose your lucky square digits, and see whether the bar turns your square into a prize.
             </p>
             <div className="mt-5 flex flex-wrap gap-3 text-xs text-white/58">
               <div className="rounded-full border border-white/10 bg-black/20 px-3 py-2">
-                Demo storage {dashboard.storageMode ?? "json"}
+                Prototype storage {dashboard.storageMode ?? "json"}
               </div>
               {dashboard.storageNotice ? (
                 <div className="rounded-full border border-amber-300/20 bg-amber-400/10 px-3 py-2 text-amber-50">
@@ -337,7 +341,7 @@ export function FootballMvpPlayerExperience() {
                 </div>
               ) : null}
             </div>
-            <div className="mt-6 grid gap-3 md:grid-cols-3">
+            <div className="mt-6 grid gap-3 md:grid-cols-2">
               <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/76">
                 <div className="font-semibold text-white">Pick 1</div>
                 <div className="mt-1">Choose which team wins.</div>
@@ -349,6 +353,10 @@ export function FootballMvpPlayerExperience() {
               <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/76">
                 <div className="font-semibold text-white">Pick 3</div>
                 <div className="mt-1">Choose the last digit for each team score.</div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/76">
+                <div className="font-semibold text-white">Reveal moment</div>
+                <div className="mt-1">The bar reveals hidden square prizes when the venue posts the Q3 score.</div>
               </div>
             </div>
             <div className="mt-6 rounded-2xl border border-cyan-300/18 bg-cyan-400/10 px-4 py-4 text-sm text-cyan-50">
@@ -454,6 +462,16 @@ export function FootballMvpPlayerExperience() {
                   : "Hidden until Q3"}
               </div>
             </div>
+            <div className="mt-5 grid gap-3 md:grid-cols-3">
+              {dashboard.venueProgram.rules.map((rule, index) => (
+                <div
+                  key={`${index}-${rule}`}
+                  className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/74"
+                >
+                  {rule}
+                </div>
+              ))}
+            </div>
             <div className="mt-5 rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/74">
               {dashboard.venueProgram.activeSquareKey ? (
                 <>
@@ -513,14 +531,17 @@ export function FootballMvpPlayerExperience() {
                 </h3>
               </div>
               <div className="text-sm text-white/62">
-                These picks are saved for this game and scored when venue control posts results.
+                These picks are tied to this game and scored as venue control posts updates.
               </div>
             </div>
 
             <div className="mt-6 grid gap-4">
               <div className="grid gap-4 lg:grid-cols-3">
-                <label className="grid gap-2 text-sm text-white/76">
-                  <span className="font-semibold text-white/88">Winner pick</span>
+                <label className="grid gap-2 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-white/76">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45">
+                    Pick 1
+                  </span>
+                  <span className="font-semibold text-white/88">Who wins?</span>
                   <select
                     value={winnerPick}
                     onChange={(event) => setWinnerPick(event.target.value)}
@@ -530,7 +551,10 @@ export function FootballMvpPlayerExperience() {
                     <option value="packers">Packers</option>
                   </select>
                 </label>
-                <label className="grid gap-2 text-sm text-white/76">
+                <label className="grid gap-2 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-white/76">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45">
+                    Pick 2
+                  </span>
                   <span className="font-semibold text-white/88">Predicted Bears score</span>
                   <input
                     value={predictedHomeScore}
@@ -539,7 +563,10 @@ export function FootballMvpPlayerExperience() {
                     className="rounded-2xl border border-white/12 bg-black/25 px-4 py-3 text-white outline-none transition focus:border-cyan-300/40"
                   />
                 </label>
-                <label className="grid gap-2 text-sm text-white/76">
+                <label className="grid gap-2 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-white/76">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45">
+                    Pick 2
+                  </span>
                   <span className="font-semibold text-white/88">Predicted Packers score</span>
                   <input
                     value={predictedAwayScore}
@@ -550,8 +577,11 @@ export function FootballMvpPlayerExperience() {
                 </label>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
-                <label className="grid gap-2 text-sm text-white/76">
-                  <span className="font-semibold text-white/88">Squares home digit</span>
+                <label className="grid gap-2 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-white/76">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45">
+                    Pick 3
+                  </span>
+                  <span className="font-semibold text-white/88">Bears last digit</span>
                   <input
                     value={squareHomeDigit}
                     onChange={(event) => setSquareHomeDigit(event.target.value)}
@@ -559,8 +589,11 @@ export function FootballMvpPlayerExperience() {
                     className="rounded-2xl border border-white/12 bg-black/25 px-4 py-3 text-white outline-none transition focus:border-cyan-300/40"
                   />
                 </label>
-                <label className="grid gap-2 text-sm text-white/76">
-                  <span className="font-semibold text-white/88">Squares away digit</span>
+                <label className="grid gap-2 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-white/76">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45">
+                    Pick 3
+                  </span>
+                  <span className="font-semibold text-white/88">Packers last digit</span>
                   <input
                     value={squareAwayDigit}
                     onChange={(event) => setSquareAwayDigit(event.target.value)}
@@ -598,18 +631,18 @@ export function FootballMvpPlayerExperience() {
                   Your game card
                 </div>
                 <h3 className="mt-3 text-2xl font-black text-white">
-                  Picks already on the board
+                  Your saved picks
                 </h3>
               </div>
               <div className="text-sm text-white/62">
-                These cards show what is currently saved for this player.
+                This is what the venue game currently has saved for you.
               </div>
             </div>
 
             <div className="mt-6 grid gap-4">
               {playerEntries.length === 0 ? (
                 <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4 text-sm text-white/60">
-                  No contest entries are loaded for this player yet.
+                  No saved picks for this player yet.
                 </div>
               ) : (
                 playerEntries.map((entry) => {
@@ -649,7 +682,7 @@ export function FootballMvpPlayerExperience() {
                         </div>
                         <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/72">
                           {latestResolution
-                            ? `Latest outcome: ${latestResolution.ruleKey} - ${latestResolution.scoreDelta} points`
+                            ? `Latest result: ${formatRuleKey(latestResolution.ruleKey)} for ${latestResolution.scoreDelta} game points`
                             : "Waiting for settlement"}
                         </div>
                       </div>
@@ -689,8 +722,8 @@ export function FootballMvpPlayerExperience() {
                         </div>
                       </div>
                       <div className="mt-2 text-sm text-white/70">
-                        Score {row.scoreDelta} - Play Points {row.playPointsDelta} - Victory{" "}
-                        {row.isVictory ? "yes" : "no"}
+                        {row.scoreDelta} game points, {row.playPointsDelta} Play Points,{" "}
+                        {row.isVictory ? "winning result" : "not a winning result"}
                       </div>
                     </div>
                   ))
@@ -762,7 +795,7 @@ export function FootballMvpPlayerExperience() {
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">
               Score updates
             </div>
-            <h3 className="mt-3 text-2xl font-black text-white">What venue control has posted</h3>
+            <h3 className="mt-3 text-2xl font-black text-white">Live score feed</h3>
             <div className="mt-5 grid gap-3">
               {dashboard.triggers.length === 0 ? (
                 <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/60">
@@ -811,13 +844,13 @@ export function FootballMvpPlayerExperience() {
             </div>
             <div className="mt-4 grid gap-3 text-sm text-white/76">
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
-                Winner pick: choose Bears or Packers. Correct pick = 10 event points and 5 Play Points.
+                Winner pick: choose Bears or Packers. A correct pick earns 10 event points and 5 Play Points.
               </div>
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
-                Final score: exact score = 40 points, closest score = 20 points.
+                Final score: exact score earns 40 event points. Closest score earns 20.
               </div>
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
-                Squares: matching ending digits can score at quarter breaks and at final.
+                Lucky square: matching the ending digits can score at quarter breaks and again at final.
               </div>
             </div>
           </article>

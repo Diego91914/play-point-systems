@@ -76,6 +76,9 @@ type VenueProgramEditorState = {
   slots: VenueRewardSlot[];
 };
 
+const DEFAULT_VENUE_EDITOR_RULE_COUNT = 3;
+const DEFAULT_VENUE_EDITOR_SLOT_COUNT = 4;
+
 const emptyDashboardState: FootballMvpDashboardState = {
   seededEvents: [],
   seededContests: [],
@@ -117,10 +120,44 @@ const initialCorrectionForm: CorrectionFormState = {
   reason: "Manual host correction",
 };
 
+function createEmptyVenueRewardSlot(index: number): VenueRewardSlot {
+  return {
+    id: `reward-slot-${index + 1}`,
+    squareKey: "",
+    rewardName: "",
+    sponsorLabel: "",
+    redeemHint: "",
+  };
+}
+
+function normalizeVenueEditorRules(rules: string[]) {
+  const nextRules = rules.length > 0 ? [...rules] : [];
+
+  while (nextRules.length < DEFAULT_VENUE_EDITOR_RULE_COUNT) {
+    nextRules.push("");
+  }
+
+  return nextRules;
+}
+
+function normalizeVenueEditorSlots(slots: VenueRewardSlot[]) {
+  if (slots.length === 0) {
+    return Array.from(
+      { length: DEFAULT_VENUE_EDITOR_SLOT_COUNT },
+      (_, index) => createEmptyVenueRewardSlot(index),
+    );
+  }
+
+  return slots.map((slot, index) => ({
+    ...createEmptyVenueRewardSlot(index),
+    ...slot,
+  }));
+}
+
 const emptyVenueProgramEditorState: VenueProgramEditorState = {
   headline: "",
-  rules: [],
-  slots: [],
+  rules: normalizeVenueEditorRules([]),
+  slots: normalizeVenueEditorSlots([]),
 };
 
 function formatTimestamp(value?: string | null) {
@@ -191,8 +228,8 @@ export function FootballMvpHostExperience() {
   function syncVenueEditor(program: VenueProgramState) {
     setVenueEditor({
       headline: program.headline,
-      rules: program.rules.length > 0 ? [...program.rules] : ["", "", ""],
-      slots: program.slots.map((slot) => ({ ...slot })),
+      rules: normalizeVenueEditorRules(program.rules),
+      slots: normalizeVenueEditorSlots(program.slots),
     });
   }
 
@@ -431,7 +468,7 @@ export function FootballMvpHostExperience() {
     }
 
     await refreshDashboard();
-    setResponseSummary("Saved the venue reward board for tonight's game.");
+    setResponseSummary("Saved tonight's hidden rewards for the venue game.");
   }
 
   return (
@@ -460,24 +497,24 @@ export function FootballMvpHostExperience() {
               </div>
               <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">
-                  Pick types
+                  Guest game
                 </div>
                 <div className="mt-2 text-sm font-semibold text-white/90">
-                  {dashboard.seededContests.length} kinds of picks
+                  3 quick picks per player
                 </div>
               </div>
               <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">
-                  Players
+                  Hidden rewards
                 </div>
                 <div className="mt-2 text-sm font-semibold text-white/90">
-                  {new Set(dashboard.seededEntries.map((entry) => entry.userId)).size} players
+                  {dashboard.venueProgram.slots.length} square reveals tonight
                 </div>
               </div>
             </div>
             <div className="mt-4 flex flex-wrap gap-3 text-xs text-white/58">
               <div className="rounded-full border border-white/10 bg-black/20 px-3 py-2">
-                Demo storage {dashboard.storageMode ?? "json"}
+                Prototype storage {dashboard.storageMode ?? "json"}
               </div>
               {dashboard.requestedStorageMode &&
               dashboard.requestedStorageMode !== dashboard.storageMode ? (
@@ -521,22 +558,29 @@ export function FootballMvpHostExperience() {
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">
                   Step 1
                 </div>
-                <div className="mt-2 font-semibold text-white">Set the live moment</div>
-                <div className="mt-1">Post quarter scores so the room keeps checking the board.</div>
+                <div className="mt-2 font-semibold text-white">Program the reward squares</div>
+                <div className="mt-1">Choose which score endings unlock prizes and what the bar gives away.</div>
               </div>
               <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/76">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">
                   Step 2
                 </div>
-                <div className="mt-2 font-semibold text-white">Reveal prizes in Q3</div>
-                <div className="mt-1">The 3rd quarter is when tonight&apos;s hidden reward squares are revealed.</div>
+                <div className="mt-2 font-semibold text-white">Let guests make 3 picks</div>
+                <div className="mt-1">They pick the winner, the final score, and a lucky square.</div>
               </div>
               <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/76">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">
                   Step 3
                 </div>
-                <div className="mt-2 font-semibold text-white">Close the loop cleanly</div>
-                <div className="mt-1">Redeem winners fast, then correct the final only if needed.</div>
+                <div className="mt-2 font-semibold text-white">Post scores through the game</div>
+                <div className="mt-1">Quarter updates keep the square board moving and the room engaged.</div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/76 md:col-span-3">
+                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">
+                  Step 4
+                </div>
+                <div className="mt-2 font-semibold text-white">Reveal in Q3 and redeem fast</div>
+                <div className="mt-1">The Q3 score post reveals the hidden square prizes, and staff can honor winners right at the bar.</div>
               </div>
             </div>
             {responseSummary ? (
@@ -635,14 +679,18 @@ export function FootballMvpHostExperience() {
                 <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/52">
                   Venue setup
                 </div>
-                <h3 className="mt-3 text-2xl font-black text-white">Edit hidden reward squares</h3>
+                <h3 className="mt-3 text-2xl font-black text-white">1. Program tonight&apos;s hidden rewards</h3>
               </div>
               <div className="max-w-xl text-sm text-white/62">
-                This is the staff-side editor. Type the secret rewards here, save them,
-                and the player game will read the updated board immediately.
+                Each square below is a secret reward card. Guests only see the square now.
+                The reward text is revealed when the venue posts the Q3 score update.
               </div>
             </div>
             <div className="mt-6 grid gap-4">
+              <div className="rounded-2xl border border-cyan-300/18 bg-cyan-400/10 px-4 py-4 text-sm text-cyan-50">
+                Use score endings like <span className="font-black">4-0</span> or <span className="font-black">7-3</span>.
+                Example rewards: free draft beer, free appetizer, house shot, or a tab discount.
+              </div>
               <label className="grid gap-2 text-sm text-white/74">
                 <span className="font-semibold text-white/86">Reveal headline</span>
                 <input
@@ -690,26 +738,29 @@ export function FootballMvpHostExperience() {
                           onChange={(event) =>
                             updateVenueSlot(index, "rewardName", event.target.value)
                           }
+                          placeholder="Free draft beer"
                           className="rounded-2xl border border-white/12 bg-black/25 px-4 py-3 text-white outline-none transition focus:border-cyan-300/40"
                         />
                       </label>
                       <label className="grid gap-2 text-sm text-white/74">
-                        <span className="font-semibold text-white/86">Sponsor label</span>
+                        <span className="font-semibold text-white/86">Bar message</span>
                         <input
                           value={slot.sponsorLabel}
                           onChange={(event) =>
                             updateVenueSlot(index, "sponsorLabel", event.target.value)
                           }
+                          placeholder="Halftime draft special"
                           className="rounded-2xl border border-white/12 bg-black/25 px-4 py-3 text-white outline-none transition focus:border-cyan-300/40"
                         />
                       </label>
                       <label className="grid gap-2 text-sm text-white/74">
-                        <span className="font-semibold text-white/86">Redeem hint</span>
+                        <span className="font-semibold text-white/86">Redeem instruction</span>
                         <input
                           value={slot.redeemHint}
                           onChange={(event) =>
                             updateVenueSlot(index, "redeemHint", event.target.value)
                           }
+                          placeholder="Show the winning screen at the bar"
                           className="rounded-2xl border border-white/12 bg-black/25 px-4 py-3 text-white outline-none transition focus:border-cyan-300/40"
                         />
                       </label>
@@ -734,7 +785,7 @@ export function FootballMvpHostExperience() {
                   }
                   className="inline-flex rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-5 py-3 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {isPending ? "Saving..." : "Save Venue Reward Setup"}
+                  {isPending ? "Saving..." : "Save Hidden Rewards"}
                 </button>
               </div>
             </div>
@@ -745,9 +796,9 @@ export function FootballMvpHostExperience() {
               <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/52">
                 Staff action
               </div>
-              <h3 className="mt-3 text-2xl font-black text-white">Post a score update</h3>
+              <h3 className="mt-3 text-2xl font-black text-white">2. Post score updates</h3>
               <p className="mt-3 text-sm leading-7 text-white/68">
-                Use quarter updates for squares. Use FINAL to settle the whole game.
+                Quarter posts move the square board. The Q3 post also reveals tonight&apos;s hidden rewards.
               </p>
               <div className="mt-5 grid gap-4">
                 <label className="grid gap-2 text-sm text-white/74">
@@ -799,7 +850,7 @@ export function FootballMvpHostExperience() {
                     onChange={(event) => updateScoreField("settle", event.target.checked)}
                     className="h-4 w-4 rounded border-white/20 bg-black/20 text-cyan-300"
                   />
-                  <span>Settle contests immediately instead of storing the trigger only.</span>
+                  <span>Score this update right away instead of only storing it.</span>
                 </label>
                 <button
                   type="button"
@@ -817,7 +868,7 @@ export function FootballMvpHostExperience() {
                   }
                   className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-5 py-3 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {isPending ? "Submitting..." : "Submit Score Trigger"}
+                  {isPending ? "Posting..." : "Post Score Update"}
                 </button>
               </div>
             </article>
@@ -826,7 +877,7 @@ export function FootballMvpHostExperience() {
               <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/52">
                 Safety valve
               </div>
-              <h3 className="mt-3 text-2xl font-black text-white">Fix a wrong final score</h3>
+              <h3 className="mt-3 text-2xl font-black text-white">3. Fix a wrong final if needed</h3>
               <p className="mt-3 text-sm leading-7 text-white/68">
                 Choose the final you want to replace, enter the corrected score, and save it.
               </p>

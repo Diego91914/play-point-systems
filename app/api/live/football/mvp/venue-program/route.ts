@@ -14,12 +14,18 @@ interface VenueProgramBody {
   slots?: Array<Partial<FootballVenueRewardSlot>>;
 }
 
+function normalizeSquareKeyValue(value: string) {
+  return value.trim().replaceAll(" ", "").replaceAll("_", "-").toUpperCase();
+}
+
 function normalizeSlot(
   slot: Partial<FootballVenueRewardSlot>,
   index: number,
 ): FootballVenueRewardSlot | null {
   const squareKey =
-    typeof slot.squareKey === "string" ? slot.squareKey.trim() : "";
+    typeof slot.squareKey === "string"
+      ? normalizeSquareKeyValue(slot.squareKey)
+      : "";
   const rewardName =
     typeof slot.rewardName === "string" ? slot.rewardName.trim() : "";
 
