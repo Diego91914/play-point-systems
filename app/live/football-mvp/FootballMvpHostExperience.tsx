@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import type {
   EventStanding,
   PlayPointContest,
@@ -225,21 +225,7 @@ export function FootballMvpHostExperience() {
       trigger.status !== "corrected",
   );
 
-  function syncVenueEditor(program: VenueProgramState) {
-    setVenueEditor({
-      headline: program.headline,
-      rules: normalizeVenueEditorRules(program.rules),
-      slots: normalizeVenueEditorSlots(program.slots),
-    });
-  }
-
-  useEffect(() => {
-    startTransition(() => {
-      void refreshDashboard();
-    });
-  }, []);
-
-  async function refreshDashboard() {
+  const refreshDashboard = useCallback(async () => {
     const response = await fetch("/api/live/football/mvp/triggers", {
       method: "GET",
       cache: "no-store",
@@ -251,9 +237,13 @@ export function FootballMvpHostExperience() {
 
     const payload = (await response.json()) as FootballMvpDashboardState;
     setDashboard(payload);
-    syncVenueEditor(payload.venueProgram);
+    setVenueEditor({
+      headline: payload.venueProgram.headline,
+      rules: normalizeVenueEditorRules(payload.venueProgram.rules),
+      slots: normalizeVenueEditorSlots(payload.venueProgram.slots),
+    });
 
-    if (!correctionForm.originalTriggerId && payload.triggers.length > 0) {
+    if (payload.triggers.length > 0) {
       const latestFinalTrigger = payload.triggers.find(
         (trigger) =>
           trigger.triggerType === "football.event_final" &&
@@ -261,13 +251,20 @@ export function FootballMvpHostExperience() {
       );
 
       if (latestFinalTrigger) {
-        setCorrectionForm((current) => ({
-          ...current,
-          originalTriggerId: latestFinalTrigger.id,
-        }));
+        setCorrectionForm((current) =>
+          current.originalTriggerId
+            ? current
+            : { ...current, originalTriggerId: latestFinalTrigger.id },
+        );
       }
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    startTransition(() => {
+      void refreshDashboard();
+    });
+  }, [refreshDashboard]);
 
   function updateScoreField<K extends keyof ScoreFormState>(
     key: K,
@@ -519,7 +516,7 @@ export function FootballMvpHostExperience() {
               {dashboard.requestedStorageMode &&
               dashboard.requestedStorageMode !== dashboard.storageMode ? (
                 <div className="rounded-full border border-amber-300/20 bg-amber-400/10 px-3 py-2 text-amber-50">
-                  Unknown demo mode "{dashboard.requestedStorageMode}" fell back to JSON
+                  Unknown demo mode &quot;{dashboard.requestedStorageMode}&quot; fell back to JSON
                 </div>
               ) : null}
             </div>

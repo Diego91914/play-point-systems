@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import type {
   EventStanding,
   PlayPointContest,
@@ -161,22 +161,31 @@ export function FootballMvpPlayerExperience() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
+  const refreshDashboard = useCallback(async () => {
+    const response = await fetch("/api/live/football/mvp/triggers", {
+      method: "GET",
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      throw new Error("Unable to load the player game.");
+    }
+
+    const payload = (await response.json()) as FootballMvpDashboardState;
+    setDashboard(payload);
+  }, []);
+
   useEffect(() => {
     startTransition(() => {
       void refreshDashboard();
     });
-  }, []);
+  }, [refreshDashboard]);
 
   const playerIds = useMemo(
     () => [...new Set(dashboard.seededEntries.map((entry) => entry.userId))],
     [dashboard.seededEntries],
   );
-
-  useEffect(() => {
-    if (!selectedUserId && playerIds.length > 0) {
-      setSelectedUserId(playerIds[0] ?? "");
-    }
-  }, [playerIds, selectedUserId]);
+  const selectedPlayerId = selectedUserId || playerIds[0] || "";
 
   const seededEvent = dashboard.seededEvents[0] ?? null;
   const winnerContest =
@@ -190,15 +199,16 @@ export function FootballMvpPlayerExperience() {
       (contest) => contest.formatKey === "football_squares",
     ) ?? null;
   const playerEntries = dashboard.seededEntries.filter(
-    (entry) => entry.userId === selectedUserId,
+    (entry) => entry.userId === selectedPlayerId,
   );
   const playerStanding =
-    dashboard.eventStandings.find((standing) => standing.userId === selectedUserId) ??
+    dashboard.eventStandings.find((standing) => standing.userId === selectedPlayerId) ??
     null;
   const activeResolutionRows = dashboard.resolutions.filter(
-    (row) => !row.supersededByResolutionId && row.userId === selectedUserId,
+    (row) => !row.supersededByResolutionId && row.userId === selectedPlayerId,
   );
 
+  /* eslint-disable react-hooks/set-state-in-effect -- Saved entries hydrate the editable form when the selected player changes. */
   useEffect(() => {
     const winnerEntry = playerEntries.find(
       (entry) => entry.contestId === winnerContest?.id,
@@ -232,20 +242,7 @@ export function FootballMvpPlayerExperience() {
       setSquareAwayDigit(String(squaresEntry.selection.awayDigit));
     }
   }, [playerEntries, winnerContest?.id, finalScoreContest?.id, squaresContest?.id]);
-
-  async function refreshDashboard() {
-    const response = await fetch("/api/live/football/mvp/triggers", {
-      method: "GET",
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      throw new Error("Unable to load the player game.");
-    }
-
-    const payload = (await response.json()) as FootballMvpDashboardState;
-    setDashboard(payload);
-  }
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   async function submitEntries() {
     if (!seededEvent) {
@@ -253,7 +250,7 @@ export function FootballMvpPlayerExperience() {
       return;
     }
 
-    if (!selectedUserId.trim()) {
+    if (!selectedPlayerId.trim()) {
       setErrorMessage("Choose or type a player id before saving picks.");
       return;
     }
@@ -273,7 +270,7 @@ export function FootballMvpPlayerExperience() {
       },
       body: JSON.stringify({
         eventId: seededEvent.id,
-        userId: selectedUserId.trim(),
+        userId: selectedPlayerId.trim(),
         selections: [
           {
             contestId: winnerContest.id,
@@ -312,7 +309,7 @@ export function FootballMvpPlayerExperience() {
 
     await refreshDashboard();
     setResponseSummary(
-      `Saved ${payload.savedEntries?.length ?? 0} contest picks for ${selectedUserId.trim()}.`,
+      `Saved ${payload.savedEntries?.length ?? 0} contest picks for ${selectedPlayerId.trim()}.`,
     );
   }
 
@@ -369,7 +366,7 @@ export function FootballMvpPlayerExperience() {
               <label className="grid gap-2 text-sm text-white/76">
                 <span className="font-semibold text-white/88">Player id</span>
                 <input
-                  value={selectedUserId}
+                  value={selectedPlayerId}
                   onChange={(event) => setSelectedUserId(event.target.value)}
                   list="football-mvp-player-ids"
                   className="rounded-2xl border border-white/12 bg-black/25 px-4 py-3 text-white outline-none transition focus:border-cyan-300/40"
@@ -761,7 +758,7 @@ export function FootballMvpPlayerExperience() {
                   <div
                     key={`${standing.eventId}:${standing.userId}`}
                     className={
-                      standing.userId === selectedUserId
+                      standing.userId === selectedPlayerId
                         ? "rounded-2xl border border-cyan-300/28 bg-cyan-400/10 px-4 py-4"
                         : "rounded-2xl border border-white/10 bg-black/20 px-4 py-4"
                     }

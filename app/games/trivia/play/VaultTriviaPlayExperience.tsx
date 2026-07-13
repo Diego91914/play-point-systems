@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   formatDifficultyFilterLabel,
   PLAYPOINT_RUNTIME_ROUNDS,
@@ -152,7 +152,10 @@ export function VaultTriviaPlayExperience() {
   }, [selectedCategory]);
 
   const selectedCategorySummary = catalog.find((category) => category.category === selectedCategory) ?? null;
-  const availableDifficultyFilters = selectedCategorySummary?.availableDifficultyFilters ?? [];
+  const availableDifficultyFilters = useMemo(
+    () => selectedCategorySummary?.availableDifficultyFilters ?? [],
+    [selectedCategorySummary],
+  );
 
   useEffect(() => {
     if (availableDifficultyFilters.length === 0) {
@@ -510,7 +513,7 @@ export function VaultTriviaPlayExperience() {
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                     <div>
                       <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Answer board</div>
-                      <h4 className="mt-3 text-2xl font-black text-white">Lock each team's choice</h4>
+                      <h4 className="mt-3 text-2xl font-black text-white">Lock each team&apos;s choice</h4>
                     </div>
                     <div className="text-sm leading-7 text-white/66">
                       Everyone chooses one answer. Then the host resolves the question and the scores update together.

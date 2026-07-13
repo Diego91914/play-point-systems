@@ -345,7 +345,7 @@ export function resolveTriviaLiveQuestion(sessionId: string) {
       };
 
     let delta = 0;
-    let speedBonus = 0;
+    const speedBonus = 0;
 
     if (submission.outcome === "correct") {
       delta = calculateAvailableCorrectPoints(card, submission.responseTimeMs);

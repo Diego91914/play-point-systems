@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
 import {
   formatDifficultyFilterLabel,
   PLAYPOINT_RUNTIME_ROUNDS,
@@ -116,13 +117,11 @@ export function TriviaLiveBuilderExperience() {
   const [catalog, setCatalog] = useState<RuntimeCatalogCategorySummary[]>([]);
   const [catalogGeneratedAt, setCatalogGeneratedAt] = useState<string | null>(null);
   const [selectedDifficultyFilter, setSelectedDifficultyFilter] = useState<RuntimeDifficultyFilter>("mixed");
-  const [catalogLoading, setCatalogLoading] = useState(true);
   const [catalogError, setCatalogError] = useState<string | null>(null);
   const [setupError, setSetupError] = useState<string | null>(null);
   const [creatingRoom, setCreatingRoom] = useState(false);
   const [snapshot, setSnapshot] = useState<HostSnapshot | null>(null);
   const [clockNowMs, setClockNowMs] = useState(Date.now());
-  const selectedCategory = "bible";
 
   useEffect(() => {
     let active = true;
@@ -143,11 +142,6 @@ export function TriviaLiveBuilderExperience() {
         }
 
         setCatalogError(error instanceof Error ? error.message : "Unable to load the trivia catalog.");
-      })
-      .finally(() => {
-        if (active) {
-          setCatalogLoading(false);
-        }
       });
 
     return () => {
@@ -189,7 +183,10 @@ export function TriviaLiveBuilderExperience() {
   }, [snapshot?.phase, snapshot?.questionOpenedAtMs, snapshot?.cardIndex]);
 
   const selectedCategorySummary = catalog.find((category) => category.category === "bible") ?? null;
-  const availableDifficultyFilters = selectedCategorySummary?.availableDifficultyFilters ?? [];
+  const availableDifficultyFilters = useMemo(
+    () => selectedCategorySummary?.availableDifficultyFilters ?? [],
+    [selectedCategorySummary],
+  );
 
   useEffect(() => {
     if (availableDifficultyFilters.length > 0 && !availableDifficultyFilters.includes(selectedDifficultyFilter)) {
@@ -402,7 +399,14 @@ export function TriviaLiveBuilderExperience() {
                       <a href={snapshot.joinUrl} className="mt-3 block break-all text-sm font-semibold text-cyan-100">
                         {snapshot.joinUrl}
                       </a>
-                      <img src={snapshot.qrUrl} alt={`QR code for room ${snapshot.roomCode}`} className="mt-4 w-44 rounded-[20px] bg-white p-2" />
+                      <Image
+                        src={snapshot.qrUrl}
+                        alt={`QR code for room ${snapshot.roomCode}`}
+                        width={176}
+                        height={176}
+                        unoptimized
+                        className="mt-4 w-44 rounded-[20px] bg-white p-2"
+                      />
                     </div>
                   </div>
 
