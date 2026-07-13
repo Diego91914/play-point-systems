@@ -284,6 +284,24 @@ export class PostgresPlayPointRepository implements PlayPointRepository {
     );
   }
 
+  async updateEventMetadata(
+    eventId: string,
+    metadata: Record<string, unknown>,
+  ): Promise<void> {
+    await this.resolveEventUuid(eventId);
+
+    await this.runner.query(
+      `
+        update ppl_events
+        set
+          metadata = $2::jsonb,
+          updated_at = now()
+        where runtime_id = $1
+      `,
+      [eventId, JSON.stringify(metadata)],
+    );
+  }
+
   async saveEntry(entry: PlayPointEntry): Promise<void> {
     const contest = await this.resolveContestLink(entry.contestId);
     const userId = await this.resolveUserUuid(entry.userId);

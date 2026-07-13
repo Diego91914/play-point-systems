@@ -18,6 +18,25 @@ type NotificationEvent = {
   payload: Record<string, unknown>;
 };
 
+type VenueRewardSlot = {
+  id: string;
+  squareKey: string;
+  rewardName: string;
+  sponsorLabel: string;
+  redeemHint: string;
+};
+
+type VenueProgramState = {
+  revealPeriod: "Q3";
+  revealStatus: "hidden" | "revealed";
+  revealTriggeredAt: string | null;
+  activeSquareKey: string | null;
+  activePeriodLabel: string | null;
+  headline: string;
+  rules: string[];
+  slots: VenueRewardSlot[];
+};
+
 type FootballMvpDashboardState = {
   seededEvents: PlayPointEvent[];
   seededContests: PlayPointContest[];
@@ -31,6 +50,7 @@ type FootballMvpDashboardState = {
   rewards: unknown[];
   eventStandings: EventStanding[];
   seasonStandings: unknown[];
+  venueProgram: VenueProgramState;
   notifications: NotificationEvent[];
 };
 
@@ -47,6 +67,16 @@ const emptyDashboardState: FootballMvpDashboardState = {
   rewards: [],
   eventStandings: [],
   seasonStandings: [],
+  venueProgram: {
+    revealPeriod: "Q3",
+    revealStatus: "hidden",
+    revealTriggeredAt: null,
+    activeSquareKey: null,
+    activePeriodLabel: null,
+    headline: "",
+    rules: [],
+    slots: [],
+  },
   notifications: [],
 };
 
@@ -206,7 +236,7 @@ export function FootballMvpPlayerExperience() {
     });
 
     if (!response.ok) {
-      throw new Error("Unable to load the football MVP player lobby.");
+      throw new Error("Unable to load the player game.");
     }
 
     const payload = (await response.json()) as FootballMvpDashboardState;
@@ -288,25 +318,43 @@ export function FootballMvpPlayerExperience() {
         <div className="grid gap-6">
           <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)] sm:p-7">
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">
-              Player event lobby
+              Game Night Player
             </div>
             <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">
-              Watch the event and track your picks.
+              Join fast, follow your square, stay for the reveal.
             </h2>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-white/74">
-              This player view reads the same live MVP state as the host dashboard.
-              It now supports saving player picks into the shared event state while
-              still showing the trigger feed, standings, and correction-safe outcomes.
+              This side is for guests. Make your picks quickly, watch the live square,
+              and see whether the Q3 reveal turns your square into a real bar reward.
             </p>
             <div className="mt-5 flex flex-wrap gap-3 text-xs text-white/58">
               <div className="rounded-full border border-white/10 bg-black/20 px-3 py-2">
-                Storage mode {dashboard.storageMode ?? "json"}
+                Demo storage {dashboard.storageMode ?? "json"}
               </div>
               {dashboard.storageNotice ? (
                 <div className="rounded-full border border-amber-300/20 bg-amber-400/10 px-3 py-2 text-amber-50">
                   {dashboard.storageNotice}
                 </div>
               ) : null}
+            </div>
+            <div className="mt-6 grid gap-3 md:grid-cols-3">
+              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/76">
+                <div className="font-semibold text-white">Pick 1</div>
+                <div className="mt-1">Choose which team wins.</div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/76">
+                <div className="font-semibold text-white">Pick 2</div>
+                <div className="mt-1">Predict the final score.</div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/76">
+                <div className="font-semibold text-white">Pick 3</div>
+                <div className="mt-1">Choose the last digit for each team score.</div>
+              </div>
+            </div>
+            <div className="mt-6 rounded-2xl border border-cyan-300/18 bg-cyan-400/10 px-4 py-4 text-sm text-cyan-50">
+              {dashboard.venueProgram.revealStatus === "revealed"
+                ? `The Q3 reward reveal is live. Check whether square ${dashboard.venueProgram.activeSquareKey ?? "--"} is worth a prize.`
+                : "Tonight's reward squares stay hidden until the 3rd quarter reveal, which gives the bar its big suspense moment."}
             </div>
 
             <div className="mt-6 grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
@@ -333,21 +381,21 @@ export function FootballMvpPlayerExperience() {
                       setErrorMessage(
                         error instanceof Error
                           ? error.message
-                          : "Unable to refresh the player lobby.",
+                          : "Unable to refresh the player game.",
                       );
                     });
                   })
                 }
                 className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16"
               >
-                {isPending ? "Refreshing..." : "Refresh Player View"}
+                {isPending ? "Refreshing..." : "Refresh Player Game"}
               </button>
             </div>
 
             <div className="mt-6 grid gap-3 md:grid-cols-3">
               <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">
-                  Event
+                  Game
                 </div>
                 <div className="mt-2 text-sm font-semibold text-white/90">
                   {seededEvent?.title ?? "Loading event"}
@@ -383,19 +431,89 @@ export function FootballMvpPlayerExperience() {
             ) : null}
           </div>
 
+          <article className="rounded-[30px] border border-cyan-300/18 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-cyan-100/80">
+                  Reward reveal
+                </div>
+                <h3 className="mt-3 text-2xl font-black text-white">Stay for the Q3 reveal</h3>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-white/74">
+                  {dashboard.venueProgram.headline}
+                </p>
+              </div>
+              <div
+                className={
+                  dashboard.venueProgram.revealStatus === "revealed"
+                    ? "rounded-2xl border border-emerald-300/25 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-50"
+                    : "rounded-2xl border border-amber-300/25 bg-amber-400/10 px-4 py-3 text-sm text-amber-50"
+                }
+              >
+                {dashboard.venueProgram.revealStatus === "revealed"
+                  ? `Revealed ${formatTimestamp(dashboard.venueProgram.revealTriggeredAt)}`
+                  : "Hidden until Q3"}
+              </div>
+            </div>
+            <div className="mt-5 rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/74">
+              {dashboard.venueProgram.activeSquareKey ? (
+                <>
+                  Live square right now:{" "}
+                  <span className="font-black text-white">
+                    {dashboard.venueProgram.activeSquareKey}
+                  </span>
+                  {" "}during{" "}
+                  <span className="font-black text-white">
+                    {dashboard.venueProgram.activePeriodLabel ?? "the latest update"}
+                  </span>
+                </>
+              ) : (
+                "No live square yet. Once venue control posts a score, the board starts moving."
+              )}
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              {dashboard.venueProgram.slots.map((slot) => {
+                const isActive = slot.squareKey === dashboard.venueProgram.activeSquareKey;
+                const isRevealed = dashboard.venueProgram.revealStatus === "revealed";
+
+                return (
+                  <div
+                    key={slot.id}
+                    className={
+                      isActive
+                        ? "rounded-2xl border border-cyan-300/30 bg-cyan-400/10 px-4 py-4"
+                        : "rounded-2xl border border-white/10 bg-black/20 px-4 py-4"
+                    }
+                  >
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">
+                      Square {slot.squareKey}
+                    </div>
+                    <div className="mt-2 text-lg font-black text-white">
+                      {isRevealed ? slot.rewardName : "Hidden reward"}
+                    </div>
+                    <div className="mt-2 text-sm text-white/68">
+                      {isRevealed ? slot.sponsorLabel : "Stay through the 3rd quarter to reveal this prize."}
+                    </div>
+                    <div className="mt-3 text-xs text-white/54">
+                      {isRevealed ? slot.redeemHint : "The reveal moment is part of the show."}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </article>
+
           <article className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/52">
-                  Entry form
+                  Your picks
                 </div>
                 <h3 className="mt-3 text-2xl font-black text-white">
-                  Submit or update picks
+                  Save your 3 picks
                 </h3>
               </div>
               <div className="text-sm text-white/62">
-                This writes winner pick, final score, and squares choices into the
-                same event state the host screen reads.
+                These picks are saved for this game and scored when venue control posts results.
               </div>
             </div>
 
@@ -477,14 +595,14 @@ export function FootballMvpPlayerExperience() {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/52">
-                  Your contest cards
+                  Your game card
                 </div>
                 <h3 className="mt-3 text-2xl font-black text-white">
                   Picks already on the board
                 </h3>
               </div>
               <div className="text-sm text-white/62">
-                These cards now reflect live repository state instead of the original static seed.
+                These cards show what is currently saved for this player.
               </div>
             </div>
 
@@ -531,7 +649,7 @@ export function FootballMvpPlayerExperience() {
                         </div>
                         <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/72">
                           {latestResolution
-                            ? `Latest outcome: ${latestResolution.ruleKey} · ${latestResolution.scoreDelta} points`
+                            ? `Latest outcome: ${latestResolution.ruleKey} - ${latestResolution.scoreDelta} points`
                             : "Waiting for settlement"}
                         </div>
                       </div>
@@ -546,11 +664,11 @@ export function FootballMvpPlayerExperience() {
             <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/52">
               Your settled outcomes
             </div>
-            <h3 className="mt-3 text-2xl font-black text-white">Active resolution rows</h3>
+            <h3 className="mt-3 text-2xl font-black text-white">Your scored results</h3>
             <div className="mt-5 grid gap-3">
               {activeResolutionRows.length === 0 ? (
                 <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4 text-sm text-white/60">
-                  No resolved rows for this player yet.
+                  No scored results for this player yet.
                 </div>
               ) : (
                 activeResolutionRows
@@ -571,7 +689,7 @@ export function FootballMvpPlayerExperience() {
                         </div>
                       </div>
                       <div className="mt-2 text-sm text-white/70">
-                        Score {row.scoreDelta} · Play Points {row.playPointsDelta} · Victory{" "}
+                        Score {row.scoreDelta} - Play Points {row.playPointsDelta} - Victory{" "}
                         {row.isVictory ? "yes" : "no"}
                       </div>
                     </div>
@@ -589,21 +707,21 @@ export function FootballMvpPlayerExperience() {
                   Live leaderboard
                 </div>
                 <h3 className="mt-3 text-2xl font-black text-white">
-                  Event standings
+                  Current standings
                 </h3>
               </div>
               <Link
                 href="/live/football-mvp"
                 className="rounded-2xl border border-white/15 bg-white/8 px-4 py-2 text-sm font-black text-white transition hover:bg-white/12"
               >
-                Host view
+                Venue control
               </Link>
             </div>
 
             <div className="mt-5 grid gap-3">
               {dashboard.eventStandings.length === 0 ? (
                 <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm leading-7 text-white/64">
-                  Standings will appear after the host settles a trigger.
+                  Standings will appear after venue control posts a settled score update.
                 </div>
               ) : (
                 dashboard.eventStandings.map((standing) => (
@@ -621,7 +739,7 @@ export function FootballMvpPlayerExperience() {
                           #{standing.rank} {standing.userId}
                         </div>
                         <div className="mt-1 text-xs uppercase tracking-[0.18em] text-white/46">
-                          {standing.contestVictories} contest wins · accuracy{" "}
+                          {standing.contestVictories} contest wins - accuracy{" "}
                           {standing.accuracyAverage?.toFixed(2) ?? "0.00"}
                         </div>
                       </div>
@@ -642,9 +760,9 @@ export function FootballMvpPlayerExperience() {
 
           <article className="rounded-[30px] border border-white/10 bg-white/[0.03] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">
-              Trigger feed
+              Score updates
             </div>
-            <h3 className="mt-3 text-2xl font-black text-white">What the host has posted</h3>
+            <h3 className="mt-3 text-2xl font-black text-white">What venue control has posted</h3>
             <div className="mt-5 grid gap-3">
               {dashboard.triggers.length === 0 ? (
                 <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/60">
@@ -674,8 +792,13 @@ export function FootballMvpPlayerExperience() {
                       </div>
                       <div className="mt-2 text-sm text-white/70">
                         Score {String(trigger.payload.homeScore ?? "-")} -{" "}
-                        {String(trigger.payload.awayScore ?? "-")} · status {trigger.status}
+                        {String(trigger.payload.awayScore ?? "-")} - status {trigger.status}
                       </div>
+                      {String(trigger.payload.period ?? "").toUpperCase() === "Q3" ? (
+                        <div className="mt-2 text-xs text-cyan-100/80">
+                          This is the reveal post for tonight&apos;s hidden reward squares.
+                        </div>
+                      ) : null}
                     </div>
                   ))
               )}
@@ -684,19 +807,17 @@ export function FootballMvpPlayerExperience() {
 
           <article className="rounded-[30px] border border-white/10 bg-white/[0.03] p-5">
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">
-              Product direction
+              Quick rules
             </div>
             <div className="mt-4 grid gap-3 text-sm text-white/76">
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
-                The player surface should read settled state, not infer winners from raw sports data.
+                Winner pick: choose Bears or Packers. Correct pick = 10 event points and 5 Play Points.
               </div>
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
-                Corrections stay trustworthy because superseded rows drop out of the active leaderboard.
+                Final score: exact score = 40 points, closest score = 20 points.
               </div>
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
-                This preview already reads through the shared Play Point Core runtime
-                seam, so the repository can move from JSON to relational storage
-                without changing the player surface contract.
+                Squares: matching ending digits can score at quarter breaks and at final.
               </div>
             </div>
           </article>

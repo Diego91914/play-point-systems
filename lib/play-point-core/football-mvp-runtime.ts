@@ -12,6 +12,11 @@ import {
   createFootballMvpRepositoryBinding,
   type FootballMvpRuntimeDebugState,
 } from "./football-mvp-repository-factory";
+import {
+  applyFootballVenueProgramConfig,
+  type FootballVenueProgramConfig,
+  readFootballVenueProgramConfig,
+} from "./football-venue-program";
 import type { InMemoryPlayPointRepositorySeed } from "./football-mvp-repository";
 import type { FootballMvpStorageMode } from "./football-mvp-storage";
 import { FootballResultTriggerPolicy } from "./football-trigger-policy";
@@ -276,6 +281,30 @@ export function createFootballMvpRuntime(
     return getDebugState();
   }
 
+  async function saveVenueProgramConfig(args: {
+    eventId: string;
+    config: FootballVenueProgramConfig;
+  }) {
+    const event = await repository.getEvent(args.eventId);
+
+    if (!event) {
+      throw new Error(`Event "${args.eventId}" was not found.`);
+    }
+
+    const nextMetadata = applyFootballVenueProgramConfig(event, args.config);
+    await repository.updateEventMetadata(args.eventId, nextMetadata);
+    const updatedEvent = await repository.getEvent(args.eventId);
+
+    if (!updatedEvent) {
+      throw new Error(`Event "${args.eventId}" could not be reloaded after save.`);
+    }
+
+    return {
+      event: updatedEvent,
+      config: readFootballVenueProgramConfig(updatedEvent),
+    };
+  }
+
   return {
     seed,
     storageMode,
@@ -292,6 +321,7 @@ export function createFootballMvpRuntime(
     scoreTrigger,
     correctScoredTrigger,
     upsertPlayerEntries,
+    saveVenueProgramConfig,
     inspectDebugState,
   };
 }

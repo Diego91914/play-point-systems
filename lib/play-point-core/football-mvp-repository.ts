@@ -130,6 +130,23 @@ export class InMemoryPlayPointRepository implements PlayPointRepository {
     return [...this.resolutions.values()].filter((row) => row.triggerId === triggerId);
   }
 
+  async updateEventMetadata(
+    eventId: string,
+    metadata: Record<string, unknown>,
+  ): Promise<void> {
+    const existing = this.events.get(eventId);
+
+    if (!existing) {
+      throw new Error(`Event "${eventId}" was not found.`);
+    }
+
+    this.events.set(eventId, {
+      ...existing,
+      metadata,
+    });
+    this.persistState();
+  }
+
   async saveEntry(entry: PlayPointEntry): Promise<void> {
     this.entries.set(entry.id, entry);
     this.persistState();

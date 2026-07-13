@@ -253,6 +253,10 @@ export interface PlayPointRepository {
   listEventEntries(eventId: string): Promise<PlayPointEntry[]>;
   listContestEntries(contestId: string): Promise<PlayPointEntry[]>;
   listResolutionsByTrigger(triggerId: string): Promise<ResolutionRow[]>;
+  updateEventMetadata(
+    eventId: string,
+    metadata: Record<string, unknown>,
+  ): Promise<void>;
   saveEntry(entry: PlayPointEntry): Promise<void>;
   saveTrigger(trigger: PlayPointTrigger): Promise<void>;
   saveResolutions(rows: ResolutionRow[]): Promise<void>;

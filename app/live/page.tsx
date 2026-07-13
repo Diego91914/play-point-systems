@@ -60,7 +60,13 @@ export default function PlayPointLivePage() {
                 href="/live/football-mvp"
                 className="inline-flex items-center justify-center rounded-2xl border border-emerald-300/22 bg-emerald-400/10 px-6 py-3.5 text-sm font-black text-emerald-50 transition hover:bg-emerald-400/16"
               >
-                Open Football MVP Host Demo
+                Open Venue Control Demo
+              </Link>
+              <Link
+                href="/live/football-mvp/play"
+                className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/8 px-6 py-3.5 text-sm font-black text-white transition hover:bg-white/12"
+              >
+                Open Player Game Demo
               </Link>
             </div>
           </div>
@@ -82,6 +88,14 @@ export default function PlayPointLivePage() {
                 <span>`Play Point Core` now defines the shared contracts future runtimes should build against.</span>
               </li>
             </ul>
+            <div className="mt-5 grid gap-3">
+              <div className="rounded-2xl border border-cyan-300/15 bg-cyan-400/6 px-4 py-4 text-sm text-white/78">
+                `Venue Control` should feel like a staff promo console: configure rewards, reveal moments, and claims.
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/78">
+                `Game Night Player` should feel like a guest game: join fast, watch your square, see if you won.
+              </div>
+            </div>
           </div>
         </div>
       </section>

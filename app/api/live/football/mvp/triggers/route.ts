@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { footballMvpRuntime } from "@/lib/play-point-core";
-import type { PlayPointTrigger, TriggerSourceMode } from "@/lib/play-point-core";
+import {
+  buildFootballVenueProgramState,
+  type PlayPointTrigger,
+  type TriggerSourceMode,
+} from "@/lib/play-point-core";
 
 interface TriggerRequestBody {
   eventId?: string;
@@ -46,6 +50,7 @@ export async function GET() {
   const eventId = seed.events?.[0]?.id;
   const seasonId = seed.seasons?.[0]?.id;
   const debugState = await inspectDebugState();
+  const event = eventId ? await repository.getEvent(eventId) : null;
 
   return NextResponse.json({
     seededEvents: seed.events ?? [],
@@ -64,6 +69,10 @@ export async function GET() {
     seasonStandings: seasonId
       ? await repository.rebuildSeasonStandings(seasonId)
       : [],
+    venueProgram: buildFootballVenueProgramState({
+      event,
+      triggers: debugState.triggers,
+    }),
     notifications: notifications.listEvents(),
   });
 }

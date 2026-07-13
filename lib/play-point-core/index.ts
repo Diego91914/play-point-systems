@@ -11,6 +11,7 @@ export * from "./football-mvp-persistence";
 export * from "./football-mvp-storage";
 export * from "./football-mvp-repository-factory";
 export * from "./football-mvp-runtime";
+export * from "./football-venue-program";
 export * from "./relational-models";
 export * from "./relational-mappers";
 export * from "./postgres-play-point-repository";
