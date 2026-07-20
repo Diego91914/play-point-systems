@@ -38,18 +38,16 @@ export default function PlayPointLivePage() {
             </p>
             <p className="mt-5 max-w-3xl text-base leading-8 text-white/76 sm:text-lg">
               Shot Caddy should stay focused on disc golf and golf-adjacent play. Play Point Live is broader than that.
-              This page is now the public architecture home for the product while the current board MVP continues to bridge
-              through Shot Caddy until the runtime is rehomed.
+              Quick Score now runs here as a native Play Point Live experience, while the older board MVP continues to bridge
+              through Shot Caddy until that separate runtime is rehomed.
             </p>
             <div className="mt-7 flex flex-col gap-3 xs:flex-row sm:flex-row">
-              <a
-                href="https://shotcaddy.net/play-point-live"
-                target="_blank"
-                rel="noreferrer"
+              <Link
+                href="/live/quick-score"
                 className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110"
               >
-                Open Current Board Bridge
-              </a>
+                Open Quick Score
+              </Link>
               <Link
                 href="/games"
                 className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-black/25 px-6 py-3.5 text-sm font-semibold text-white/90 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
@@ -72,28 +70,28 @@ export default function PlayPointLivePage() {
           </div>
 
           <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)]">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">What changes now</div>
-            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Source of truth moves first.</h2>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">Live Play Point runtime</div>
+            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Quick Score is home.</h2>
             <ul className="mt-5 grid gap-3 text-sm text-white/78">
               <li className="flex items-start gap-3 rounded-2xl border border-white/8 bg-black/20 px-4 py-3">
                 <span className="mt-1 h-2.5 w-2.5 rounded-full bg-amber-300" />
-                <span>`playpointsystems.com/live` becomes the flagship product home.</span>
+                <span>Start a local scoreboard with no login or round setup.</span>
               </li>
               <li className="flex items-start gap-3 rounded-2xl border border-white/8 bg-black/20 px-4 py-3">
                 <span className="mt-1 h-2.5 w-2.5 rounded-full bg-amber-300" />
-                <span>`Shot Caddy` keeps the golf-specific lane and stops owning the multi-sport story.</span>
+                <span>Score cornhole, bocce, pickleball, horseshoes, washers, and more.</span>
               </li>
               <li className="flex items-start gap-3 rounded-2xl border border-white/8 bg-black/20 px-4 py-3">
                 <span className="mt-1 h-2.5 w-2.5 rounded-full bg-amber-300" />
-                <span>`Play Point Core` now defines the shared contracts future runtimes should build against.</span>
+                <span>Use spectator boards, clubs, events, and saved match history from one Play Point Live path.</span>
               </li>
             </ul>
             <div className="mt-5 grid gap-3">
               <div className="rounded-2xl border border-cyan-300/15 bg-cyan-400/6 px-4 py-4 text-sm text-white/78">
-                `Venue Control` should feel like a staff promo console: configure rewards, reveal moments, and claims.
+                Quick Score is owned and served by Play Point Live at <span className="font-semibold text-white">/live/quick-score</span>.
               </div>
               <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/78">
-                `Game Night Player` should feel like a guest game: join fast, watch your square, see if you won.
+                Shot Caddy remains focused on disc golf and golf-specific gameplay.
               </div>
             </div>
           </div>

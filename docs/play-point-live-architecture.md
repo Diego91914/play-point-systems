@@ -21,8 +21,9 @@ The current repositories already suggest the right split, but the implementation
 
 That means:
 
-- `shotcaddy.net` stays focused on disc golf, golf overlays, organizers, and backyard scorekeeping.
+- `shotcaddy.net` stays focused on disc golf, golf overlays, and golf-specific organizers.
 - `playpointsystems.com/live` becomes the public home for the multi-sport live-experience platform.
+- Quick Score is a Play Point Live product surface at `playpointsystems.com/live/quick-score`.
 - Shared contracts move into `Play Point Core` inside `play-point-systems` so future runtime work lands in the right codebase.
 
 ## Target product boundaries
@@ -33,10 +34,9 @@ That means:
 - Scope:
   - disc golf
   - golf-adjacent overlays
-  - organizer tooling
-  - Quick Score
+  - golf-specific organizer tooling
 - Rule:
-  - Shot Caddy can consume shared platform capabilities later, but it should not own Play Point Live.
+  - Shot Caddy can consume shared platform capabilities later, but it should not own Quick Score or Play Point Live.
 
 ### Play Point Live
 
@@ -46,6 +46,8 @@ That means:
   - private clubs
   - seasons
   - multi-sport event packs
+  - Quick Score
+  - casual and club scoreboards
   - TV mode
   - QR joining
   - leaderboard and progression systems
@@ -73,15 +75,19 @@ That means:
 
 ## Why the split is safe
 
-The current Shot Caddy runtime is still useful, so this pass does not rip it out.
+The current Shot Caddy golf runtime and legacy Play Point board bridge are still useful, so they are not removed as part of the Quick Score move.
 
 Instead it does three things:
 
-1. Moves the public product story and architecture ownership to `play-point-systems`.
-2. Creates explicit shared-core contracts there.
-3. Reduces Shot Caddy’s marketing and navigation overlap so the domains stop fighting each other.
+1. Moves Quick Score pages, APIs, data schema, tests, and product ownership to `play-point-systems`.
+2. Keeps the scoreboard engine intact under the Play Point Core boundary.
+3. Removes Quick Score marketing and runtime ownership from Shot Caddy.
 
 ## Existing runtime bridges
+
+### Quick Score
+
+Quick Score is now a native Play Point Live runtime under `/live/quick-score`. Its local scorer, spectator sessions, club and event history, and Pro purchase flow are owned by `play-point-systems`.
 
 ### Play Point Trivia
 
@@ -111,13 +117,13 @@ It should remain operational while new runtime work is rehomed.
 
 - Make `playpointsystems.com/live` the public source of truth.
 - Add shared platform contracts in `Play Point Core`.
-- Remove Play Point Live from Shot Caddy’s primary product positioning.
+- Move Quick Score from Shot Caddy to `/live/quick-score`.
 
 ### Phase 2
 
 - Rebuild new multi-sport runtime work under `play-point-systems`.
 - Port shared QR join and TV-mode shell logic into reusable helpers.
-- Treat Shot Caddy as a consumer of shared capabilities, not the owner.
+- Treat Shot Caddy as a golf-specific consumer of shared capabilities, not the owner.
 
 ### Phase 3
 
@@ -132,4 +138,4 @@ It should remain operational while new runtime work is rehomed.
 - move Shot Caddy live-board data out of demo helpers and into shared storage
 - introduce an app/runtime subdomain if desired later
 
-This pass intentionally stops short of a risky runtime transplant, but it creates the architecture, product boundaries, and migration path needed to complete the split cleanly.
+Quick Score no longer waits on that broader migration: it is owned by Play Point Live now. The older Play Point board bridge can be rehomed separately without blocking the scorer.

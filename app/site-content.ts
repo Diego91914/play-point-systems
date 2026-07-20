@@ -41,7 +41,7 @@ export const divisions = [
     name: "Shot Caddy",
     eyebrow: "Flagship Product Brand",
     description:
-      "A standalone product brand focused on disc golf, golf overlays, organizer tooling, and backyard scorekeeping.",
+      "A standalone product brand focused on disc golf, golf overlays, and golf-specific organizer tooling.",
     points: ["ShotCaddy.net remains the public home", "Disc golf stays the center of gravity", "No longer the product home for Play Point Live"],
     href: "/shot-caddy",
     cta: "Explore Shot Caddy",

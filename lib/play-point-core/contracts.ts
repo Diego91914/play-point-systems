@@ -145,14 +145,14 @@ export const PLAY_POINT_PRODUCT_BOUNDARIES: readonly PlayPointProductBoundary[] 
   {
     product: "Shot Caddy",
     domain: "shotcaddy.net",
-    focus: "Disc golf, ball golf overlays, organizer tools, and backyard scorekeeping.",
-    currentRuntime: "Owns golf-specific gameplay and should stop acting like the home for Play Point Live.",
+    focus: "Disc golf, ball golf overlays, and golf-specific organizer tools.",
+    currentRuntime: "Owns golf-specific gameplay and no longer owns Quick Score or Play Point Live.",
   },
   {
     product: "Play Point Live",
     domain: "playpointsystems.com/live",
-    focus: "Multi-sport live experiences for venues, clubs, and seasons.",
-    currentRuntime: "Current board MVP still bridges through Shot Caddy while the new home is established.",
+    focus: "Multi-sport live experiences, fast scoreboards, venues, clubs, and seasons.",
+    currentRuntime: "Quick Score is native here; only the older board MVP still bridges through Shot Caddy.",
   },
   {
     product: "Play Point Core",
@@ -163,6 +163,11 @@ export const PLAY_POINT_PRODUCT_BOUNDARIES: readonly PlayPointProductBoundary[] 
 ] as const;
 
 export const PLAY_POINT_LIVE_SURFACES: readonly PlayPointSurface[] = [
+  {
+    title: "Quick Score",
+    summary: "A fast, no-login scoreboard for backyard games, casual competition, and club nights.",
+    examples: ["Cornhole, bocce, and horseshoes", "QR spectator boards", "Club and event match history"],
+  },
   {
     title: "Venue Nights",
     summary: "Hosted experiences for bars, restaurants, fundraisers, and public watch parties.",
@@ -187,12 +192,12 @@ export const PLAY_POINT_MIGRATION_PHASES: readonly PlayPointMigrationPhase[] = [
     actions: [
       "Make Play Point Systems the public source of truth for Play Point Live.",
       "Create shared platform contracts in Play Point Core.",
-      "Reduce Shot Caddy marketing references so it stays disc-golf-first.",
+      "Move Quick Score into Play Point Live and keep Shot Caddy golf-first.",
     ],
   },
   {
     phase: "Phase 2",
-    goal: "Move new multi-sport runtime work onto Play Point Systems and keep Shot Caddy as a consumer, not the owner.",
+    goal: "Build new multi-sport runtime work on Play Point Systems and keep Shot Caddy in its golf-specific lane.",
     actions: [
       "Rebuild live event creation on top of Play Point Core contracts.",
       "Port reusable TV mode and QR join patterns into shared utilities.",
