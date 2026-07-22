@@ -7,6 +7,17 @@ import { SiteShell } from "../components/SiteShell";
 export const metadata: Metadata = {
   title: "Shot Caddy",
   description: "Golf-first products and round-day experiences from the Play Point Systems portfolio.",
+  alternates: { canonical: "/shot-caddy" },
+  openGraph: {
+    title: "Shot Caddy",
+    description: "Purpose-built disc golf and golf experiences designed around real rounds and real players.",
+    url: "/shot-caddy",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Shot Caddy",
+    description: "Purpose-built disc golf and golf experiences designed around real rounds and real players.",
+  },
 };
 
 const focusAreas = [

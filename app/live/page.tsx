@@ -7,6 +7,17 @@ import { SiteShell } from "../components/SiteShell";
 export const metadata: Metadata = {
   title: "Play Point Live",
   description: "Live scoring and group-play experiences for backyards, clubs, venues, and recurring events.",
+  alternates: { canonical: "/live" },
+  openGraph: {
+    title: "Play Point Live",
+    description: "Fast live scoreboards for backyards, clubs, recurring events, and venue game nights.",
+    url: "/live",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Play Point Live",
+    description: "Fast live scoreboards for backyards, clubs, recurring events, and venue game nights.",
+  },
 };
 
 const experiences = [

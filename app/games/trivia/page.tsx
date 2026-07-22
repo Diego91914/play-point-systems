@@ -7,6 +7,17 @@ import { SiteShell } from "../../components/SiteShell";
 export const metadata: Metadata = {
   title: "Play Point Trivia",
   description: "Play Point Trivia is launching first as a hosted Bible trivia game built for events, venues, and repeat live play.",
+  alternates: { canonical: "/games/trivia" },
+  openGraph: {
+    title: "Play Point Trivia",
+    description: "Phone joining, host-controlled rounds, and speed scoring built for energetic group play.",
+    url: "/games/trivia",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Play Point Trivia",
+    description: "Phone joining, host-controlled rounds, and speed scoring built for energetic group play.",
+  },
 };
 
 const audienceGroups = [

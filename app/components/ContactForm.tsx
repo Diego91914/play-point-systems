@@ -1,7 +1,14 @@
 "use client";
 
+import Script from "next/script";
 import type { FormEvent } from "react";
 import { useState } from "react";
+
+declare global {
+  interface Window {
+    turnstile?: { reset: () => void };
+  }
+}
 
 type ContactFormProps = {
   kind: "contact" | "support";
@@ -24,6 +31,7 @@ const topicOptions = {
 export function ContactForm({ kind }: ContactFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<{ tone: "success" | "error"; message: string } | null>(null);
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -45,6 +53,7 @@ export function ContactForm({ kind }: ContactFormProps) {
           product: data.get("product"),
           message: data.get("message"),
           company: data.get("company"),
+          turnstileToken: data.get("cf-turnstile-response"),
         }),
       });
       const result = (await response.json()) as { sent?: boolean; error?: string };
@@ -62,6 +71,7 @@ export function ContactForm({ kind }: ContactFormProps) {
     } catch {
       setStatus({ tone: "error", message: "We could not deliver your message. Please use the direct email link below." });
     } finally {
+      window.turnstile?.reset();
       setSubmitting(false);
     }
   }
@@ -102,6 +112,21 @@ export function ContactForm({ kind }: ContactFormProps) {
         Company
         <input name="company" tabIndex={-1} autoComplete="off" />
       </label>
+
+      {turnstileSiteKey ? (
+        <div className="mt-5">
+          <Script
+            src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+            strategy="afterInteractive"
+          />
+          <div
+            className="cf-turnstile"
+            data-sitekey={turnstileSiteKey}
+            data-theme="dark"
+            data-size="flexible"
+          />
+        </div>
+      ) : null}
 
       <div className="mt-5 flex flex-wrap items-center gap-4">
         <button type="submit" disabled={submitting} className="rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-5 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.2)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60">

@@ -135,7 +135,7 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
             </div>
           </header>
 
-          <main id="main-content" className="px-1 pb-1 sm:px-2 sm:pb-2">{children}</main>
+          <main id="main-content" tabIndex={-1} className="px-1 pb-1 outline-none sm:px-2 sm:pb-2">{children}</main>
 
           <footer className="border-t border-white/10 px-5 py-8 sm:px-8 lg:px-10">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">

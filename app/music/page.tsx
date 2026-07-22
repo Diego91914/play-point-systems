@@ -8,6 +8,16 @@ export const metadata: Metadata = {
   title: "Music",
   description: "Hear the latest country Christian releases from Channing Stovall and Play Point Records.",
   alternates: { canonical: "/music" },
+  openGraph: {
+    title: "Play Point Records",
+    description: "Country and Christian storytelling from Channing Stovall and Play Point Records.",
+    url: "/music",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Play Point Records",
+    description: "Country and Christian storytelling from Channing Stovall and Play Point Records.",
+  },
 };
 
 const platformLinks = [

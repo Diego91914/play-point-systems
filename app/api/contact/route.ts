@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import { createSupabaseSqlRunnerFromEnv } from "@/lib/play-point-core/supabase-sql-runner";
+import {
+  checkContactRateLimit,
+  getRequestIp,
+  verifyTurnstile,
+} from "@/app/lib/contact-security";
 
 type ContactSubmission = {
   kind?: string;
@@ -9,7 +14,12 @@ type ContactSubmission = {
   product?: string;
   message?: string;
   company?: string;
+  turnstileToken?: string;
 };
+
+type ValidatedSubmission = Required<
+  Omit<ContactSubmission, "company" | "turnstileToken">
+>;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -25,7 +35,7 @@ function hasDatabaseConfiguration() {
   );
 }
 
-async function storeSubmission(submission: Required<Omit<ContactSubmission, "company">>) {
+async function storeSubmission(submission: ValidatedSubmission) {
   const runner = createSupabaseSqlRunnerFromEnv();
 
   await runner.query(`
@@ -49,7 +59,7 @@ async function storeSubmission(submission: Required<Omit<ContactSubmission, "com
   );
 }
 
-async function sendSubmission(submission: Required<Omit<ContactSubmission, "company">>) {
+async function sendSubmission(submission: ValidatedSubmission) {
   const apiKey = process.env.RESEND_API_KEY?.trim();
   if (!apiKey) return false;
 
@@ -94,6 +104,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ sent: true });
   }
 
+  const requestIp = getRequestIp(request);
+  const rateLimit = checkContactRateLimit(requestIp);
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { sent: false, error: "Too many attempts. Please wait a few minutes and try again." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+      },
+    );
+  }
+
   const submission = {
     kind: clean(body.kind, 20) === "support" ? "support" : "contact",
     name: clean(body.name, 100),
@@ -111,6 +133,17 @@ export async function POST(request: Request) {
   }
 
   try {
+    const turnstile = await verifyTurnstile(
+      clean(body.turnstileToken, 2048),
+      requestIp,
+    );
+    if (!turnstile.success) {
+      return NextResponse.json(
+        { sent: false, error: "Please complete the security check and try again." },
+        { status: 403 },
+      );
+    }
+
     const emailed = await sendSubmission(submission);
     let stored = false;
 

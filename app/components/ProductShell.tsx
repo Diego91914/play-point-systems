@@ -63,7 +63,7 @@ export function ProductShell({
         </div>
       </header>
 
-      <main id="main-content">
+      <main id="main-content" tabIndex={-1} className="outline-none">
         <section className="border-b border-white/10 px-5 py-5 sm:px-8 lg:px-10">
           <div className="mx-auto flex max-w-7xl flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="min-w-0">

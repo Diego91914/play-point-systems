@@ -7,6 +7,17 @@ import { SiteShell } from "../components/SiteShell";
 export const metadata: Metadata = {
   title: "Products",
   description: "Explore live scoring, hosted trivia, and golf-first products from Play Point Systems.",
+  alternates: { canonical: "/games" },
+  openGraph: {
+    title: "Play Point Systems Products",
+    description: "Live scoring, hosted trivia, and golf-first experiences built for the way people actually play.",
+    url: "/games",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Play Point Systems Products",
+    description: "Live scoring, hosted trivia, and golf-first experiences built for the way people actually play.",
+  },
 };
 
 const products = [

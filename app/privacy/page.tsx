@@ -11,7 +11,7 @@ export default function PrivacyPage() {
   return (
     <SiteShell>
       <article className="mx-auto max-w-4xl px-5 pb-14 pt-10 sm:px-8 sm:pt-12 lg:px-10 lg:pb-20 lg:pt-16">
-        <div className="section-label">Last updated July 21, 2026</div>
+        <div className="section-label">Last updated July 22, 2026</div>
         <h1 className="marketing-headline mt-4">Privacy Policy</h1>
         <p className="mt-5 text-lg leading-8 text-white/76">
           This policy explains how Play Point Systems LLC collects and uses information when you visit playpointsystems.com or use products such as Play Point Live and Quick Score.
@@ -35,8 +35,12 @@ export default function PrivacyPage() {
             <p className="mt-3">We use information to operate live games and scoreboards, maintain club and match history, verify purchases, provide support, secure the service, prevent misuse, improve reliability, and comply with legal obligations. We do not currently sell personal information or use advertising cookies for cross-site behavioral advertising.</p>
           </section>
           <section>
+            <h2 className="text-2xl font-black text-white">Contact and support submissions</h2>
+            <p className="mt-3">When the online contact form is enabled, we process your name, email address, selected topic and product, message, and limited request information used to prevent spam. Messages may be delivered through Resend and stored with our application data so we can respond, track resolution, and protect the service from misuse.</p>
+          </section>
+          <section>
             <h2 className="text-2xl font-black text-white">Service providers</h2>
-            <p className="mt-3">We use service providers including Vercel for hosting, Supabase for application data, and Stripe for payments. These providers process information on our behalf or as independent service providers according to their contracts and privacy notices.</p>
+            <p className="mt-3">We use service providers including Vercel for hosting, Supabase for application data, Stripe for payments, Resend for contact-form email delivery when enabled, and Cloudflare Turnstile for automated-abuse prevention when enabled. These providers process information on our behalf or as independent service providers according to their contracts and privacy notices.</p>
             <div className="mt-3 flex flex-wrap gap-3">
               <a href="https://stripe.com/privacy" target="_blank" rel="noreferrer" className="text-cyan-200 underline decoration-cyan-300/35 underline-offset-4">Stripe Privacy</a>
               <a href="https://supabase.com/privacy" target="_blank" rel="noreferrer" className="text-cyan-200 underline decoration-cyan-300/35 underline-offset-4">Supabase Privacy</a>
@@ -45,7 +49,7 @@ export default function PrivacyPage() {
           </section>
           <section>
             <h2 className="text-2xl font-black text-white">Retention and security</h2>
-            <p className="mt-3">We retain information for as long as reasonably needed to provide the service, maintain legitimate business records, resolve disputes, and meet legal obligations. We use reasonable administrative and technical safeguards, but no online service can guarantee absolute security.</p>
+            <p className="mt-3">We retain information for as long as reasonably needed to provide the service, respond to and resolve contact or support requests, maintain legitimate business records, resolve disputes, prevent abuse, and meet legal obligations. We use reasonable administrative and technical safeguards, but no online service can guarantee absolute security.</p>
           </section>
           <section>
             <h2 className="text-2xl font-black text-white">Your choices</h2>
