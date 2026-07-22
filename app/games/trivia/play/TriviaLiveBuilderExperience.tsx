@@ -274,7 +274,7 @@ export function TriviaLiveBuilderExperience() {
   }
 
   return (
-    <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
+    <section className="px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
       <div className="grid gap-8 xl:grid-cols-[1.08fr_0.92fr] xl:items-start">
         <div className="grid gap-6">
           <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)] sm:p-7">
@@ -283,12 +283,12 @@ export function TriviaLiveBuilderExperience() {
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">
                   {snapshot ? "Live Trivia Builder" : "Vault-Fed Gold Runtime"}
                 </div>
-                <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Bible trivia builder and host room</h2>
-                <p className="mt-4 max-w-2xl text-sm leading-7 text-white/74">
+                <h2 className="mt-2 text-2xl font-black text-white sm:text-3xl">Create the room</h2>
+                <p className="hidden">
                   This is the hosted builder for the first public Bible trivia MVP on playpointsystems.com. Create the room here, then let players sign in from their phones on the live join page.
                 </p>
               </div>
-              <div className="rounded-[26px] border border-cyan-300/20 bg-black/20 px-4 py-4 text-sm text-cyan-50">
+              <div className="hidden">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-100/70">Live paths</div>
                 <div className="mt-2 font-semibold">Builder: /games/trivia/builder | Join: /games/trivia/join</div>
               </div>
@@ -298,11 +298,11 @@ export function TriviaLiveBuilderExperience() {
               <div className="mt-7 grid gap-6 lg:grid-cols-[1fr_0.92fr]">
                 <div className="rounded-[28px] border border-white/10 bg-black/20 p-5">
                   <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Create a live room</div>
-                  <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm leading-7 text-white/72">
+                  <div className="hidden">
                     This page is the host builder only. The first public MVP is Bible trivia, and player names are entered after joining on their phones at <span className="font-semibold text-white">/games/trivia/join</span>.
                   </div>
 
-                  <div className="mt-5 rounded-2xl border border-white/10 bg-[#07101c] px-4 py-4 text-sm text-white/84">
+                  <div className="hidden">
                     <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/46">Launch category</div>
                     <div className="mt-2 font-black text-white">Bible Gold</div>
                     <div className="mt-2 text-sm leading-7 text-white/68">The public builder is locked to Bible for the MVP launch so the live room flow can stabilize before category expansion.</div>

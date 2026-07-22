@@ -22,9 +22,9 @@ export const founder = {
 
 export const hero = {
   headline: "Games, experiences, and music built to bring people together.",
-  subheadline: "Play Point Systems creates interactive entertainment products and faith-rooted music with a clear purpose: make something people want to experience again.",
+  subheadline: "Interactive products and faith-rooted music made for experiences people want to return to.",
   intro:
-    "Explore live scoring for groups and venues, golf-first products from Shot Caddy, hosted trivia, and original releases from Play Point Records.",
+    "Start a live scoreboard, explore Shot Caddy and trivia, or hear the latest Play Point Records release.",
 };
 
 export const divisions = [
@@ -133,7 +133,7 @@ export const artist = {
       status: "Latest release",
       type: "Single",
       href: siteLinks.houseWithTheLightsOn,
-      imageSrc: "/images/music/house-with-the-lights-on.png",
+      imageSrc: "/images/music/house-with-the-lights-on.webp",
       imageAlt: "House With The Lights On cover art",
       summary: "The newest live release and the clearest current starting point for listeners landing on the page right now.",
     },
@@ -143,7 +143,7 @@ export const artist = {
       status: "Recent release",
       type: "Single",
       href: siteLinks.runBackHome,
-      imageSrc: "/images/music/run-back-home.png",
+      imageSrc: "/images/music/run-back-home.webp",
       imageAlt: "Run Back Home cover art",
       summary: "The second chapter in the rollout and still a key entry point for listeners moving through the catalog.",
     },
@@ -153,7 +153,7 @@ export const artist = {
       status: "Catalog release",
       type: "Single",
       href: siteLinks.nothingCanSeparate,
-      imageSrc: "/images/music/nothing-can-separate.png",
+      imageSrc: "/images/music/nothing-can-separate.webp",
       imageAlt: "Nothing Can Separate cover art",
       summary: "The first public release in the current project arc, still live and still part of the active listening path.",
     },

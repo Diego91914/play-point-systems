@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AvailabilityBadge } from "../components/AvailabilityBadge";
+import { ProductPreview } from "../components/ProductPreview";
 import { SiteShell } from "../components/SiteShell";
 
 export const metadata: Metadata = {
@@ -10,6 +12,7 @@ export const metadata: Metadata = {
 const products = [
   {
     eyebrow: "Live scoring and events",
+    status: "Available",
     title: "Play Point Live",
     description: "Flexible scoring and live-play tools for friendly games, private clubs, venues, and recurring events.",
     points: ["Quick Score starts without a login", "Live spectator boards", "Club, event, and match history"],
@@ -20,6 +23,7 @@ const products = [
   },
   {
     eyebrow: "Golf-first experiences",
+    status: "Available",
     title: "Shot Caddy",
     description: "A focused product brand for disc golf, golf overlays, and tools that make a day on the course more memorable.",
     points: ["Designed around real rounds", "Disc golf at the center", "Independent home at ShotCaddy.net"],
@@ -30,6 +34,7 @@ const products = [
   },
   {
     eyebrow: "Hosted group play",
+    status: "Preview",
     title: "Play Point Trivia",
     description: "A multiple-choice trivia experience built for hosts, phones, shared rooms, and lively group competition.",
     points: ["Join with a room code or QR", "Host-controlled rounds", "Live room scoreboard"],
@@ -49,7 +54,7 @@ export default function ProductsPage() {
             <div className="inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/72">
               Play Point products
             </div>
-            <h1 className="mt-6 text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">
+            <h1 className="marketing-headline mt-6 lg:text-7xl">
               Simple to start. Memorable to play.
             </h1>
             <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-cyan-100/88 sm:text-xl">
@@ -58,6 +63,9 @@ export default function ProductsPage() {
             <p className="mt-5 max-w-3xl text-base leading-8 text-white/76 sm:text-lg">
               Choose a fast scoreboard, a hosted trivia experience, or golf-first tools designed around the way people actually play.
             </p>
+            <a href="#products" className="mt-7 inline-flex rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400">
+              Choose a Product
+            </a>
           </div>
 
           <aside className="rounded-[30px] border border-cyan-300/15 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-6">
@@ -71,17 +79,26 @@ export default function ProductsPage() {
         </div>
       </section>
 
-      <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
+      <section id="products" className="scroll-mt-28 border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
         <div className="max-w-3xl">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">Choose your experience</div>
+          <div className="section-label">Choose your experience</div>
           <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">A focused product for every kind of play.</h2>
         </div>
 
         <div className="mt-8 grid gap-5 lg:grid-cols-3">
           {products.map((product) => (
             <article key={product.title} className="flex flex-col rounded-[30px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/58">{product.eyebrow}</div>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="text-xs font-semibold uppercase tracking-[0.16em] text-white/68">{product.eyebrow}</div>
+                <AvailabilityBadge status={product.status} />
+              </div>
               <h3 className="mt-3 text-3xl font-black text-white">{product.title}</h3>
+              <div className="mt-5">
+                <ProductPreview
+                  compact
+                  kind={product.title === "Play Point Live" ? "quick-score" : product.title === "Shot Caddy" ? "shot-caddy" : "trivia"}
+                />
+              </div>
               <p className="mt-4 text-sm leading-7 text-white/74">{product.description}</p>
               <ul className="mt-5 grid gap-3 text-sm text-white/82">
                 {product.points.map((point) => (
@@ -113,7 +130,7 @@ export default function ProductsPage() {
       <section className="border-t border-white/10 px-5 py-10 sm:px-8 lg:px-10 lg:py-14">
         <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(120deg,rgba(111,182,255,0.1),rgba(255,204,142,0.07))] p-7 sm:flex sm:items-center sm:justify-between sm:gap-8">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">Groups and venues</div>
+            <div className="section-label">Groups and venues</div>
             <h2 className="mt-3 text-3xl font-black text-white">Need help choosing the right setup?</h2>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-white/72">Tell us how your group plays, how often you meet, and what you want the experience to feel like.</p>
           </div>

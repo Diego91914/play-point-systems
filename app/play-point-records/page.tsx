@@ -1,2 +1,5 @@
-﻿export { metadata } from "../music/page";
-export { default } from "../music/page";
+import { permanentRedirect } from "next/navigation";
+
+export default function PlayPointRecordsRedirectPage() {
+  permanentRedirect("/music");
+}

@@ -171,18 +171,15 @@ export function TriviaJoinExperience() {
   }
 
   return (
-    <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
+    <section className="px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
       <div className="grid gap-8 xl:grid-cols-[1.08fr_0.92fr] xl:items-start">
         <div className="grid gap-6">
           <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)] sm:p-7">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">Phone sign-in</div>
-            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Join the trivia room from your phone</h2>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-white/74">
-              Enter the room code from the host screen, add your player name, and play live on the website.
-            </p>
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-white/68">Phone sign-in</div>
+            <h2 className="mt-2 text-2xl font-black text-white sm:text-3xl">Room code and player name</h2>
 
             {!snapshot ? (
-              <div className="mt-7 rounded-[28px] border border-white/10 bg-black/20 p-5">
+              <div className="mt-5 rounded-[28px] border border-white/10 bg-black/20 p-5">
                 <label className="block text-sm font-semibold text-white/90" htmlFor="room-code">
                   Room code
                 </label>

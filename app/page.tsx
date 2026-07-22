@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { ProductPreview } from "./components/ProductPreview";
 import { SiteShell } from "./components/SiteShell";
 import { artist, divisions, founder, hero, principles, siteLinks } from "./site-content";
 
@@ -24,7 +25,7 @@ export default function PlayPointSystemsPage() {
             <div className="inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-white/82">
               Creator-led. Purpose-built.
             </div>
-            <h1 className="mt-6 max-w-4xl break-words text-4xl font-black leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-[5.2rem] xl:leading-[0.96]">
+            <h1 className="marketing-headline mt-6 max-w-4xl leading-[1.05] lg:text-7xl xl:text-[5.2rem] xl:leading-[0.96]">
               {hero.headline}
             </h1>
             <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-cyan-100/88 sm:text-xl">
@@ -66,6 +67,7 @@ export default function PlayPointSystemsPage() {
             <p className="mt-4 text-sm leading-7 text-white/74">
               Turn any friendly competition into a clean, shareable live scoreboard in seconds.
             </p>
+            <div className="mt-5"><ProductPreview kind="quick-score" /></div>
             <ul className="mt-5 grid gap-3 text-sm text-white/82">
               {quickScoreBenefits.map((benefit) => (
                 <li key={benefit} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
@@ -86,7 +88,7 @@ export default function PlayPointSystemsPage() {
 
       <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
         <div className="max-w-3xl">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">The portfolio</div>
+          <div className="section-label">The portfolio</div>
           <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Three focused brands. One standard for the work.</h2>
           <p className="mt-4 text-sm leading-7 text-white/72">
             Each division has a distinct audience and identity, connected by a commitment to clarity, usefulness, and experiences that feel personal.
@@ -96,7 +98,7 @@ export default function PlayPointSystemsPage() {
         <div className="mt-8 grid gap-5 lg:grid-cols-3">
           {divisions.map((division) => (
             <article key={division.name} className="flex flex-col rounded-[30px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/58">{division.eyebrow}</div>
+              <div className="section-label">{division.eyebrow}</div>
               <h3 className="mt-3 text-3xl font-black text-white">{division.name}</h3>
               <p className="mt-4 text-sm leading-7 text-white/74">{division.description}</p>
               <ul className="mt-5 grid gap-3 text-sm text-white/82">
@@ -119,11 +121,10 @@ export default function PlayPointSystemsPage() {
         <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
           <div className="overflow-hidden rounded-[30px] border border-white/10 bg-black/20 p-4">
             <Image
-              src="/images/music/house-with-the-lights-on.png"
+              src="/images/music/house-with-the-lights-on.webp"
               alt="House With The Lights On cover art"
               width={1254}
               height={1254}
-              unoptimized
               sizes="(min-width: 1024px) 42vw, 100vw"
               className="h-auto w-full rounded-[22px]"
             />
@@ -149,7 +150,7 @@ export default function PlayPointSystemsPage() {
       <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
         <div className="grid gap-6 lg:grid-cols-[1fr_0.92fr]">
           <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.1),rgba(255,255,255,0.03))] p-7">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">Founder story</div>
+            <div className="section-label">Founder story</div>
             <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl">Built by {founder.name}</h2>
             <p className="mt-5 text-base leading-8 text-white/76">
               Play Point Systems brings together Channing&apos;s work in interactive products, sports experiences, and faith-driven music. The formats change, but the goal remains the same: create something clear, honest, and worth returning to.

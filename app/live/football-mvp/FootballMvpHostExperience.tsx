@@ -471,19 +471,19 @@ export function FootballMvpHostExperience() {
   return (
     <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
       <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="space-y-8">
-          <div className="rounded-[30px] border border-cyan-300/18 bg-[linear-gradient(180deg,rgba(111,182,255,0.14),rgba(255,255,255,0.03))] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
+        <div className="flex flex-col gap-6">
+          <div className="-order-3 rounded-[30px] border border-cyan-300/18 bg-[linear-gradient(180deg,rgba(111,182,255,0.14),rgba(255,255,255,0.03))] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-cyan-100/80">
               Venue Control
             </div>
-            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">
+            <h2 className="mt-3 text-2xl font-black text-white sm:text-3xl">
               Keep the room engaged and the staff flow clean.
             </h2>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-white/72">
+            <p className="hidden">
               This side is for staff. Run the reward board, post the score,
               trigger suspense around the Q3 reveal, and keep redemption simple when a guest wins.
             </p>
-            <div className="mt-6 grid gap-3 md:grid-cols-3">
+            <div className="hidden">
               <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">
                   Game
@@ -509,7 +509,7 @@ export function FootballMvpHostExperience() {
                 </div>
               </div>
             </div>
-            <div className="mt-4 flex flex-wrap gap-3 text-xs text-white/58">
+            <div className="hidden">
               <div className="rounded-full border border-white/10 bg-black/20 px-3 py-2">
                 Prototype storage {dashboard.storageMode ?? "json"}
               </div>
@@ -521,7 +521,7 @@ export function FootballMvpHostExperience() {
               ) : null}
             </div>
             {dashboard.storageNotice ? (
-              <div className="mt-4 rounded-2xl border border-amber-300/20 bg-amber-400/10 px-4 py-3 text-sm text-amber-50">
+              <div className="hidden">
                 {dashboard.storageNotice}
               </div>
             ) : null}
@@ -550,7 +550,7 @@ export function FootballMvpHostExperience() {
                 Back to Live
               </Link>
             </div>
-            <div className="mt-6 grid gap-3 md:grid-cols-3">
+            <div className="hidden">
               <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/76">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">
                   Step 1
@@ -670,7 +670,7 @@ export function FootballMvpHostExperience() {
             </div>
           </article>
 
-          <article className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
+          <article className="-order-1 rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/52">
@@ -788,7 +788,7 @@ export function FootballMvpHostExperience() {
             </div>
           </article>
 
-          <div className="grid gap-6 xl:grid-cols-2">
+          <div className="-order-2 grid gap-6 xl:grid-cols-2">
             <article className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
               <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/52">
                 Staff action

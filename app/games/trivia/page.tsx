@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AvailabilityBadge } from "../../components/AvailabilityBadge";
+import { ProductPreview } from "../../components/ProductPreview";
 import { SiteShell } from "../../components/SiteShell";
 
 export const metadata: Metadata = {
@@ -40,21 +42,22 @@ export default function GamesTriviaPage() {
             <div className="inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/72">
               Play Point Games
             </div>
-            <h1 className="mt-6 max-w-4xl text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-[5rem] xl:leading-[0.96]">
+            <div className="mt-4"><AvailabilityBadge status="Preview" /></div>
+            <h1 className="marketing-headline mt-6 max-w-4xl lg:text-7xl xl:text-[5rem] xl:leading-[0.96]">
               Trivia that feels alive in the room.
             </h1>
             <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-cyan-100/88 sm:text-xl sm:leading-8">
-              Play Point Trivia launches first as Bible trivia, turning standard questions into a fast, funny, high-tension game built for events, hosts, and repeat play.
+              Bible trivia becomes a fast, high-tension live game built for hosts, events, and repeat play.
             </p>
             <p className="mt-5 max-w-3xl text-base leading-8 text-white/76 sm:text-lg">
-              This is not just a list of questions on a screen. It is a hosted game product with phone sign-in, room codes, QR joins, speed-based scoring, round structure, and room-level energy built into the format, with Bible Gold content leading the first public MVP.
+              Hosts create the room, players join by QR or code, and speed-based scoring keeps every round moving. Bible Gold leads the current preview.
             </p>
             <div className="mt-7 flex flex-col gap-3 xs:flex-row sm:flex-row">
               <Link
                 href="/games/trivia/builder"
                 className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
               >
-                Open the Live Builder
+                Try the Preview
               </Link>
               <Link
                 href="/games/trivia/join"
@@ -72,7 +75,8 @@ export default function GamesTriviaPage() {
           </div>
 
           <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)]">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">Core promise</div>
+            <div className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-100/78">Live question preview</div>
+            <div className="mt-4"><ProductPreview kind="trivia" /></div>
             <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">More than a quiz night.</h2>
             <ul className="mt-5 grid gap-3 text-sm text-white/78">
               <li className="flex items-start gap-3 rounded-2xl border border-white/8 bg-black/20 px-4 py-3">
@@ -99,7 +103,7 @@ export default function GamesTriviaPage() {
       <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
         <div className="grid gap-8 lg:grid-cols-[0.94fr_1.06fr] lg:items-start">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">How it works</div>
+            <div className="section-label">How it works</div>
             <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Built for the way live rooms actually play.</h2>
             <p className="mt-4 max-w-xl text-sm leading-7 text-white/72">
               The default Play Point Trivia flow starts in the builder, brings players in through the phone join path, then uses a four-round structure to teach the room, create momentum, and finish strong.
@@ -114,7 +118,7 @@ export default function GamesTriviaPage() {
               ["Finale", "The session finishes with a visible ending and a clear leaderboard winner."],
             ].map(([title, body]) => (
               <div key={title} className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">{title}</div>
+                <div className="section-label">{title}</div>
                 <p className="mt-3 text-sm leading-7 text-white/72">{body}</p>
               </div>
             ))}
@@ -125,7 +129,7 @@ export default function GamesTriviaPage() {
       <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
         <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Who it is for</div>
+            <div className="section-label">Who it is for</div>
             <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Made for people running actual events.</h2>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -141,7 +145,7 @@ export default function GamesTriviaPage() {
       <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Commercial shape</div>
+            <div className="section-label">Commercial shape</div>
             <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">A product with repeat value.</h2>
           </div>
           <div className="max-w-xl text-sm leading-7 text-white/68">
@@ -162,10 +166,10 @@ export default function GamesTriviaPage() {
 
       <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
         <div className="rounded-[32px] border border-cyan-300/20 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-7 shadow-[0_24px_70px_rgba(0,0,0,0.2)]">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Current status</div>
-          <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl">Play Point Trivia is being prepared for launch.</h2>
+          <div className="section-label">Current status</div>
+          <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl">The Play Point Trivia preview is available now.</h2>
           <p className="mt-4 max-w-3xl text-base leading-8 text-white/76">
-            The first public launch is Bible trivia. Join the first wave of hosts, venues, and event leaders bringing a sharper kind of trivia into the room.
+            Bible Gold is the current preview category while room flow, phone joining, and host controls are refined for a broader release.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link href="/games/trivia/builder" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">

@@ -11,8 +11,8 @@ export default function PrivacyPage() {
   return (
     <SiteShell>
       <article className="mx-auto max-w-4xl px-5 pb-14 pt-10 sm:px-8 sm:pt-12 lg:px-10 lg:pb-20 lg:pt-16">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-white/58">Last updated July 21, 2026</div>
-        <h1 className="mt-4 text-5xl font-black tracking-tight text-white sm:text-6xl">Privacy Policy</h1>
+        <div className="section-label">Last updated July 21, 2026</div>
+        <h1 className="marketing-headline mt-4">Privacy Policy</h1>
         <p className="mt-5 text-lg leading-8 text-white/76">
           This policy explains how Play Point Systems LLC collects and uses information when you visit playpointsystems.com or use products such as Play Point Live and Quick Score.
         </p>

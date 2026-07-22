@@ -316,19 +316,19 @@ export function FootballMvpPlayerExperience() {
   return (
     <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
       <div className="grid gap-8 xl:grid-cols-[1.05fr_0.95fr] xl:items-start">
-        <div className="grid gap-6">
-          <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)] sm:p-7">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">
+        <div className="flex flex-col gap-6">
+          <div className="-order-2 flex flex-col rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)] sm:p-7">
+            <div className="order-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/68">
               Game Night Player
             </div>
-            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">
+            <h2 className="order-2 mt-3 text-2xl font-black text-white sm:text-3xl">
               Make 3 quick picks, then stay for the Q3 reveal.
             </h2>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-white/74">
+            <p className="order-7 mt-6 max-w-2xl text-sm leading-7 text-white/74">
               This side is for guests. Pick the winner, predict the final score,
               choose your lucky square digits, and see whether the bar turns your square into a prize.
             </p>
-            <div className="mt-5 flex flex-wrap gap-3 text-xs text-white/58">
+            <div className="order-8 mt-5 flex flex-wrap gap-3 text-xs text-white/68">
               <div className="rounded-full border border-white/10 bg-black/20 px-3 py-2">
                 Prototype storage {dashboard.storageMode ?? "json"}
               </div>
@@ -338,7 +338,7 @@ export function FootballMvpPlayerExperience() {
                 </div>
               ) : null}
             </div>
-            <div className="mt-6 grid gap-3 md:grid-cols-2">
+            <div className="order-9 mt-5 grid gap-3 md:grid-cols-2">
               <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/76">
                 <div className="font-semibold text-white">Pick 1</div>
                 <div className="mt-1">Choose which team wins.</div>
@@ -356,13 +356,13 @@ export function FootballMvpPlayerExperience() {
                 <div className="mt-1">The bar reveals hidden square prizes when the venue posts the Q3 score.</div>
               </div>
             </div>
-            <div className="mt-6 rounded-2xl border border-cyan-300/18 bg-cyan-400/10 px-4 py-4 text-sm text-cyan-50">
+            <div className="order-6 mt-5 rounded-2xl border border-cyan-300/18 bg-cyan-400/10 px-4 py-4 text-sm text-cyan-50">
               {dashboard.venueProgram.revealStatus === "revealed"
                 ? `The Q3 reward reveal is live. Check whether square ${dashboard.venueProgram.activeSquareKey ?? "--"} is worth a prize.`
                 : "Tonight's reward squares stay hidden until the 3rd quarter reveal, which gives the bar its big suspense moment."}
             </div>
 
-            <div className="mt-6 grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
+            <div className="order-3 mt-6 grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
               <label className="grid gap-2 text-sm text-white/76">
                 <span className="font-semibold text-white/88">Player id</span>
                 <input
@@ -397,7 +397,7 @@ export function FootballMvpPlayerExperience() {
               </button>
             </div>
 
-            <div className="mt-6 grid gap-3 md:grid-cols-3">
+            <div className="order-4 mt-5 grid gap-3 md:grid-cols-3">
               <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">
                   Game
@@ -425,12 +425,12 @@ export function FootballMvpPlayerExperience() {
             </div>
 
             {responseSummary ? (
-              <div className="mt-5 rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-50">
+              <div className="order-5 mt-5 rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-50">
                 {responseSummary}
               </div>
             ) : null}
             {errorMessage ? (
-              <div className="mt-5 rounded-2xl border border-rose-300/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-50">
+              <div className="order-5 mt-5 rounded-2xl border border-rose-300/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-50">
                 {errorMessage}
               </div>
             ) : null}
@@ -517,7 +517,7 @@ export function FootballMvpPlayerExperience() {
             </div>
           </article>
 
-          <article className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
+          <article className="-order-1 rounded-[30px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/52">

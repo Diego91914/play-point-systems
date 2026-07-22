@@ -11,8 +11,8 @@ export default function TermsPage() {
   return (
     <SiteShell>
       <article className="mx-auto max-w-4xl px-5 pb-14 pt-10 sm:px-8 sm:pt-12 lg:px-10 lg:pb-20 lg:pt-16">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-white/58">Effective July 21, 2026</div>
-        <h1 className="mt-4 text-5xl font-black tracking-tight text-white sm:text-6xl">Terms of Use</h1>
+        <div className="section-label">Effective July 21, 2026</div>
+        <h1 className="marketing-headline mt-4">Terms of Use</h1>
         <p className="mt-5 text-lg leading-8 text-white/76">
           These Terms govern your use of playpointsystems.com and products offered by Play Point Systems LLC, including Play Point Live, Quick Score, and Play Point Trivia.
         </p>

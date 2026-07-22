@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AvailabilityBadge } from "../components/AvailabilityBadge";
+import { ProductPreview } from "../components/ProductPreview";
 import { SiteShell } from "../components/SiteShell";
 
 export const metadata: Metadata = {
@@ -31,7 +33,8 @@ export default function ShotCaddyPage() {
             <div className="inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/72">
               A Play Point Systems product brand
             </div>
-            <h1 className="mt-5 text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">Make the round more memorable.</h1>
+            <div className="mt-4"><AvailabilityBadge status="Available" /></div>
+            <h1 className="marketing-headline mt-5 lg:text-7xl">Make the round more memorable.</h1>
             <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-cyan-100/88 sm:text-xl">
               Shot Caddy creates golf-first products for players who want more from the experience around the score.
             </p>
@@ -49,18 +52,16 @@ export default function ShotCaddyPage() {
           </div>
 
           <aside className="rounded-[30px] border border-amber-300/15 bg-[linear-gradient(180deg,rgba(255,204,142,0.12),rgba(255,255,255,0.03))] p-6">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-amber-100/70">The focus</div>
-            <h2 className="mt-3 text-3xl font-black text-white">Golf experiences with a clear point of view.</h2>
-            <p className="mt-4 text-sm leading-7 text-white/74">
-              Shot Caddy is not a general-purpose scoring app. It is a dedicated home for golf-specific ideas, tools, and experiences.
-            </p>
+            <div className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-100/78">Round-day interface preview</div>
+            <div className="mt-4"><ProductPreview kind="shot-caddy" /></div>
+            <p className="mt-4 text-sm leading-7 text-white/74">Golf-specific tools keep the round visible without getting in the way of play.</p>
           </aside>
         </div>
       </section>
 
       <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
         <div className="max-w-3xl">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">Built around the round</div>
+          <div className="section-label">Built around the round</div>
           <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Focused enough to feel intentional.</h2>
         </div>
         <div className="mt-8 grid gap-5 md:grid-cols-3">
@@ -76,7 +77,7 @@ export default function ShotCaddyPage() {
       <section className="border-t border-white/10 px-5 py-10 sm:px-8 lg:px-10 lg:py-14">
         <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(120deg,rgba(111,182,255,0.1),rgba(255,204,142,0.07))] p-7 sm:flex sm:items-center sm:justify-between sm:gap-8">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">Looking for multi-sport scoring?</div>
+            <div className="section-label">Looking for multi-sport scoring?</div>
             <h2 className="mt-3 text-3xl font-black text-white">Play Point Live handles the games beyond golf.</h2>
           </div>
           <Link href="/live" className="mt-6 inline-flex shrink-0 rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16 sm:mt-0">

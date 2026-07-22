@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ContactForm } from "../components/ContactForm";
 import { SiteShell } from "../components/SiteShell";
-import { founder } from "../site-content";
 
 export const metadata: Metadata = {
   title: "Support",
@@ -16,21 +16,30 @@ const supportTopics = [
 ] as const;
 
 export default function SupportPage() {
-  const supportHref = `mailto:${founder.email}?subject=${encodeURIComponent("Play Point support request")}`;
-
   return (
     <SiteShell current="contact">
       <section className="px-5 pb-12 pt-10 sm:px-8 sm:pb-16 sm:pt-12 lg:px-10 lg:pb-20 lg:pt-16">
         <div className="max-w-4xl">
           <div className="inline-flex rounded-full border border-cyan-300/20 bg-cyan-400/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-cyan-50/82">Support</div>
-          <h1 className="mt-5 text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">We&apos;ll help you get back to playing.</h1>
+          <h1 className="marketing-headline mt-5 lg:text-7xl">We&apos;ll help you get back to playing.</h1>
           <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-cyan-100/88 sm:text-xl">
             Tell us what you were using, what you expected to happen, and what happened instead.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <a href={supportHref} className="inline-flex rounded-2xl border border-cyan-200/30 bg-cyan-400/12 px-5 py-3.5 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/18">Email Support</a>
+            <a href="#support-form" className="inline-flex rounded-2xl border border-cyan-200/30 bg-cyan-400/12 px-5 py-3.5 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/18">Start Support Request</a>
             <Link href="/contact" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3.5 text-sm font-black text-white transition hover:bg-white/12">Other Inquiries</Link>
           </div>
+        </div>
+      </section>
+
+      <section id="support-form" className="scroll-mt-28 border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
+        <div className="grid gap-6 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-100/78">Support request</div>
+            <h2 className="mt-3 text-3xl font-black text-white">Tell us what happened</h2>
+            <p className="mt-4 text-sm leading-7 text-white/72">Include the page, device, expected result, and exact error. The form keeps those details together.</p>
+          </div>
+          <ContactForm kind="support" />
         </div>
       </section>
 
@@ -48,7 +57,7 @@ export default function SupportPage() {
       <section className="border-t border-white/10 px-5 py-10 sm:px-8 lg:px-10 lg:py-14">
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">Include in your message</div>
+            <div className="section-label">Include in your message</div>
             <ul className="mt-5 grid gap-3 text-sm leading-7 text-white/76">
               <li>• The product and page you were using</li>
               <li>• Your device and browser</li>

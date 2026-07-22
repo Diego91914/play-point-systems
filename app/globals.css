@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .marketing-headline {
+    @apply min-w-0 break-words text-4xl font-black tracking-tight text-white sm:text-6xl;
+    overflow-wrap: anywhere;
+  }
+
+  .section-label {
+    @apply text-[11px] font-semibold uppercase tracking-[0.22em] text-white/70;
+  }
+}
+
 :root {
   --font-display: "Sora", "Segoe UI", sans-serif;
   --font-body: "Manrope", "Segoe UI", sans-serif;

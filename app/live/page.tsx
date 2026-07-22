@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AvailabilityBadge } from "../components/AvailabilityBadge";
+import { ProductPreview } from "../components/ProductPreview";
 import { SiteShell } from "../components/SiteShell";
 
 export const metadata: Metadata = {
@@ -10,6 +12,7 @@ export const metadata: Metadata = {
 const experiences = [
   {
     title: "Quick Score",
+    status: "Available",
     body: "A fast, flexible scoreboard for casual games and friendly competition. Start locally, then share a live board when the group wants to follow along.",
     examples: ["No-login local scoring", "Multiple scoring formats", "Spectator-friendly live boards"],
     href: "/live/quick-score",
@@ -17,6 +20,7 @@ const experiences = [
   },
   {
     title: "Club Play",
+    status: "Preview",
     body: "Keep recurring groups organized with participants, events, completed matches, and a history that makes every gathering part of a bigger season.",
     examples: ["Participant rosters", "Event and match history", "Built for recurring groups"],
     href: "/live/quick-score/clubs",
@@ -24,6 +28,7 @@ const experiences = [
   },
   {
     title: "Venue Experiences",
+    status: "Internal demo",
     body: "Turn the room into part of the game with host controls, player participation, live prompts, and shared moments designed for a crowd.",
     examples: ["Host-controlled experiences", "Phone-friendly participation", "Designed for live rooms"],
     href: "/live/football-mvp",
@@ -48,7 +53,7 @@ export default function PlayPointLivePage() {
             <div className="inline-flex rounded-full border border-cyan-300/20 bg-cyan-400/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-cyan-50/82">
               Live scoring and group play
             </div>
-            <h1 className="mt-6 text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-[5rem] xl:leading-[0.96]">
+            <h1 className="marketing-headline mt-6 lg:text-7xl xl:text-[5rem] xl:leading-[0.96]">
               Make every game easier to follow—and harder to forget.
             </h1>
             <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-cyan-100/88 sm:text-xl">
@@ -69,10 +74,11 @@ export default function PlayPointLivePage() {
 
           <aside className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.13),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.22)] sm:p-7">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">Quick Score</div>
+              <div className="section-label">Quick Score</div>
               <span className="rounded-full border border-emerald-300/25 bg-emerald-400/10 px-3 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-100">Free to start</span>
             </div>
             <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl">From zero to game time in seconds.</h2>
+            <div className="mt-5"><ProductPreview kind="quick-score" /></div>
             <div className="mt-6 flex flex-wrap gap-2">
               {gameFormats.map((game) => (
                 <span key={game} className="rounded-full border border-white/12 bg-black/20 px-3 py-2 text-xs font-semibold text-white/78">{game}</span>
@@ -87,13 +93,16 @@ export default function PlayPointLivePage() {
 
       <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
         <div className="max-w-3xl">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">Ways to play</div>
+          <div className="section-label">Ways to play</div>
           <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">One platform for casual games, clubs, and live rooms.</h2>
         </div>
         <div className="mt-8 grid gap-5 lg:grid-cols-3">
           {experiences.map((experience) => (
             <article key={experience.title} className="flex flex-col rounded-[30px] border border-white/10 bg-white/[0.03] p-6">
-              <h3 className="text-3xl font-black text-white">{experience.title}</h3>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h3 className="text-3xl font-black text-white">{experience.title}</h3>
+                <AvailabilityBadge status={experience.status} />
+              </div>
               <p className="mt-4 text-sm leading-7 text-white/74">{experience.body}</p>
               <ul className="mt-5 grid gap-3 text-sm text-white/82">
                 {experience.examples.map((example) => (
@@ -114,7 +123,7 @@ export default function PlayPointLivePage() {
       <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
         <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">How it works</div>
+            <div className="section-label">How it works</div>
             <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Less setup. More playing.</h2>
             <p className="mt-4 max-w-xl text-sm leading-7 text-white/72">Quick Score is designed to stay out of the way until the group needs more—from spectator links to recurring club history.</p>
           </div>
