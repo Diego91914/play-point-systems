@@ -1,253 +1,145 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteShell } from "../components/SiteShell";
-import {
-  PLAY_POINT_CORE_CAPABILITIES,
-  PLAY_POINT_LIVE_SURFACES,
-  PLAY_POINT_MIGRATION_PHASES,
-  PLAY_POINT_PRODUCT_BOUNDARIES,
-  SHOT_CADDY_LIVE_BRIDGE,
-  TRIVIA_CORE_ADAPTER,
-} from "@/lib/play-point-core";
 
 export const metadata: Metadata = {
   title: "Play Point Live",
-  description: "Play Point Live is the flagship multi-sport live-experience product under Play Point Systems.",
+  description: "Live scoring and group-play experiences for backyards, clubs, venues, and recurring events.",
 };
 
-const capabilityStyles = {
-  live: "border-emerald-300/25 bg-emerald-400/10 text-emerald-50",
-  bridge: "border-amber-300/25 bg-amber-400/10 text-amber-50",
-  planned: "border-cyan-300/25 bg-cyan-400/10 text-cyan-50",
-} as const;
+const experiences = [
+  {
+    title: "Quick Score",
+    body: "A fast, flexible scoreboard for casual games and friendly competition. Start locally, then share a live board when the group wants to follow along.",
+    examples: ["No-login local scoring", "Multiple scoring formats", "Spectator-friendly live boards"],
+    href: "/live/quick-score",
+    cta: "Start Quick Score",
+  },
+  {
+    title: "Club Play",
+    body: "Keep recurring groups organized with participants, events, completed matches, and a history that makes every gathering part of a bigger season.",
+    examples: ["Participant rosters", "Event and match history", "Built for recurring groups"],
+    href: "/live/quick-score/clubs",
+    cta: "Explore Clubs",
+  },
+  {
+    title: "Venue Experiences",
+    body: "Turn the room into part of the game with host controls, player participation, live prompts, and shared moments designed for a crowd.",
+    examples: ["Host-controlled experiences", "Phone-friendly participation", "Designed for live rooms"],
+    href: "/live/football-mvp",
+    cta: "Open the Venue Demo",
+  },
+] as const;
+
+const steps = [
+  { number: "01", title: "Choose the game", body: "Select a scoring style that matches the competition." },
+  { number: "02", title: "Add the players", body: "Name the sides and set the winning target in a few taps." },
+  { number: "03", title: "Play and share", body: "Keep score locally or publish a live board for spectators." },
+] as const;
+
+const gameFormats = ["Cornhole", "Pickleball", "Bocce", "Horseshoes", "Washers", "Table games", "Custom matchups"] as const;
 
 export default function PlayPointLivePage() {
   return (
     <SiteShell current="live">
-      <section className="px-5 pb-12 pt-10 sm:px-8 sm:pb-16 sm:pt-12 lg:px-10 lg:pb-24 lg:pt-16 xl:pb-28 xl:pt-20">
-        <div className="grid gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:items-end xl:gap-14">
+      <section className="px-5 pb-12 pt-10 sm:px-8 sm:pb-16 sm:pt-12 lg:px-10 lg:pb-20 lg:pt-16 xl:pt-20">
+        <div className="grid gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:items-center xl:gap-14">
           <div className="max-w-4xl reveal-up">
             <div className="inline-flex rounded-full border border-cyan-300/20 bg-cyan-400/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-cyan-50/82">
-              Play Point Games flagship product
+              Live scoring and group play
             </div>
-            <h1 className="mt-6 max-w-4xl text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-[5rem] xl:leading-[0.96]">
-              Play Point Live belongs under Play Point Systems.
+            <h1 className="mt-6 text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-[5rem] xl:leading-[0.96]">
+              Make every game easier to follow—and harder to forget.
             </h1>
-            <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-cyan-100/88 sm:text-xl sm:leading-8">
-              The long-term product is a multi-sport live experience platform for venues, clubs, and recurring seasons.
+            <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-cyan-100/88 sm:text-xl">
+              Play Point Live brings clear scoring, shared boards, and recurring group history to backyards, clubs, and venues.
             </p>
             <p className="mt-5 max-w-3xl text-base leading-8 text-white/76 sm:text-lg">
-              Shot Caddy should stay focused on disc golf and golf-adjacent play. Play Point Live is broader than that.
-              Quick Score now runs here as a native Play Point Live experience, while the older board MVP continues to bridge
-              through Shot Caddy until that separate runtime is rehomed.
+              Start a casual match in seconds, give spectators a live view, or build an ongoing experience for a group that plays together every week.
             </p>
-            <div className="mt-7 flex flex-col gap-3 xs:flex-row sm:flex-row">
-              <Link
-                href="/live/quick-score"
-                className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110"
-              >
-                Open Quick Score
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link href="/live/quick-score" className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400">
+                Start Quick Score
               </Link>
-              <Link
-                href="/games"
-                className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-black/25 px-6 py-3.5 text-sm font-semibold text-white/90 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
-              >
-                Explore the Games Portfolio
-              </Link>
-              <Link
-                href="/live/football-mvp"
-                className="inline-flex items-center justify-center rounded-2xl border border-emerald-300/22 bg-emerald-400/10 px-6 py-3.5 text-sm font-black text-emerald-50 transition hover:bg-emerald-400/16"
-              >
-                Open Venue Control Demo
-              </Link>
-              <Link
-                href="/live/football-mvp/play"
-                className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/8 px-6 py-3.5 text-sm font-black text-white transition hover:bg-white/12"
-              >
-                Open Player Game Demo
+              <Link href="/contact" className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-black/25 px-6 py-3.5 text-sm font-semibold text-white/90 transition hover:border-white/30 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50">
+                Talk About a Venue
               </Link>
             </div>
           </div>
 
-          <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)]">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">Live Play Point runtime</div>
-            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Quick Score is home.</h2>
-            <ul className="mt-5 grid gap-3 text-sm text-white/78">
-              <li className="flex items-start gap-3 rounded-2xl border border-white/8 bg-black/20 px-4 py-3">
-                <span className="mt-1 h-2.5 w-2.5 rounded-full bg-amber-300" />
-                <span>Start a local scoreboard with no login or round setup.</span>
-              </li>
-              <li className="flex items-start gap-3 rounded-2xl border border-white/8 bg-black/20 px-4 py-3">
-                <span className="mt-1 h-2.5 w-2.5 rounded-full bg-amber-300" />
-                <span>Score cornhole, bocce, pickleball, horseshoes, washers, and more.</span>
-              </li>
-              <li className="flex items-start gap-3 rounded-2xl border border-white/8 bg-black/20 px-4 py-3">
-                <span className="mt-1 h-2.5 w-2.5 rounded-full bg-amber-300" />
-                <span>Use spectator boards, clubs, events, and saved match history from one Play Point Live path.</span>
-              </li>
-            </ul>
-            <div className="mt-5 grid gap-3">
-              <div className="rounded-2xl border border-cyan-300/15 bg-cyan-400/6 px-4 py-4 text-sm text-white/78">
-                Quick Score is owned and served by Play Point Live at <span className="font-semibold text-white">/live/quick-score</span>.
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/78">
-                Shot Caddy remains focused on disc golf and golf-specific gameplay.
-              </div>
+          <aside className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.13),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.22)] sm:p-7">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">Quick Score</div>
+              <span className="rounded-full border border-emerald-300/25 bg-emerald-400/10 px-3 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-100">Free to start</span>
             </div>
-          </div>
+            <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl">From zero to game time in seconds.</h2>
+            <div className="mt-6 flex flex-wrap gap-2">
+              {gameFormats.map((game) => (
+                <span key={game} className="rounded-full border border-white/12 bg-black/20 px-3 py-2 text-xs font-semibold text-white/78">{game}</span>
+              ))}
+            </div>
+            <Link href="/live/quick-score" className="mt-6 inline-flex w-full items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-400/12 px-5 py-3.5 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/18">
+              Open the Scoreboard
+            </Link>
+          </aside>
         </div>
       </section>
 
       <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Product surfaces</div>
-            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">One platform. Different ways to play.</h2>
-          </div>
-          <div className="max-w-xl text-sm leading-7 text-white/68">
-            The sport can change and the contest template can change, but the player identity and shared event engine should not.
-          </div>
+        <div className="max-w-3xl">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">Ways to play</div>
+          <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">One platform for casual games, clubs, and live rooms.</h2>
         </div>
-
         <div className="mt-8 grid gap-5 lg:grid-cols-3">
-          {PLAY_POINT_LIVE_SURFACES.map((surface) => (
-            <article key={surface.title} className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
-              <div className="text-3xl font-black text-white">{surface.title}</div>
-              <p className="mt-4 text-sm leading-7 text-white/72">{surface.summary}</p>
-              <ul className="mt-5 grid gap-3 text-sm text-white/78">
-                {surface.examples.map((example) => (
-                  <li key={example} className="flex items-start gap-3 rounded-2xl border border-white/8 bg-black/20 px-4 py-3">
-                    <span className="mt-1 h-2.5 w-2.5 rounded-full bg-cyan-300" />
+          {experiences.map((experience) => (
+            <article key={experience.title} className="flex flex-col rounded-[30px] border border-white/10 bg-white/[0.03] p-6">
+              <h3 className="text-3xl font-black text-white">{experience.title}</h3>
+              <p className="mt-4 text-sm leading-7 text-white/74">{experience.body}</p>
+              <ul className="mt-5 grid gap-3 text-sm text-white/82">
+                {experience.examples.map((example) => (
+                  <li key={example} className="flex items-start gap-3">
+                    <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-cyan-300" />
                     <span>{example}</span>
                   </li>
                 ))}
               </ul>
+              <Link href={experience.href} className="mt-6 inline-flex w-fit rounded-2xl border border-white/15 bg-white/8 px-4 py-3 text-sm font-black text-white transition hover:bg-white/12">
+                {experience.cta}
+              </Link>
             </article>
           ))}
         </div>
       </section>
 
       <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
-        <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+        <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Play Point Core</div>
-            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Shared capabilities now have a home.</h2>
-            <p className="mt-4 max-w-xl text-sm leading-7 text-white/72">
-              Instead of burying multi-sport product logic inside Shot Caddy, the shared contracts live in Play Point Systems.
-              That makes future extraction possible without rewriting the idea every time.
-            </p>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">How it works</div>
+            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Less setup. More playing.</h2>
+            <p className="mt-4 max-w-xl text-sm leading-7 text-white/72">Quick Score is designed to stay out of the way until the group needs more—from spectator links to recurring club history.</p>
           </div>
-
-          <div className="grid gap-4">
-            {PLAY_POINT_CORE_CAPABILITIES.map((capability) => (
-              <article key={capability.id} className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="text-xl font-black text-white">{capability.label}</div>
-                  <div className={`rounded-full border px-3 py-1 text-[11px] font-black uppercase tracking-[0.18em] ${capabilityStyles[capability.status]}`}>
-                    {capability.status}
-                  </div>
-                </div>
-                <p className="mt-3 text-sm leading-7 text-white/72">{capability.summary}</p>
-                <div className="mt-4 grid gap-3 md:grid-cols-2">
-                  <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-3">
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">Current owner</div>
-                    <div className="mt-2 text-sm text-white/78">{capability.currentOwner}</div>
-                  </div>
-                  <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-3">
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">Next move</div>
-                    <div className="mt-2 text-sm text-white/78">{capability.nextMove}</div>
-                  </div>
-                </div>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {steps.map((step) => (
+              <article key={step.number} className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5">
+                <div className="text-sm font-black text-cyan-200/72">{step.number}</div>
+                <h3 className="mt-3 text-2xl font-black text-white">{step.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-white/72">{step.body}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <section className="border-t border-white/10 px-5 py-10 sm:px-8 lg:px-10 lg:py-14">
+        <div className="rounded-[32px] border border-cyan-300/18 bg-[linear-gradient(120deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-7 sm:flex sm:items-center sm:justify-between sm:gap-8">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Existing runtime bridges</div>
-            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Use what is real. Rehome what is misplaced.</h2>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-cyan-100/70">Ready when you are</div>
+            <h2 className="mt-3 text-3xl font-black text-white">Start a scoreboard or plan a bigger experience.</h2>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-white/72">Quick Score is ready now. For recurring groups and venue conversations, contact Play Point Systems directly.</p>
           </div>
-          <div className="max-w-xl text-sm leading-7 text-white/68">
-            The goal is not to throw away working code. The goal is to stop letting the wrong product own it.
-          </div>
-        </div>
-
-        <div className="mt-8 grid gap-5 lg:grid-cols-2">
-          {[TRIVIA_CORE_ADAPTER, SHOT_CADDY_LIVE_BRIDGE].map((adapter) => (
-            <article key={adapter.product} className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/52">{adapter.currentHome}</div>
-              <div className="mt-3 text-3xl font-black text-white">{adapter.product}</div>
-              <div className="mt-5 grid gap-3 text-sm text-white/78">
-                {adapter.strengths.map((strength) => (
-                  <div key={strength} className="rounded-2xl border border-white/8 bg-black/20 px-4 py-3">
-                    {strength}
-                  </div>
-                ))}
-              </div>
-              <div className="mt-5 flex flex-wrap gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/72">
-                {adapter.mappedCapabilities.map((capability) => (
-                  <span key={capability} className="rounded-full border border-white/12 bg-white/8 px-3 py-2">
-                    {capability}
-                  </span>
-                ))}
-              </div>
-              <div className="mt-5 grid gap-3 text-sm text-white/72">
-                {adapter.notes.map((note) => (
-                  <div key={note} className="rounded-2xl border border-cyan-300/12 bg-cyan-400/6 px-4 py-3">
-                    {note}
-                  </div>
-                ))}
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
-        <div className="grid gap-5 lg:grid-cols-3">
-          {PLAY_POINT_PRODUCT_BOUNDARIES.map((boundary) => (
-            <article key={boundary.product} className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.08),rgba(255,255,255,0.03))] p-6">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/52">{boundary.domain}</div>
-              <div className="mt-3 text-3xl font-black text-white">{boundary.product}</div>
-              <p className="mt-4 text-sm leading-7 text-white/72">{boundary.focus}</p>
-              <div className="mt-4 rounded-2xl border border-white/8 bg-black/20 px-4 py-3 text-sm text-white/78">
-                {boundary.currentRuntime}
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
-        <div className="rounded-[32px] border border-cyan-300/20 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-7 shadow-[0_24px_70px_rgba(0,0,0,0.2)]">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Migration path</div>
-          <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl">A clean split in phases, not a risky rip-and-replace.</h2>
-          <div className="mt-6 grid gap-5 lg:grid-cols-3">
-            {PLAY_POINT_MIGRATION_PHASES.map((phase) => (
-              <article key={phase.phase} className="rounded-[28px] border border-white/10 bg-black/20 p-5">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-cyan-100/72">{phase.phase}</div>
-                <div className="mt-3 text-2xl font-black text-white">{phase.goal}</div>
-                <ul className="mt-4 grid gap-3 text-sm text-white/76">
-                  {phase.actions.map((action) => (
-                    <li key={action} className="flex items-start gap-3 rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
-                      <span className="mt-1 h-2.5 w-2.5 rounded-full bg-amber-300" />
-                      <span>{action}</span>
-                    </li>
-                  ))}
-                </ul>
-              </article>
-            ))}
-          </div>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/contact" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
-              Contact About Play Point Live
-            </Link>
-            <Link href="/games/trivia" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
-              See the current hosted-game runtime
-            </Link>
+          <div className="mt-6 flex shrink-0 flex-wrap gap-3 sm:mt-0">
+            <Link href="/live/quick-score" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">Start Scoring</Link>
+            <Link href="/contact" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">Contact Us</Link>
           </div>
         </div>
       </section>

@@ -1,67 +1,64 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
+import Link from "next/link";
 import { SiteShell } from "../components/SiteShell";
-import { founder } from "../site-content";
+import { founder, principles } from "../site-content";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "About Channing Stovall and the creator-led vision behind Play Point Systems.",
+  description: "Meet Channing Stovall and learn what guides the products, experiences, and music created by Play Point Systems.",
 };
-
-const focusAreas = [
-  "Creator-led product and brand building.",
-  "Faith-driven music with real-life storytelling and conviction.",
-  "A parent-company structure that keeps both divisions aligned without burying either one.",
-];
 
 export default function AboutPage() {
   return (
     <SiteShell current="about">
-      <section className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-12">
+      <section className="px-5 pb-12 pt-10 sm:px-8 sm:pb-16 sm:pt-12 lg:px-10 lg:pb-20 lg:pt-16">
         <div className="max-w-4xl">
           <div className="inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/72">
-            About the founder
+            About Play Point Systems
           </div>
-          <h1 className="mt-5 text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">Built by {founder.name}</h1>
-          <p className="mt-5 max-w-3xl text-lg leading-8 text-white/76 sm:text-xl">
-            {founder.name} is the founder of Play Point Systems, the creator behind Shot Caddy, and the creative force behind music released through Play Point Records.
+          <h1 className="mt-5 text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">Built with purpose by {founder.name}.</h1>
+          <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-cyan-100/88 sm:text-xl">
+            One creator-led company bringing together interactive products, sports experiences, and faith-rooted music.
+          </p>
+          <p className="mt-4 max-w-3xl text-base leading-8 text-white/74">
+            Play Point Systems exists to give each idea the focus it deserves while holding every project to the same standard: make it clear, meaningful, and useful to real people.
           </p>
         </div>
       </section>
 
-      <section className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
+      <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
         <div className="grid gap-6 lg:grid-cols-[1.02fr_0.98fr]">
-          <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 text-sm leading-7 text-white/74">
-            <p>
-              The core of Play Point Systems is not software plus music as two random categories. It is one creator building meaningful experiences in different formats.
+          <div className="rounded-[30px] border border-white/10 bg-white/[0.03] p-7 text-base leading-8 text-white/76">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">The story</div>
+            <h2 className="mt-4 text-3xl font-black text-white">Different formats. The same creative standard.</h2>
+            <p className="mt-5">
+              Shot Caddy began with a desire to make time around sport more memorable. Play Point Live grew that thinking into flexible scoring and group-play experiences. Play Point Records carries the same attention into songs rooted in faith, real life, and honest storytelling.
             </p>
             <p className="mt-4">
-              Shot Caddy came from a desire to build a stronger, more memorable experience around sport. Play Point Records exists to carry music that is rooted in faith, story, and truth without sounding detached from real life.
-            </p>
-            <p className="mt-4">
-              The formats are different, but the standard is the same: create something clear, honest, memorable, and worth coming back to.
+              The work may show up as software, a live room, a day on the course, or a song—but it should always feel intentional and worth returning to.
             </p>
           </div>
 
-          <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.08),rgba(255,255,255,0.03))] p-6">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Signature focus</div>
-            <div className="mt-4 grid gap-3">
-              {focusAreas.map((item) => (
-                <div key={item} className="rounded-2xl border border-white/8 bg-black/20 px-4 py-3 text-sm text-white/82">
-                  {item}
-                </div>
-              ))}
-            </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            {principles.map((principle) => (
+              <article key={principle.title} className="rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.07),rgba(255,255,255,0.03))] px-5 py-4">
+                <h3 className="text-xl font-black text-white">{principle.title}</h3>
+                <p className="mt-2 text-sm leading-7 text-white/72">{principle.body}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
-        <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Why the structure matters</div>
-          <h2 className="mt-4 text-3xl font-black text-white">Play Point Systems is the umbrella because the brands deserve room to stand on their own.</h2>
-          <p className="mt-4 max-w-4xl text-sm leading-7 text-white/72">
-            The company should make the connection clear, not muddy it. Shot Caddy should feel like a focused product brand. Play Point Records should feel like a real creative division. The parent company is there to hold both together without forcing them into one flattened identity.
-          </p>
+      <section className="border-t border-white/10 px-5 py-10 sm:px-8 lg:px-10 lg:py-14">
+        <div className="rounded-[32px] border border-cyan-300/16 bg-[linear-gradient(120deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-7 sm:flex sm:items-center sm:justify-between sm:gap-8">
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-cyan-100/70">Connect directly</div>
+            <h2 className="mt-3 text-3xl font-black text-white">Have a product, venue, music, or partnership question?</h2>
+          </div>
+          <Link href="/contact" className="mt-6 inline-flex shrink-0 rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16 sm:mt-0">
+            Contact {founder.name}
+          </Link>
         </div>
       </section>
     </SiteShell>

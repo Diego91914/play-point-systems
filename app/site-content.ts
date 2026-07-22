@@ -13,7 +13,7 @@ export const founder = {
   name: "Channing Stovall",
   company: "Play Point Systems, LLC",
   title: "Founder, Creator, and Builder",
-  contactTitle: "Founder & Creator - Shot Caddy(TM)",
+  contactTitle: "Founder & Creator",
   email: "channing@playpointsystems.com",
   phone: "(256) 649-PLAY",
   phoneHref: "2566497529",
@@ -21,37 +21,37 @@ export const founder = {
 };
 
 export const hero = {
-  headline: "The parent company behind Play Point Live, Shot Caddy, and Play Point Records.",
-  subheadline: "Play Point Systems is the umbrella brand created by Channing Stovall to hold the live-games portfolio, standalone product brands, and music division.",
+  headline: "Games, experiences, and music built to bring people together.",
+  subheadline: "Play Point Systems creates interactive entertainment products and faith-rooted music with a clear purpose: make something people want to experience again.",
   intro:
-    "This is the parent-company home that explains where each lane belongs: Play Point Live now leads the multi-sport live experience path, Shot Caddy stays focused on golf-first products, and Play Point Records carries the music lane. Each one should have its own identity without losing the portfolio story.",
+    "Explore live scoring for groups and venues, golf-first products from Shot Caddy, hosted trivia, and original releases from Play Point Records.",
 };
 
 export const divisions = [
   {
     name: "Play Point Live",
-    eyebrow: "Flagship Games Product",
+    eyebrow: "Live games and scoring",
     description:
-      "A multi-sport live experience platform for venues, private clubs, and recurring seasons under the Play Point Systems umbrella.",
-    points: ["Multi-sport live-event direction", "Shared platform contracts now live in Play Point Core", "Flagship home at /live"],
+      "Fast, flexible scoring and live-play experiences for backyards, clubs, venues, and recurring events.",
+    points: ["Start Quick Score without a login", "Share spectator-friendly live boards", "Build history across clubs and events"],
     href: "/live",
     cta: "Explore Play Point Live",
   },
   {
     name: "Shot Caddy",
-    eyebrow: "Flagship Product Brand",
+    eyebrow: "Golf-first experiences",
     description:
-      "A standalone product brand focused on disc golf, golf overlays, and golf-specific organizer tooling.",
-    points: ["ShotCaddy.net remains the public home", "Disc golf stays the center of gravity", "No longer the product home for Play Point Live"],
+      "Purpose-built tools for disc golf, golf overlays, and more memorable round-day experiences.",
+    points: ["Disc golf at the center", "Tools designed for real rounds", "A focused home at ShotCaddy.net"],
     href: "/shot-caddy",
     cta: "Explore Shot Caddy",
   },
   {
     name: "Play Point Records",
-    eyebrow: "Music Division",
+    eyebrow: "Original music",
     description:
       "Country and Christian storytelling through real songs, artist development, and faith-rooted releases that carry their own voice under the Play Point Systems umbrella.",
-    points: ["Current and upcoming releases", "Artist-first presentation", "Faith-driven storytelling with modern production"],
+    points: ["Three songs available now", "Country and Christian storytelling", "New music built around truth and testimony"],
     href: "/music",
     cta: "Listen to Music",
   },
@@ -83,13 +83,13 @@ export const principles = [
 export const artist = {
   name: "Channing Stovall",
   currentRelease: "House With The Lights On",
-  currentReleaseStatus: "Just released",
+  currentReleaseStatus: "Latest release",
   currentReleaseDate: "May 8, 2026",
   previousRelease: "Run Back Home",
   previousReleaseStatus: "Earlier in current rollout",
   catalogCount: 3,
   project: "Album in progress",
-  currentReleaseType: "Newest single | Just released",
+  currentReleaseType: "Latest single | Available now",
   previousReleaseType: "Recent single | Out now",
   albumArc:
     "These first three songs now frame the opening movement of a larger story: first the truth that grace still reaches you, then the decision to turn around, and now the picture of a place still lit up and waiting when you come home.",
@@ -130,7 +130,7 @@ export const artist = {
     {
       title: "House With The Lights On",
       releaseDate: "May 8, 2026",
-      status: "Just released",
+      status: "Latest release",
       type: "Single",
       href: siteLinks.houseWithTheLightsOn,
       imageSrc: "/images/music/house-with-the-lights-on.png",

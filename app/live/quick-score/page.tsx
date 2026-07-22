@@ -1512,6 +1512,12 @@ export default function QuickScorePage() {
 
                 {proStatusMessage && <div className="mt-3 text-sm text-emerald-200">{proStatusMessage}</div>}
                 {checkoutError && <div className="mt-3 text-sm text-amber-100">{checkoutError}</div>}
+                <div className="mt-3 text-xs leading-6 text-amber-50/65">
+                  Purchase details and price are shown before payment. By continuing, you agree to the{" "}
+                  <Link href="/terms" className="font-semibold text-amber-100 underline decoration-amber-200/35 underline-offset-4">Terms</Link>
+                  {" "}and acknowledge the{" "}
+                  <Link href="/privacy" className="font-semibold text-amber-100 underline decoration-amber-200/35 underline-offset-4">Privacy Policy</Link>.
+                </div>
               </div>
             )}
 

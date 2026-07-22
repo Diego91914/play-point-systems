@@ -5,391 +5,119 @@ import { artist, siteLinks } from "../site-content";
 
 export const metadata: Metadata = {
   title: "Music",
-  description: "Play Point Records, the music division of Play Point Systems, featuring Channing Stovall releases.",
+  description: "Hear the latest country Christian releases from Channing Stovall and Play Point Records.",
 };
 
-const releases = artist.catalog.slice(0, 3).map((release, index) => ({
-  eyebrow: index === 0 ? "Just released" : index === 1 ? "Recent release" : "Earlier release",
-  title: release.title,
-  type: index === 0 ? artist.currentReleaseType : index === 1 ? artist.previousReleaseType : "Catalog single | Out now",
-  href: release.href,
-  imageSrc: release.imageSrc,
-  imageAlt: release.imageAlt,
-  body: release.summary,
-  accentClass:
-    index === 0
-      ? "border-cyan-300/18 bg-cyan-400/[0.06]"
-      : index === 1
-      ? "border-white/10 bg-white/[0.03]"
-      : "border-amber-300/16 bg-amber-300/[0.06]",
-  buttonClass:
-    index === 0
-      ? "border border-cyan-300/25 bg-cyan-400/10 text-cyan-50 hover:bg-cyan-400/16"
-      : index === 1
-      ? "border border-white/15 bg-white/8 text-white hover:bg-white/12"
-      : "border border-amber-300/25 bg-amber-400/10 text-amber-50 hover:bg-amber-400/16",
-}));
-
-const releaseHrefByTitle = new Map(artist.catalog.map((song) => [song.title, song.href]));
+const platformLinks = [
+  { label: "Spotify", href: siteLinks.spotify, style: "border-emerald-300/20 bg-emerald-400/10 text-emerald-50 hover:bg-emerald-400/16" },
+  { label: "Apple Music", href: siteLinks.appleMusic, style: "border-rose-300/20 bg-rose-400/10 text-rose-50 hover:bg-rose-400/16" },
+  { label: "Amazon Music", href: siteLinks.amazonMusic, style: "border-amber-300/20 bg-amber-400/10 text-amber-50 hover:bg-amber-400/16" },
+  { label: "YouTube", href: siteLinks.youtube, style: "border-red-300/20 bg-red-400/10 text-red-50 hover:bg-red-400/16" },
+] as const;
 
 export default function MusicPage() {
   return (
     <SiteShell current="music">
-      <section className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-12">
-        <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
-          <div className="overflow-hidden rounded-[30px] border border-white/10 bg-black/25 p-3 shadow-[0_30px_80px_rgba(0,0,0,0.28)]">
-            <Image
-              src="/images/music/house-with-the-lights-on.png"
-              alt="House With The Lights On cover art"
-              width={1280}
-              height={1280}
-              className="h-auto w-full rounded-[24px]"
-            />
-            <div className="mt-4 rounded-[24px] border border-white/10 bg-white/[0.03] px-5 py-4">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Now leading the page</div>
-              <div className="mt-2 text-2xl font-black text-white">House With The Lights On</div>
-              <div className="mt-2 text-sm leading-7 text-white/74">
-                The newest release now has its own visual anchor, while the earlier two songs remain accessible throughout the page.
-              </div>
+      <section className="px-5 pb-12 pt-10 sm:px-8 sm:pb-16 sm:pt-12 lg:px-10 lg:pb-20 lg:pt-16 xl:pt-20">
+        <div className="grid gap-10 lg:grid-cols-[1.04fr_0.96fr] lg:items-center xl:gap-14">
+          <div className="max-w-4xl reveal-up">
+            <div className="inline-flex rounded-full border border-amber-300/20 bg-amber-400/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-amber-50/82">
+              Play Point Records · Latest release
             </div>
-          </div>
-
-          <div className="max-w-3xl">
-            <div className="inline-flex rounded-full border border-cyan-300/25 bg-cyan-400/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-cyan-50/88">
-              {artist.currentReleaseStatus}
-            </div>
-            <h1 className="mt-5 text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">House With The Lights On is live now.</h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-white/78 sm:text-xl">
-              Play Point Records is the music lane of Play Point Systems, and {artist.currentRelease} now leads the page as the newest release from {artist.name}.
+            <h1 className="mt-6 text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">Hear {artist.currentRelease}.</h1>
+            <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-cyan-100/88 sm:text-xl">{artist.shortBio}</p>
+            <p className="mt-5 max-w-3xl text-base leading-8 text-white/76 sm:text-lg">
+              Three songs now form the opening movement of a larger album story about grace, return, and learning to walk forward in faith.
             </p>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-white/72">{artist.about}</p>
-            <div className="mt-4 rounded-[24px] border border-white/10 bg-white/[0.03] px-5 py-5 text-sm leading-7 text-white/78">
-              {artist.albumArc}
-            </div>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <a href={siteLinks.houseWithTheLightsOn} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
-                Listen to House With The Lights On
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <a href={siteLinks.houseWithTheLightsOn} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-2xl border border-amber-200/30 bg-amber-300/12 px-6 py-3.5 text-sm font-black text-amber-50 transition hover:bg-amber-300/18 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300">
+                Listen to the Latest Release
               </a>
-              <a href={siteLinks.runBackHome} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
-                Listen to Run Back Home
-              </a>
-              <a href={siteLinks.nothingCanSeparate} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
-                Listen to Nothing Can Separate
-              </a>
-              <a href={siteLinks.spotify} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-5 py-3 text-sm font-black text-emerald-50 transition hover:bg-emerald-400/16">
-                Open on Spotify
-              </a>
-              <a href={siteLinks.appleMusic} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-rose-300/20 bg-rose-400/10 px-5 py-3 text-sm font-black text-rose-50 transition hover:bg-rose-400/16">
-                Open on Apple Music
-              </a>
-              <a href={siteLinks.amazonMusic} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-amber-300/20 bg-amber-400/10 px-5 py-3 text-sm font-black text-amber-50 transition hover:bg-amber-400/16">
-                Open on Amazon Music
-              </a>
-              <a href={siteLinks.youtube} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-red-300/20 bg-red-400/10 px-5 py-3 text-sm font-black text-red-50 transition hover:bg-red-400/16">
-                Listen on YouTube
-              </a>
-              <a href="#bio" className="inline-flex rounded-2xl border border-white/15 bg-black/20 px-5 py-3 text-sm font-black text-white transition hover:bg-black/28">
-                Read the artist bio
+              <a href="#catalog" className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-black/25 px-6 py-3.5 text-sm font-semibold text-white/90 transition hover:border-white/30 hover:bg-white/10">
+                Browse All Songs
               </a>
             </div>
-            <div className="mt-4 flex flex-wrap gap-3 text-sm font-semibold text-white/68">
-              <a href="#listen-now" className="transition hover:text-white">
-                Jump to all listening links
-              </a>
-              <a href="#catalog" className="transition hover:text-white">
-                Jump to the full song catalog
-              </a>
-              <a href="#album-arc" className="transition hover:text-white">
-                Jump to the album story
-              </a>
+            <div className="mt-6 flex flex-wrap gap-2">
+              {platformLinks.map((platform) => (
+                <a key={platform.label} href={platform.href} target="_blank" rel="noreferrer" className={`rounded-full border px-3 py-2 text-xs font-black transition ${platform.style}`}>
+                  {platform.label}
+                </a>
+              ))}
             </div>
           </div>
-        </div>
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-3">
-          <article className="rounded-[26px] border border-white/10 bg-white/[0.03] p-5">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Now streaming</div>
-            <div className="mt-3 text-2xl font-black text-white">{artist.currentRelease}</div>
-            <p className="mt-2 text-sm leading-7 text-white/72">{artist.currentReleaseDate}</p>
-            <a href={siteLinks.houseWithTheLightsOn} target="_blank" rel="noreferrer" className="mt-4 inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-4 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
-              Open latest song
-            </a>
-          </article>
-          <article className="rounded-[26px] border border-white/10 bg-white/[0.03] p-5">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Also live</div>
-            <div className="mt-3 text-2xl font-black text-white">{artist.previousRelease}</div>
-            <p className="mt-2 text-sm leading-7 text-white/72">Still part of the current rollout and still easy to reach from this page.</p>
-            <a href={siteLinks.runBackHome} target="_blank" rel="noreferrer" className="mt-4 inline-flex rounded-2xl border border-white/15 bg-white/8 px-4 py-3 text-sm font-black text-white transition hover:bg-white/12">
-              Open recent song
-            </a>
-          </article>
-          <article className="rounded-[26px] border border-amber-300/16 bg-amber-300/8 p-5">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Catalog live now</div>
-            <div className="mt-3 text-2xl font-black text-white">Nothing Can Separate</div>
-            <p className="mt-2 text-sm leading-7 text-white/72">The first public release stays visible so the opening sequence can still be heard in order.</p>
-            <a href={siteLinks.nothingCanSeparate} target="_blank" rel="noreferrer" className="mt-4 inline-flex rounded-2xl border border-white/15 bg-black/20 px-4 py-3 text-sm font-black text-white transition hover:bg-black/28">
-              Open first song
-            </a>
-          </article>
+          <a href={siteLinks.houseWithTheLightsOn} target="_blank" rel="noreferrer" className="reveal-up reveal-up-delay block overflow-hidden rounded-[32px] border border-white/10 bg-black/20 p-4 shadow-[0_24px_70px_rgba(0,0,0,0.24)] transition hover:border-amber-300/25">
+            <Image src="/images/music/house-with-the-lights-on.png" alt="House With The Lights On cover art" width={1254} height={1254} priority sizes="(min-width: 1024px) 42vw, 100vw" className="h-auto w-full rounded-[24px]" />
+          </a>
         </div>
       </section>
 
-      <section className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
-        <div className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
-          <article className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)]">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Release focus</div>
-            <h2 className="mt-4 text-4xl font-black text-white sm:text-5xl">The music page is centered on what is current.</h2>
-            <p className="mt-4 text-sm leading-7 text-white/72">
-              {artist.currentRelease} is the headline release now that it is officially out, while {artist.previousRelease} and Nothing Can Separate stay visible as the earlier steps in the same album arc.
-            </p>
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-[22px] border border-white/10 bg-black/20 p-4">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/48">Start here</div>
-                <p className="mt-2 text-sm leading-7 text-white/74">Open the latest song first, then move back to the earlier release if you want the full opening sequence.</p>
-              </div>
-              <div className="rounded-[22px] border border-white/10 bg-black/20 p-4">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/48">Current direction</div>
-                <p className="mt-2 text-sm leading-7 text-white/74">Country and Christian storytelling, built around grace, truth, and the choice to come back.</p>
-              </div>
-            </div>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <a href={siteLinks.houseWithTheLightsOn} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">
-                Open the latest release
-              </a>
-              <a href={siteLinks.runBackHome} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">
-                Open the recent release
-              </a>
-            </div>
-          </article>
-
-          <div className="overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,204,142,0.12),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.28)]">
-            <div className="rounded-[24px] border border-white/10 bg-black/20 p-5">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Three-song listening path</div>
-              <div className="mt-4 space-y-3">
-                {artist.catalog.map((song, index) => (
-                  <a key={song.title} href={song.href} target="_blank" rel="noreferrer" className="block rounded-[20px] border border-white/10 bg-white/[0.03] px-4 py-4 transition hover:bg-white/[0.06]">
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/44">Track {index + 1}</div>
-                    <div className="mt-1 text-2xl font-black text-white">{song.title}</div>
-                    <div className="mt-1 text-sm text-white/62">{song.status}</div>
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="stream" className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
-        <div id="listen-now" className="sr-only" aria-hidden="true" />
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Listen now</div>
-            <h2 className="mt-3 text-3xl font-black text-white">Three live releases, with direct links all over the page.</h2>
-          </div>
-          <div className="max-w-2xl text-sm leading-7 text-white/68">If someone lands here ready to listen, they should be able to get there fast. These cards keep all three songs visible and clickable.</div>
-        </div>
-
-        <div className="mt-8 grid gap-5 lg:grid-cols-4">
-          {releases.map((release) => (
-            <article key={release.title} className={`rounded-[28px] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.18)] ${release.accentClass}`}>
-              {release.imageSrc ? (
-                <a href={release.href} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-[24px] border border-white/10 transition hover:opacity-95">
-                  <Image src={release.imageSrc} alt={release.imageAlt ?? release.title} width={900} height={900} className="h-auto w-full" />
-                </a>
-              ) : (
-                <a href={release.href} target="_blank" rel="noreferrer" className="block rounded-[24px] border border-white/10 bg-[linear-gradient(160deg,rgba(255,214,153,0.12),rgba(255,255,255,0.03))] px-5 py-8 transition hover:bg-white/[0.08]">
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/48">New single</div>
-                  <div className="mt-3 text-3xl font-black leading-tight text-white">{release.title}</div>
-                </a>
-              )}
-              <div className="mt-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">{release.eyebrow}</div>
-              <a href={release.href} target="_blank" rel="noreferrer" className="mt-2 block text-3xl font-black text-white transition hover:text-cyan-100">
-                {release.title}
-              </a>
-              <div className="mt-2 text-sm font-semibold uppercase tracking-[0.16em] text-white/70">{release.type}</div>
-              <p className="mt-3 text-sm leading-7 text-white/72">{release.body}</p>
-              <div className="mt-4 flex flex-wrap gap-3">
-                <a
-                  href={release.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={`inline-flex rounded-2xl px-4 py-3 text-sm font-black transition ${release.buttonClass}`}
-                >
-                  Listen now
-                </a>
-                <a href="#album-arc" className="inline-flex rounded-2xl border border-white/15 bg-black/20 px-4 py-3 text-sm font-black text-white transition hover:bg-black/28">
-                  Read the story
-                </a>
-              </div>
-            </article>
-          ))}
-
-          <article className="rounded-[28px] border border-amber-300/16 bg-[linear-gradient(180deg,rgba(255,204,142,0.12),rgba(255,255,255,0.03))] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Quick access</div>
-            <div className="mt-2 text-3xl font-black text-white">Streaming links</div>
-            <p className="mt-3 text-sm leading-7 text-white/72">These stay grouped in one place for visitors who just want the fastest path to the music, including YouTube.</p>
-            <div className="mt-5 space-y-3">
-              <a href={siteLinks.houseWithTheLightsOn} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm font-semibold text-white transition hover:bg-black/28">
-                House With The Lights On
-              </a>
-              <a href={siteLinks.runBackHome} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm font-semibold text-white transition hover:bg-black/28">
-                Run Back Home
-              </a>
-              <a href={siteLinks.nothingCanSeparate} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm font-semibold text-white transition hover:bg-black/28">
-                Nothing Can Separate
-              </a>
-              <a href={siteLinks.spotify} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-4 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-400/16">
-                Channing Stovall on Spotify
-              </a>
-              <a href={siteLinks.appleMusic} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-rose-300/20 bg-rose-400/10 px-4 py-4 text-sm font-semibold text-rose-50 transition hover:bg-rose-400/16">
-                Channing Stovall on Apple Music
-              </a>
-              <a href={siteLinks.amazonMusic} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-amber-300/20 bg-amber-400/10 px-4 py-4 text-sm font-semibold text-amber-50 transition hover:bg-amber-400/16">
-                Channing Stovall on Amazon Music
-              </a>
-              <a href={siteLinks.youtube} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-red-300/20 bg-red-400/10 px-4 py-4 text-sm font-semibold text-red-50 transition hover:bg-red-400/16">
-                Channing Stovall on YouTube
-              </a>
-              <a href={siteLinks.houseWithTheLightsOn} target="_blank" rel="noreferrer" className="flex rounded-2xl border border-cyan-300/20 bg-cyan-400/8 px-4 py-4 text-sm font-semibold text-cyan-50 transition hover:bg-cyan-400/14">
-                Start with the newest release
-              </a>
-              <a href="#catalog" className="flex rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm font-semibold text-white transition hover:bg-black/28">
-                Browse the full song catalog
-              </a>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section id="album-arc" className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
-        <div className="rounded-[30px] border border-amber-300/16 bg-[linear-gradient(180deg,rgba(255,204,142,0.12),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)]">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Album statement</div>
-          <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">{artist.albumWrapLines[0]}</h2>
-          <div className="mt-5 max-w-3xl space-y-3 text-base leading-8 text-white/78">
-            {artist.albumWrapLines.slice(1).map((line) => (
-              <p key={line}>{line}</p>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <div className="mt-8 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Album arc</div>
-            <h2 className="mt-3 text-3xl font-black text-white">The first three tracks now form the opening run.</h2>
-          </div>
-          <div className="max-w-2xl text-sm leading-7 text-white/68">These are the first three public tracks of the album arc, and this section explains how they connect to the bigger story being built.</div>
+      <section id="catalog" className="scroll-mt-28 border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
+        <div className="max-w-3xl">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">The catalog</div>
+          <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Three songs. One unfolding story.</h2>
+          <p className="mt-4 text-sm leading-7 text-white/72">Begin with the latest release or listen from the foundation forward.</p>
         </div>
 
         <div className="mt-8 grid gap-5 lg:grid-cols-3">
-          {artist.trackJourney.map((track) => (
-            <article key={track.title} className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">{track.number}</div>
-              <h3 className="mt-3 text-3xl font-black text-white">{track.title}</h3>
-              <div className="mt-3 text-base font-semibold text-cyan-100/88">{track.summary}</div>
-              <p className="mt-4 text-sm leading-7 text-white/74">{track.body}</p>
-              <a
-                href={releaseHrefByTitle.get(track.title) ?? siteLinks.houseWithTheLightsOn}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-5 inline-flex rounded-2xl border border-white/15 bg-black/20 px-4 py-3 text-sm font-black text-white transition hover:bg-black/28"
-              >
-                Listen to {track.title}
+          {artist.catalog.map((song, index) => (
+            <article key={song.title} className={`flex flex-col rounded-[30px] border p-5 ${index === 0 ? "border-amber-300/20 bg-amber-400/[0.06]" : "border-white/10 bg-white/[0.03]"}`}>
+              {song.imageSrc ? (
+                <a href={song.href} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-[22px] border border-white/10 transition hover:opacity-95">
+                  <Image src={song.imageSrc} alt={song.imageAlt ?? song.title} width={900} height={900} sizes="(min-width: 1024px) 28vw, 100vw" className="h-auto w-full" />
+                </a>
+              ) : null}
+              <div className="mt-5 flex flex-wrap items-center gap-2">
+                <span className="rounded-full border border-white/12 bg-black/20 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-white/70">{song.status}</span>
+                <span className="text-xs text-white/58">{song.releaseDate}</span>
+              </div>
+              <h3 className="mt-3 text-3xl font-black text-white">{song.title}</h3>
+              <p className="mt-3 text-sm leading-7 text-white/72">{song.summary}</p>
+              <a href={song.href} target="_blank" rel="noreferrer" className="mt-5 inline-flex w-fit rounded-2xl border border-white/15 bg-white/8 px-4 py-3 text-sm font-black text-white transition hover:bg-white/12">
+                Listen Now
               </a>
             </article>
           ))}
         </div>
       </section>
 
-      <section id="catalog" className="border-b border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
+        <div className="grid gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Growing catalog</div>
-            <h2 className="mt-3 text-3xl font-black text-white">Every live song gets a permanent home here.</h2>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">The album arc</div>
+            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Grace. The turn. The welcome home.</h2>
+            <p className="mt-4 text-sm leading-7 text-white/72">{artist.albumArc}</p>
           </div>
-          <div className="max-w-2xl text-sm leading-7 text-white/68">
-            This section is built to grow over time. As new songs release, they can be added to the catalog source and they will show up here with their live links.
-          </div>
-        </div>
-
-        <div className="mt-8 grid gap-5 lg:grid-cols-2">
-          {artist.catalog.map((song, index) => (
-            <article
-              key={song.title}
-              className={`rounded-[30px] border p-5 shadow-[0_18px_50px_rgba(0,0,0,0.18)] ${
-                index === 0 ? "border-cyan-300/18 bg-cyan-400/[0.06]" : "border-white/10 bg-white/[0.03]"
-              }`}
-            >
-              <div className="grid gap-5 sm:grid-cols-[160px_1fr] sm:items-start">
-                {song.imageSrc ? (
-                  <a href={song.href} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-[24px] border border-white/10 transition hover:opacity-95">
-                    <Image src={song.imageSrc} alt={song.imageAlt ?? song.title} width={900} height={900} className="h-auto w-full" />
-                  </a>
-                ) : (
-                  <a href={song.href} target="_blank" rel="noreferrer" className="block rounded-[24px] border border-white/10 bg-[linear-gradient(160deg,rgba(255,214,153,0.12),rgba(255,255,255,0.03))] px-4 py-8 transition hover:bg-white/[0.06]">
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/44">Newest release</div>
-                    <div className="mt-3 text-2xl font-black leading-tight text-white">{song.title}</div>
-                  </a>
-                )}
+          <div className="grid gap-4">
+            {artist.trackJourney.map((track) => (
+              <article key={track.number} className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5 sm:grid sm:grid-cols-[120px_1fr] sm:gap-5">
+                <div className="text-sm font-black uppercase tracking-[0.18em] text-cyan-100/65">{track.number}</div>
                 <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/72">
-                      {song.status}
-                    </span>
-                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-white/44">{song.type}</span>
-                  </div>
-                  <a href={song.href} target="_blank" rel="noreferrer" className="mt-3 block text-3xl font-black text-white transition hover:text-cyan-100">
-                    {song.title}
-                  </a>
-                  <div className="mt-2 text-sm font-semibold text-white/62">{song.releaseDate}</div>
-                  <p className="mt-4 text-sm leading-7 text-white/72">{song.summary}</p>
-                  <div className="mt-5 flex flex-wrap gap-3">
-                    <a
-                      href={song.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={`inline-flex rounded-2xl px-4 py-3 text-sm font-black transition ${
-                        index === 0
-                          ? "border border-cyan-300/25 bg-cyan-400/10 text-cyan-50 hover:bg-cyan-400/16"
-                          : "border border-white/15 bg-white/8 text-white hover:bg-white/12"
-                      }`}
-                    >
-                      Listen to {song.title}
-                    </a>
-                    <a href={siteLinks.spotify} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-sm font-black text-emerald-50 transition hover:bg-emerald-400/16">
-                      Spotify
-                    </a>
-                    <a href={siteLinks.appleMusic} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-rose-300/20 bg-rose-400/10 px-4 py-3 text-sm font-black text-rose-50 transition hover:bg-rose-400/16">
-                      Apple Music
-                    </a>
-                    <a href={siteLinks.amazonMusic} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-amber-300/20 bg-amber-400/10 px-4 py-3 text-sm font-black text-amber-50 transition hover:bg-amber-400/16">
-                      Amazon Music
-                    </a>
-                    <a href={siteLinks.youtube} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-red-300/20 bg-red-400/10 px-4 py-3 text-sm font-black text-red-50 transition hover:bg-red-400/16">
-                      YouTube
-                    </a>
-                    <a href="#listen-now" className="inline-flex rounded-2xl border border-white/15 bg-black/20 px-4 py-3 text-sm font-black text-white transition hover:bg-black/28">
-                      Back to quick links
-                    </a>
-                  </div>
+                  <h3 className="text-2xl font-black text-white">{track.title}</h3>
+                  <div className="mt-2 text-sm font-semibold text-cyan-100/82">{track.summary}</div>
+                  <p className="mt-3 text-sm leading-7 text-white/72">{track.body}</p>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section id="bio" className="px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
-        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+      <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
+        <div className="grid gap-6 lg:grid-cols-[0.82fr_1.18fr]">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Artist bio</div>
-            <h2 className="mt-3 text-3xl font-black text-white">Built from testimony, craft, and conviction.</h2>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/58">About the artist</div>
+            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Channing Stovall</h2>
           </div>
-          <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 text-sm leading-7 text-white/74">
+          <div className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6 text-sm leading-7 text-white/74">
             {artist.bioParagraphs.map((paragraph) => (
-              <p key={paragraph} className="mt-4 first:mt-0">
-                {paragraph}
-              </p>
+              <p key={paragraph} className="mt-4 first:mt-0">{paragraph}</p>
             ))}
+            <div className="mt-6 flex flex-wrap gap-2">
+              {platformLinks.map((platform) => (
+                <a key={platform.label} href={platform.href} target="_blank" rel="noreferrer" className={`rounded-2xl border px-4 py-3 text-sm font-black transition ${platform.style}`}>{platform.label}</a>
+              ))}
+            </div>
           </div>
         </div>
       </section>

@@ -2,28 +2,46 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type SiteShellProps = {
   children: ReactNode;
   current?: "home" | "games" | "live" | "shot-caddy" | "music" | "about" | "contact";
+  showAccessNotice?: boolean;
 };
 
 const navItems = [
-  { label: "Games", href: "/games", key: "games" },
-  { label: "Live", href: "/live", key: "live" },
-  { label: "Shot Caddy", href: "/shot-caddy", key: "shot-caddy" },
+  { label: "Products", href: "/games", key: "games" },
+  { label: "Live Games", href: "/live", key: "live" },
   { label: "Music", href: "/music", key: "music" },
   { label: "About", href: "/about", key: "about" },
   { label: "Contact", href: "/contact", key: "contact" },
 ] as const;
 
-export function SiteShell({ children, current }: SiteShellProps) {
+export function SiteShell({ children, current, showAccessNotice = false }: SiteShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showAccessBanner, setShowAccessBanner] = useState(true);
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+
+    function closeMenu(event: KeyboardEvent) {
+      if (event.key === "Escape") setMobileOpen(false);
+    }
+
+    window.addEventListener("keydown", closeMenu);
+    return () => window.removeEventListener("keydown", closeMenu);
+  }, [mobileOpen]);
+
   return (
-    <main className="min-h-screen bg-[#050912] text-white">
+    <>
+      <a
+        href="#main-content"
+        className="fixed left-4 top-4 z-[100] -translate-y-24 rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-950 shadow-xl transition focus:translate-y-0"
+      >
+        Skip to content
+      </a>
+      <main id="main-content" className="min-h-screen bg-[#050912] text-white">
       <div className="pointer-events-none fixed inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(121,171,255,0.2),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(116,243,204,0.12),_transparent_28%),linear-gradient(180deg,_#09111d_0%,_#050912_48%,_#04070d_100%)]" />
         <div className="absolute left-[-4%] top-[12%] h-72 w-72 rounded-full bg-cyan-300/10 blur-3xl" />
@@ -36,19 +54,20 @@ export function SiteShell({ children, current }: SiteShellProps) {
             <div className="rounded-[28px] border border-white/12 bg-[linear-gradient(180deg,rgba(8,15,28,0.95),rgba(8,15,28,0.78))] px-4 py-3 shadow-[0_18px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:px-6">
               <div className="flex items-center justify-between gap-4">
                 <Link href="/" className="flex min-w-0 items-center gap-3 sm:gap-4">
-                  <div className="relative h-8 w-8 shrink-0 rounded-full border border-cyan-200/35 bg-[radial-gradient(circle_at_35%_30%,rgba(255,236,153,0.75),rgba(82,154,255,0.15)_48%,rgba(9,18,35,0.95)_100%)] shadow-[0_0_26px_rgba(92,180,255,0.26)]">
-                    <div className="absolute inset-[5px] rounded-full border border-white/20" />
+                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-white/15 bg-[#111820] shadow-[0_0_24px_rgba(255,195,80,0.16)]">
+                    {/* A CSS-backed image keeps the shared shell lightweight while using the real brand mark. */}
+                    <div className="absolute inset-0 bg-[url('/images/logo-archive/candidates/white-icon-only.png')] bg-cover bg-center" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/50">Parent company</div>
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/60">Products · Live experiences · Music</div>
                     <div className="mt-1 truncate text-base font-extrabold tracking-[0.005em] text-white sm:text-xl">Play Point Systems</div>
                   </div>
                 </Link>
 
                 <div className="hidden items-center gap-2 lg:flex">
-                  <nav className="flex flex-wrap gap-1.5 text-sm font-semibold text-white/84">
+                  <nav aria-label="Primary navigation" className="flex flex-wrap gap-1.5 text-sm font-semibold text-white/84">
                     {navItems.map((item) => {
-                      const active = current === item.key;
+                      const active = current === item.key || (item.key === "games" && current === "shot-caddy");
                       const className = active
                         ? "rounded-full border border-cyan-300/35 bg-cyan-400/14 px-4 py-2 text-cyan-50"
                         : "rounded-full border border-white/15 bg-black/20 px-4 py-2 transition hover:border-white/25 hover:bg-white/8 hover:text-white";
@@ -62,10 +81,10 @@ export function SiteShell({ children, current }: SiteShellProps) {
                   </nav>
 
                   <Link
-                    href="/games"
+                    href="/live/quick-score"
                     className="inline-flex rounded-full border border-cyan-200/40 bg-[linear-gradient(120deg,rgba(118,225,255,0.34),rgba(120,170,255,0.2))] px-4 py-2 text-sm font-bold text-white shadow-[0_8px_22px_rgba(92,180,255,0.2)] transition hover:brightness-110"
                   >
-                    Explore Games
+                    Start Scoring
                   </Link>
                 </div>
 
@@ -74,6 +93,7 @@ export function SiteShell({ children, current }: SiteShellProps) {
                   onClick={() => setMobileOpen((value) => !value)}
                   className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/12 bg-white/5 text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 lg:hidden"
                   aria-expanded={mobileOpen}
+                  aria-controls="mobile-navigation"
                   aria-label="Toggle navigation menu"
                 >
                   <span className="text-lg leading-none">{mobileOpen ? "×" : "≡"}</span>
@@ -81,10 +101,10 @@ export function SiteShell({ children, current }: SiteShellProps) {
               </div>
 
               {mobileOpen ? (
-                <div className="mt-4 rounded-[24px] border border-white/10 bg-black/20 p-3 lg:hidden">
-                  <nav className="grid gap-2 text-sm font-semibold text-white/80">
+                <div id="mobile-navigation" className="mt-4 rounded-[24px] border border-white/10 bg-black/20 p-3 lg:hidden">
+                  <nav aria-label="Mobile navigation" className="grid gap-2 text-sm font-semibold text-white/80">
                     {navItems.map((item) => {
-                      const active = current === item.key;
+                      const active = current === item.key || (item.key === "games" && current === "shot-caddy");
                       const className = active
                         ? "rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-4 py-3 text-cyan-50"
                         : "rounded-2xl border border-white/10 px-4 py-3 transition hover:bg-white/5";
@@ -96,11 +116,11 @@ export function SiteShell({ children, current }: SiteShellProps) {
                       );
                     })}
                     <Link
-                      href="/games"
+                      href="/live/quick-score"
                       className="rounded-2xl border border-cyan-300/30 bg-cyan-400/12 px-4 py-3 text-cyan-50"
                       onClick={() => setMobileOpen(false)}
                     >
-                      Explore Games
+                      Start Scoring
                     </Link>
                   </nav>
                 </div>
@@ -113,15 +133,15 @@ export function SiteShell({ children, current }: SiteShellProps) {
           <footer className="border-t border-white/10 px-5 py-8 sm:px-8 lg:px-10">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
               <div>
-              <div className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/36">Play Point Systems</div>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/58">Play Point Systems</div>
                 <div className="mt-2 max-w-md text-sm leading-7 text-white/52">The parent company for Play Point Live, Shot Caddy, and Play Point Records. Creator-led, purpose-built, and honest about the work.</div>
               </div>
-              <nav className="flex flex-wrap items-center gap-1.5">
+              <nav aria-label="Footer navigation" className="flex flex-wrap items-center gap-1.5">
                 <Link href="/games" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/40">
-                  Games
+                  Products
                 </Link>
                 <Link href="/live" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/40">
-                  Live
+                  Live Games
                 </Link>
                 <Link href="/shot-caddy" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/40">
                   Shot Caddy
@@ -137,19 +157,24 @@ export function SiteShell({ children, current }: SiteShellProps) {
                 </Link>
               </nav>
             </div>
-            <div className="mt-6 border-t border-white/8 pt-5 text-[11px] text-white/30">
-              © {new Date().getFullYear()} Play Point Systems LLC · Built by Channing Stovall
+            <div className="mt-6 flex flex-col gap-3 border-t border-white/8 pt-5 text-xs text-white/55 sm:flex-row sm:items-center sm:justify-between">
+              <div>© {new Date().getFullYear()} Play Point Systems LLC · Built by Channing Stovall</div>
+              <nav aria-label="Legal and support" className="flex flex-wrap gap-4">
+                <Link href="/support" className="transition hover:text-white">Support</Link>
+                <Link href="/privacy" className="transition hover:text-white">Privacy</Link>
+                <Link href="/terms" className="transition hover:text-white">Terms</Link>
+              </nav>
             </div>
           </footer>
         </div>
 
-        {showAccessBanner ? (
+        {showAccessNotice && showAccessBanner ? (
           <div className="fixed bottom-5 right-5 z-[80] w-[min(92vw,440px)] rounded-2xl border border-amber-300/35 bg-[linear-gradient(160deg,rgba(120,64,0,0.92),rgba(32,18,0,0.96))] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-md">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-200/85">Access Notice</div>
                 <div className="mt-1 text-sm leading-6 text-amber-50">
-                  Shot Caddy live gameplay links are temporarily paused while access updates are in progress.
+                  Some Shot Caddy gameplay links are temporarily paused while access updates are completed.
                 </div>
               </div>
               <button
@@ -164,6 +189,7 @@ export function SiteShell({ children, current }: SiteShellProps) {
           </div>
         ) : null}
       </div>
-    </main>
+      </main>
+    </>
   );
 }
