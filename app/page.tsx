@@ -18,13 +18,13 @@ const quickScoreBenefits = [
 export default function PlayPointSystemsPage() {
   return (
     <SiteShell current="home">
-      <section className="px-5 pb-12 pt-10 sm:px-8 sm:pb-16 sm:pt-12 lg:px-10 lg:pb-20 lg:pt-16 xl:pt-20">
+      <section className="px-4 pb-12 pt-10 min-[360px]:px-5 sm:px-8 sm:pb-16 sm:pt-12 lg:px-10 lg:pb-20 lg:pt-16 xl:pt-20">
         <div className="grid gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:items-center xl:gap-14">
-          <div className="max-w-4xl reveal-up">
-            <div className="inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/72">
+          <div className="min-w-0 max-w-4xl reveal-up">
+            <div className="inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-white/82">
               Creator-led. Purpose-built.
             </div>
-            <h1 className="mt-6 max-w-4xl text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-[5.2rem] xl:leading-[0.96]">
+            <h1 className="mt-6 max-w-4xl break-words text-4xl font-black leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-[5.2rem] xl:leading-[0.96]">
               {hero.headline}
             </h1>
             <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-cyan-100/88 sm:text-xl">
@@ -123,6 +123,7 @@ export default function PlayPointSystemsPage() {
               alt="House With The Lights On cover art"
               width={1254}
               height={1254}
+              unoptimized
               sizes="(min-width: 1024px) 42vw, 100vw"
               className="h-auto w-full rounded-[22px]"
             />

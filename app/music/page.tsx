@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import Image from "next/image";
 import { SiteShell } from "../components/SiteShell";
@@ -20,11 +21,11 @@ export default function MusicPage() {
     <SiteShell current="music">
       <section className="px-5 pb-12 pt-10 sm:px-8 sm:pb-16 sm:pt-12 lg:px-10 lg:pb-20 lg:pt-16 xl:pt-20">
         <div className="grid gap-10 lg:grid-cols-[1.04fr_0.96fr] lg:items-center xl:gap-14">
-          <div className="max-w-4xl reveal-up">
-            <div className="inline-flex rounded-full border border-amber-300/20 bg-amber-400/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-amber-50/82">
-              Play Point Records · Latest release
+          <div className="min-w-0 max-w-4xl reveal-up">
+            <div className="inline-flex rounded-full border border-amber-300/20 bg-amber-400/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-amber-50/90">
+              Play Point Records - Latest release
             </div>
-            <h1 className="mt-6 text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">Hear {artist.currentRelease}.</h1>
+            <h1 className="mt-6 break-words text-4xl font-black leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl">Hear {artist.currentRelease}.</h1>
             <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-cyan-100/88 sm:text-xl">{artist.shortBio}</p>
             <p className="mt-5 max-w-3xl text-base leading-8 text-white/76 sm:text-lg">
               Three songs now form the opening movement of a larger album story about grace, return, and learning to walk forward in faith.
@@ -47,7 +48,7 @@ export default function MusicPage() {
           </div>
 
           <a href={siteLinks.houseWithTheLightsOn} target="_blank" rel="noreferrer" className="reveal-up reveal-up-delay block overflow-hidden rounded-[32px] border border-white/10 bg-black/20 p-4 shadow-[0_24px_70px_rgba(0,0,0,0.24)] transition hover:border-amber-300/25">
-            <Image src="/images/music/house-with-the-lights-on.png" alt="House With The Lights On cover art" width={1254} height={1254} priority sizes="(min-width: 1024px) 42vw, 100vw" className="h-auto w-full rounded-[24px]" />
+            <Image src="/images/music/house-with-the-lights-on.png" alt="House With The Lights On cover art" width={1254} height={1254} priority unoptimized sizes="(min-width: 1024px) 42vw, 100vw" className="h-auto w-full rounded-[24px]" />
           </a>
         </div>
       </section>
@@ -64,7 +65,7 @@ export default function MusicPage() {
             <article key={song.title} className={`flex flex-col rounded-[30px] border p-5 ${index === 0 ? "border-amber-300/20 bg-amber-400/[0.06]" : "border-white/10 bg-white/[0.03]"}`}>
               {song.imageSrc ? (
                 <a href={song.href} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-[22px] border border-white/10 transition hover:opacity-95">
-                  <Image src={song.imageSrc} alt={song.imageAlt ?? song.title} width={900} height={900} sizes="(min-width: 1024px) 28vw, 100vw" className="h-auto w-full" />
+                  <Image src={song.imageSrc} alt={song.imageAlt ?? song.title} width={900} height={900} unoptimized sizes="(min-width: 1024px) 28vw, 100vw" className="h-auto w-full" />
                 </a>
               ) : null}
               <div className="mt-5 flex flex-wrap items-center gap-2">

@@ -349,6 +349,16 @@ export default function QuickScorePage() {
   }, [bigScreenMode, draft, hostToken, hydrated, joinBaseUrl, lastSyncedAt, screenMode, session, sessionCode, setupStep]);
 
   useEffect(() => {
+    if (!hydrated || screenMode !== "LIVE") return;
+
+    const frame = window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [hydrated, screenMode]);
+
+  useEffect(() => {
     async function requestWakeLock() {
       if (screenMode !== "LIVE" || typeof navigator === "undefined" || !("wakeLock" in navigator)) return;
       try {
@@ -1323,8 +1333,8 @@ export default function QuickScorePage() {
         )}
 
         {(screenMode === "LIVE" || screenMode === "GAME_OVER") && session && (
-          <section className="space-y-4">
-            <div className="flex items-center justify-between gap-3 rounded-[28px] border border-white/10 bg-[linear-gradient(145deg,rgba(17,28,44,0.88),rgba(7,17,29,0.84))] px-4 py-4 shadow-[0_20px_70px_rgba(0,0,0,0.24)] backdrop-blur sm:px-5">
+          <section className="flex flex-col gap-4">
+            <div className="order-1 flex items-center justify-between gap-3 rounded-[28px] border border-white/10 bg-[linear-gradient(145deg,rgba(17,28,44,0.88),rgba(7,17,29,0.84))] px-4 py-4 shadow-[0_20px_70px_rgba(0,0,0,0.24)] backdrop-blur sm:px-5 lg:order-none">
               <button
                 type="button"
                 onClick={undoLastPlay}
@@ -1358,7 +1368,7 @@ export default function QuickScorePage() {
             </div>
 
             {bigScreenMode && leader && (
-              <div className="rounded-[32px] border border-emerald-300/18 bg-[linear-gradient(135deg,rgba(16,185,129,0.18),rgba(12,24,37,0.92)_42%,rgba(8,14,25,0.98))] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.26)]">
+              <div className="order-2 rounded-[32px] border border-emerald-300/18 bg-[linear-gradient(135deg,rgba(16,185,129,0.18),rgba(12,24,37,0.92)_42%,rgba(8,14,25,0.98))] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.26)] lg:order-none">
                 <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr_0.8fr] lg:items-end">
                   <div>
                     <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-100/78">Leader</div>
@@ -1392,7 +1402,7 @@ export default function QuickScorePage() {
             )}
 
             {settingsOpen && (
-              <div className="rounded-[28px] border border-white/10 bg-[#0b1728]/95 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.32)]">
+              <div className="order-3 rounded-[28px] border border-white/10 bg-[#0b1728]/95 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.32)] lg:order-none">
                 <div className="grid gap-3 sm:grid-cols-3">
                   <button
                     type="button"
@@ -1420,7 +1430,7 @@ export default function QuickScorePage() {
             )}
 
             {quickScoreProEnabled ? (
-              <div className="rounded-[28px] border border-cyan-300/18 bg-cyan-400/10 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.2)]">
+              <div className="order-6 rounded-[28px] border border-cyan-300/18 bg-cyan-400/10 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.2)] lg:order-none">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-100/75">Spectator Board</div>
@@ -1477,7 +1487,7 @@ export default function QuickScorePage() {
                 </div>
               </div>
             ) : (
-              <div className="rounded-[28px] border border-amber-300/18 bg-amber-400/10 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.2)]">
+              <div className="order-6 rounded-[28px] border border-amber-300/18 bg-amber-400/10 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.2)] lg:order-none">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-amber-100/75">Quick Score Pro</div>
@@ -1521,7 +1531,7 @@ export default function QuickScorePage() {
               </div>
             )}
 
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="order-5 grid gap-4 sm:grid-cols-2 lg:order-none">
               <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-4 shadow-[0_16px_40px_rgba(0,0,0,0.18)]">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/50">Previous Score</div>
                 <div className={["mt-3 font-black text-white", bigScreenMode ? "text-3xl sm:text-4xl" : "text-2xl sm:text-3xl"].join(" ")}>
@@ -1538,7 +1548,7 @@ export default function QuickScorePage() {
 
             <div
               className={[
-                "grid gap-4",
+                "order-4 grid gap-4 lg:order-none",
                 bigScreenMode && session.competitors.length > 1
                   ? "lg:grid-cols-2"
                   : session.competitors.length > 2
@@ -1615,7 +1625,7 @@ export default function QuickScorePage() {
             </div>
 
             {screenMode === "GAME_OVER" && winner && (
-              <div className="rounded-[32px] border border-amber-300/22 bg-amber-400/10 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.28)]">
+              <div className="order-7 rounded-[32px] border border-amber-300/22 bg-amber-400/10 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.28)] lg:order-none">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-amber-100/80">Game Over</div>
                 <div className="mt-3 text-4xl font-black text-white sm:text-5xl">{winner.name} wins.</div>
                 <div className="mt-3 text-lg text-amber-50/90">Final score: {currentScoreText}</div>

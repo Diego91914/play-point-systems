@@ -41,14 +41,14 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
       >
         Skip to content
       </a>
-      <main id="main-content" className="min-h-screen bg-[#050912] text-white">
+      <main id="main-content" className="min-h-screen overflow-x-clip bg-[#050912] text-white">
       <div className="pointer-events-none fixed inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(121,171,255,0.2),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(116,243,204,0.12),_transparent_28%),linear-gradient(180deg,_#09111d_0%,_#050912_48%,_#04070d_100%)]" />
         <div className="absolute left-[-4%] top-[12%] h-72 w-72 rounded-full bg-cyan-300/10 blur-3xl" />
         <div className="absolute bottom-[10%] right-[-4%] h-80 w-80 rounded-full bg-emerald-300/10 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-2 py-3 min-[360px]:px-4 min-[360px]:py-6 sm:px-6 lg:px-8">
         <div className="rounded-[36px] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] shadow-[0_30px_120px_rgba(0,0,0,0.4)]">
           <header className="sticky top-4 z-50 px-4 pt-4 sm:px-6 lg:px-8">
             <div className="rounded-[28px] border border-white/12 bg-[linear-gradient(180deg,rgba(8,15,28,0.95),rgba(8,15,28,0.78))] px-4 py-3 shadow-[0_18px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:px-6">
@@ -59,7 +59,7 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
                     <div className="absolute inset-0 bg-[url('/images/logo-archive/candidates/white-icon-only.png')] bg-cover bg-center" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/60">Products · Live experiences · Music</div>
+                    <div className="truncate text-[11px] font-semibold uppercase tracking-[0.14em] text-white/72">Products · Live · Music</div>
                     <div className="mt-1 truncate text-base font-extrabold tracking-[0.005em] text-white sm:text-xl">Play Point Systems</div>
                   </div>
                 </Link>
@@ -91,7 +91,7 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
                 <button
                   type="button"
                   onClick={() => setMobileOpen((value) => !value)}
-                  className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/12 bg-white/5 text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 lg:hidden"
+                  className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/12 bg-white/5 text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 lg:hidden"
                   aria-expanded={mobileOpen}
                   aria-controls="mobile-navigation"
                   aria-label="Toggle navigation menu"
@@ -133,7 +133,7 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
           <footer className="border-t border-white/10 px-5 py-8 sm:px-8 lg:px-10">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
               <div>
-              <div className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/58">Play Point Systems</div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/68">Play Point Systems</div>
                 <div className="mt-2 max-w-md text-sm leading-7 text-white/52">The parent company for Play Point Live, Shot Caddy, and Play Point Records. Creator-led, purpose-built, and honest about the work.</div>
               </div>
               <nav aria-label="Footer navigation" className="flex flex-wrap items-center gap-1.5">
