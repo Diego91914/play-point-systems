@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createTriviaLiveSession } from "../../../games/trivia/play/trivia-live-session";
+import { createTriviaLiveSession } from "../../../games/trivia/play/trivia-live-service";
 import { RUNTIME_DIFFICULTY_FILTERS, type RuntimeDifficultyFilter } from "../../../games/trivia/play/trivia-runtime-types";
 
 export async function POST(request: Request) {
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    return NextResponse.json(createTriviaLiveSession(body.category, body.difficultyFilter), {
+    return NextResponse.json(await createTriviaLiveSession(body.category, body.difficultyFilter), {
       headers: { "Cache-Control": "no-store" },
     });
   } catch (error) {

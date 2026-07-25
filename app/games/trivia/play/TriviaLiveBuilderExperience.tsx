@@ -69,6 +69,8 @@ type CatalogPayload = {
   categories: RuntimeCatalogCategorySummary[];
 };
 
+const HOST_CONNECTION_STORAGE_KEY = "play-point-trivia-host-connection-v1";
+
 const requestJson = async <T,>(url: string, init?: RequestInit, bearerToken?: string | null) => {
   const response = await fetch(url, {
     cache: "no-store",
@@ -124,6 +126,38 @@ export function TriviaLiveBuilderExperience() {
   const [snapshot, setSnapshot] = useState<HostSnapshot | null>(null);
   const [hostToken, setHostToken] = useState<string | null>(null);
   const [clockNowMs, setClockNowMs] = useState(Date.now());
+  const [serverClockOffsetMs, setServerClockOffsetMs] = useState(0);
+  const snapshotServerTimeMs = snapshot?.serverTimeMs;
+
+  useEffect(() => {
+    const storedConnection = window.sessionStorage.getItem(HOST_CONNECTION_STORAGE_KEY);
+
+    if (!storedConnection) {
+      return;
+    }
+
+    try {
+      const connection = JSON.parse(storedConnection) as { sessionId?: string; hostToken?: string };
+
+      if (!connection.sessionId || !connection.hostToken) {
+        throw new Error("Invalid stored host connection.");
+      }
+
+      setHostToken(connection.hostToken);
+      requestJson<HostSnapshot>(
+        `/api/trivia/sessions/${connection.sessionId}`,
+        undefined,
+        connection.hostToken,
+      )
+        .then(setSnapshot)
+        .catch(() => {
+          window.sessionStorage.removeItem(HOST_CONNECTION_STORAGE_KEY);
+          setHostToken(null);
+        });
+    } catch {
+      window.sessionStorage.removeItem(HOST_CONNECTION_STORAGE_KEY);
+    }
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -171,18 +205,24 @@ export function TriviaLiveBuilderExperience() {
   }, [hostToken, snapshot?.sessionId]);
 
   useEffect(() => {
+    if (snapshotServerTimeMs !== undefined) {
+      setServerClockOffsetMs(snapshotServerTimeMs - Date.now());
+    }
+  }, [snapshotServerTimeMs]);
+
+  useEffect(() => {
     if (snapshot?.phase !== "question-open") {
       return;
     }
 
     const handle = window.setInterval(() => {
-      setClockNowMs(Date.now());
+      setClockNowMs(Date.now() + serverClockOffsetMs);
     }, 250);
 
     return () => {
       window.clearInterval(handle);
     };
-  }, [snapshot?.phase, snapshot?.questionOpenedAtMs, snapshot?.cardIndex]);
+  }, [serverClockOffsetMs, snapshot?.phase, snapshot?.questionOpenedAtMs, snapshot?.cardIndex]);
 
   const selectedCategorySummary = catalog.find((category) => category.category === "bible") ?? null;
   const availableDifficultyFilters = useMemo(
@@ -218,6 +258,10 @@ export function TriviaLiveBuilderExperience() {
         }),
       });
       setHostToken(room.hostToken);
+      window.sessionStorage.setItem(
+        HOST_CONNECTION_STORAGE_KEY,
+        JSON.stringify({ sessionId: room.sessionId, hostToken: room.hostToken }),
+      );
       const nextSnapshot = await requestJson<HostSnapshot>(`/api/trivia/sessions/${room.sessionId}`, undefined, room.hostToken);
       setSnapshot(nextSnapshot);
     } catch (error) {

@@ -3,7 +3,7 @@ import {
   buildTriviaLivePlayerSnapshot,
   isTriviaLiveAuthorizationError,
   readTriviaLiveBearerToken,
-} from "../../../../../../games/trivia/play/trivia-live-session";
+} from "../../../../../../games/trivia/play/trivia-live-service";
 
 export async function GET(
   request: Request,
@@ -13,7 +13,7 @@ export async function GET(
 
   try {
     return NextResponse.json(
-      buildTriviaLivePlayerSnapshot(sessionId, playerId, readTriviaLiveBearerToken(request)),
+      await buildTriviaLivePlayerSnapshot(sessionId, playerId, readTriviaLiveBearerToken(request)),
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {

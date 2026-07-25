@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import QRCode from "qrcode";
-import { getTriviaLiveJoinUrl } from "../../../../../games/trivia/play/trivia-live-session";
+import { getTriviaLiveJoinUrl } from "../../../../../games/trivia/play/trivia-live-service";
 
 export async function GET(
   request: Request,
@@ -9,7 +9,7 @@ export async function GET(
   const { sessionId } = await context.params;
 
   try {
-    const joinUrl = getTriviaLiveJoinUrl(sessionId, new URL(request.url).origin);
+    const joinUrl = await getTriviaLiveJoinUrl(sessionId, new URL(request.url).origin);
     const svg = await QRCode.toString(joinUrl, {
       type: "svg",
       margin: 1,

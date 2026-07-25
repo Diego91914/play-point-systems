@@ -42,6 +42,8 @@ type JoinResponse = JoinSnapshot & {
   playerToken: string;
 };
 
+const PLAYER_CONNECTION_STORAGE_KEY = "play-point-trivia-player-connection-v1";
+
 const requestJson = async <T,>(url: string, init?: RequestInit, bearerToken?: string | null) => {
   const response = await fetch(url, {
     cache: "no-store",
@@ -95,6 +97,8 @@ export function TriviaJoinExperience() {
   const [snapshot, setSnapshot] = useState<JoinSnapshot | null>(null);
   const [playerToken, setPlayerToken] = useState<string | null>(null);
   const [clockNowMs, setClockNowMs] = useState(Date.now());
+  const [serverClockOffsetMs, setServerClockOffsetMs] = useState(0);
+  const snapshotServerTimeMs = snapshot?.serverTimeMs;
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -102,6 +106,45 @@ export function TriviaJoinExperience() {
 
     if (code) {
       setRoomCode(code.toUpperCase());
+    }
+
+    const storedConnection = window.sessionStorage.getItem(PLAYER_CONNECTION_STORAGE_KEY);
+
+    if (!storedConnection) {
+      return;
+    }
+
+    try {
+      const connection = JSON.parse(storedConnection) as {
+        sessionId?: string;
+        roomCode?: string;
+        playerId?: string;
+        playerToken?: string;
+      };
+
+      if (
+        !connection.sessionId
+        || !connection.roomCode
+        || !connection.playerId
+        || !connection.playerToken
+        || (code && connection.roomCode !== code.toUpperCase())
+      ) {
+        return;
+      }
+
+      setPlayerToken(connection.playerToken);
+      requestJson<JoinSnapshot>(
+        `/api/trivia/sessions/${connection.sessionId}/players/${connection.playerId}`,
+        undefined,
+        connection.playerToken,
+      )
+        .then(setSnapshot)
+        .catch(() => {
+          window.sessionStorage.removeItem(PLAYER_CONNECTION_STORAGE_KEY);
+          setPlayerToken(null);
+        });
+    } catch {
+      window.sessionStorage.removeItem(PLAYER_CONNECTION_STORAGE_KEY);
     }
   }, []);
 
@@ -125,18 +168,24 @@ export function TriviaJoinExperience() {
   }, [playerToken, snapshot?.player.id, snapshot?.sessionId]);
 
   useEffect(() => {
+    if (snapshotServerTimeMs !== undefined) {
+      setServerClockOffsetMs(snapshotServerTimeMs - Date.now());
+    }
+  }, [snapshotServerTimeMs]);
+
+  useEffect(() => {
     if (snapshot?.phase !== "question-open") {
       return;
     }
 
     const handle = window.setInterval(() => {
-      setClockNowMs(Date.now());
+      setClockNowMs(Date.now() + serverClockOffsetMs);
     }, 250);
 
     return () => {
       window.clearInterval(handle);
     };
-  }, [snapshot?.phase, snapshot?.questionOpenedAtMs]);
+  }, [serverClockOffsetMs, snapshot?.phase, snapshot?.questionOpenedAtMs]);
 
   const countdown = getCountdownState(snapshot, clockNowMs);
 
@@ -152,6 +201,15 @@ export function TriviaJoinExperience() {
         }),
       });
       setPlayerToken(joined.playerToken);
+      window.sessionStorage.setItem(
+        PLAYER_CONNECTION_STORAGE_KEY,
+        JSON.stringify({
+          sessionId: joined.sessionId,
+          roomCode: joined.roomCode,
+          playerId: joined.player.id,
+          playerToken: joined.playerToken,
+        }),
+      );
       setSnapshot(joined);
     } catch (error) {
       setJoinError(error instanceof Error ? error.message : "Unable to join the trivia room.");

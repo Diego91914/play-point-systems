@@ -4,7 +4,7 @@ import {
   isTriviaLiveAuthorizationError,
   readTriviaLiveBearerToken,
   submitTriviaLiveAnswer,
-} from "../../../../../../../games/trivia/play/trivia-live-session";
+} from "../../../../../../../games/trivia/play/trivia-live-service";
 import type { RuntimeResponse } from "../../../../../../../games/trivia/play/trivia-runtime-types";
 
 export async function POST(
@@ -22,8 +22,8 @@ export async function POST(
   }
 
   try {
-    submitTriviaLiveAnswer(sessionId, playerId, body.response, playerToken);
-    return NextResponse.json(buildTriviaLivePlayerSnapshot(sessionId, playerId, playerToken), {
+    await submitTriviaLiveAnswer(sessionId, playerId, body.response, playerToken);
+    return NextResponse.json(await buildTriviaLivePlayerSnapshot(sessionId, playerId, playerToken), {
       headers: { "Cache-Control": "no-store" },
     });
   } catch (error) {

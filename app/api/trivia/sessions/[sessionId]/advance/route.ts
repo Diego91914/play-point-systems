@@ -4,7 +4,7 @@ import {
   buildTriviaLiveHostSnapshot,
   isTriviaLiveAuthorizationError,
   readTriviaLiveBearerToken,
-} from "../../../../../games/trivia/play/trivia-live-session";
+} from "../../../../../games/trivia/play/trivia-live-service";
 
 export async function POST(
   request: Request,
@@ -14,8 +14,8 @@ export async function POST(
   const hostToken = readTriviaLiveBearerToken(request);
 
   try {
-    advanceTriviaLiveQuestion(sessionId, hostToken);
-    return NextResponse.json(buildTriviaLiveHostSnapshot(sessionId, new URL(request.url).origin, hostToken), {
+    await advanceTriviaLiveQuestion(sessionId, hostToken);
+    return NextResponse.json(await buildTriviaLiveHostSnapshot(sessionId, new URL(request.url).origin, hostToken), {
       headers: { "Cache-Control": "no-store" },
     });
   } catch (error) {
