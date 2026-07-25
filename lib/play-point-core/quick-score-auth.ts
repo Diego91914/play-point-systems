@@ -30,6 +30,12 @@ export function serializeQuickScoreIdentityCookie(
   return `${identity.playerId}.${normalizeRecoveryCode(identity.recoveryCode)}`;
 }
 
+export function serializeQuickScoreRecoveryKey(
+  identity: QuickScorePlayerCredentials
+): string {
+  return serializeQuickScoreIdentityCookie(identity);
+}
+
 function readCookie(request: QuickScoreRequest, name: string): string {
   const cookieHeader = request.headers.get("cookie") ?? "";
 
@@ -41,7 +47,9 @@ function readCookie(request: QuickScoreRequest, name: string): string {
   return "";
 }
 
-function parseSerializedPlayerCredentials(value: string): QuickScorePlayerCredentials | null {
+export function parseQuickScoreRecoveryKey(value: unknown): QuickScorePlayerCredentials | null {
+  if (typeof value !== "string") return null;
+
   const separatorIndex = value.indexOf(".");
   if (separatorIndex < 1) return null;
 
@@ -54,7 +62,7 @@ export function resolveQuickScorePlayerCredentials(
   request: QuickScoreRequest,
   legacyCredentials?: QuickScoreCredentialInput
 ): QuickScorePlayerCredentials | null {
-  const cookieCredentials = parseSerializedPlayerCredentials(
+  const cookieCredentials = parseQuickScoreRecoveryKey(
     readCookie(request, PPL_QUICK_SCORE_IDENTITY_COOKIE)
   );
   if (cookieCredentials) return cookieCredentials;

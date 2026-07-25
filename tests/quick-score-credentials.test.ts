@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   createQuickScoreHostToken,
+  createQuickScorePlayerSessionToken,
   createQuickScoreRecoveryCode,
   createQuickScoreSessionCode,
 } from "../lib/play-point-core/quick-score-credentials";
@@ -14,6 +15,7 @@ describe("Quick Score credentials", () => {
     expect(() => createQuickScoreSessionCode()).not.toThrow();
     expect(() => createQuickScoreRecoveryCode()).not.toThrow();
     expect(() => createQuickScoreHostToken()).not.toThrow();
+    expect(() => createQuickScorePlayerSessionToken()).not.toThrow();
 
     randomSpy.mockRestore();
   });
@@ -32,6 +34,12 @@ describe("Quick Score credentials", () => {
     expect(createQuickScoreHostToken()).toMatch(/^qs-host-[A-Za-z0-9_-]{43}$/);
   });
 
+  it("creates case-insensitive per-device player session tokens", () => {
+    expect(createQuickScorePlayerSessionToken()).toMatch(
+      /^PPLS-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{32}$/
+    );
+  });
+
   it("does not repeat generated credentials in a representative sample", () => {
     const sampleSize = 256;
 
@@ -41,5 +49,8 @@ describe("Quick Score credentials", () => {
     expect(new Set(Array.from({ length: sampleSize }, createQuickScoreHostToken)).size).toBe(
       sampleSize
     );
+    expect(
+      new Set(Array.from({ length: sampleSize }, createQuickScorePlayerSessionToken)).size
+    ).toBe(sampleSize);
   });
 });

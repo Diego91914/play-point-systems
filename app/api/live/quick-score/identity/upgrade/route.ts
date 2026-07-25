@@ -39,6 +39,17 @@ export async function POST(request: NextRequest) {
       return noStoreResponse({ error: "Invalid player identity." }, 403);
     }
 
+    if (existing.credentialSource === "account_session") {
+      const response = noStoreResponse({
+        success: true,
+        upgraded: false,
+        alreadySecure: true,
+        playerId: existing.id,
+      });
+      setQuickScoreIdentityCookie(response, credentials);
+      return response;
+    }
+
     const alreadyUsesHash = verifyQuickScoreStoredCredentialHash(
       credentials.recoveryCode,
       {

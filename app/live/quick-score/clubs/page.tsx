@@ -4,7 +4,10 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { QUICK_SCORE_GAMES, type QuickScoreGameId } from "@/lib/play-point-core/quick-score";
 import { buildQuickScoreIdentityRequestHeaders } from "@/lib/play-point-core/quick-score-auth";
-import { ensureQuickScoreIdentity } from "@/lib/play-point-core/quick-score-identity";
+import {
+  ensureQuickScoreIdentity,
+  resolveStoredQuickScoreIdentity,
+} from "@/lib/play-point-core/quick-score-identity";
 import type { QuickScoreClubSummary } from "@/lib/play-point-core/quick-score-club";
 
 type ClubFormState = {
@@ -27,6 +30,7 @@ export default function QuickScoreClubsPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
+  const [identityRequired, setIdentityRequired] = useState(false);
   const [form, setForm] = useState<ClubFormState>(EMPTY_FORM);
 
   useEffect(() => {
@@ -43,6 +47,12 @@ export default function QuickScoreClubsPage() {
     setError("");
 
     try {
+      if (!resolveStoredQuickScoreIdentity()) {
+        setIdentityRequired(true);
+        setClubs([]);
+        return;
+      }
+
       const identity = await ensureQuickScoreIdentity();
       const response = await fetch("/api/live/quick-score/clubs", {
         headers: buildQuickScoreIdentityRequestHeaders(identity),
@@ -55,6 +65,7 @@ export default function QuickScoreClubsPage() {
       const nextClubs = Array.isArray((data as { clubs?: unknown[] }).clubs)
         ? ((data as { clubs?: QuickScoreClubSummary[] }).clubs ?? [])
         : [];
+      setIdentityRequired(false);
       setClubs(nextClubs);
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : "Unable to load clubs.");
@@ -106,6 +117,7 @@ export default function QuickScoreClubsPage() {
       if (club) {
         setClubs((current) => [club, ...current]);
       }
+      setIdentityRequired(false);
       setForm(EMPTY_FORM);
       setStatusMessage("Club created. You can start adding your regulars now.");
     } catch (createError) {
@@ -139,6 +151,12 @@ export default function QuickScoreClubsPage() {
               className="rounded-2xl border border-white/12 bg-white/5 px-4 py-3 text-sm font-black text-white transition hover:bg-white/10"
             >
               Play Point Live Home
+            </Link>
+            <Link
+              href="/live/quick-score/account"
+              className="rounded-2xl border border-amber-300/20 bg-amber-300/10 px-4 py-3 text-sm font-black text-amber-50 transition hover:bg-amber-300/16"
+            >
+              Account &amp; Recovery
             </Link>
             <div className="rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-sm font-semibold text-emerald-50">
               Phase 1: club shell, recurring players, and basic home screens
@@ -245,6 +263,19 @@ export default function QuickScoreClubsPage() {
             {loading ? (
               <div className="mt-5 rounded-[24px] border border-white/10 bg-white/5 px-4 py-6 text-sm text-white/66">
                 Loading your club memory layer...
+              </div>
+            ) : identityRequired ? (
+              <div className="mt-5 rounded-[24px] border border-amber-300/20 bg-amber-300/10 px-5 py-6">
+                <div className="text-lg font-black text-amber-50">Restore before starting over</div>
+                <div className="mt-2 text-sm leading-6 text-amber-50/72">
+                  This browser has no saved Quick Score account. If your clubs are on another device or browser, restore that account first so a new empty identity is not created.
+                </div>
+                <Link
+                  href="/live/quick-score/account"
+                  className="mt-4 inline-flex rounded-2xl bg-amber-300 px-4 py-3 text-sm font-black text-slate-950 transition hover:brightness-105"
+                >
+                  Restore Existing Clubs
+                </Link>
               </div>
             ) : clubs.length < 1 ? (
               <div className="mt-5 rounded-[24px] border border-dashed border-white/12 bg-white/5 px-5 py-6">

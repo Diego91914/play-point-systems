@@ -1153,6 +1153,12 @@ export default function QuickScorePage() {
               >
                 Open Club Memory
               </Link>
+              <Link
+                href="/live/quick-score/account"
+                className="rounded-2xl border border-amber-300/20 bg-amber-300/10 px-4 py-3 text-sm font-black text-amber-50 transition hover:bg-amber-300/16"
+              >
+                Account &amp; Recovery
+              </Link>
               <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/66">
                 Quick Match stays instant. Clubs save your recurring group.
               </div>

@@ -25,3 +25,7 @@ export function createQuickScoreRecoveryCode(): string {
 export function createQuickScoreHostToken(): string {
   return `qs-host-${randomBytes(32).toString("base64url")}`;
 }
+
+export function createQuickScorePlayerSessionToken(): string {
+  return `PPLS-${generateRandomCharacters(32)}`;
+}

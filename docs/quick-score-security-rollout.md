@@ -25,6 +25,9 @@ Status: implemented in application code with legacy browser-storage, authorizati
 - Prefer the cookie in API routes while retaining the Stage 1 authorization header temporarily.
 - Stop persisting recovery codes in `localStorage` only after the cookie path has passed the verification gate.
 - Continue showing a newly issued recovery code once so the player can save it for another device.
+- Provide an Account & Recovery screen that exports one private recovery key and strictly verifies it before switching a browser to an existing identity.
+- Do not create an empty anonymous identity merely because a fresh browser opens the Clubs page; offer recovery first and create only after an explicit player action.
+- Serialize identity creation within a tab and use the browser lock manager when available so concurrent page loads do not create duplicate player rows.
 
 Rollback: retain the authorization-header path until cookie behavior has been verified in production across desktop and mobile browsers.
 
@@ -40,7 +43,27 @@ Status: additive hash/version columns are applied; new identities and host sessi
 
 Rollback: application code can return to legacy verification while the plaintext columns still exist. Do not drop or overwrite those columns in the same deployment that introduces hash verification.
 
-## Stage 4: database access hardening
+## Stage 4: portable email accounts
+
+Status: additive Supabase Auth ownership and per-device session schema is applied. Email/password UI, verified account linking, password recovery, and revocable hashed device credentials are implemented while recovery keys remain valid.
+
+- Keep Quick Match available without registration.
+- Link at most one verified Supabase Auth user to each Quick Score player and vice versa.
+- Require both a valid Supabase user session and the existing Quick Score credential before linking existing clubs.
+- Issue a separate high-entropy, hashed credential to each newly signed-in device instead of rotating the recovery key.
+- Revoke the device credential when that device signs out.
+- Keep email linking optional during the compatibility window so existing players are not locked out.
+
+Rollback: remove the email-account UI and device-session code while leaving the nullable ownership column and session table in place. Existing recovery credentials continue to authorize the original player.
+
+Production configuration gate:
+
+- Keep the Supabase Email provider enabled with email confirmation required.
+- Set the Auth site URL to the canonical production origin.
+- Allow `/live/quick-score/account` as a production and local-development redirect target.
+- Configure custom SMTP and test signup, verification, password reset, sign-in, cross-device club restore, and device sign-out before advertising email accounts publicly.
+
+## Stage 5: database access hardening
 
 - Confirm all application database calls still originate in server-only modules.
 - Revoke grants from `anon` and `authenticated` while preserving `service_role`.
@@ -51,7 +74,7 @@ Rollback: application code can return to legacy verification while the plaintext
 
 Rollback: prepare the exact inverse grants before deployment and run the full Quick Score verification gate immediately afterward.
 
-## Stage 5: cleanup
+## Stage 6: cleanup
 
 - Remove query-string and authorization-header compatibility paths after the cookie rollout is stable.
 - Remove legacy plaintext credential columns only after all active identities have upgraded or the compatibility window has ended.

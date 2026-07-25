@@ -32,6 +32,15 @@ export function setQuickScoreIdentityCookie(
   });
 }
 
+export function clearQuickScoreIdentityCookie(response: NextResponse): void {
+  response.cookies.set({
+    name: PPL_QUICK_SCORE_IDENTITY_COOKIE,
+    value: "",
+    ...cookieOptions(),
+    maxAge: 0,
+  });
+}
+
 export function setQuickScoreHostCookie(
   response: NextResponse,
   sessionCode: string,

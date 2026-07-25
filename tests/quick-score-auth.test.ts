@@ -4,10 +4,12 @@ import {
   PPL_QUICK_SCORE_IDENTITY_COOKIE,
   buildQuickScoreHostRequestHeaders,
   buildQuickScoreIdentityRequestHeaders,
+  parseQuickScoreRecoveryKey,
   resolveQuickScoreHostToken,
   resolveQuickScorePlayerCredentials,
   serializeQuickScoreHostCookie,
   serializeQuickScoreIdentityCookie,
+  serializeQuickScoreRecoveryKey,
 } from "../lib/play-point-core/quick-score-auth";
 
 describe("Quick Score request authorization", () => {
@@ -25,6 +27,20 @@ describe("Quick Score request authorization", () => {
       recoveryCode: identity.recoveryCode.toUpperCase(),
     });
     expect(request.url).not.toContain(identity.recoveryCode);
+  });
+
+  it("round-trips a portable account recovery key", () => {
+    const identity = {
+      playerId: "8f149252-f25d-4f7c-860c-c85b92a75e07",
+      recoveryCode: "ppl-abcd-2345",
+    };
+
+    expect(parseQuickScoreRecoveryKey(serializeQuickScoreRecoveryKey(identity))).toEqual({
+      playerId: identity.playerId,
+      recoveryCode: identity.recoveryCode.toUpperCase(),
+    });
+    expect(parseQuickScoreRecoveryKey("missing-separator")).toBeNull();
+    expect(parseQuickScoreRecoveryKey(null)).toBeNull();
   });
 
   it("temporarily accepts legacy query-string player credentials", () => {

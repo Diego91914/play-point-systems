@@ -2,7 +2,11 @@ import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { normalizeRecoveryCode } from "@/lib/play-point-core/quick-score-auth";
-import { verifyQuickScoreStoredCredential } from "@/lib/play-point-core/quick-score-credential-hash";
+import {
+  hashQuickScoreCredential,
+  QUICK_SCORE_CREDENTIAL_HASH_VERSION,
+  verifyQuickScoreStoredCredential,
+} from "@/lib/play-point-core/quick-score-credential-hash";
 import {
   mapQuickScoreClubParticipantRow,
   mapQuickScoreClubRow,
@@ -16,10 +20,12 @@ export { normalizeRecoveryCode } from "@/lib/play-point-core/quick-score-auth";
 
 export type QuickScoreVerifiedPlayerIdentity = {
   id: string;
+  auth_user_id: string | null;
   recovery_code: string | null;
   recovery_code_hash: string | null;
   recovery_code_version: number | null;
   display_name: string | null;
+  credentialSource: "recovery" | "account_session";
 };
 
 export async function loadVerifiedPlayerIdentity(
@@ -32,7 +38,7 @@ export async function loadVerifiedPlayerIdentity(
 
   const { data, error } = await supabase
     .from("ppl_quick_score_players")
-    .select("id, recovery_code, recovery_code_hash, recovery_code_version, display_name")
+    .select("id, auth_user_id, recovery_code, recovery_code_hash, recovery_code_version, display_name")
     .eq("id", playerId)
     .maybeSingle();
 
@@ -42,13 +48,39 @@ export async function loadVerifiedPlayerIdentity(
 
   if (!data) return null;
 
-  const verified = verifyQuickScoreStoredCredential(normalizedRecoveryCode, {
+  const recoveryVerified = verifyQuickScoreStoredCredential(normalizedRecoveryCode, {
     hash: data.recovery_code_hash,
     version: data.recovery_code_version,
     legacyValue: data.recovery_code,
   });
 
-  return verified ? (data as QuickScoreVerifiedPlayerIdentity) : null;
+  if (recoveryVerified) {
+    return {
+      ...(data as Omit<QuickScoreVerifiedPlayerIdentity, "credentialSource">),
+      credentialSource: "recovery",
+    };
+  }
+
+  const { data: deviceSession, error: deviceSessionError } = await supabase
+    .from("ppl_quick_score_player_sessions")
+    .select("id")
+    .eq("player_id", playerId)
+    .eq("token_hash", hashQuickScoreCredential(normalizedRecoveryCode))
+    .eq("token_version", QUICK_SCORE_CREDENTIAL_HASH_VERSION)
+    .is("revoked_at", null)
+    .gt("expires_at", new Date().toISOString())
+    .maybeSingle();
+
+  if (deviceSessionError) {
+    throw new Error(`Failed to verify player session: ${deviceSessionError.message}`);
+  }
+
+  return deviceSession
+    ? {
+        ...(data as Omit<QuickScoreVerifiedPlayerIdentity, "credentialSource">),
+        credentialSource: "account_session",
+      }
+    : null;
 }
 
 export async function verifyPlayerIdentity(
