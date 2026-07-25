@@ -24,15 +24,24 @@ export function verifyQuickScoreStoredCredential(
 ): boolean {
   if (!presentedValue) return false;
 
-  if (
-    stored.version === QUICK_SCORE_CREDENTIAL_HASH_VERSION &&
-    typeof stored.hash === "string"
-  ) {
-    const presentedHash = hashQuickScoreCredential(presentedValue);
-    if (safeStringEqual(presentedHash, stored.hash)) return true;
-  }
+  if (verifyQuickScoreStoredCredentialHash(presentedValue, stored)) return true;
 
   return typeof stored.legacyValue === "string"
     ? safeStringEqual(presentedValue, stored.legacyValue)
     : false;
+}
+
+export function verifyQuickScoreStoredCredentialHash(
+  presentedValue: string,
+  stored: Pick<QuickScoreStoredCredential, "hash" | "version">
+): boolean {
+  if (
+    !presentedValue ||
+    stored.version !== QUICK_SCORE_CREDENTIAL_HASH_VERSION ||
+    typeof stored.hash !== "string"
+  ) {
+    return false;
+  }
+
+  return safeStringEqual(hashQuickScoreCredential(presentedValue), stored.hash);
 }

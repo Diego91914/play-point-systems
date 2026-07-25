@@ -30,7 +30,7 @@ Rollback: retain the authorization-header path until cookie behavior has been ve
 
 ## Stage 3: hashed database credentials
 
-Status: additive hash/version columns are applied; new identities and host sessions use versioned SHA-256 hashes while existing plaintext identities remain on the legacy verification path.
+Status: additive hash/version columns are applied; new identities and host sessions use versioned SHA-256 hashes while existing plaintext identities remain on the legacy verification path. An authenticated, user-confirmed upgrade action rotates a legacy recovery code, updates the HttpOnly cookie, and returns the replacement code once for the player to save.
 
 - Add nullable hash/version columns before changing application writes.
 - Store hashes for newly issued high-entropy recovery codes and host tokens.

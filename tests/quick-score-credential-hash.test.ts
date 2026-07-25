@@ -3,6 +3,7 @@ import {
   hashQuickScoreCredential,
   QUICK_SCORE_CREDENTIAL_HASH_VERSION,
   verifyQuickScoreStoredCredential,
+  verifyQuickScoreStoredCredentialHash,
 } from "../lib/play-point-core/quick-score-credential-hash";
 
 describe("Quick Score credential hashing", () => {
@@ -49,6 +50,23 @@ describe("Quick Score credential hashing", () => {
         legacyValue: "PPL-LEGACY",
       })
     ).toBe(false);
+  });
+
+  it("distinguishes a versioned hash match from a legacy fallback", () => {
+    expect(
+      verifyQuickScoreStoredCredentialHash("PPL-LEGACY", {
+        hash: null,
+        version: null,
+      })
+    ).toBe(false);
+
+    const secret = "PPL-CURRENT-CREDENTIAL";
+    expect(
+      verifyQuickScoreStoredCredentialHash(secret, {
+        hash: hashQuickScoreCredential(secret),
+        version: QUICK_SCORE_CREDENTIAL_HASH_VERSION,
+      })
+    ).toBe(true);
   });
 
   it("rejects unknown hash versions", () => {

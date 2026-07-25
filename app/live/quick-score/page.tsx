@@ -261,6 +261,9 @@ export default function QuickScorePage() {
   const [checkoutBusy, setCheckoutBusy] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
   const [proStatusMessage, setProStatusMessage] = useState("");
+  const [securityUpgradeBusy, setSecurityUpgradeBusy] = useState(false);
+  const [securityUpgradeMessage, setSecurityUpgradeMessage] = useState("");
+  const [replacementRecoveryCode, setReplacementRecoveryCode] = useState("");
   const [launchContext, setLaunchContext] = useState<QuickScoreLaunchContext>({
     clubId: "",
     eventId: "",
@@ -859,6 +862,72 @@ export default function QuickScorePage() {
     }
   }
 
+  async function upgradeRecoverySecurity() {
+    const confirmed = window.confirm(
+      "Upgrade account recovery security? If this account still uses an older recovery code, that code will stop working and a replacement will appear here. Save the replacement before closing this page."
+    );
+    if (!confirmed) return;
+
+    setSecurityUpgradeBusy(true);
+    setSecurityUpgradeMessage("");
+    setReplacementRecoveryCode("");
+
+    try {
+      const identity = await ensureAnonymousAccount();
+      if (!identity) {
+        setSecurityUpgradeMessage("Could not load this Quick Score identity.");
+        return;
+      }
+
+      const response = await fetch("/api/live/quick-score/identity/upgrade", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...buildQuickScoreIdentityRequestHeaders(identity),
+        },
+        body: JSON.stringify(identity),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(
+          typeof (data as { error?: unknown }).error === "string"
+            ? (data as { error: string }).error
+            : "Unable to upgrade recovery security."
+        );
+      }
+
+      if (!(data as { upgraded?: boolean }).upgraded) {
+        setSecurityUpgradeMessage("This identity already uses hashed recovery security.");
+        return;
+      }
+
+      const playerId = typeof (data as { playerId?: unknown }).playerId === "string"
+        ? (data as { playerId: string }).playerId
+        : "";
+      const recoveryCode = typeof (data as { recoveryCode?: unknown }).recoveryCode === "string"
+        ? (data as { recoveryCode: string }).recoveryCode
+        : "";
+      if (!playerId || !recoveryCode) {
+        throw new Error("Recovery security changed, but the replacement code was not returned.");
+      }
+
+      const nextIdentity = { playerId, recoveryCode };
+      persistQuickScoreIdentity(nextIdentity);
+      setAccountPlayerId(playerId);
+      setAccountRecoveryCode(recoveryCode);
+      setReplacementRecoveryCode(recoveryCode);
+      setSecurityUpgradeMessage(
+        "Recovery security upgraded. Save this replacement code now; the old code no longer works."
+      );
+    } catch (error) {
+      setSecurityUpgradeMessage(
+        error instanceof Error ? error.message : "Unable to upgrade recovery security."
+      );
+    } finally {
+      setSecurityUpgradeBusy(false);
+    }
+  }
+
   function selectGame(gameId: QuickScoreGameId) {
     const game = getQuickScoreGameConfig(gameId);
     setDraft((current) => buildDraftFromGame(game, current));
@@ -1429,6 +1498,49 @@ export default function QuickScorePage() {
                   >
                     New Setup
                   </button>
+                </div>
+                <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/50">
+                        Account Recovery Security
+                      </div>
+                      <div className="mt-2 max-w-2xl text-sm leading-6 text-white/70">
+                        Existing players can replace an older recovery code with a version stored only as a secure hash.
+                        Your saved games and Pro access stay with the same player ID.
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={upgradeRecoverySecurity}
+                      disabled={securityUpgradeBusy}
+                      className="shrink-0 rounded-2xl border border-violet-300/20 bg-violet-400/10 px-4 py-3 text-sm font-black text-violet-50 transition hover:bg-violet-400/16 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {securityUpgradeBusy ? "Checking..." : "Upgrade Recovery Security"}
+                    </button>
+                  </div>
+                  {securityUpgradeMessage && (
+                    <div className="mt-3 text-sm text-violet-100">{securityUpgradeMessage}</div>
+                  )}
+                  {replacementRecoveryCode && (
+                    <div className="mt-3 flex flex-col gap-3 rounded-2xl border border-amber-300/25 bg-amber-300/10 p-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="min-w-0">
+                        <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-amber-100/70">
+                          New recovery code — shown once
+                        </div>
+                        <div className="mt-2 break-all font-mono text-base font-black text-amber-50">
+                          {replacementRecoveryCode}
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => navigator.clipboard.writeText(replacementRecoveryCode)}
+                        className="shrink-0 rounded-xl bg-amber-300 px-4 py-3 text-sm font-black text-slate-950 transition hover:brightness-105"
+                      >
+                        Copy Code
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
