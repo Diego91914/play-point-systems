@@ -23,7 +23,7 @@ type JoinSnapshot = {
   sessionId: string;
   roomCode: string;
   status: "lobby" | "in-progress" | "completed";
-  phase: "lobby" | "question-open" | "answer-reveal" | "completed";
+  phase: "lobby" | "wager-open" | "question-open" | "answer-reveal" | "completed";
   serverTimeMs: number;
   player: JoinPlayer;
   currentCard: RuntimePublicDeckCard | null;
@@ -34,6 +34,11 @@ type JoinSnapshot = {
     hasSubmitted: boolean;
     response: string | null;
     responseText: string | null;
+  };
+  wagerState: {
+    hasSubmitted: boolean;
+    wager: number | null;
+    maxWager: number;
   };
   leaderboard: JoinPlayer[];
   resolution: {
@@ -113,6 +118,8 @@ export function TriviaJoinExperience() {
   const [clockNowMs, setClockNowMs] = useState(Date.now());
   const [serverClockOffsetMs, setServerClockOffsetMs] = useState(0);
   const [streamConnected, setStreamConnected] = useState(false);
+  const [wagerInput, setWagerInput] = useState("");
+  const [submittingWager, setSubmittingWager] = useState(false);
   const snapshotServerTimeMs = snapshot?.serverTimeMs;
 
   useEffect(() => {
@@ -215,6 +222,12 @@ export function TriviaJoinExperience() {
     };
   }, [serverClockOffsetMs, snapshot?.phase, snapshot?.questionOpenedAtMs]);
 
+  useEffect(() => {
+    if (snapshot?.phase === "wager-open" && !snapshot.wagerState.hasSubmitted) {
+      setWagerInput(String(Math.floor(snapshot.wagerState.maxWager / 2)));
+    }
+  }, [snapshot?.phase, snapshot?.wagerState.hasSubmitted, snapshot?.wagerState.maxWager]);
+
   const countdown = getCountdownState(snapshot, clockNowMs);
 
   async function joinRoom() {
@@ -260,6 +273,27 @@ export function TriviaJoinExperience() {
       );
     } catch (error) {
       setJoinError(error instanceof Error ? error.message : "Unable to submit the answer.");
+    }
+  }
+
+  async function submitWager() {
+    if (!snapshot || !playerToken) {
+      return;
+    }
+
+    try {
+      setSubmittingWager(true);
+      setJoinError(null);
+      setSnapshot(
+        await requestJson<JoinSnapshot>(`/api/trivia/sessions/${snapshot.sessionId}/players/${snapshot.player.id}/wager`, {
+          method: "POST",
+          body: JSON.stringify({ wager: Number(wagerInput) }),
+        }, playerToken),
+      );
+    } catch (error) {
+      setJoinError(error instanceof Error ? error.message : "Unable to submit that wager.");
+    } finally {
+      setSubmittingWager(false);
     }
   }
 
@@ -337,6 +371,46 @@ export function TriviaJoinExperience() {
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Lobby</div>
                 <h3 className="mt-3 text-2xl font-black text-white">You are in room {snapshot.roomCode}</h3>
                 <p className="mt-4 text-sm leading-7 text-white/72">You are ready. Waiting for the host to start the game.</p>
+              </div>
+            ) : snapshot.phase === "wager-open" ? (
+              <div className="rounded-[24px] border border-amber-300/25 bg-[linear-gradient(180deg,rgba(129,91,28,0.3),rgba(255,255,255,0.03))] p-5 sm:rounded-[28px] sm:p-7">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-amber-100/70">Final wager</div>
+                <h3 className="mt-3 text-3xl font-black text-white">Risk some—or none—of your score</h3>
+                <p className="mt-4 text-sm leading-7 text-white/72">You have {formatPoints(snapshot.wagerState.maxWager)} points. A correct final answer adds your wager; a wrong or skipped answer subtracts it.</p>
+
+                {snapshot.wagerState.hasSubmitted ? (
+                  <div className="mt-6 rounded-[24px] border border-emerald-300/30 bg-emerald-400/10 px-5 py-5">
+                    <div className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-100/65">Wager locked</div>
+                    <div className="mt-2 text-3xl font-black text-white">{formatPoints(snapshot.wagerState.wager ?? 0)} points</div>
+                    <p className="mt-3 text-sm text-white/64">Waiting for the host to open the final question.</p>
+                  </div>
+                ) : (
+                  <div className="mt-6">
+                    <label className="text-sm font-semibold text-white" htmlFor="final-wager">Your wager</label>
+                    <input
+                      id="final-wager"
+                      type="number"
+                      min={0}
+                      max={snapshot.wagerState.maxWager}
+                      step={1}
+                      inputMode="numeric"
+                      value={wagerInput}
+                      onChange={(event) => setWagerInput(event.target.value)}
+                      className="mt-3 w-full rounded-[20px] border border-white/12 bg-black/30 px-4 py-4 text-2xl font-black text-white outline-none transition focus:border-amber-300/50"
+                    />
+                    <div className="mt-3 grid grid-cols-3 gap-2">
+                      {[0, Math.floor(snapshot.wagerState.maxWager / 2), snapshot.wagerState.maxWager].map((amount, index) => (
+                        <button key={`${amount}-${index}`} type="button" onClick={() => setWagerInput(String(amount))} className="rounded-2xl border border-white/10 bg-white/6 px-3 py-3 text-sm font-black text-white transition hover:bg-white/12">
+                          {index === 0 ? "None" : index === 1 ? "Half" : "All in"}
+                        </button>
+                      ))}
+                    </div>
+                    {joinError ? <div className="mt-4 text-sm font-semibold text-amber-200">{joinError}</div> : null}
+                    <button type="button" onClick={submitWager} disabled={submittingWager} className="mt-5 w-full rounded-2xl border border-amber-200/35 bg-amber-300 px-5 py-4 text-base font-black text-[#1a1003] transition hover:brightness-110 disabled:opacity-50">
+                      {submittingWager ? "Locking..." : "Lock Final Wager"}
+                    </button>
+                  </div>
+                )}
               </div>
             ) : snapshot.phase === "question-open" && snapshot.currentCard ? (
               <div className="grid gap-4">
