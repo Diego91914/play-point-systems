@@ -1,3 +1,4 @@
+import { createHash, createHmac, randomBytes } from "node:crypto";
 import catalogData from "./trivia-runtime-catalog.json";
 import {
   PLAYPOINT_RUNTIME_ROUNDS,
@@ -14,6 +15,64 @@ import {
 
 const CHOICE_SLOTS: readonly RuntimeChoiceSlot[] = ["A", "B", "C", "D"];
 const MAX_RUNTIME_QUESTIONS = 12;
+const RANDOM_DOMAIN = "play-point-trivia-runtime-v1";
+const UINT32_RANGE = 0x1_0000_0000;
+
+export type RuntimeDeckBuildOptions = {
+  seed?: string;
+  excludedSourceIds?: readonly string[];
+};
+
+class SeededCryptoRandom {
+  private readonly key: Buffer;
+  private block = Buffer.alloc(0);
+  private blockOffset = 0;
+  private counter = 0;
+
+  constructor(seed: string) {
+    this.key = createHash("sha256").update(`${RANDOM_DOMAIN}:${seed}`, "utf8").digest();
+  }
+
+  private nextUint32() {
+    if (this.blockOffset + 4 > this.block.length) {
+      this.block = createHmac("sha256", this.key)
+        .update(`${RANDOM_DOMAIN}:${this.counter}`, "utf8")
+        .digest();
+      this.blockOffset = 0;
+      this.counter += 1;
+    }
+
+    const value = this.block.readUInt32BE(this.blockOffset);
+    this.blockOffset += 4;
+    return value;
+  }
+
+  integer(maxExclusive: number) {
+    if (!Number.isSafeInteger(maxExclusive) || maxExclusive <= 0 || maxExclusive > UINT32_RANGE) {
+      throw new Error("The seeded random range must be a positive 32-bit integer.");
+    }
+
+    const unbiasedLimit = Math.floor(UINT32_RANGE / maxExclusive) * maxExclusive;
+    let value = this.nextUint32();
+
+    while (value >= unbiasedLimit) {
+      value = this.nextUint32();
+    }
+
+    return value % maxExclusive;
+  }
+}
+
+function shuffleWithSeed<T>(values: readonly T[], random: SeededCryptoRandom): T[] {
+  const shuffled = [...values];
+
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapIndex = random.integer(index + 1);
+    [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+  }
+
+  return shuffled;
+}
 
 interface SourceCatalogRecord {
   id: string;
@@ -68,11 +127,19 @@ function buildRoundQuestionCounts(totalQuestions: number, roundCount: number): n
   return Array.from({ length: roundCount }, (_, index) => baseQuestionCount + (index < remainder ? 1 : 0));
 }
 
-function buildChoices(record: SourceCatalogRecord): RuntimeChoice[] {
-  return record.choices.slice(0, CHOICE_SLOTS.length).map((text, index) => ({
-    slot: CHOICE_SLOTS[index],
+function buildChoices(record: SourceCatalogRecord, random: SeededCryptoRandom): RuntimeChoice[] {
+  const choices = record.choices.slice(0, CHOICE_SLOTS.length).map((text) => ({
     text,
     isCorrect: text === record.answer,
+  }));
+
+  if (choices.filter((choice) => choice.isCorrect).length !== 1) {
+    throw new Error(`Trivia record "${record.id}" must contain exactly one matching correct choice.`);
+  }
+
+  return shuffleWithSeed(choices, random).map((choice, index) => ({
+    slot: CHOICE_SLOTS[index],
+    ...choice,
   }));
 }
 
@@ -131,9 +198,17 @@ export function listRuntimeCatalogCategories(): RuntimeCatalogCategorySummary[] 
 export function buildRuntimeDeck(
   categoryKey: string,
   difficultyFilter: RuntimeDifficultyFilter,
+  options: RuntimeDeckBuildOptions = {},
 ): RuntimeDeck {
   const category = getCategoryOrThrow(categoryKey);
-  const filteredRecords = getFilteredRecords(category, difficultyFilter);
+  const seed = options.seed ?? randomBytes(32).toString("hex");
+  const random = new SeededCryptoRandom(seed);
+  const excludedSourceIds = new Set(options.excludedSourceIds ?? []);
+  const shuffledRecords = shuffleWithSeed(getFilteredRecords(category, difficultyFilter), random);
+  const filteredRecords = [
+    ...shuffledRecords.filter((record) => !excludedSourceIds.has(record.id)),
+    ...shuffledRecords.filter((record) => excludedSourceIds.has(record.id)),
+  ];
 
   if (filteredRecords.length === 0) {
     throw new Error(`No Gold trivia records are available for ${category.label} with the selected difficulty filter.`);
@@ -189,7 +264,7 @@ export function buildRuntimeDeck(
         category: record.category,
         difficulty: record.difficulty,
         prompt: record.question,
-        choices: buildChoices(record),
+        choices: buildChoices(record, random),
         explanation: record.explanation,
         reference: record.reference,
         tags: record.tags,

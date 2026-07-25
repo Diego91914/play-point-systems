@@ -12,8 +12,10 @@ import type {
 const ROOM_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const QUESTION_TIMER_MS = 10000;
 const QUESTION_POINTS_DROP_PER_SECOND = 100;
+const RECENT_QUESTION_HISTORY_LIMIT = 48;
 const sessions = new Map<string, TriviaLiveSession>();
 const roomCodeToSessionId = new Map<string, string>();
+const recentQuestionIdsByCategory = new Map<string, string[]>();
 const AUTH_TOKEN_BYTES = 32;
 
 export type TriviaLiveSessionStatus = "lobby" | "in-progress" | "completed";
@@ -59,6 +61,7 @@ type TriviaLiveSession = {
   sessionId: string;
   roomCode: string;
   hostTokenHash: string;
+  randomSeed: string;
   deck: RuntimeDeck;
   status: TriviaLiveSessionStatus;
   phase: TriviaLiveSessionPhase;
@@ -195,6 +198,17 @@ function now() {
   return Date.now();
 }
 
+function rememberRecentQuestions(category: string, sourceIds: readonly string[]) {
+  const sourceIdSet = new Set(sourceIds);
+  const existing = recentQuestionIdsByCategory.get(category) ?? [];
+  const nextHistory = [
+    ...existing.filter((sourceId) => !sourceIdSet.has(sourceId)),
+    ...sourceIds,
+  ].slice(-RECENT_QUESTION_HISTORY_LIMIT);
+
+  recentQuestionIdsByCategory.set(category, nextHistory);
+}
+
 function getCurrentCard(session: TriviaLiveSession): RuntimeDeckCard | null {
   return session.cardIndex >= session.deck.cards.length ? null : session.deck.cards[session.cardIndex] ?? null;
 }
@@ -295,7 +309,11 @@ export function createTriviaLiveSession(
   category: string,
   difficultyFilter: RuntimeDifficultyFilter,
 ): { sessionId: string; roomCode: string; hostToken: string } {
-  const deck = buildRuntimeDeck(category, difficultyFilter);
+  const randomSeed = randomBytes(32).toString("hex");
+  const deck = buildRuntimeDeck(category, difficultyFilter, {
+    seed: randomSeed,
+    excludedSourceIds: recentQuestionIdsByCategory.get(category) ?? [],
+  });
   const sessionId = randomUUID();
   const roomCode = generateRoomCode();
   const hostToken = createAuthToken();
@@ -304,6 +322,7 @@ export function createTriviaLiveSession(
     sessionId,
     roomCode,
     hostTokenHash: hashAuthToken(hostToken),
+    randomSeed,
     deck,
     status: "lobby",
     phase: "lobby",
@@ -318,6 +337,7 @@ export function createTriviaLiveSession(
 
   sessions.set(sessionId, session);
   roomCodeToSessionId.set(roomCode, sessionId);
+  rememberRecentQuestions(category, deck.cards.map((card) => card.sourceId));
   return { sessionId, roomCode, hostToken };
 }
 
