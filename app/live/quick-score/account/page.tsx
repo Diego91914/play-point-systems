@@ -16,6 +16,9 @@ import {
 } from "@/lib/play-point-core/quick-score-identity";
 import { getQuickScoreBrowserSupabaseClient } from "@/lib/play-point-core/quick-score-browser-supabase";
 
+const QUICK_SCORE_ACCOUNT_REDIRECT_URL =
+  "https://www.playpointsystems.com/live/quick-score/account";
+
 export default function QuickScoreAccountPage() {
   const [currentIdentity, setCurrentIdentity] = useState<QuickScoreIdentity | null>(null);
   const [recoveryKeyInput, setRecoveryKeyInput] = useState("");
@@ -162,7 +165,7 @@ export default function QuickScoreAccountPage() {
         ? await supabase.auth.signUp({
             email: email.trim(),
             password,
-            options: { emailRedirectTo: `${window.location.origin}/live/quick-score/account` },
+            options: { emailRedirectTo: QUICK_SCORE_ACCOUNT_REDIRECT_URL },
           })
         : await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (result.error) throw result.error;
@@ -281,7 +284,7 @@ export default function QuickScoreAccountPage() {
     try {
       const { error: resetError } = await getQuickScoreBrowserSupabaseClient()
         .auth.resetPasswordForEmail(email.trim(), {
-          redirectTo: `${window.location.origin}/live/quick-score/account`,
+          redirectTo: QUICK_SCORE_ACCOUNT_REDIRECT_URL,
         });
       if (resetError) throw resetError;
       setEmailNotice({
