@@ -37,7 +37,7 @@ export async function POST(
   try {
     const { clubId, matchId } = await params;
     const body = await request.json().catch(() => ({}));
-    const credentials = resolveQuickScorePlayerCredentials(request, body);
+    const credentials = resolveQuickScorePlayerCredentials(request);
     const session = body?.session as QuickScoreSession | undefined;
 
     if (!credentials) {

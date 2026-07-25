@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { QUICK_SCORE_GAMES, type QuickScoreGameId } from "@/lib/play-point-core/quick-score";
-import { buildQuickScoreIdentityRequestHeaders } from "@/lib/play-point-core/quick-score-auth";
 import { ensureQuickScoreIdentity } from "@/lib/play-point-core/quick-score-identity";
 import type {
   QuickScoreEventRecord,
@@ -60,15 +59,12 @@ export default function QuickScoreClubDetailPage() {
     setError("");
 
     try {
-      const identity = await ensureQuickScoreIdentity();
-      const requestOptions = {
-        headers: buildQuickScoreIdentityRequestHeaders(identity),
-      };
+      await ensureQuickScoreIdentity();
 
       const [clubResponse, eventsResponse, matchesResponse] = await Promise.all([
-        fetch(`/api/live/quick-score/clubs/${clubId}`, requestOptions),
-        fetch(`/api/live/quick-score/clubs/${clubId}/events`, requestOptions),
-        fetch(`/api/live/quick-score/clubs/${clubId}/matches`, requestOptions),
+        fetch(`/api/live/quick-score/clubs/${clubId}`),
+        fetch(`/api/live/quick-score/clubs/${clubId}/events`),
+        fetch(`/api/live/quick-score/clubs/${clubId}/matches`),
       ]);
       const [clubData, eventsData, matchesData] = await Promise.all([
         clubResponse.json().catch(() => ({})),
@@ -136,13 +132,11 @@ export default function QuickScoreClubDetailPage() {
     setStatusMessage("");
 
     try {
-      const identity = await ensureQuickScoreIdentity();
+      await ensureQuickScoreIdentity();
       const response = await fetch(`/api/live/quick-score/clubs/${club.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          playerId: identity.playerId,
-          recoveryCode: identity.recoveryCode,
           name: clubName,
           locationLabel: clubLocation,
           notes: clubNotes,
@@ -178,13 +172,11 @@ export default function QuickScoreClubDetailPage() {
     setStatusMessage("");
 
     try {
-      const identity = await ensureQuickScoreIdentity();
+      await ensureQuickScoreIdentity();
       const response = await fetch(`/api/live/quick-score/clubs/${club.id}/participants`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          playerId: identity.playerId,
-          recoveryCode: identity.recoveryCode,
           displayName: newParticipantName,
         }),
       });
@@ -236,13 +228,11 @@ export default function QuickScoreClubDetailPage() {
     setStatusMessage("");
 
     try {
-      const identity = await ensureQuickScoreIdentity();
+      await ensureQuickScoreIdentity();
       const response = await fetch(`/api/live/quick-score/clubs/${club.id}/events`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          playerId: identity.playerId,
-          recoveryCode: identity.recoveryCode,
           name: newEventName,
           eventType: "casual",
           status: "live",
@@ -276,13 +266,11 @@ export default function QuickScoreClubDetailPage() {
     setStatusMessage("");
 
     try {
-      const identity = await ensureQuickScoreIdentity();
+      await ensureQuickScoreIdentity();
       const response = await fetch(`/api/live/quick-score/clubs/${clubRecord.id}/participants/${participantId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          playerId: identity.playerId,
-          recoveryCode: identity.recoveryCode,
           displayName: draft.displayName,
           status: draft.status,
         }),

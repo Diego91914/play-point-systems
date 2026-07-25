@@ -2,8 +2,6 @@ import { describe, expect, it } from "vitest";
 import {
   PPL_QUICK_SCORE_HOST_COOKIE,
   PPL_QUICK_SCORE_IDENTITY_COOKIE,
-  buildQuickScoreHostRequestHeaders,
-  buildQuickScoreIdentityRequestHeaders,
   parseQuickScoreRecoveryKey,
   resolveQuickScoreHostToken,
   resolveQuickScorePlayerCredentials,
@@ -13,22 +11,6 @@ import {
 } from "../lib/play-point-core/quick-score-auth";
 
 describe("Quick Score request authorization", () => {
-  it("round-trips player credentials through the Authorization header", () => {
-    const identity = {
-      playerId: "8f149252-f25d-4f7c-860c-c85b92a75e07",
-      recoveryCode: "ppl-abcd-2345",
-    };
-    const request = new Request("https://example.test/api/live/quick-score/clubs", {
-      headers: buildQuickScoreIdentityRequestHeaders(identity),
-    });
-
-    expect(resolveQuickScorePlayerCredentials(request)).toEqual({
-      ...identity,
-      recoveryCode: identity.recoveryCode.toUpperCase(),
-    });
-    expect(request.url).not.toContain(identity.recoveryCode);
-  });
-
   it("round-trips a portable account recovery key", () => {
     const identity = {
       playerId: "8f149252-f25d-4f7c-860c-c85b92a75e07",
@@ -43,32 +25,16 @@ describe("Quick Score request authorization", () => {
     expect(parseQuickScoreRecoveryKey(null)).toBeNull();
   });
 
-  it("temporarily accepts legacy query-string player credentials", () => {
+  it("rejects legacy query-string and Authorization-header player credentials", () => {
     const request = new Request(
-      "https://example.test/api/live/quick-score/clubs?playerId=player-1&recoveryCode=ppl-old-code"
+      "https://example.test/api/live/quick-score/clubs?playerId=player-1&recoveryCode=ppl-old-code",
+      { headers: { Authorization: "QuickScore header-player.PPL-HEADER-CODE" } }
     );
 
-    expect(resolveQuickScorePlayerCredentials(request)).toEqual({
-      playerId: "player-1",
-      recoveryCode: "PPL-OLD-CODE",
-    });
+    expect(resolveQuickScorePlayerCredentials(request)).toBeNull();
   });
 
-  it("prefers the Authorization header over legacy query parameters", () => {
-    const request = new Request(
-      "https://example.test/api/live/quick-score/clubs?playerId=legacy&recoveryCode=PPL-LEGACY",
-      {
-        headers: buildQuickScoreIdentityRequestHeaders({
-          playerId: "current",
-          recoveryCode: "PPL-CURRENT",
-        }),
-      }
-    );
-
-    expect(resolveQuickScorePlayerCredentials(request)?.playerId).toBe("current");
-  });
-
-  it("prefers the HttpOnly cookie value over compatibility credentials", () => {
+  it("reads player credentials only from the HttpOnly cookie", () => {
     const cookieIdentity = {
       playerId: "cookie-player",
       recoveryCode: "PPL-COOKIE-CODE",
@@ -77,10 +43,7 @@ describe("Quick Score request authorization", () => {
       "https://example.test/api/live/quick-score/clubs?playerId=legacy&recoveryCode=PPL-LEGACY",
       {
         headers: {
-          ...buildQuickScoreIdentityRequestHeaders({
-            playerId: "header-player",
-            recoveryCode: "PPL-HEADER-CODE",
-          }),
+          Authorization: "QuickScore header-player.PPL-HEADER-CODE",
           Cookie: `${PPL_QUICK_SCORE_IDENTITY_COOKIE}=${serializeQuickScoreIdentityCookie(
             cookieIdentity
           )}`,
@@ -91,27 +54,22 @@ describe("Quick Score request authorization", () => {
     expect(resolveQuickScorePlayerCredentials(request)).toEqual(cookieIdentity);
   });
 
-  it("accepts a legacy request-body identity when no cookie or header exists", () => {
+  it("does not accept request-body identity values", () => {
     const request = new Request("https://example.test/api/live/quick-score/clubs", {
       method: "POST",
     });
 
     expect(
-      resolveQuickScorePlayerCredentials(request, {
-        playerId: "body-player",
-        recoveryCode: "ppl-body-code",
-      })
-    ).toEqual({ playerId: "body-player", recoveryCode: "PPL-BODY-CODE" });
+      resolveQuickScorePlayerCredentials(request)
+    ).toBeNull();
   });
 
-  it("round-trips host credentials through the Authorization header", () => {
-    const hostToken = "qs-host-example_token";
-    const request = new Request("https://example.test/api/live/quick-score/sessions/ABC123", {
-      headers: buildQuickScoreHostRequestHeaders(hostToken),
-    });
-
-    expect(resolveQuickScoreHostToken(request)).toBe(hostToken);
-    expect(request.url).not.toContain(hostToken);
+  it("rejects legacy query-string and Authorization-header host credentials", () => {
+    const request = new Request(
+      "https://example.test/api/live/quick-score/sessions/ABC123?hostToken=query-token",
+      { headers: { Authorization: "QuickScoreHost header-token" } }
+    );
+    expect(resolveQuickScoreHostToken(request, "ABC123")).toBe("");
   });
 
   it("uses a host cookie only for its matching session", () => {
@@ -126,8 +84,6 @@ describe("Quick Score request authorization", () => {
     });
 
     expect(resolveQuickScoreHostToken(request, "ABC123")).toBe(hostToken);
-    expect(resolveQuickScoreHostToken(request, "XYZ789", "legacy-host-token")).toBe(
-      "legacy-host-token"
-    );
+    expect(resolveQuickScoreHostToken(request, "XYZ789")).toBe("");
   });
 });

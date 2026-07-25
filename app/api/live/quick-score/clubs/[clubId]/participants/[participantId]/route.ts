@@ -36,7 +36,7 @@ export async function PATCH(
   try {
     const { clubId, participantId } = await params;
     const body = await request.json().catch(() => ({}));
-    const credentials = resolveQuickScorePlayerCredentials(request, body);
+    const credentials = resolveQuickScorePlayerCredentials(request);
 
     if (!credentials) {
       return NextResponse.json({ error: "Missing player identity." }, { status: 400 });

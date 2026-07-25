@@ -13,7 +13,7 @@ export async function PUT(
     const { code } = await params;
     const sessionCode = code.toUpperCase();
     const body = await request.json().catch(() => ({}));
-    const hostToken = resolveQuickScoreHostToken(request, sessionCode, body?.hostToken);
+    const hostToken = resolveQuickScoreHostToken(request, sessionCode);
     const session = body?.session as QuickScoreSession | undefined;
 
     if (!hostToken) {

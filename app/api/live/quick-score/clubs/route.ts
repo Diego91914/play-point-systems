@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json().catch(() => ({}));
-    const credentials = resolveQuickScorePlayerCredentials(request, body);
+    const credentials = resolveQuickScorePlayerCredentials(request);
     const name = normalizeQuickScoreClubName(body?.name);
     const locationLabel = sanitizeQuickScoreClubLocation(body?.locationLabel);
     const notes = sanitizeQuickScoreClubNotes(body?.notes);

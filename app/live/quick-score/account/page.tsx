@@ -184,13 +184,13 @@ export default function QuickScoreAccountPage() {
     setError("");
     setStatusMessage("");
     try {
+      if (currentIdentity) {
+        const restoredIdentity = await restoreQuickScoreIdentitySession(currentIdentity);
+        setCurrentIdentity(restoredIdentity);
+      }
       const response = await fetch("/api/live/quick-score/account/link", {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${authAccessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(currentIdentity ?? {}),
+        headers: { Authorization: `Bearer ${authAccessToken}` },
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {
@@ -235,8 +235,6 @@ export default function QuickScoreAccountPage() {
       if (currentIdentity?.credentialKind === "account_session") {
         await fetch("/api/live/quick-score/account/session", {
           method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(currentIdentity),
         });
         clearStoredQuickScoreIdentity();
         setCurrentIdentity(null);

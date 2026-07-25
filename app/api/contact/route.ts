@@ -38,20 +38,6 @@ function hasDatabaseConfiguration() {
 async function storeSubmission(submission: ValidatedSubmission) {
   const runner = createSupabaseSqlRunnerFromEnv();
 
-  await runner.query(`
-    create table if not exists pps_contact_submissions (
-      id uuid primary key default gen_random_uuid(),
-      kind text not null,
-      name text not null,
-      email text not null,
-      topic text not null,
-      product text not null,
-      message text not null,
-      status text not null default 'new',
-      created_at timestamptz not null default now()
-    )
-  `);
-
   await runner.query(
     `insert into pps_contact_submissions (kind, name, email, topic, product, message)
      values ($1, $2, $3, $4, $5, $6)`,

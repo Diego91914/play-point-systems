@@ -62,8 +62,7 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const body = await request.json().catch(() => ({}));
-    const credentials = resolveQuickScorePlayerCredentials(request, body);
+    const credentials = resolveQuickScorePlayerCredentials(request);
     if (!credentials) return noStore({ error: "Player session is required." }, 401);
 
     const supabase = getSupabaseServerClient();

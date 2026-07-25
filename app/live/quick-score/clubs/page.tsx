@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { QUICK_SCORE_GAMES, type QuickScoreGameId } from "@/lib/play-point-core/quick-score";
-import { buildQuickScoreIdentityRequestHeaders } from "@/lib/play-point-core/quick-score-auth";
 import {
   ensureQuickScoreIdentity,
   resolveStoredQuickScoreIdentity,
@@ -53,10 +52,8 @@ export default function QuickScoreClubsPage() {
         return;
       }
 
-      const identity = await ensureQuickScoreIdentity();
-      const response = await fetch("/api/live/quick-score/clubs", {
-        headers: buildQuickScoreIdentityRequestHeaders(identity),
-      });
+      await ensureQuickScoreIdentity();
+      const response = await fetch("/api/live/quick-score/clubs");
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {
         throw new Error((data as { error?: string }).error || "Unable to load clubs.");
@@ -94,13 +91,11 @@ export default function QuickScoreClubsPage() {
     setStatusMessage("");
 
     try {
-      const identity = await ensureQuickScoreIdentity();
+      await ensureQuickScoreIdentity();
       const response = await fetch("/api/live/quick-score/clubs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          playerId: identity.playerId,
-          recoveryCode: identity.recoveryCode,
           name: form.name,
           locationLabel: form.locationLabel,
           notes: form.notes,

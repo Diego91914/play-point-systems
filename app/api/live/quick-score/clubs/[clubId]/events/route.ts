@@ -58,7 +58,7 @@ export async function POST(
   try {
     const { clubId } = await params;
     const body = await request.json().catch(() => ({}));
-    const credentials = resolveQuickScorePlayerCredentials(request, body);
+    const credentials = resolveQuickScorePlayerCredentials(request);
     const name = normalizeQuickScoreEventName(body?.name);
     const eventType = isQuickScoreEventType(body?.eventType) ? body.eventType : "casual";
     const status = isQuickScoreEventStatus(body?.status) ? body.status : "draft";

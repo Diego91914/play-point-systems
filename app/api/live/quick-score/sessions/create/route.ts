@@ -46,7 +46,6 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({
       roundId: data.id,
       sessionCode: data.session_code,
-      hostToken,
       session,
     });
     response.headers.set("Cache-Control", "no-store");

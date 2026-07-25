@@ -32,8 +32,7 @@ export async function POST(request: NextRequest) {
       return noStore({ success: true, linked: true, playerId: alreadyLinked.id });
     }
 
-    const body = await request.json().catch(() => ({}));
-    const credentials = resolveQuickScorePlayerCredentials(request, body);
+    const credentials = resolveQuickScorePlayerCredentials(request);
     if (credentials) {
       const player = await loadVerifiedPlayerIdentity(
         supabase,

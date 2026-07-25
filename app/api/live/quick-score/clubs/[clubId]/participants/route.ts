@@ -34,7 +34,7 @@ export async function POST(
   try {
     const { clubId } = await params;
     const body = await request.json().catch(() => ({}));
-    const credentials = resolveQuickScorePlayerCredentials(request, body);
+    const credentials = resolveQuickScorePlayerCredentials(request);
     const displayName = normalizeQuickScoreClubParticipantName(body?.displayName);
 
     if (!credentials) {

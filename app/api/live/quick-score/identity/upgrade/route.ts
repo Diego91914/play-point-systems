@@ -23,8 +23,7 @@ function noStoreResponse(body: Record<string, unknown>, status = 200) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json().catch(() => ({}));
-    const credentials = resolveQuickScorePlayerCredentials(request, body);
+    const credentials = resolveQuickScorePlayerCredentials(request);
     if (!credentials) {
       return noStoreResponse({ error: "Player identity is required." }, 401);
     }

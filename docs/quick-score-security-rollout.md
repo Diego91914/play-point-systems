@@ -82,8 +82,16 @@ Rollback: prepare the exact inverse grants before deployment and run the full Qu
 
 ## Stage 6: cleanup
 
+Status: safe cleanup is complete. Quick Score application requests now use only the scoped HttpOnly cookies after the explicit recovery/bootstrap exchange; query-string, custom Quick Score authorization-header, and ordinary request-body credential fallbacks are removed. New host tokens are no longer returned to or persisted by browser code. The contact table is migration-owned instead of being created during a request, remote Postgres connections verify TLS certificates, 18 missing foreign-key indexes are live, and nine exact duplicate indexes are removed.
+
+- The plaintext player recovery column remains intentionally: live verification found one legacy-only identity out of four players and no email-linked players. Dropping it now would lock that player out.
+- `unused_index` advisor notices are retained for observation rather than treated as drop instructions. Newly created foreign-key indexes have no scan history yet, and zero scans alone are not evidence that an index is redundant.
+- Server-only tables intentionally retain RLS without public policies because `anon` and `authenticated` have no table grants. The resulting `rls_enabled_no_policy` notices are informational for this access model.
+
 - Remove query-string and authorization-header compatibility paths after the cookie rollout is stable.
 - Remove legacy plaintext credential columns only after all active identities have upgraded or the compatibility window has ended.
 - Address duplicate indexes, missing foreign-key indexes, runtime DDL, and direct Postgres TLS configuration separately from credential rollout.
+
+Rollback: use `docs/quick-score-stage6-rollback.sql` for the index changes. It deliberately retains the contact table so a rollback cannot delete submissions; application authorization and TLS changes can be reverted independently without changing stored credentials.
 
 Keeping these stages separate prevents an authentication bug, a database permission change, and an irreversible data cleanup from landing at the same time.

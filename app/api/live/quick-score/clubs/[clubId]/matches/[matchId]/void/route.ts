@@ -10,8 +10,7 @@ export async function POST(
 ) {
   try {
     const { clubId, matchId } = await params;
-    const body = await request.json().catch(() => ({}));
-    const credentials = resolveQuickScorePlayerCredentials(request, body);
+    const credentials = resolveQuickScorePlayerCredentials(request);
 
     if (!credentials) {
       return NextResponse.json({ error: "Missing player identity." }, { status: 400 });

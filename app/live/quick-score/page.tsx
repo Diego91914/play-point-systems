@@ -23,7 +23,6 @@ import type {
   QuickScoreEventRecord,
   QuickScoreMatchRecord,
 } from "@/lib/play-point-core/quick-score-club";
-import { buildQuickScoreIdentityRequestHeaders } from "@/lib/play-point-core/quick-score-auth";
 import { bootstrapQuickScoreIdentitySession } from "@/lib/play-point-core/quick-score-identity";
 
 const SESSION_STORAGE_KEY = "quickScore.session.v1";
@@ -249,7 +248,6 @@ export default function QuickScorePage() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [installPromptEvent, setInstallPromptEvent] = useState<BeforeInstallPromptEvent | null>(null);
   const [sessionCode, setSessionCode] = useState<string | null>(null);
-  const [hostToken, setHostToken] = useState<string | null>(null);
   const [joinBaseUrl, setJoinBaseUrl] = useState("");
   const [syncError, setSyncError] = useState("");
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
@@ -296,7 +294,6 @@ export default function QuickScorePage() {
           session?: QuickScoreSession | null;
           bigScreenMode?: boolean;
           sessionCode?: string | null;
-          hostToken?: string | null;
           joinBaseUrl?: string;
           lastSyncedAt?: string | null;
         };
@@ -307,7 +304,6 @@ export default function QuickScorePage() {
         if (parsed.screenMode) setScreenMode(parsed.screenMode);
         if (parsed.bigScreenMode) setBigScreenMode(parsed.bigScreenMode);
         if (parsed.sessionCode) setSessionCode(parsed.sessionCode);
-        if (parsed.hostToken) setHostToken(parsed.hostToken);
         if (parsed.joinBaseUrl) setJoinBaseUrl(parsed.joinBaseUrl);
         if (parsed.lastSyncedAt) setLastSyncedAt(parsed.lastSyncedAt);
       }
@@ -355,12 +351,11 @@ export default function QuickScorePage() {
         session,
         bigScreenMode,
         sessionCode,
-        hostToken,
         joinBaseUrl,
         lastSyncedAt,
       })
     );
-  }, [bigScreenMode, draft, hostToken, hydrated, joinBaseUrl, lastSyncedAt, screenMode, session, sessionCode, setupStep]);
+  }, [bigScreenMode, draft, hydrated, joinBaseUrl, lastSyncedAt, screenMode, session, sessionCode, setupStep]);
 
   useEffect(() => {
     if (!hydrated || screenMode !== "LIVE") return;
@@ -460,7 +455,7 @@ export default function QuickScorePage() {
     try {
       if (!networkOnline || (!quickScoreProEnabled && !force)) return;
 
-      if (!sessionCode || !hostToken) {
+      if (!sessionCode) {
         const response = await fetch("/api/live/quick-score/sessions/create", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -471,7 +466,6 @@ export default function QuickScorePage() {
           throw new Error((data as { error?: string }).error || "Unable to create spectator session.");
         }
         setSessionCode((data as { sessionCode?: string }).sessionCode ?? null);
-        setHostToken((data as { hostToken?: string }).hostToken ?? null);
         setLastSyncedAt(new Date().toISOString());
         setSyncError("");
         return;
@@ -481,7 +475,6 @@ export default function QuickScorePage() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          hostToken,
           session: nextSession,
         }),
       });
@@ -494,18 +487,15 @@ export default function QuickScorePage() {
     } catch (error) {
       setSyncError(error instanceof Error ? error.message : "Spectator sync unavailable.");
     }
-  }, [hostToken, networkOnline, quickScoreProEnabled, sessionCode]);
+  }, [networkOnline, quickScoreProEnabled, sessionCode]);
 
   const loadQuickScoreProStatus = useCallback(async (
-    identity: QuickScoreIdentity,
     options?: { syncActiveSession?: boolean }
   ) => {
     setEntitlementsLoading(true);
 
     try {
-      const response = await fetch("/api/live/quick-score/entitlement?runtime=qr_mvp_v12", {
-        headers: buildQuickScoreIdentityRequestHeaders(identity),
-      });
+      const response = await fetch("/api/live/quick-score/entitlement?runtime=qr_mvp_v12");
       if (!response.ok) {
         throw new Error("Unable to load Quick Score Pro access.");
       }
@@ -580,13 +570,9 @@ export default function QuickScorePage() {
     setClubSaveError("");
 
     try {
-      const requestOptions = {
-        headers: buildQuickScoreIdentityRequestHeaders(identity),
-      };
-
       const [eventsResponse, matchesResponse] = await Promise.all([
-        fetch(`/api/live/quick-score/clubs/${clubId}/events`, requestOptions),
-        fetch(`/api/live/quick-score/clubs/${clubId}/matches`, requestOptions),
+        fetch(`/api/live/quick-score/clubs/${clubId}/events`),
+        fetch(`/api/live/quick-score/clubs/${clubId}/matches`),
       ]);
 
       const [eventsData, matchesData] = await Promise.all([
@@ -641,9 +627,7 @@ export default function QuickScorePage() {
     setClubSaveError("");
 
     try {
-      const response = await fetch("/api/live/quick-score/clubs", {
-        headers: buildQuickScoreIdentityRequestHeaders(identity),
-      });
+      const response = await fetch("/api/live/quick-score/clubs");
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {
         throw new Error((data as { error?: string }).error || "Unable to load clubs.");
@@ -684,10 +668,7 @@ export default function QuickScorePage() {
 
   useEffect(() => {
     if (!hydrated || !accountPlayerId || !accountRecoveryCode) return;
-    void loadQuickScoreProStatus({
-      playerId: accountPlayerId,
-      recoveryCode: accountRecoveryCode,
-    });
+    void loadQuickScoreProStatus();
   }, [accountPlayerId, accountRecoveryCode, hydrated, loadQuickScoreProStatus]);
 
   useEffect(() => {
@@ -714,8 +695,6 @@ export default function QuickScorePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          playerId: identity.playerId,
-          recoveryCode: identity.recoveryCode,
           name: newClubEventName,
           eventType: "casual",
           status: "live",
@@ -766,8 +745,6 @@ export default function QuickScorePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          playerId: identity.playerId,
-          recoveryCode: identity.recoveryCode,
           eventId: selectedClubEventId || undefined,
           sessionCode,
           session,
@@ -827,13 +804,6 @@ export default function QuickScorePage() {
 
       const response = await fetch("/api/live/quick-score/checkout", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...identity,
-          productId: "quick_score_pro",
-          successPath: "/live/quick-score",
-          cancelPath: "/live/quick-score",
-        }),
       });
 
       const data = await response.json().catch(() => ({}));
@@ -843,7 +813,7 @@ export default function QuickScorePage() {
 
       if ((data as { alreadyOwned?: boolean }).alreadyOwned) {
         setProStatusMessage("Quick Score Pro is already unlocked for this account.");
-        await loadQuickScoreProStatus(identity, { syncActiveSession: true });
+        await loadQuickScoreProStatus({ syncActiveSession: true });
         return;
       }
 
@@ -881,11 +851,6 @@ export default function QuickScorePage() {
 
       const response = await fetch("/api/live/quick-score/identity/upgrade", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...buildQuickScoreIdentityRequestHeaders(identity),
-        },
-        body: JSON.stringify(identity),
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {

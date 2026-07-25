@@ -86,7 +86,8 @@ For the SQL runner, the runtime will look for one of these connection vars:
 
 Optional:
 
-- `PLAY_POINT_LIVE_DATABASE_SSL=require|disable`
+- `PLAY_POINT_LIVE_DATABASE_SSL=require|disable` (`disable` is accepted only for localhost)
+- `PLAY_POINT_LIVE_DATABASE_CA_CERT` for an optional PEM CA certificate; remote certificates are verified by default
 
 Important caveat:
 

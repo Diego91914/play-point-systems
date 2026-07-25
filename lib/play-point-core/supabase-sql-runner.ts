@@ -1,6 +1,7 @@
 import "server-only";
 
-import { Pool, type PoolConfig, type QueryResultRow } from "pg";
+import { Pool, type QueryResultRow } from "pg";
+import { resolvePostgresSslConfig } from "./postgres-ssl";
 import type { SqlQueryRunner } from "./relational-models";
 
 const POOL_CACHE_KEY = "__playPointLiveSupabasePool";
@@ -18,29 +19,6 @@ function resolveDatabaseUrl(env: NodeJS.ProcessEnv = process.env): string | null
   );
 }
 
-function resolveSslConfig(
-  env: NodeJS.ProcessEnv,
-  databaseUrl: string,
-): PoolConfig["ssl"] {
-  const requested = env.PLAY_POINT_LIVE_DATABASE_SSL?.trim().toLowerCase();
-
-  if (requested === "disable" || requested === "false" || requested === "off") {
-    return false;
-  }
-
-  if (requested === "require" || requested === "true" || requested === "on") {
-    return {
-      rejectUnauthorized: false,
-    };
-  }
-
-  return /localhost|127\.0\.0\.1/.test(databaseUrl)
-    ? false
-    : {
-        rejectUnauthorized: false,
-      };
-}
-
 function createPoolFromEnv(env: NodeJS.ProcessEnv = process.env): Pool {
   const databaseUrl = resolveDatabaseUrl(env);
 
@@ -55,7 +33,7 @@ function createPoolFromEnv(env: NodeJS.ProcessEnv = process.env): Pool {
 
   return new Pool({
     connectionString: databaseUrl,
-    ssl: resolveSslConfig(env, databaseUrl),
+    ssl: resolvePostgresSslConfig(env, databaseUrl),
     max: 5,
     idleTimeoutMillis: 30_000,
     application_name: "play-point-live",
