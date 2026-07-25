@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
+import { resolveQuickScoreHostToken } from "@/lib/play-point-core/quick-score-auth";
 import type { QuickScoreSession } from "@/lib/play-point-core/quick-score";
 
 export async function GET(
@@ -27,7 +28,7 @@ export async function GET(
       return NextResponse.json({ error: "Quick Score session payload is invalid." }, { status: 500 });
     }
 
-    const hostToken = request.nextUrl.searchParams.get("hostToken") ?? "";
+    const hostToken = resolveQuickScoreHostToken(request);
 
     return NextResponse.json({
       roundId: data.id,

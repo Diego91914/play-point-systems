@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { QUICK_SCORE_GAMES, type QuickScoreGameId } from "@/lib/play-point-core/quick-score";
+import { buildQuickScoreIdentityRequestHeaders } from "@/lib/play-point-core/quick-score-auth";
 import { ensureQuickScoreIdentity } from "@/lib/play-point-core/quick-score-identity";
 import type { QuickScoreClubSummary } from "@/lib/play-point-core/quick-score-club";
 
@@ -43,12 +44,9 @@ export default function QuickScoreClubsPage() {
 
     try {
       const identity = await ensureQuickScoreIdentity();
-      const params = new URLSearchParams({
-        playerId: identity.playerId,
-        recoveryCode: identity.recoveryCode,
+      const response = await fetch("/api/live/quick-score/clubs", {
+        headers: buildQuickScoreIdentityRequestHeaders(identity),
       });
-
-      const response = await fetch(`/api/live/quick-score/clubs?${params.toString()}`);
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {
         throw new Error((data as { error?: string }).error || "Unable to load clubs.");

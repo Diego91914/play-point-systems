@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { normalizeRecoveryCode } from "@/lib/play-point-core/quick-score-server";
+import { resolveQuickScorePlayerCredentials } from "@/lib/play-point-core/quick-score-auth";
 import {
   isQuickScoreEventStatus,
   isQuickScoreEventType,
@@ -15,15 +16,18 @@ export async function GET(
 ) {
   try {
     const { clubId } = await params;
-    const playerId = request.nextUrl.searchParams.get("playerId")?.trim() ?? "";
-    const recoveryCode = normalizeRecoveryCode(request.nextUrl.searchParams.get("recoveryCode"));
-
-    if (!playerId || !recoveryCode) {
+    const credentials = resolveQuickScorePlayerCredentials(request);
+    if (!credentials) {
       return NextResponse.json({ error: "Missing player identity." }, { status: 400 });
     }
 
     const supabase = getSupabaseServerClient();
-    await requireQuickScoreClubOwner(supabase, clubId, playerId, recoveryCode);
+    await requireQuickScoreClubOwner(
+      supabase,
+      clubId,
+      credentials.playerId,
+      credentials.recoveryCode
+    );
 
     const { data, error } = await supabase
       .from("ppl_quick_score_events")

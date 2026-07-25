@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateUniqueSessionCode, getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
+import { createQuickScoreHostToken } from "@/lib/play-point-core/quick-score-credentials";
 import type { QuickScoreSession } from "@/lib/play-point-core/quick-score";
-
-function createHostToken(): string {
-  return `qs-host-${Math.random().toString(16).slice(2)}${Date.now().toString(16)}`;
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,7 +14,7 @@ export async function POST(request: NextRequest) {
 
     const supabase = getSupabaseServerClient();
     const sessionCode = await generateUniqueSessionCode();
-    const hostToken = createHostToken();
+    const hostToken = createQuickScoreHostToken();
 
     const { data, error } = await supabase
       .from("ppl_quick_score_sessions")

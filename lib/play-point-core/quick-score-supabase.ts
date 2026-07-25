@@ -1,6 +1,10 @@
 import "server-only";
 
 import { createClient } from "@supabase/supabase-js";
+import {
+  createQuickScoreRecoveryCode,
+  createQuickScoreSessionCode,
+} from "@/lib/play-point-core/quick-score-credentials";
 
 function getSupabaseUrl(): string {
   const url = process.env.PLAY_POINT_LIVE_SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -31,20 +35,11 @@ export function getSupabaseServerClient() {
   });
 }
 
-function generateSessionCode(): string {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let code = "";
-  for (let index = 0; index < 6; index += 1) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return code;
-}
-
 export async function generateUniqueSessionCode(maxRetries = 8): Promise<string> {
   const supabase = getSupabaseServerClient();
 
   for (let attempt = 0; attempt < maxRetries; attempt += 1) {
-    const code = generateSessionCode();
+    const code = createQuickScoreSessionCode();
     const { data, error } = await supabase
       .from("ppl_quick_score_sessions")
       .select("session_code")
@@ -60,20 +55,11 @@ export async function generateUniqueSessionCode(maxRetries = 8): Promise<string>
   throw new Error("Failed to generate a unique Quick Score session code.");
 }
 
-function generateRecoveryCode(): string {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let code = "PPL-";
-  for (let index = 0; index < 8; index += 1) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return code;
-}
-
 export async function generateUniqueRecoveryCode(maxRetries = 10): Promise<string> {
   const supabase = getSupabaseServerClient();
 
   for (let attempt = 0; attempt < maxRetries; attempt += 1) {
-    const code = generateRecoveryCode();
+    const code = createQuickScoreRecoveryCode();
     const { data, error } = await supabase
       .from("ppl_quick_score_players")
       .select("recovery_code")

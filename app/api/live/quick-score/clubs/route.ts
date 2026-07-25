@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { normalizeRecoveryCode, verifyPlayerIdentity } from "@/lib/play-point-core/quick-score-server";
+import { resolveQuickScorePlayerCredentials } from "@/lib/play-point-core/quick-score-auth";
 import {
   buildUniqueQuickScoreClubSlug,
   mapQuickScoreClubRow,
@@ -12,13 +13,16 @@ import {
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 
 async function resolveVerifiedPlayerId(request: NextRequest): Promise<string | null> {
-  const playerId = request.nextUrl.searchParams.get("playerId")?.trim() ?? "";
-  const recoveryCode = normalizeRecoveryCode(request.nextUrl.searchParams.get("recoveryCode"));
-  if (!playerId || !recoveryCode) return null;
+  const credentials = resolveQuickScorePlayerCredentials(request);
+  if (!credentials) return null;
 
   const supabase = getSupabaseServerClient();
-  const verified = await verifyPlayerIdentity(supabase, playerId, recoveryCode);
-  return verified ? playerId : null;
+  const verified = await verifyPlayerIdentity(
+    supabase,
+    credentials.playerId,
+    credentials.recoveryCode
+  );
+  return verified ? credentials.playerId : null;
 }
 
 async function buildOwnerClubSlug(ownerPlayerId: string, name: string): Promise<string> {

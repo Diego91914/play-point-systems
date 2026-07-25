@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { QUICK_SCORE_GAMES, type QuickScoreGameId } from "@/lib/play-point-core/quick-score";
+import { buildQuickScoreIdentityRequestHeaders } from "@/lib/play-point-core/quick-score-auth";
 import { ensureQuickScoreIdentity } from "@/lib/play-point-core/quick-score-identity";
 import type {
   QuickScoreEventRecord,
@@ -60,15 +61,14 @@ export default function QuickScoreClubDetailPage() {
 
     try {
       const identity = await ensureQuickScoreIdentity();
-      const params = new URLSearchParams({
-        playerId: identity.playerId,
-        recoveryCode: identity.recoveryCode,
-      });
+      const requestOptions = {
+        headers: buildQuickScoreIdentityRequestHeaders(identity),
+      };
 
       const [clubResponse, eventsResponse, matchesResponse] = await Promise.all([
-        fetch(`/api/live/quick-score/clubs/${clubId}?${params.toString()}`),
-        fetch(`/api/live/quick-score/clubs/${clubId}/events?${params.toString()}`),
-        fetch(`/api/live/quick-score/clubs/${clubId}/matches?${params.toString()}`),
+        fetch(`/api/live/quick-score/clubs/${clubId}`, requestOptions),
+        fetch(`/api/live/quick-score/clubs/${clubId}/events`, requestOptions),
+        fetch(`/api/live/quick-score/clubs/${clubId}/matches`, requestOptions),
       ]);
       const [clubData, eventsData, matchesData] = await Promise.all([
         clubResponse.json().catch(() => ({})),

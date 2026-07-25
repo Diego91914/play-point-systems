@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { normalizeRecoveryCode, verifyPlayerIdentity } from "@/lib/play-point-core/quick-score-server";
+import { resolveQuickScorePlayerCredentials } from "@/lib/play-point-core/quick-score-auth";
 import {
   isQuickScoreClubStatus,
   mapQuickScoreClubParticipantRow,
@@ -42,14 +43,16 @@ export async function GET(
 ) {
   try {
     const { clubId } = await params;
-    const playerId = request.nextUrl.searchParams.get("playerId")?.trim() ?? "";
-    const recoveryCode = normalizeRecoveryCode(request.nextUrl.searchParams.get("recoveryCode"));
-
-    if (!playerId || !recoveryCode) {
+    const credentials = resolveQuickScorePlayerCredentials(request);
+    if (!credentials) {
       return NextResponse.json({ error: "Missing player identity." }, { status: 400 });
     }
 
-    const clubRow = await loadVerifiedClub(clubId, playerId, recoveryCode);
+    const clubRow = await loadVerifiedClub(
+      clubId,
+      credentials.playerId,
+      credentials.recoveryCode
+    );
     if (!clubRow) {
       return NextResponse.json({ error: "Club not found." }, { status: 404 });
     }

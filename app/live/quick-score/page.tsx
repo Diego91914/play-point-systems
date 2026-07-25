@@ -23,6 +23,7 @@ import type {
   QuickScoreEventRecord,
   QuickScoreMatchRecord,
 } from "@/lib/play-point-core/quick-score-club";
+import { buildQuickScoreIdentityRequestHeaders } from "@/lib/play-point-core/quick-score-auth";
 
 const SESSION_STORAGE_KEY = "quickScore.session.v1";
 const PPL_QUICK_SCORE_PLAYER_ID_KEY = "ppl_quick_score_player_id";
@@ -489,13 +490,9 @@ export default function QuickScorePage() {
     setEntitlementsLoading(true);
 
     try {
-      const params = new URLSearchParams({
-        playerId: identity.playerId,
-        recoveryCode: identity.recoveryCode,
-        runtime: "qr_mvp_v12",
+      const response = await fetch("/api/live/quick-score/entitlement?runtime=qr_mvp_v12", {
+        headers: buildQuickScoreIdentityRequestHeaders(identity),
       });
-
-      const response = await fetch(`/api/live/quick-score/entitlement?${params.toString()}`);
       if (!response.ok) {
         throw new Error("Unable to load Quick Score Pro access.");
       }
@@ -569,14 +566,13 @@ export default function QuickScorePage() {
     setClubSaveError("");
 
     try {
-      const params = new URLSearchParams({
-        playerId: identity.playerId,
-        recoveryCode: identity.recoveryCode,
-      });
+      const requestOptions = {
+        headers: buildQuickScoreIdentityRequestHeaders(identity),
+      };
 
       const [eventsResponse, matchesResponse] = await Promise.all([
-        fetch(`/api/live/quick-score/clubs/${clubId}/events?${params.toString()}`),
-        fetch(`/api/live/quick-score/clubs/${clubId}/matches?${params.toString()}`),
+        fetch(`/api/live/quick-score/clubs/${clubId}/events`, requestOptions),
+        fetch(`/api/live/quick-score/clubs/${clubId}/matches`, requestOptions),
       ]);
 
       const [eventsData, matchesData] = await Promise.all([
@@ -631,12 +627,9 @@ export default function QuickScorePage() {
     setClubSaveError("");
 
     try {
-      const params = new URLSearchParams({
-        playerId: identity.playerId,
-        recoveryCode: identity.recoveryCode,
+      const response = await fetch("/api/live/quick-score/clubs", {
+        headers: buildQuickScoreIdentityRequestHeaders(identity),
       });
-
-      const response = await fetch(`/api/live/quick-score/clubs?${params.toString()}`);
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {
         throw new Error((data as { error?: string }).error || "Unable to load clubs.");

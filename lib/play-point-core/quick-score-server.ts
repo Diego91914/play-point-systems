@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { normalizeRecoveryCode } from "@/lib/play-point-core/quick-score-auth";
 import {
   mapQuickScoreClubParticipantRow,
   mapQuickScoreClubRow,
@@ -10,9 +11,7 @@ import {
   type QuickScoreClubSummary,
 } from "@/lib/play-point-core/quick-score-club";
 
-export function normalizeRecoveryCode(value: unknown): string {
-  return typeof value === "string" ? value.trim().toUpperCase() : "";
-}
+export { normalizeRecoveryCode } from "@/lib/play-point-core/quick-score-auth";
 
 export async function verifyPlayerIdentity(
   supabase: SupabaseClient,
