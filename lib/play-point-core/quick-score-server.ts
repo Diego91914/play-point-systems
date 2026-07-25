@@ -2,6 +2,7 @@ import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { normalizeRecoveryCode } from "@/lib/play-point-core/quick-score-auth";
+import { verifyQuickScoreStoredCredential } from "@/lib/play-point-core/quick-score-credential-hash";
 import {
   mapQuickScoreClubParticipantRow,
   mapQuickScoreClubRow,
@@ -13,23 +14,49 @@ import {
 
 export { normalizeRecoveryCode } from "@/lib/play-point-core/quick-score-auth";
 
-export async function verifyPlayerIdentity(
+export type QuickScoreVerifiedPlayerIdentity = {
+  id: string;
+  recovery_code: string | null;
+  recovery_code_hash: string | null;
+  recovery_code_version: number | null;
+  display_name: string | null;
+};
+
+export async function loadVerifiedPlayerIdentity(
   supabase: SupabaseClient,
   playerId: string,
   recoveryCode: string
-): Promise<boolean> {
+): Promise<QuickScoreVerifiedPlayerIdentity | null> {
+  const normalizedRecoveryCode = normalizeRecoveryCode(recoveryCode);
+  if (!playerId || !normalizedRecoveryCode) return null;
+
   const { data, error } = await supabase
     .from("ppl_quick_score_players")
-    .select("id")
+    .select("id, recovery_code, recovery_code_hash, recovery_code_version, display_name")
     .eq("id", playerId)
-    .eq("recovery_code", normalizeRecoveryCode(recoveryCode))
     .maybeSingle();
 
   if (error) {
     throw new Error(`Failed to verify player identity: ${error.message}`);
   }
 
-  return Boolean(data?.id);
+  if (!data) return null;
+
+  const verified = verifyQuickScoreStoredCredential(normalizedRecoveryCode, {
+    hash: data.recovery_code_hash,
+    version: data.recovery_code_version,
+    legacyValue: data.recovery_code,
+  });
+
+  return verified ? (data as QuickScoreVerifiedPlayerIdentity) : null;
+}
+
+export async function verifyPlayerIdentity(
+  supabase: SupabaseClient,
+  playerId: string,
+  recoveryCode: string
+): Promise<boolean> {
+  return Boolean(await loadVerifiedPlayerIdentity(supabase, playerId, recoveryCode));
 }
 
 export async function requireQuickScoreClubOwner(

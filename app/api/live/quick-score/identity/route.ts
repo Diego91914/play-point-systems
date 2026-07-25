@@ -3,8 +3,15 @@ import {
   generateUniqueRecoveryCode,
   getSupabaseServerClient,
 } from "@/lib/play-point-core/quick-score-supabase";
-import { normalizeRecoveryCode } from "@/lib/play-point-core/quick-score-server";
+import {
+  loadVerifiedPlayerIdentity,
+  normalizeRecoveryCode,
+} from "@/lib/play-point-core/quick-score-server";
 import { setQuickScoreIdentityCookie } from "@/lib/play-point-core/quick-score-cookie";
+import {
+  hashQuickScoreCredential,
+  QUICK_SCORE_CREDENTIAL_HASH_VERSION,
+} from "@/lib/play-point-core/quick-score-credential-hash";
 
 function identityResponse(
   body: Record<string, unknown>,
@@ -34,19 +41,11 @@ export async function POST(request: NextRequest) {
     const supabase = getSupabaseServerClient();
 
     if (existingPlayerId && existingRecoveryCode) {
-      const { data: existing, error: existingError } = await supabase
-        .from("ppl_quick_score_players")
-        .select("id, recovery_code, display_name")
-        .eq("id", existingPlayerId)
-        .eq("recovery_code", existingRecoveryCode)
-        .maybeSingle();
-
-      if (existingError) {
-        return NextResponse.json(
-          { error: `Failed to verify player: ${existingError.message}` },
-          { status: 500 }
-        );
-      }
+      const existing = await loadVerifiedPlayerIdentity(
+        supabase,
+        existingPlayerId,
+        existingRecoveryCode
+      );
 
       if (existing) {
         if (displayName && displayName.trim() && displayName !== existing.display_name) {
@@ -54,7 +53,7 @@ export async function POST(request: NextRequest) {
             .from("ppl_quick_score_players")
             .update({ display_name: displayName.trim() })
             .eq("id", existingPlayerId)
-            .select("id, recovery_code, display_name")
+            .select("id, display_name")
             .single();
 
           if (updateError || !updated) {
@@ -67,33 +66,36 @@ export async function POST(request: NextRequest) {
           return identityResponse({
             success: true,
             playerId: updated.id,
-            recoveryCode: updated.recovery_code,
+            recoveryCode: existingRecoveryCode,
             displayName: updated.display_name,
             restored: true,
-          }, { playerId: updated.id, recoveryCode: updated.recovery_code });
+          }, { playerId: updated.id, recoveryCode: existingRecoveryCode });
         }
 
         return identityResponse({
           success: true,
           playerId: existing.id,
-          recoveryCode: existing.recovery_code,
+          recoveryCode: existingRecoveryCode,
           displayName: existing.display_name,
           restored: true,
-        }, { playerId: existing.id, recoveryCode: existing.recovery_code });
+        }, { playerId: existing.id, recoveryCode: existingRecoveryCode });
       }
 
       return NextResponse.json({ error: "Invalid player identity." }, { status: 403 });
     }
 
     const recoveryCode = await generateUniqueRecoveryCode();
+    const recoveryCodeHash = hashQuickScoreCredential(recoveryCode);
 
     const { data: created, error: createError } = await supabase
       .from("ppl_quick_score_players")
       .insert({
-        recovery_code: recoveryCode,
+        recovery_code: null,
+        recovery_code_hash: recoveryCodeHash,
+        recovery_code_version: QUICK_SCORE_CREDENTIAL_HASH_VERSION,
         display_name: displayName,
       })
-      .select("id, recovery_code, display_name")
+      .select("id, display_name")
       .single();
 
     if (createError || !created) {
@@ -106,10 +108,10 @@ export async function POST(request: NextRequest) {
     return identityResponse({
       success: true,
       playerId: created.id,
-      recoveryCode: created.recovery_code,
+      recoveryCode,
       displayName: created.display_name,
       restored: false,
-    }, { playerId: created.id, recoveryCode: created.recovery_code });
+    }, { playerId: created.id, recoveryCode });
   } catch (err) {
     console.error("POST /api/live/quick-score/identity failed:", err);
     return NextResponse.json(

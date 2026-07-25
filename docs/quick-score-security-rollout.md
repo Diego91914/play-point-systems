@@ -30,6 +30,8 @@ Rollback: retain the authorization-header path until cookie behavior has been ve
 
 ## Stage 3: hashed database credentials
 
+Status: additive hash/version columns are applied; new identities and host sessions use versioned SHA-256 hashes while existing plaintext identities remain on the legacy verification path.
+
 - Add nullable hash/version columns before changing application writes.
 - Store hashes for newly issued high-entropy recovery codes and host tokens.
 - During the transition, verify the hash first and use the legacy plaintext column only for an existing identity that has not been upgraded.

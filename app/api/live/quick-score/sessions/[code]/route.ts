@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import { resolveQuickScoreHostToken } from "@/lib/play-point-core/quick-score-auth";
+import { verifyQuickScoreStoredCredential } from "@/lib/play-point-core/quick-score-credential-hash";
 import type { QuickScoreSession } from "@/lib/play-point-core/quick-score";
 
 export async function GET(
@@ -14,7 +15,7 @@ export async function GET(
 
     const { data, error } = await supabase
       .from("ppl_quick_score_sessions")
-      .select("id, session_code, round_state, host_player_id, updated_at")
+      .select("id, session_code, round_state, host_player_id, host_token_hash, host_token_version, updated_at")
       .eq("session_code", sessionCode)
       .eq("course_slug", "quick-score")
       .single();
@@ -29,12 +30,17 @@ export async function GET(
     }
 
     const hostToken = resolveQuickScoreHostToken(request, sessionCode);
+    const hasHostAccess = verifyQuickScoreStoredCredential(hostToken, {
+      hash: data.host_token_hash,
+      version: data.host_token_version,
+      legacyValue: data.host_player_id,
+    });
 
     return NextResponse.json({
       roundId: data.id,
       sessionCode: data.session_code,
       session: roundState.session,
-      accessLevel: hostToken && hostToken === data.host_player_id ? "host" : "viewer",
+      accessLevel: hasHostAccess ? "host" : "viewer",
       updatedAt: data.updated_at,
     });
   } catch (error) {

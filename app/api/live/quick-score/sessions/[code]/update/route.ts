@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import { resolveQuickScoreHostToken } from "@/lib/play-point-core/quick-score-auth";
 import { setQuickScoreHostCookie } from "@/lib/play-point-core/quick-score-cookie";
+import { verifyQuickScoreStoredCredential } from "@/lib/play-point-core/quick-score-credential-hash";
 import type { QuickScoreSession } from "@/lib/play-point-core/quick-score";
 
 export async function PUT(
@@ -26,7 +27,7 @@ export async function PUT(
     const supabase = getSupabaseServerClient();
     const { data: existing, error: fetchError } = await supabase
       .from("ppl_quick_score_sessions")
-      .select("id, host_player_id")
+      .select("id, host_player_id, host_token_hash, host_token_version")
       .eq("session_code", sessionCode)
       .eq("course_slug", "quick-score")
       .single();
@@ -35,7 +36,12 @@ export async function PUT(
       return NextResponse.json({ error: "Quick Score session not found." }, { status: 404 });
     }
 
-    if (existing.host_player_id !== hostToken) {
+    const verifiedHost = verifyQuickScoreStoredCredential(hostToken, {
+      hash: existing.host_token_hash,
+      version: existing.host_token_version,
+      legacyValue: existing.host_player_id,
+    });
+    if (!verifiedHost) {
       return NextResponse.json({ error: "Only the host can update this Quick Score session." }, { status: 403 });
     }
 

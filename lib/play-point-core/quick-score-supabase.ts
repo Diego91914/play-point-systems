@@ -5,6 +5,7 @@ import {
   createQuickScoreRecoveryCode,
   createQuickScoreSessionCode,
 } from "@/lib/play-point-core/quick-score-credentials";
+import { hashQuickScoreCredential } from "@/lib/play-point-core/quick-score-credential-hash";
 
 function getSupabaseUrl(): string {
   const url = process.env.PLAY_POINT_LIVE_SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -60,10 +61,11 @@ export async function generateUniqueRecoveryCode(maxRetries = 10): Promise<strin
 
   for (let attempt = 0; attempt < maxRetries; attempt += 1) {
     const code = createQuickScoreRecoveryCode();
+    const codeHash = hashQuickScoreCredential(code);
     const { data, error } = await supabase
       .from("ppl_quick_score_players")
-      .select("recovery_code")
-      .eq("recovery_code", code)
+      .select("recovery_code_hash")
+      .eq("recovery_code_hash", codeHash)
       .maybeSingle();
 
     if (error) {

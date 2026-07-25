@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { generateUniqueSessionCode, getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import { createQuickScoreHostToken } from "@/lib/play-point-core/quick-score-credentials";
 import { setQuickScoreHostCookie } from "@/lib/play-point-core/quick-score-cookie";
+import {
+  hashQuickScoreCredential,
+  QUICK_SCORE_CREDENTIAL_HASH_VERSION,
+} from "@/lib/play-point-core/quick-score-credential-hash";
 import type { QuickScoreSession } from "@/lib/play-point-core/quick-score";
 
 export async function POST(request: NextRequest) {
@@ -16,6 +20,7 @@ export async function POST(request: NextRequest) {
     const supabase = getSupabaseServerClient();
     const sessionCode = await generateUniqueSessionCode();
     const hostToken = createQuickScoreHostToken();
+    const hostTokenHash = hashQuickScoreCredential(hostToken);
 
     const { data, error } = await supabase
       .from("ppl_quick_score_sessions")
@@ -26,7 +31,9 @@ export async function POST(request: NextRequest) {
           kind: "QUICK_SCORE",
           session,
         },
-        host_player_id: hostToken,
+        host_player_id: null,
+        host_token_hash: hostTokenHash,
+        host_token_version: QUICK_SCORE_CREDENTIAL_HASH_VERSION,
       })
       .select("id, session_code")
       .single();
