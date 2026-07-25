@@ -12,7 +12,11 @@ import type {
   RuntimeDifficultyFilter,
   RuntimePublicDeckCard,
   RuntimeResponse,
+  TriviaGameMode,
+  TriviaTeamId,
 } from "./trivia-runtime-types";
+import { MAX_TRIVIA_TEAM_COUNT, MIN_TRIVIA_TEAM_COUNT } from "./trivia-runtime-types";
+import { buildTriviaTeamLeaderboard, chooseTriviaTeam, type TriviaTeamStanding } from "./trivia-team-utils";
 
 const ROOM_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const RECENT_QUESTION_HISTORY_LIMIT = 48;
@@ -27,6 +31,7 @@ export type TriviaLiveSessionPhase = "lobby" | "wager-open" | "question-open" | 
 export type TriviaLivePlayer = {
   id: string;
   name: string;
+  teamId: TriviaTeamId | null;
   score: number;
   correctCount: number;
   wrongCount: number;
@@ -67,6 +72,8 @@ type TriviaLiveSession = {
   hostTokenHash: string;
   randomSeed: string;
   pacingMode: TriviaPacingMode;
+  gameMode: TriviaGameMode;
+  teamCount: number;
   deck: RuntimeDeck;
   status: TriviaLiveSessionStatus;
   phase: TriviaLiveSessionPhase;
@@ -94,8 +101,11 @@ export type TriviaLiveHostSnapshot = {
   questionOpenedAtMs: number | null;
   questionTimerSeconds: number | null;
   pacingMode: TriviaPacingMode;
+  gameMode: TriviaGameMode;
+  teamCount: number;
   players: TriviaLivePlayer[];
   leaderboard: TriviaLivePlayer[];
+  teamLeaderboard: TriviaTeamStanding[];
   answeredPlayerIds: string[];
   submittedCount: number;
   waitingForCount: number;
@@ -119,6 +129,8 @@ export type TriviaLivePlayerSnapshot = {
   questionOpenedAtMs: number | null;
   questionTimerSeconds: number | null;
   pacingMode: TriviaPacingMode;
+  gameMode: TriviaGameMode;
+  teamCount: number;
   answerState: {
     hasSubmitted: boolean;
     response: RuntimeResponse | null;
@@ -130,6 +142,7 @@ export type TriviaLivePlayerSnapshot = {
     maxWager: number;
   };
   leaderboard: TriviaLivePlayer[];
+  teamLeaderboard: TriviaTeamStanding[];
   resolution: {
     correctSlot: string;
     correctText: string;
@@ -238,6 +251,7 @@ function toPublicPlayer(player: StoredTriviaLivePlayer): TriviaLivePlayer {
   return {
     id: player.id,
     name: player.name,
+    teamId: player.teamId,
     score: player.score,
     correctCount: player.correctCount,
     wrongCount: player.wrongCount,
@@ -328,11 +342,24 @@ function buildResponseText(card: RuntimeDeckCard, response: RuntimeResponse) {
   return card.choices.find((choice) => choice.slot === response)?.text ?? response;
 }
 
+function canStartTriviaSession(session: TriviaLiveSession) {
+  if (session.gameMode === "individual") {
+    return session.players.length >= 1;
+  }
+  return session.players.length >= session.teamCount;
+}
+
 export function createTriviaLiveSession(
   category: string,
   difficultyFilter: RuntimeDifficultyFilter,
   pacingMode: TriviaPacingMode = "standard",
+  gameMode: TriviaGameMode = "individual",
+  teamCount: number = MIN_TRIVIA_TEAM_COUNT,
 ): { sessionId: string; roomCode: string; hostToken: string } {
+  if (!Number.isInteger(teamCount) || teamCount < MIN_TRIVIA_TEAM_COUNT || teamCount > MAX_TRIVIA_TEAM_COUNT) {
+    throw new Error(`Team count must be between ${MIN_TRIVIA_TEAM_COUNT} and ${MAX_TRIVIA_TEAM_COUNT}.`);
+  }
+
   const randomSeed = randomBytes(32).toString("hex");
   const deck = buildRuntimeDeck(category, difficultyFilter, {
     seed: randomSeed,
@@ -348,6 +375,8 @@ export function createTriviaLiveSession(
     hostTokenHash: hashAuthToken(hostToken),
     randomSeed,
     pacingMode,
+    gameMode,
+    teamCount,
     deck,
     status: "lobby",
     phase: "lobby",
@@ -387,6 +416,7 @@ export function joinTriviaLiveSession(roomCode: string, playerName: string): { s
   const player: StoredTriviaLivePlayer = {
     id: randomUUID(),
     name: nextName,
+    teamId: chooseTriviaTeam(session.players, session.gameMode, session.teamCount),
     score: 0,
     correctCount: 0,
     wrongCount: 0,
@@ -407,8 +437,10 @@ export function startTriviaLiveSession(sessionId: string, hostToken: string | nu
     throw new Error("That room has already started.");
   }
 
-  if (session.players.length === 0) {
-    throw new Error("At least one player must join before the room can start.");
+  if (!canStartTriviaSession(session)) {
+    throw new Error(session.gameMode === "teams"
+      ? `At least ${session.teamCount} players must join so every team has a player.`
+      : "At least one player must join before the room can start.");
   }
 
   session.status = "in-progress";
@@ -595,8 +627,11 @@ export function buildTriviaLiveHostSnapshot(sessionId: string, origin: string, h
     questionOpenedAtMs: session.openedAtMs,
     questionTimerSeconds: currentCard ? getTriviaTimerSeconds(session.pacingMode) : null,
     pacingMode: session.pacingMode,
+    gameMode: session.gameMode,
+    teamCount: session.teamCount,
     players: session.players.map(toPublicPlayer),
     leaderboard: getLeaderboard(session.players),
+    teamLeaderboard: buildTriviaTeamLeaderboard(session.players, session.gameMode, session.teamCount),
     answeredPlayerIds: Object.values(session.selections)
       .filter((selection): selection is TriviaLiveSubmission => Boolean(selection))
       .map((selection) => selection.playerId),
@@ -606,7 +641,7 @@ export function buildTriviaLiveHostSnapshot(sessionId: string, origin: string, h
     wagerSubmittedCount: wagers.length,
     wagerWaitingForCount: Math.max(0, session.players.length - wagers.length),
     resolution: session.resolution,
-    canStart: session.status === "lobby" && session.players.length > 0,
+    canStart: session.status === "lobby" && canStartTriviaSession(session),
     canReveal: session.status === "in-progress" && session.phase === "question-open",
     canAdvance: session.status === "in-progress" && ["answer-reveal", "wager-open"].includes(session.phase),
   };
@@ -629,6 +664,8 @@ export function buildTriviaLivePlayerSnapshot(sessionId: string, playerId: strin
     questionOpenedAtMs: session.openedAtMs,
     questionTimerSeconds: currentCard ? getTriviaTimerSeconds(session.pacingMode) : null,
     pacingMode: session.pacingMode,
+    gameMode: session.gameMode,
+    teamCount: session.teamCount,
     answerState: {
       hasSubmitted: Boolean(answer),
       response: answer?.response ?? null,
@@ -640,6 +677,7 @@ export function buildTriviaLivePlayerSnapshot(sessionId: string, playerId: strin
       maxWager: player.score,
     },
     leaderboard: getLeaderboard(session.players),
+    teamLeaderboard: buildTriviaTeamLeaderboard(session.players, session.gameMode, session.teamCount),
     resolution: session.resolution
       ? {
           correctSlot: session.resolution.correctSlot,

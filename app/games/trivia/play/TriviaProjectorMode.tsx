@@ -4,11 +4,13 @@ import Image from "next/image";
 import { useEffect } from "react";
 import { formatTriviaWinnerHeading } from "./trivia-result-utils";
 import { formatTriviaScoringSummary, TRIVIA_PACING_OPTIONS, type TriviaPacingMode } from "./trivia-live-timing";
-import type { RuntimeDeck, RuntimeDeckCard } from "./trivia-runtime-types";
+import type { RuntimeDeck, RuntimeDeckCard, TriviaGameMode, TriviaTeamId } from "./trivia-runtime-types";
+import { formatTriviaTeamWinnerHeading, getTriviaTeamLabel, type TriviaTeamStanding } from "./trivia-team-utils";
 
 type ProjectorPlayer = {
   id: string;
   name: string;
+  teamId: TriviaTeamId | null;
   score: number;
   correctCount: number;
   wrongCount: number;
@@ -31,8 +33,11 @@ type ProjectorSnapshot = {
   currentCard: RuntimeDeckCard | null;
   questionTimerSeconds: number | null;
   pacingMode: TriviaPacingMode;
+  gameMode: TriviaGameMode;
+  teamCount: number;
   players: ProjectorPlayer[];
   leaderboard: ProjectorPlayer[];
+  teamLeaderboard: TriviaTeamStanding[];
   submittedCount: number;
   waitingForCount: number;
   wageredPlayerIds: string[];
@@ -82,6 +87,22 @@ function ProjectorLeaderboard({ players, limit }: { players: ProjectorPlayer[]; 
   );
 }
 
+function ProjectorTeamLeaderboard({ standings }: { standings: TriviaTeamStanding[] }) {
+  return (
+    <div className="grid gap-4">
+      {standings.map((team, index) => (
+        <div key={team.id} className="flex items-center justify-between gap-5 rounded-[28px] border border-cyan-300/25 bg-cyan-400/10 px-6 py-5">
+          <div>
+            <div className="text-2xl font-black text-white sm:text-3xl"><span className="mr-3 text-white/45">{index + 1}</span>{team.label}</div>
+            <div className="mt-2 text-sm font-semibold uppercase tracking-[0.2em] text-white/48">{team.playerCount} player{team.playerCount === 1 ? "" : "s"} · {team.correctCount} right</div>
+          </div>
+          <div className="text-4xl font-black text-white sm:text-5xl">{formatPoints(team.score)}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function TriviaProjectorMode({
   snapshot,
   countdown,
@@ -122,7 +143,7 @@ export function TriviaProjectorMode({
           <div>
             <div className="text-xs font-semibold uppercase tracking-[0.3em] text-cyan-100/60">Play Point Bible Trivia</div>
             <div className="mt-2 text-sm font-semibold text-white/56">
-              Room {snapshot.roomCode} · {TRIVIA_PACING_OPTIONS[snapshot.pacingMode].label} pacing
+              Room {snapshot.roomCode} · {TRIVIA_PACING_OPTIONS[snapshot.pacingMode].label} pacing · {snapshot.gameMode === "individual" ? "Individual" : `${snapshot.teamCount} Teams`}
             </div>
           </div>
           <button type="button" onClick={onExit} className="rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/14">
@@ -163,7 +184,10 @@ export function TriviaProjectorMode({
                   const isReady = snapshot.wageredPlayerIds.includes(player.id);
                   return (
                     <div key={player.id} className="flex items-center justify-between gap-4 rounded-[24px] border border-white/12 bg-black/30 px-5 py-4">
-                      <div className="text-xl font-black text-white sm:text-2xl">{player.name}</div>
+                      <div>
+                        <div className="text-xl font-black text-white sm:text-2xl">{player.name}</div>
+                        {player.teamId ? <div className="mt-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/42">{getTriviaTeamLabel(player.teamId)}</div> : null}
+                      </div>
                       <div className={isReady ? "text-sm font-black uppercase tracking-[0.2em] text-emerald-200" : "text-sm font-black uppercase tracking-[0.2em] text-white/40"}>
                         {isReady ? "Ready" : "Choosing"}
                       </div>
@@ -246,17 +270,17 @@ export function TriviaProjectorMode({
                 ) : null}
               </div>
               <div>
-                <div className="mb-2 text-sm font-semibold uppercase tracking-[0.28em] text-cyan-100/60">Updated leaderboard</div>
+                <div className="mb-2 text-sm font-semibold uppercase tracking-[0.28em] text-cyan-100/60">Updated {snapshot.gameMode === "individual" ? "leaderboard" : "team standings"}</div>
                 <p className="mb-5 text-lg text-white/60">The host will move to the next question.</p>
-                <ProjectorLeaderboard players={snapshot.leaderboard} />
+                {snapshot.gameMode === "individual" ? <ProjectorLeaderboard players={snapshot.leaderboard} /> : <ProjectorTeamLeaderboard standings={snapshot.teamLeaderboard} />}
               </div>
             </div>
           ) : isComplete ? (
             <div className="mx-auto w-full max-w-5xl text-center">
               <div className="text-sm font-semibold uppercase tracking-[0.32em] text-emerald-100/65">Game complete</div>
-              <h1 className="mt-6 text-6xl font-black text-white sm:text-8xl">{formatTriviaWinnerHeading(snapshot.leaderboard)}</h1>
+              <h1 className="mt-6 text-6xl font-black text-white sm:text-8xl">{snapshot.gameMode === "individual" ? formatTriviaWinnerHeading(snapshot.leaderboard) : formatTriviaTeamWinnerHeading(snapshot.teamLeaderboard)}</h1>
               <div className="mx-auto mt-10 max-w-3xl text-left">
-                <ProjectorLeaderboard players={snapshot.leaderboard} />
+                {snapshot.gameMode === "individual" ? <ProjectorLeaderboard players={snapshot.leaderboard} /> : <ProjectorTeamLeaderboard standings={snapshot.teamLeaderboard} />}
               </div>
             </div>
           ) : null}

@@ -19,7 +19,10 @@ import type {
   RuntimeDifficultyFilter,
   RuntimePublicDeckCard,
   RuntimeResponse,
+  TriviaGameMode,
+  TriviaTeamId,
 } from "./trivia-runtime-types";
+import { buildTriviaTeamLeaderboard } from "./trivia-team-utils";
 
 const ROOM_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const SESSION_LIFETIME_MS = 6 * 60 * 60 * 1000;
@@ -31,6 +34,8 @@ type PersistedSession = {
   category: string;
   difficulty_filter: RuntimeDifficultyFilter;
   pacing_mode: TriviaPacingMode;
+  game_mode: TriviaGameMode;
+  team_count: number;
   random_seed: string;
   deck: RuntimeDeck;
   host_token_hash: string;
@@ -45,6 +50,7 @@ type PersistedPlayer = {
   id: string;
   session_id: string;
   name: string;
+  team_id: TriviaTeamId | null;
   token_hash: string;
   score: number;
   correct_count: number;
@@ -98,6 +104,7 @@ function toPublicPlayer(player: PersistedPlayer): TriviaLivePlayer {
   return {
     id: player.id,
     name: player.name,
+    teamId: player.team_id,
     score: player.score,
     correctCount: player.correct_count,
     wrongCount: player.wrong_count,
@@ -186,6 +193,8 @@ export async function createPersistentTriviaLiveSession(
   category: string,
   difficultyFilter: RuntimeDifficultyFilter,
   pacingMode: TriviaPacingMode,
+  gameMode: TriviaGameMode,
+  teamCount: number,
 ): Promise<{ sessionId: string; roomCode: string; hostToken: string }> {
   const supabase = getSupabaseServerClient();
   const { data: recentRows, error: recentError } = await supabase
@@ -210,12 +219,14 @@ export async function createPersistentTriviaLiveSession(
 
   for (let attempt = 0; attempt < 8; attempt += 1) {
     const roomCode = createRoomCode();
-    const { error } = await supabase.rpc("ppl_trivia_create_session_with_pacing", {
+    const { error } = await supabase.rpc("ppl_trivia_create_session_with_options", {
       p_session_id: sessionId,
       p_room_code: roomCode,
       p_category: category,
       p_difficulty_filter: difficultyFilter,
       p_pacing_mode: pacingMode,
+      p_game_mode: gameMode,
+      p_team_count: teamCount,
       p_random_seed: randomSeed,
       p_deck: deck,
       p_host_token_hash: hashAuthToken(hostToken),
@@ -318,8 +329,11 @@ export async function buildPersistentTriviaLiveHostSnapshot(
     questionOpenedAtMs: session.opened_at ? Date.parse(session.opened_at) : null,
     questionTimerSeconds: currentCard ? getTriviaTimerSeconds(session.pacing_mode) : null,
     pacingMode: session.pacing_mode,
+    gameMode: session.game_mode,
+    teamCount: session.team_count,
     players: players.map(toPublicPlayer),
     leaderboard: getLeaderboard(players),
+    teamLeaderboard: buildTriviaTeamLeaderboard(players.map(toPublicPlayer), session.game_mode, session.team_count),
     answeredPlayerIds: answers.map((answer) => answer.player_id),
     submittedCount: answers.length,
     waitingForCount: Math.max(0, players.length - answers.length),
@@ -327,7 +341,9 @@ export async function buildPersistentTriviaLiveHostSnapshot(
     wagerSubmittedCount: wagers.length,
     wagerWaitingForCount: Math.max(0, players.length - wagers.length),
     resolution: session.resolution,
-    canStart: session.status === "lobby" && players.length > 0,
+    canStart: session.status === "lobby" && (session.game_mode === "individual"
+      ? players.length >= 1
+      : players.length >= session.team_count),
     canReveal: session.status === "in-progress" && session.phase === "question-open",
     canAdvance: session.status === "in-progress" && ["answer-reveal", "wager-open"].includes(session.phase),
   };
@@ -356,6 +372,8 @@ export async function buildPersistentTriviaLivePlayerSnapshot(
     questionOpenedAtMs: bundle.session.opened_at ? Date.parse(bundle.session.opened_at) : null,
     questionTimerSeconds: currentCard ? getTriviaTimerSeconds(bundle.session.pacing_mode) : null,
     pacingMode: bundle.session.pacing_mode,
+    gameMode: bundle.session.game_mode,
+    teamCount: bundle.session.team_count,
     answerState: {
       hasSubmitted: Boolean(answer),
       response: answer?.response ?? null,
@@ -367,6 +385,7 @@ export async function buildPersistentTriviaLivePlayerSnapshot(
       maxWager: player.score,
     },
     leaderboard: getLeaderboard(bundle.players),
+    teamLeaderboard: buildTriviaTeamLeaderboard(bundle.players.map(toPublicPlayer), bundle.session.game_mode, bundle.session.team_count),
     resolution: bundle.session.resolution
       ? {
           correctSlot: bundle.session.resolution.correctSlot,

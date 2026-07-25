@@ -1,5 +1,5 @@
 import * as memory from "./trivia-live-session";
-import type { RuntimeDifficultyFilter, RuntimeResponse } from "./trivia-runtime-types";
+import type { RuntimeDifficultyFilter, RuntimeResponse, TriviaGameMode } from "./trivia-runtime-types";
 import type { TriviaPacingMode } from "./trivia-live-timing";
 
 export {
@@ -24,12 +24,14 @@ export async function createTriviaLiveSession(
   category: string,
   difficultyFilter: RuntimeDifficultyFilter,
   pacingMode: TriviaPacingMode,
+  gameMode: TriviaGameMode,
+  teamCount: number,
 ) {
   if (isPersistentStoreEnabled()) {
-    return (await persistentStore()).createPersistentTriviaLiveSession(category, difficultyFilter, pacingMode);
+    return (await persistentStore()).createPersistentTriviaLiveSession(category, difficultyFilter, pacingMode, gameMode, teamCount);
   }
 
-  return memory.createTriviaLiveSession(category, difficultyFilter, pacingMode);
+  return memory.createTriviaLiveSession(category, difficultyFilter, pacingMode, gameMode, teamCount);
 }
 
 export async function joinTriviaLiveSession(roomCode: string, playerName: string) {

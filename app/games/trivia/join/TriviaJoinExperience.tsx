@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { RuntimePublicDeckCard } from "../play/trivia-runtime-types";
+import type { RuntimePublicDeckCard, TriviaGameMode, TriviaTeamId } from "../play/trivia-runtime-types";
 import { subscribeToTriviaStream } from "../play/trivia-live-stream";
+import { formatTriviaTeamWinnerHeading, getTriviaTeamLabel, type TriviaTeamStanding } from "../play/trivia-team-utils";
 import {
   calculateTriviaCorrectPoints,
   formatTriviaScoringSummary,
@@ -13,6 +14,7 @@ import {
 type JoinPlayer = {
   id: string;
   name: string;
+  teamId: TriviaTeamId | null;
   score: number;
   correctCount: number;
   wrongCount: number;
@@ -30,6 +32,8 @@ type JoinSnapshot = {
   questionOpenedAtMs: number | null;
   questionTimerSeconds: number | null;
   pacingMode: TriviaPacingMode;
+  gameMode: TriviaGameMode;
+  teamCount: number;
   answerState: {
     hasSubmitted: boolean;
     response: string | null;
@@ -41,6 +45,7 @@ type JoinSnapshot = {
     maxWager: number;
   };
   leaderboard: JoinPlayer[];
+  teamLeaderboard: TriviaTeamStanding[];
   resolution: {
     correctSlot: string;
     correctText: string;
@@ -83,6 +88,22 @@ function formatDelta(value: number) {
 
 function formatPoints(value: number) {
   return new Intl.NumberFormat("en-US").format(value);
+}
+
+function PhoneTeamStandings({ standings, playerTeamId }: { standings: TriviaTeamStanding[]; playerTeamId: TriviaTeamId | null }) {
+  return (
+    <div className="grid gap-3">
+      {standings.map((team, index) => (
+        <div key={team.id} className={team.id === playerTeamId ? "flex items-center justify-between gap-3 rounded-2xl border border-cyan-300/35 bg-cyan-400/12 px-4 py-4" : "flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-4"}>
+          <div>
+            <div className="text-sm font-black text-white">{index + 1}. {team.label}{team.id === playerTeamId ? " (your team)" : ""}</div>
+            <div className="mt-1 text-xs uppercase tracking-[0.18em] text-white/46">{team.playerCount} player{team.playerCount === 1 ? "" : "s"} | {team.correctCount} right</div>
+          </div>
+          <div className="text-2xl font-black text-cyan-50">{formatPoints(team.score)}</div>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 function getCountdownState(snapshot: JoinSnapshot | null, nowMs: number) {
@@ -355,10 +376,10 @@ export function TriviaJoinExperience() {
             ) : snapshot.status === "completed" ? (
               <div className="rounded-[28px] border border-emerald-300/20 bg-[linear-gradient(180deg,rgba(40,94,74,0.32),rgba(255,255,255,0.03))] p-5">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-100/70">Game complete</div>
-                <h3 className="mt-3 text-3xl font-black text-white">Thanks for playing, {snapshot.player.name}</h3>
+                <h3 className="mt-3 text-3xl font-black text-white">{snapshot.gameMode === "individual" ? `Thanks for playing, ${snapshot.player.name}` : formatTriviaTeamWinnerHeading(snapshot.teamLeaderboard)}</h3>
                 <p className="mt-4 text-sm leading-7 text-white/74">Your final score was {snapshot.player.score}.</p>
-                <div className="mt-6 grid gap-3">
-                  {snapshot.leaderboard.map((player, index) => (
+                <div className="mt-6">
+                  {snapshot.gameMode !== "individual" ? <PhoneTeamStandings standings={snapshot.teamLeaderboard} playerTeamId={snapshot.player.teamId} /> : <div className="grid gap-3">{snapshot.leaderboard.map((player, index) => (
                     <div
                       key={player.id}
                       className={player.id === snapshot.player.id
@@ -368,14 +389,16 @@ export function TriviaJoinExperience() {
                       <div className="text-sm font-black text-white">{index + 1}. {player.name}{player.id === snapshot.player.id ? " (you)" : ""}</div>
                       <div className="text-2xl font-black text-cyan-50">{formatPoints(player.score)}</div>
                     </div>
-                  ))}
+                  ))}</div>}
                 </div>
               </div>
             ) : snapshot.phase === "lobby" ? (
               <div className="rounded-[28px] border border-white/10 bg-black/20 p-5">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Lobby</div>
                 <h3 className="mt-3 text-2xl font-black text-white">You are in room {snapshot.roomCode}</h3>
-                <p className="mt-4 text-sm leading-7 text-white/72">You are ready. Waiting for the host to start the game.</p>
+                <p className="mt-4 text-sm leading-7 text-white/72">
+                  {snapshot.player.teamId ? `You are on ${getTriviaTeamLabel(snapshot.player.teamId)}. ` : ""}Waiting for the host to start the game.
+                </p>
               </div>
             ) : snapshot.phase === "wager-open" ? (
               <div className="rounded-[24px] border border-amber-300/25 bg-[linear-gradient(180deg,rgba(129,91,28,0.3),rgba(255,255,255,0.03))] p-5 sm:rounded-[28px] sm:p-7">
@@ -420,7 +443,10 @@ export function TriviaJoinExperience() {
             ) : snapshot.phase === "question-open" && snapshot.currentCard ? (
               <div className="grid gap-4">
                 <div className="rounded-[24px] border border-white/10 bg-black/20 p-4 sm:rounded-[28px] sm:p-6">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/50">{snapshot.currentCard.roundLabel}</div>
+                <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/50">
+                  <span>{snapshot.currentCard.roundLabel}</span>
+                  {snapshot.player.teamId ? <span className="text-cyan-100/70">{getTriviaTeamLabel(snapshot.player.teamId)}</span> : null}
+                </div>
                 <h3 className="mt-2 text-2xl font-black text-white sm:mt-3 sm:text-4xl">{snapshot.currentCard.prompt}</h3>
                   <p className="mt-3 text-xs leading-5 text-white/64 sm:text-sm sm:leading-7">
                     {TRIVIA_PACING_OPTIONS[snapshot.pacingMode].label} | {snapshot.questionTimerSeconds}s | {isFinalQuestion ? "Your private wager is at stake" : formatTriviaScoringSummary(snapshot.currentCard.scoring, snapshot.questionTimerSeconds ?? 10)}
@@ -492,8 +518,8 @@ export function TriviaJoinExperience() {
                   <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-cyan-100/70">Updated leaderboard</div>
                   <h4 className="mt-2 text-xl font-black text-white">Waiting for the host</h4>
                   <p className="mt-2 text-sm leading-6 text-white/64">Review the standings while the host gets the next question ready.</p>
-                  <div className="mt-5 grid gap-3">
-                    {snapshot.leaderboard.map((player, index) => (
+                  <div className="mt-5">
+                    {snapshot.gameMode !== "individual" ? <PhoneTeamStandings standings={snapshot.teamLeaderboard} playerTeamId={snapshot.player.teamId} /> : <div className="grid gap-3">{snapshot.leaderboard.map((player, index) => (
                       <div
                         key={player.id}
                         className={player.id === snapshot.player.id
@@ -508,7 +534,7 @@ export function TriviaJoinExperience() {
                         </div>
                         <div className="text-2xl font-black text-cyan-50">{formatPoints(player.score)}</div>
                       </div>
-                    ))}
+                    ))}</div>}
                   </div>
                 </div>
               </div>

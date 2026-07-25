@@ -7,7 +7,11 @@ import {
   BIBLE_CANON_POLICY,
   BIBLE_TRANSLATION_POLICY,
   formatDifficultyFilterLabel,
+  MAX_TRIVIA_TEAM_COUNT,
+  MIN_TRIVIA_TEAM_COUNT,
   PLAYPOINT_RUNTIME_ROUNDS,
+  type TriviaGameMode,
+  type TriviaTeamId,
   type RuntimeCatalogCategorySummary,
   type RuntimeDeck,
   type RuntimeDeckCard,
@@ -15,6 +19,7 @@ import {
   type RuntimeDifficultyFilter,
 } from "./trivia-runtime-types";
 import { formatTriviaWinnerHeading } from "./trivia-result-utils";
+import { formatTriviaTeamWinnerHeading, getTriviaTeamLabel, type TriviaTeamStanding } from "./trivia-team-utils";
 import { subscribeToTriviaStream } from "./trivia-live-stream";
 import { TriviaProjectorMode } from "./TriviaProjectorMode";
 import {
@@ -28,6 +33,7 @@ import {
 type HostPlayer = {
   id: string;
   name: string;
+  teamId: TriviaTeamId | null;
   score: number;
   correctCount: number;
   wrongCount: number;
@@ -67,8 +73,11 @@ type HostSnapshot = {
   questionOpenedAtMs: number | null;
   questionTimerSeconds: number | null;
   pacingMode: TriviaPacingMode;
+  gameMode: TriviaGameMode;
+  teamCount: number;
   players: HostPlayer[];
   leaderboard: HostPlayer[];
+  teamLeaderboard: TriviaTeamStanding[];
   answeredPlayerIds: string[];
   submittedCount: number;
   waitingForCount: number;
@@ -115,6 +124,24 @@ function formatPoints(value: number) {
   return new Intl.NumberFormat("en-US").format(value);
 }
 
+function TeamStandings({ standings }: { standings: TriviaTeamStanding[] }) {
+  return (
+    <div className="grid gap-3">
+      {standings.map((team, index) => (
+        <div key={team.id} className="flex items-center justify-between gap-3 rounded-2xl border border-cyan-300/20 bg-cyan-400/8 px-4 py-4">
+          <div>
+            <div className="text-sm font-black text-white">{index + 1}. {team.label}</div>
+            <div className="mt-1 text-xs uppercase tracking-[0.18em] text-white/46">
+              {team.playerCount} player{team.playerCount === 1 ? "" : "s"} | {team.correctCount} right
+            </div>
+          </div>
+          <div className="text-2xl font-black text-white">{formatPoints(team.score)}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function getCountdownState(snapshot: HostSnapshot | null, nowMs: number) {
   if (!snapshot?.currentCard || snapshot.phase !== "question-open" || snapshot.questionOpenedAtMs === null) {
     return null;
@@ -144,6 +171,8 @@ export function TriviaLiveBuilderExperience() {
   const [catalogGeneratedAt, setCatalogGeneratedAt] = useState<string | null>(null);
   const [selectedDifficultyFilter, setSelectedDifficultyFilter] = useState<RuntimeDifficultyFilter>("mixed");
   const [selectedPacingMode, setSelectedPacingMode] = useState<TriviaPacingMode>("standard");
+  const [selectedGameMode, setSelectedGameMode] = useState<TriviaGameMode>("individual");
+  const [selectedTeamCount, setSelectedTeamCount] = useState(MIN_TRIVIA_TEAM_COUNT);
   const [catalogError, setCatalogError] = useState<string | null>(null);
   const [setupError, setSetupError] = useState<string | null>(null);
   const [creatingRoom, setCreatingRoom] = useState(false);
@@ -281,6 +310,7 @@ export function TriviaLiveBuilderExperience() {
   const countdown = getCountdownState(snapshot, clockNowMs);
   const isFinalQuestion = Boolean(snapshot && snapshot.cardIndex === snapshot.deck.cards.length - 1);
   const displayedPacingMode = snapshot?.pacingMode ?? selectedPacingMode;
+  const displayedGameMode = snapshot?.gameMode ?? selectedGameMode;
   const displayedTimerSeconds = snapshot?.questionTimerSeconds
     ?? TRIVIA_PACING_OPTIONS[displayedPacingMode].timerSeconds;
 
@@ -299,6 +329,8 @@ export function TriviaLiveBuilderExperience() {
           category: "bible",
           difficultyFilter: selectedDifficultyFilter,
           pacingMode: selectedPacingMode,
+          gameMode: selectedGameMode,
+          teamCount: selectedTeamCount,
         }),
       });
       setHostToken(room.hostToken);
@@ -481,6 +513,46 @@ export function TriviaLiveBuilderExperience() {
                   </select>
                   <p className="mt-2 text-xs leading-6 text-white/56">{TRIVIA_PACING_OPTIONS[selectedPacingMode].description}</p>
 
+                  <label className="mt-5 block text-sm font-semibold text-white/90" htmlFor="game-mode-select">
+                    Score format
+                  </label>
+                  <select
+                    id="game-mode-select"
+                    value={selectedGameMode}
+                    onChange={(event) => setSelectedGameMode(event.target.value as TriviaGameMode)}
+                    className="mt-3 w-full rounded-[20px] border border-white/10 bg-[#07101c] px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-300/40 focus:bg-[#091524]"
+                  >
+                    <option value="individual">Individual players</option>
+                    <option value="teams">Teams</option>
+                  </select>
+                  <p className="mt-2 text-xs leading-6 text-white/56">
+                    {selectedGameMode === "teams"
+                      ? `Players are automatically balanced across ${selectedTeamCount} teams as they join.`
+                      : "Every player competes on their own score."}
+                  </p>
+
+                  {selectedGameMode === "teams" ? (
+                    <>
+                      <label className="mt-5 block text-sm font-semibold text-white/90" htmlFor="team-count-select">
+                        Number of teams
+                      </label>
+                      <select
+                        id="team-count-select"
+                        value={selectedTeamCount}
+                        onChange={(event) => setSelectedTeamCount(Number(event.target.value))}
+                        className="mt-3 w-full rounded-[20px] border border-white/10 bg-[#07101c] px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-300/40 focus:bg-[#091524]"
+                      >
+                        {Array.from(
+                          { length: MAX_TRIVIA_TEAM_COUNT - MIN_TRIVIA_TEAM_COUNT + 1 },
+                          (_, index) => MIN_TRIVIA_TEAM_COUNT + index,
+                        ).map((teamCount) => (
+                          <option key={teamCount} value={teamCount}>{teamCount} teams</option>
+                        ))}
+                      </select>
+                      <p className="mt-2 text-xs leading-6 text-white/56">At least one player must join each team before the game can start.</p>
+                    </>
+                  ) : null}
+
                   {catalogError ? <div className="mt-4 text-sm font-semibold text-amber-200">{catalogError}</div> : null}
                   {setupError ? <div className="mt-4 text-sm font-semibold text-amber-200">{setupError}</div> : null}
 
@@ -529,9 +601,9 @@ export function TriviaLiveBuilderExperience() {
             ) : isComplete ? (
               <div className="mt-7 rounded-[28px] border border-emerald-300/20 bg-[linear-gradient(180deg,rgba(40,94,74,0.32),rgba(255,255,255,0.03))] p-5 sm:p-6">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-100/70">Session complete</div>
-                <h3 className="mt-3 text-3xl font-black text-white">{formatTriviaWinnerHeading(leaderboard)}</h3>
-                <div className="mt-6 grid gap-3">
-                  {leaderboard.map((player, index) => (
+                <h3 className="mt-3 text-3xl font-black text-white">{snapshot.gameMode !== "individual" ? formatTriviaTeamWinnerHeading(snapshot.teamLeaderboard) : formatTriviaWinnerHeading(leaderboard)}</h3>
+                <div className="mt-6">
+                  {snapshot.gameMode !== "individual" ? <TeamStandings standings={snapshot.teamLeaderboard} /> : <div className="grid gap-3">{leaderboard.map((player, index) => (
                     <div key={player.id} className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
                       <div>
                         <div className="text-sm font-black text-white">{index + 1}. {player.name}</div>
@@ -541,7 +613,7 @@ export function TriviaLiveBuilderExperience() {
                       </div>
                       <div className="text-2xl font-black text-cyan-50">{player.score}</div>
                     </div>
-                  ))}
+                  ))}</div>}
                 </div>
               </div>
             ) : (
@@ -586,7 +658,9 @@ export function TriviaLiveBuilderExperience() {
 
                   <div className="mt-5 rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(12,31,48,0.8),rgba(7,16,28,0.95))] px-4 py-4 text-sm text-white/72">
                     {snapshot.players.length > 0
-                      ? `${snapshot.players.length} player${snapshot.players.length === 1 ? "" : "s"} joined.`
+                      ? snapshot.gameMode === "teams" && snapshot.players.length < snapshot.teamCount
+                        ? `${snapshot.players.length} player${snapshot.players.length === 1 ? "" : "s"} joined. Waiting for ${snapshot.teamCount - snapshot.players.length} more so every team has a player.`
+                        : `${snapshot.players.length} player${snapshot.players.length === 1 ? "" : "s"} joined${snapshot.gameMode === "individual" ? "." : ` and balanced across ${snapshot.teamCount} teams.`}`
                       : "No players have joined yet. Use the QR, link, or room code on a phone to sign in."}
                   </div>
                 </div>
@@ -596,8 +670,9 @@ export function TriviaLiveBuilderExperience() {
                     <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Lobby players</div>
                     <div className="mt-5 grid gap-3">
                       {snapshot.players.length > 0 ? snapshot.players.map((player) => (
-                        <div key={player.id} className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm font-black text-white">
-                          {player.name}
+                        <div key={player.id} className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm font-black text-white">
+                          <span>{player.name}</span>
+                          {player.teamId ? <span className="text-xs uppercase tracking-[0.16em] text-cyan-200">{getTriviaTeamLabel(player.teamId)}</span> : null}
                         </div>
                       )) : (
                         <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm leading-7 text-white/64">
@@ -708,8 +783,8 @@ export function TriviaLiveBuilderExperience() {
                           </button>
                         ) : null}
                       </div>
-                      <div className="mt-5 grid gap-3">
-                        {leaderboard.map((player, index) => (
+                      <div className="mt-5">
+                        {snapshot.gameMode !== "individual" ? <TeamStandings standings={snapshot.teamLeaderboard} /> : <div className="grid gap-3">{leaderboard.map((player, index) => (
                           <div key={player.id} className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-4">
                             <div>
                               <div className="text-sm font-black text-white">{index + 1}. {player.name}</div>
@@ -719,7 +794,7 @@ export function TriviaLiveBuilderExperience() {
                             </div>
                             <div className="text-2xl font-black text-cyan-50">{formatPoints(player.score)}</div>
                           </div>
-                        ))}
+                        ))}</div>}
                       </div>
                     </div>
 
@@ -760,10 +835,10 @@ export function TriviaLiveBuilderExperience() {
           </div>
 
           <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.2)]">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">Leaderboard</div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">{displayedGameMode !== "individual" ? "Team leaderboard" : "Leaderboard"}</div>
             <h3 className="mt-3 text-2xl font-black text-white">{snapshot?.deck.categoryLabel ?? selectedCategorySummary?.label ?? "Vault Runtime"}</h3>
-            <div className="mt-5 grid gap-3">
-              {leaderboard.length > 0 ? leaderboard.map((player, index) => (
+            <div className="mt-5">
+              {snapshot?.gameMode !== "individual" && snapshot ? <TeamStandings standings={snapshot.teamLeaderboard} /> : leaderboard.length > 0 ? <div className="grid gap-3">{leaderboard.map((player, index) => (
                 <div key={player.id} className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-4">
                   <div>
                     <div className="text-sm font-black text-white">{index + 1}. {player.name}</div>
@@ -773,7 +848,7 @@ export function TriviaLiveBuilderExperience() {
                   </div>
                   <div className="text-2xl font-black text-cyan-50">{player.score}</div>
                 </div>
-              )) : (
+              ))}</div> : (
                 <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm leading-7 text-white/64">Create a room to start the live scoreboard.</div>
               )}
             </div>
