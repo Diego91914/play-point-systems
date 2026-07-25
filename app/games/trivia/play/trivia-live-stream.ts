@@ -26,7 +26,7 @@ export function parseTriviaSseBlock(block: string): TriviaSseMessage | null {
 
 export function subscribeToTriviaStream<T>(args: {
   url: string;
-  token: string;
+  token?: string | null;
   onSnapshot: (snapshot: T) => void;
   onConnectionChange: (connected: boolean) => void;
 }) {
@@ -47,7 +47,7 @@ export function subscribeToTriviaStream<T>(args: {
           credentials: "same-origin",
           headers: {
             Accept: "text/event-stream",
-            Authorization: `Bearer ${args.token}`,
+            ...(args.token ? { Authorization: `Bearer ${args.token}` } : {}),
           },
           signal: activeRequest.signal,
         });

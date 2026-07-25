@@ -19,6 +19,7 @@ vi.mock("@/lib/play-point-core/quick-score-supabase", () => ({
 }));
 
 import { GET } from "../app/api/trivia/sessions/[sessionId]/events/route";
+import { getTriviaHostCookieName } from "../app/games/trivia/play/trivia-live-cookie";
 import { createTriviaLiveSession } from "../app/games/trivia/play/trivia-live-session";
 
 beforeEach(() => {
@@ -62,5 +63,29 @@ describe("trivia live event route", () => {
     expect(streamed).not.toContain(room.hostToken);
     expect(streamed).not.toContain("host_token_hash");
     expect(removeChannel).toHaveBeenCalledTimes(1);
+  });
+
+  it("reconnects a host stream from its HttpOnly-cookie credential", async () => {
+    const room = createTriviaLiveSession("bible", "mixed");
+    const response = await GET(
+      new Request(`https://example.com/api/trivia/sessions/${room.sessionId}/events`, {
+        headers: { Cookie: `${getTriviaHostCookieName(room.sessionId)}=${room.hostToken}` },
+      }),
+      { params: Promise.resolve({ sessionId: room.sessionId }) },
+    );
+    const reader = response.body!.getReader();
+    const decoder = new TextDecoder();
+    let streamed = "";
+
+    for (let index = 0; index < 4 && !streamed.includes("event: snapshot"); index += 1) {
+      const { value } = await reader.read();
+      streamed += decoder.decode(value);
+    }
+
+    await reader.cancel();
+
+    expect(response.status).toBe(200);
+    expect(streamed).toContain(`\"sessionId\":\"${room.sessionId}\"`);
+    expect(streamed).not.toContain(room.hostToken);
   });
 });

@@ -4,8 +4,12 @@ import type { TriviaPacingMode } from "./trivia-live-timing";
 
 export {
   isTriviaLiveAuthorizationError,
-  readTriviaLiveBearerToken,
 } from "./trivia-live-session";
+export {
+  readTriviaLiveBearerToken,
+  readTriviaLiveHostToken,
+  readTriviaLivePlayerToken,
+} from "./trivia-live-cookie";
 
 function isPersistentStoreEnabled() {
   return process.env.NODE_ENV !== "test"

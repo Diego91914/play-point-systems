@@ -4,7 +4,8 @@ import {
   buildTriviaLiveHostSnapshot,
   buildTriviaLivePlayerSnapshot,
   isTriviaLiveAuthorizationError,
-  readTriviaLiveBearerToken,
+  readTriviaLiveHostToken,
+  readTriviaLivePlayerToken,
 } from "../../../../../games/trivia/play/trivia-live-service";
 
 export const runtime = "nodejs";
@@ -24,8 +25,10 @@ export async function GET(
   context: { params: Promise<{ sessionId: string }> },
 ) {
   const { sessionId } = await context.params;
-  const token = readTriviaLiveBearerToken(request);
   const playerId = new URL(request.url).searchParams.get("playerId");
+  const token = playerId
+    ? readTriviaLivePlayerToken(request, playerId)
+    : readTriviaLiveHostToken(request, sessionId);
   const origin = new URL(request.url).origin;
 
   const loadSnapshot = () => playerId

@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import {
   buildTriviaLivePlayerSnapshot,
   isTriviaLiveAuthorizationError,
-  readTriviaLiveBearerToken,
+  readTriviaLivePlayerToken,
   submitTriviaLiveAnswer,
 } from "../../../../../../../games/trivia/play/trivia-live-service";
+import { setTriviaLivePlayerCookie } from "../../../../../../../games/trivia/play/trivia-live-cookie";
 import type { RuntimeResponse } from "../../../../../../../games/trivia/play/trivia-runtime-types";
 
 export async function POST(
@@ -15,7 +16,7 @@ export async function POST(
   const body = (await request.json()) as {
     response?: RuntimeResponse;
   };
-  const playerToken = readTriviaLiveBearerToken(request);
+  const playerToken = readTriviaLivePlayerToken(request, playerId);
 
   if (!body.response) {
     return NextResponse.json({ error: "A response is required." }, { status: 400 });
@@ -23,9 +24,11 @@ export async function POST(
 
   try {
     await submitTriviaLiveAnswer(sessionId, playerId, body.response, playerToken);
-    return NextResponse.json(await buildTriviaLivePlayerSnapshot(sessionId, playerId, playerToken), {
+    const response = NextResponse.json(await buildTriviaLivePlayerSnapshot(sessionId, playerId, playerToken), {
       headers: { "Cache-Control": "no-store" },
     });
+    setTriviaLivePlayerCookie(response, playerId, playerToken!);
+    return response;
   } catch (error) {
     return NextResponse.json(
       {

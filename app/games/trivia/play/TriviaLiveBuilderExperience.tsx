@@ -100,7 +100,8 @@ type CatalogPayload = {
   categories: RuntimeCatalogCategorySummary[];
 };
 
-const HOST_CONNECTION_STORAGE_KEY = "play-point-trivia-host-connection-v1";
+const HOST_CONNECTION_STORAGE_KEY = "play-point-trivia-host-connection-v2";
+const LEGACY_HOST_CONNECTION_STORAGE_KEY = "play-point-trivia-host-connection-v1";
 
 const requestJson = async <T,>(url: string, init?: RequestInit, bearerToken?: string | null) => {
   const response = await fetch(url, {
@@ -183,6 +184,7 @@ export function TriviaLiveBuilderExperience() {
   const [creatingRoom, setCreatingRoom] = useState(false);
   const [snapshot, setSnapshot] = useState<HostSnapshot | null>(null);
   const [hostToken, setHostToken] = useState<string | null>(null);
+  const [hasHostCredential, setHasHostCredential] = useState(false);
   const [clockNowMs, setClockNowMs] = useState(Date.now());
   const [serverClockOffsetMs, setServerClockOffsetMs] = useState(0);
   const [streamConnected, setStreamConnected] = useState(false);
@@ -191,32 +193,47 @@ export function TriviaLiveBuilderExperience() {
   const snapshotPhase = snapshot?.phase;
 
   useEffect(() => {
-    const storedConnection = window.sessionStorage.getItem(HOST_CONNECTION_STORAGE_KEY);
+    const storedConnection = window.localStorage.getItem(HOST_CONNECTION_STORAGE_KEY);
+    const legacyConnection = window.sessionStorage.getItem(LEGACY_HOST_CONNECTION_STORAGE_KEY);
 
-    if (!storedConnection) {
+    if (!storedConnection && !legacyConnection) {
       return;
     }
 
     try {
-      const connection = JSON.parse(storedConnection) as { sessionId?: string; hostToken?: string };
+      const connection = JSON.parse(storedConnection ?? legacyConnection!) as { sessionId?: string; hostToken?: string };
+      const legacyHostToken = storedConnection ? null : connection.hostToken ?? null;
 
-      if (!connection.sessionId || !connection.hostToken) {
+      if (!connection.sessionId || (!storedConnection && !legacyHostToken)) {
         throw new Error("Invalid stored host connection.");
       }
 
-      setHostToken(connection.hostToken);
+      setHostToken(legacyHostToken);
+      setHasHostCredential(true);
       requestJson<HostSnapshot>(
         `/api/trivia/sessions/${connection.sessionId}`,
         undefined,
-        connection.hostToken,
+        legacyHostToken,
       )
-        .then(setSnapshot)
-        .catch(() => {
-          window.sessionStorage.removeItem(HOST_CONNECTION_STORAGE_KEY);
+        .then((nextSnapshot) => {
+          setSnapshot(nextSnapshot);
+          window.localStorage.setItem(
+            HOST_CONNECTION_STORAGE_KEY,
+            JSON.stringify({ sessionId: connection.sessionId }),
+          );
+          window.sessionStorage.removeItem(LEGACY_HOST_CONNECTION_STORAGE_KEY);
           setHostToken(null);
+        })
+        .catch(() => {
+          window.localStorage.removeItem(HOST_CONNECTION_STORAGE_KEY);
+          window.sessionStorage.removeItem(LEGACY_HOST_CONNECTION_STORAGE_KEY);
+          setHostToken(null);
+          setHasHostCredential(false);
         });
     } catch {
-      window.sessionStorage.removeItem(HOST_CONNECTION_STORAGE_KEY);
+      window.localStorage.removeItem(HOST_CONNECTION_STORAGE_KEY);
+      window.sessionStorage.removeItem(LEGACY_HOST_CONNECTION_STORAGE_KEY);
+      setHasHostCredential(false);
     }
   }, []);
 
@@ -247,7 +264,7 @@ export function TriviaLiveBuilderExperience() {
   }, []);
 
   useEffect(() => {
-    if (!snapshot?.sessionId || !hostToken || streamConnected) {
+    if (!snapshot?.sessionId || !hasHostCredential || streamConnected) {
       return;
     }
 
@@ -263,10 +280,10 @@ export function TriviaLiveBuilderExperience() {
     return () => {
       window.clearInterval(handle);
     };
-  }, [hostToken, snapshot?.sessionId, streamConnected]);
+  }, [hasHostCredential, hostToken, snapshot?.sessionId, streamConnected]);
 
   useEffect(() => {
-    if (!snapshot?.sessionId || !hostToken) {
+    if (!snapshot?.sessionId || !hasHostCredential) {
       return;
     }
 
@@ -276,13 +293,19 @@ export function TriviaLiveBuilderExperience() {
       onSnapshot: setSnapshot,
       onConnectionChange: setStreamConnected,
     });
-  }, [hostToken, snapshot?.sessionId]);
+  }, [hasHostCredential, hostToken, snapshot?.sessionId]);
 
   useEffect(() => {
     if (snapshotServerTimeMs !== undefined) {
       setServerClockOffsetMs(snapshotServerTimeMs - Date.now());
     }
   }, [snapshotServerTimeMs]);
+
+  useEffect(() => {
+    if (snapshot?.status === "completed") {
+      window.localStorage.removeItem(HOST_CONNECTION_STORAGE_KEY);
+    }
+  }, [snapshot?.status]);
 
   useEffect(() => {
     if (!snapshotPhase || !["question-countdown", "question-open"].includes(snapshotPhase)) {
@@ -332,7 +355,7 @@ export function TriviaLiveBuilderExperience() {
     try {
       setCreatingRoom(true);
       setSetupError(null);
-      const room = await requestJson<{ sessionId: string; roomCode: string; hostToken: string }>("/api/trivia/sessions", {
+      const room = await requestJson<{ sessionId: string; roomCode: string }>("/api/trivia/sessions", {
         method: "POST",
         body: JSON.stringify({
           category: "bible",
@@ -342,12 +365,14 @@ export function TriviaLiveBuilderExperience() {
           teamCount: selectedTeamCount,
         }),
       });
-      setHostToken(room.hostToken);
-      window.sessionStorage.setItem(
+      setHostToken(null);
+      setHasHostCredential(true);
+      window.localStorage.setItem(
         HOST_CONNECTION_STORAGE_KEY,
-        JSON.stringify({ sessionId: room.sessionId, hostToken: room.hostToken }),
+        JSON.stringify({ sessionId: room.sessionId }),
       );
-      const nextSnapshot = await requestJson<HostSnapshot>(`/api/trivia/sessions/${room.sessionId}`, undefined, room.hostToken);
+      window.sessionStorage.removeItem(LEGACY_HOST_CONNECTION_STORAGE_KEY);
+      const nextSnapshot = await requestJson<HostSnapshot>(`/api/trivia/sessions/${room.sessionId}`);
       setSnapshot(nextSnapshot);
     } catch (error) {
       setSetupError(error instanceof Error ? error.message : "Unable to create the trivia room.");
@@ -357,7 +382,7 @@ export function TriviaLiveBuilderExperience() {
   }
 
   async function startRoom() {
-    if (!snapshot || !hostToken) {
+    if (!snapshot || !hasHostCredential) {
       return;
     }
 
@@ -369,7 +394,7 @@ export function TriviaLiveBuilderExperience() {
   }
 
   async function resolveQuestion() {
-    if (!snapshot || !hostToken) {
+    if (!snapshot || !hasHostCredential) {
       return;
     }
 
@@ -381,7 +406,7 @@ export function TriviaLiveBuilderExperience() {
   }
 
   async function advanceQuestion() {
-    if (!snapshot || !hostToken) {
+    if (!snapshot || !hasHostCredential) {
       return;
     }
 

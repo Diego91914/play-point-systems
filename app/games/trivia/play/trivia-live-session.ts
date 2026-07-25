@@ -167,12 +167,6 @@ export class TriviaLiveAuthorizationError extends Error {
   }
 }
 
-export function readTriviaLiveBearerToken(request: Request): string | null {
-  const authorization = request.headers.get("authorization")?.trim() ?? "";
-  const match = /^Bearer\s+([^\s]+)$/i.exec(authorization);
-  return match?.[1] ?? null;
-}
-
 export function isTriviaLiveAuthorizationError(error: unknown): error is TriviaLiveAuthorizationError {
   return error instanceof TriviaLiveAuthorizationError;
 }

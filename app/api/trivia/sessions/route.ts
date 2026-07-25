@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createTriviaLiveSession } from "../../../games/trivia/play/trivia-live-service";
 import { MAX_TRIVIA_TEAM_COUNT, MIN_TRIVIA_TEAM_COUNT, RUNTIME_DIFFICULTY_FILTERS, TRIVIA_GAME_MODES, type RuntimeDifficultyFilter, type TriviaGameMode } from "../../../games/trivia/play/trivia-runtime-types";
 import { TRIVIA_PACING_MODES, type TriviaPacingMode } from "../../../games/trivia/play/trivia-live-timing";
+import { setTriviaLiveHostCookie } from "../../../games/trivia/play/trivia-live-cookie";
 
 export async function POST(request: Request) {
   const body = (await request.json()) as {
@@ -35,9 +36,12 @@ export async function POST(request: Request) {
   }
 
   try {
-    return NextResponse.json(await createTriviaLiveSession(body.category, body.difficultyFilter, body.pacingMode, gameMode, teamCount), {
+    const room = await createTriviaLiveSession(body.category, body.difficultyFilter, body.pacingMode, gameMode, teamCount);
+    const response = NextResponse.json({ sessionId: room.sessionId, roomCode: room.roomCode }, {
       headers: { "Cache-Control": "no-store" },
     });
+    setTriviaLiveHostCookie(response, room.sessionId, room.hostToken);
+    return response;
   } catch (error) {
     return NextResponse.json(
       {

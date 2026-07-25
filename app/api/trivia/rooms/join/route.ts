@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { buildTriviaLivePlayerSnapshot, joinTriviaLiveSession } from "../../../../games/trivia/play/trivia-live-service";
+import { setTriviaLivePlayerCookie } from "../../../../games/trivia/play/trivia-live-cookie";
 
 export async function POST(request: Request) {
   const body = (await request.json()) as {
@@ -17,13 +18,12 @@ export async function POST(request: Request) {
 
   try {
     const joined = await joinTriviaLiveSession(body.roomCode, body.playerName);
-    return NextResponse.json(
-      {
-        ...await buildTriviaLivePlayerSnapshot(joined.sessionId, joined.playerId, joined.playerToken),
-        playerToken: joined.playerToken,
-      },
+    const response = NextResponse.json(
+      await buildTriviaLivePlayerSnapshot(joined.sessionId, joined.playerId, joined.playerToken),
       { headers: { "Cache-Control": "no-store" } },
     );
+    setTriviaLivePlayerCookie(response, joined.playerId, joined.playerToken);
+    return response;
   } catch (error) {
     return NextResponse.json(
       {

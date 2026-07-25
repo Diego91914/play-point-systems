@@ -61,11 +61,8 @@ type JoinSnapshot = {
   } | null;
 };
 
-type JoinResponse = JoinSnapshot & {
-  playerToken: string;
-};
-
-const PLAYER_CONNECTION_STORAGE_KEY = "play-point-trivia-player-connection-v1";
+const PLAYER_CONNECTION_STORAGE_KEY = "play-point-trivia-player-connection-v2";
+const LEGACY_PLAYER_CONNECTION_STORAGE_KEY = "play-point-trivia-player-connection-v1";
 
 const requestJson = async <T,>(url: string, init?: RequestInit, bearerToken?: string | null) => {
   const response = await fetch(url, {
@@ -140,6 +137,7 @@ export function TriviaJoinExperience() {
   const [joining, setJoining] = useState(false);
   const [snapshot, setSnapshot] = useState<JoinSnapshot | null>(null);
   const [playerToken, setPlayerToken] = useState<string | null>(null);
+  const [hasPlayerCredential, setHasPlayerCredential] = useState(false);
   const [clockNowMs, setClockNowMs] = useState(Date.now());
   const [serverClockOffsetMs, setServerClockOffsetMs] = useState(0);
   const [streamConnected, setStreamConnected] = useState(false);
@@ -156,48 +154,67 @@ export function TriviaJoinExperience() {
       setRoomCode(code.toUpperCase());
     }
 
-    const storedConnection = window.sessionStorage.getItem(PLAYER_CONNECTION_STORAGE_KEY);
+    const storedConnection = window.localStorage.getItem(PLAYER_CONNECTION_STORAGE_KEY);
+    const legacyConnection = window.sessionStorage.getItem(LEGACY_PLAYER_CONNECTION_STORAGE_KEY);
 
-    if (!storedConnection) {
+    if (!storedConnection && !legacyConnection) {
       return;
     }
 
     try {
-      const connection = JSON.parse(storedConnection) as {
+      const connection = JSON.parse(storedConnection ?? legacyConnection!) as {
         sessionId?: string;
         roomCode?: string;
         playerId?: string;
         playerToken?: string;
       };
+      const legacyPlayerToken = storedConnection ? null : connection.playerToken ?? null;
 
       if (
         !connection.sessionId
         || !connection.roomCode
         || !connection.playerId
-        || !connection.playerToken
+        || (!storedConnection && !legacyPlayerToken)
         || (code && connection.roomCode !== code.toUpperCase())
       ) {
         return;
       }
 
-      setPlayerToken(connection.playerToken);
+      setPlayerToken(legacyPlayerToken);
+      setHasPlayerCredential(true);
       requestJson<JoinSnapshot>(
         `/api/trivia/sessions/${connection.sessionId}/players/${connection.playerId}`,
         undefined,
-        connection.playerToken,
+        legacyPlayerToken,
       )
-        .then(setSnapshot)
-        .catch(() => {
-          window.sessionStorage.removeItem(PLAYER_CONNECTION_STORAGE_KEY);
+        .then((nextSnapshot) => {
+          setSnapshot(nextSnapshot);
+          window.localStorage.setItem(
+            PLAYER_CONNECTION_STORAGE_KEY,
+            JSON.stringify({
+              sessionId: connection.sessionId,
+              roomCode: connection.roomCode,
+              playerId: connection.playerId,
+            }),
+          );
+          window.sessionStorage.removeItem(LEGACY_PLAYER_CONNECTION_STORAGE_KEY);
           setPlayerToken(null);
+        })
+        .catch(() => {
+          window.localStorage.removeItem(PLAYER_CONNECTION_STORAGE_KEY);
+          window.sessionStorage.removeItem(LEGACY_PLAYER_CONNECTION_STORAGE_KEY);
+          setPlayerToken(null);
+          setHasPlayerCredential(false);
         });
     } catch {
-      window.sessionStorage.removeItem(PLAYER_CONNECTION_STORAGE_KEY);
+      window.localStorage.removeItem(PLAYER_CONNECTION_STORAGE_KEY);
+      window.sessionStorage.removeItem(LEGACY_PLAYER_CONNECTION_STORAGE_KEY);
+      setHasPlayerCredential(false);
     }
   }, []);
 
   useEffect(() => {
-    if (!snapshot?.sessionId || !snapshot?.player.id || !playerToken || streamConnected) {
+    if (!snapshot?.sessionId || !snapshot?.player.id || !hasPlayerCredential || streamConnected) {
       return;
     }
 
@@ -213,10 +230,10 @@ export function TriviaJoinExperience() {
     return () => {
       window.clearInterval(handle);
     };
-  }, [playerToken, snapshot?.player.id, snapshot?.sessionId, streamConnected]);
+  }, [hasPlayerCredential, playerToken, snapshot?.player.id, snapshot?.sessionId, streamConnected]);
 
   useEffect(() => {
-    if (!snapshot?.sessionId || !snapshot?.player.id || !playerToken) {
+    if (!snapshot?.sessionId || !snapshot?.player.id || !hasPlayerCredential) {
       return;
     }
 
@@ -226,13 +243,19 @@ export function TriviaJoinExperience() {
       onSnapshot: setSnapshot,
       onConnectionChange: setStreamConnected,
     });
-  }, [playerToken, snapshot?.player.id, snapshot?.sessionId]);
+  }, [hasPlayerCredential, playerToken, snapshot?.player.id, snapshot?.sessionId]);
 
   useEffect(() => {
     if (snapshotServerTimeMs !== undefined) {
       setServerClockOffsetMs(snapshotServerTimeMs - Date.now());
     }
   }, [snapshotServerTimeMs]);
+
+  useEffect(() => {
+    if (snapshot?.status === "completed") {
+      window.localStorage.removeItem(PLAYER_CONNECTION_STORAGE_KEY);
+    }
+  }, [snapshot?.status]);
 
   useEffect(() => {
     if (!snapshotPhase || !["question-countdown", "question-open"].includes(snapshotPhase)) {
@@ -268,23 +291,24 @@ export function TriviaJoinExperience() {
     try {
       setJoining(true);
       setJoinError(null);
-      const joined = await requestJson<JoinResponse>("/api/trivia/rooms/join", {
+      const joined = await requestJson<JoinSnapshot>("/api/trivia/rooms/join", {
         method: "POST",
         body: JSON.stringify({
           roomCode,
           playerName,
         }),
       });
-      setPlayerToken(joined.playerToken);
-      window.sessionStorage.setItem(
+      setPlayerToken(null);
+      setHasPlayerCredential(true);
+      window.localStorage.setItem(
         PLAYER_CONNECTION_STORAGE_KEY,
         JSON.stringify({
           sessionId: joined.sessionId,
           roomCode: joined.roomCode,
           playerId: joined.player.id,
-          playerToken: joined.playerToken,
         }),
       );
+      window.sessionStorage.removeItem(LEGACY_PLAYER_CONNECTION_STORAGE_KEY);
       setSnapshot(joined);
     } catch (error) {
       setJoinError(error instanceof Error ? error.message : "Unable to join the trivia room.");
@@ -294,7 +318,7 @@ export function TriviaJoinExperience() {
   }
 
   async function answer(response: string) {
-    if (!snapshot || !playerToken) {
+    if (!snapshot || !hasPlayerCredential) {
       return;
     }
 
@@ -311,7 +335,7 @@ export function TriviaJoinExperience() {
   }
 
   async function submitWager() {
-    if (!snapshot || !playerToken) {
+    if (!snapshot || !hasPlayerCredential) {
       return;
     }
 

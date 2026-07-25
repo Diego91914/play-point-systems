@@ -2,22 +2,25 @@ import { NextResponse } from "next/server";
 import {
   buildTriviaLiveHostSnapshot,
   isTriviaLiveAuthorizationError,
-  readTriviaLiveBearerToken,
+  readTriviaLiveHostToken,
   resolveTriviaLiveQuestion,
 } from "../../../../../games/trivia/play/trivia-live-service";
+import { setTriviaLiveHostCookie } from "../../../../../games/trivia/play/trivia-live-cookie";
 
 export async function POST(
   request: Request,
   context: { params: Promise<{ sessionId: string }> },
 ) {
   const { sessionId } = await context.params;
-  const hostToken = readTriviaLiveBearerToken(request);
+  const hostToken = readTriviaLiveHostToken(request, sessionId);
 
   try {
     await resolveTriviaLiveQuestion(sessionId, hostToken);
-    return NextResponse.json(await buildTriviaLiveHostSnapshot(sessionId, new URL(request.url).origin, hostToken), {
+    const response = NextResponse.json(await buildTriviaLiveHostSnapshot(sessionId, new URL(request.url).origin, hostToken), {
       headers: { "Cache-Control": "no-store" },
     });
+    setTriviaLiveHostCookie(response, sessionId, hostToken!);
+    return response;
   } catch (error) {
     return NextResponse.json(
       {
