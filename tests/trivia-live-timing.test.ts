@@ -9,6 +9,7 @@ import {
 } from "../app/games/trivia/play/trivia-live-session";
 import {
   calculateTriviaAvailablePoints,
+  getTriviaCountdownProgress,
   getTriviaPointsDropPerSecond,
   getTriviaTimerSeconds,
 } from "../app/games/trivia/play/trivia-live-timing";
@@ -26,6 +27,9 @@ describe("trivia pacing modes", () => {
     expect(calculateTriviaAvailablePoints(1_000, 9_000, 10)).toBe(100);
     expect(calculateTriviaAvailablePoints(1_000, 19_000, 20)).toBe(50);
     expect(calculateTriviaAvailablePoints(1_000, 20_000, 20)).toBe(0);
+    expect(getTriviaCountdownProgress(0, 20)).toBe(100);
+    expect(getTriviaCountdownProgress(5_000, 20)).toBe(75);
+    expect(getTriviaCountdownProgress(25_000, 20)).toBe(0);
   });
 
   it("persists relaxed pacing in snapshots and scores against its 20-second clock", () => {

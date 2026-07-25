@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   BIBLE_CANON_POLICY,
   BIBLE_TRANSLATION_POLICY,
@@ -16,8 +16,10 @@ import {
 } from "./trivia-runtime-types";
 import { formatTriviaWinnerHeading } from "./trivia-result-utils";
 import { subscribeToTriviaStream } from "./trivia-live-stream";
+import { TriviaProjectorMode } from "./TriviaProjectorMode";
 import {
   calculateTriviaAvailablePoints,
+  getTriviaCountdownProgress,
   getTriviaPointsDropPerSecond,
   TRIVIA_PACING_OPTIONS,
   type TriviaPacingMode,
@@ -127,6 +129,7 @@ function getCountdownState(snapshot: HostSnapshot | null, nowMs: number) {
     remainingSeconds,
     availablePoints,
     isExpired: elapsedMs >= timerSeconds * 1000,
+    progressPercent: getTriviaCountdownProgress(elapsedMs, timerSeconds),
   };
 }
 
@@ -143,6 +146,7 @@ export function TriviaLiveBuilderExperience() {
   const [clockNowMs, setClockNowMs] = useState(Date.now());
   const [serverClockOffsetMs, setServerClockOffsetMs] = useState(0);
   const [streamConnected, setStreamConnected] = useState(false);
+  const [projectorMode, setProjectorMode] = useState(false);
   const snapshotServerTimeMs = snapshot?.serverTimeMs;
 
   useEffect(() => {
@@ -353,8 +357,55 @@ export function TriviaLiveBuilderExperience() {
     }
   }
 
+  const openProjectorMode = useCallback(async () => {
+    setProjectorMode(true);
+
+    try {
+      await document.documentElement.requestFullscreen?.();
+    } catch {
+      // The in-page projector overlay remains available when fullscreen is unsupported or denied.
+    }
+  }, []);
+
+  const closeProjectorMode = useCallback(async () => {
+    setProjectorMode(false);
+
+    if (document.fullscreenElement) {
+      try {
+        await document.exitFullscreen();
+      } catch {
+        // The overlay still closes if the browser owns fullscreen exit handling.
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!projectorMode) {
+      return;
+    }
+
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        setProjectorMode(false);
+      }
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, [projectorMode]);
+
   return (
     <section className="px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
+      {projectorMode && snapshot ? (
+        <TriviaProjectorMode
+          snapshot={snapshot}
+          countdown={countdown}
+          onStart={startRoom}
+          onReveal={resolveQuestion}
+          onAdvance={advanceQuestion}
+          onExit={closeProjectorMode}
+        />
+      ) : null}
       <div className="grid gap-8 xl:grid-cols-[1.08fr_0.92fr] xl:items-start">
         <div className="grid gap-6">
           <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)] sm:p-7">
@@ -368,10 +419,14 @@ export function TriviaLiveBuilderExperience() {
                   This is the hosted builder for the first public Bible trivia MVP on playpointsystems.com. Create the room here, then let players sign in from their phones on the live join page.
                 </p>
               </div>
-              <div className="hidden">
+              {snapshot ? (
+                <button type="button" onClick={openProjectorMode} className="inline-flex rounded-2xl border border-cyan-200/35 bg-cyan-300/12 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-300/20">
+                  Open Projector Mode
+                </button>
+              ) : <div className="hidden">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-100/70">Live paths</div>
                 <div className="mt-2 font-semibold">Builder: /games/trivia/builder | Join: /games/trivia/join</div>
-              </div>
+              </div>}
             </div>
 
             {!snapshot ? (
@@ -670,7 +725,7 @@ export function TriviaLiveBuilderExperience() {
                   <div className="mt-2 text-lg font-black text-white">{round.label}</div>
                   <div className="mt-2 text-sm leading-7 text-white/68">{round.intro}</div>
                   <div className="mt-3 text-xs uppercase tracking-[0.18em] text-white/46">
-                    10s | {formatDelta(round.scoring.correct)} start | {formatDelta(round.scoring.wrong)} wrong | {formatDelta(round.scoring.skip)} skip
+                    {displayedTimerSeconds}s | {formatDelta(round.scoring.correct)} start | {formatDelta(round.scoring.wrong)} wrong | {formatDelta(round.scoring.skip)} skip
                   </div>
                 </div>
               ))}

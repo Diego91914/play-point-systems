@@ -22,6 +22,7 @@ export default function TriviaBuilderPage() {
         "The host creates the room and controls the pace.",
         "Players join on their phones with the room code or QR link.",
         "Choose Standard 10-second pacing or Relaxed 20-second pacing before creating the room.",
+        "Open Projector Mode after creating the room for a full-screen presentation view.",
       ]}
     >
       <TriviaLiveBuilderExperience />

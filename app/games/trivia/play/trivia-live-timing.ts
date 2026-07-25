@@ -39,3 +39,8 @@ export function calculateTriviaAvailablePoints(
 export function getTriviaPointsDropPerSecond(startingPoints: number, timerSeconds: number): number {
   return Math.ceil(startingPoints / timerSeconds);
 }
+
+export function getTriviaCountdownProgress(elapsedMs: number, timerSeconds: number): number {
+  const timerMs = Math.max(timerSeconds, 1) * 1000;
+  return Math.max(0, Math.min(100, 100 - (Math.max(0, elapsedMs) / timerMs) * 100));
+}
