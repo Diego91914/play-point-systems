@@ -17,6 +17,7 @@ import type {
 } from "./trivia-runtime-types";
 import { MAX_TRIVIA_TEAM_COUNT, MIN_TRIVIA_TEAM_COUNT } from "./trivia-runtime-types";
 import { buildTriviaTeamLeaderboard, chooseTriviaTeam, type TriviaTeamStanding } from "./trivia-team-utils";
+import { calculateTriviaStreakBonus } from "./trivia-streak-scoring";
 
 const ROOM_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const RECENT_QUESTION_HISTORY_LIMIT = 48;
@@ -36,6 +37,8 @@ export type TriviaLivePlayer = {
   correctCount: number;
   wrongCount: number;
   skippedCount: number;
+  currentStreak: number;
+  bestStreak: number;
 };
 
 type StoredTriviaLivePlayer = TriviaLivePlayer & {
@@ -56,6 +59,7 @@ export type TriviaLiveResolutionRow = TriviaLiveSubmission & {
   wager: number | null;
   delta: number;
   speedBonus: number;
+  streakBonus: number;
   nextScore: number;
 };
 
@@ -151,6 +155,7 @@ export type TriviaLivePlayerSnapshot = {
     playerOutcome: "correct" | "wrong" | "skip" | null;
     playerDelta: number | null;
     playerSpeedBonus: number | null;
+    playerStreakBonus: number | null;
   } | null;
 };
 
@@ -256,6 +261,8 @@ function toPublicPlayer(player: StoredTriviaLivePlayer): TriviaLivePlayer {
     correctCount: player.correctCount,
     wrongCount: player.wrongCount,
     skippedCount: player.skippedCount,
+    currentStreak: player.currentStreak,
+    bestStreak: player.bestStreak,
   };
 }
 
@@ -421,6 +428,8 @@ export function joinTriviaLiveSession(roomCode: string, playerName: string): { s
     correctCount: 0,
     wrongCount: 0,
     skippedCount: 0,
+    currentStreak: 0,
+    bestStreak: 0,
     tokenHash: hashAuthToken(playerToken),
   };
 
@@ -533,19 +542,26 @@ export function resolveTriviaLiveQuestion(sessionId: string, hostToken: string |
 
     let delta = 0;
     const speedBonus = 0;
+    let streakBonus = 0;
     const wager = isFinalWagerQuestion ? session.wagers[player.id] ?? 0 : null;
 
     if (submission.outcome === "correct") {
+      const nextStreak = player.currentStreak + 1;
+      streakBonus = calculateTriviaStreakBonus(nextStreak, isFinalWagerQuestion);
       delta = wager === null
-        ? calculateAvailableCorrectPoints(card, submission.responseTimeMs, session.pacingMode)
+        ? calculateAvailableCorrectPoints(card, submission.responseTimeMs, session.pacingMode) + streakBonus
         : wager;
       player.correctCount += 1;
+      player.currentStreak = nextStreak;
+      player.bestStreak = Math.max(player.bestStreak, nextStreak);
     } else if (submission.outcome === "wrong") {
       delta = wager === null ? 0 : -wager;
       player.wrongCount += 1;
+      player.currentStreak = 0;
     } else {
       delta = wager === null ? 0 : -wager;
       player.skippedCount += 1;
+      player.currentStreak = 0;
     }
 
     player.score += delta;
@@ -556,6 +572,7 @@ export function resolveTriviaLiveQuestion(sessionId: string, hostToken: string |
       wager,
       delta,
       speedBonus,
+      streakBonus,
       nextScore: player.score,
     });
   });
@@ -687,6 +704,7 @@ export function buildTriviaLivePlayerSnapshot(sessionId: string, playerId: strin
           playerOutcome: resolutionRow?.outcome ?? null,
           playerDelta: resolutionRow?.delta ?? null,
           playerSpeedBonus: resolutionRow?.speedBonus ?? null,
+          playerStreakBonus: resolutionRow?.streakBonus ?? null,
         }
       : null,
   };

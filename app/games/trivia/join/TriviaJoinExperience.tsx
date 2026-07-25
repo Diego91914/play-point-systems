@@ -19,6 +19,8 @@ type JoinPlayer = {
   correctCount: number;
   wrongCount: number;
   skippedCount: number;
+  currentStreak: number;
+  bestStreak: number;
 };
 
 type JoinSnapshot = {
@@ -54,6 +56,7 @@ type JoinSnapshot = {
     playerOutcome: "correct" | "wrong" | "skip" | null;
     playerDelta: number | null;
     playerSpeedBonus: number | null;
+    playerStreakBonus: number | null;
   } | null;
 };
 
@@ -445,7 +448,10 @@ export function TriviaJoinExperience() {
                 <div className="rounded-[24px] border border-white/10 bg-black/20 p-4 sm:rounded-[28px] sm:p-6">
                 <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/50">
                   <span>{snapshot.currentCard.roundLabel}</span>
-                  {snapshot.player.teamId ? <span className="text-cyan-100/70">{getTriviaTeamLabel(snapshot.player.teamId)}</span> : null}
+                  <span className="flex items-center gap-3">
+                    {snapshot.player.currentStreak > 0 ? <span className="text-amber-200">{snapshot.player.currentStreak} answer streak</span> : null}
+                    {snapshot.player.teamId ? <span className="text-cyan-100/70">{getTriviaTeamLabel(snapshot.player.teamId)}</span> : null}
+                  </span>
                 </div>
                 <h3 className="mt-2 text-2xl font-black text-white sm:mt-3 sm:text-4xl">{snapshot.currentCard.prompt}</h3>
                   <p className="mt-3 text-xs leading-5 text-white/64 sm:text-sm sm:leading-7">
@@ -513,6 +519,7 @@ export function TriviaJoinExperience() {
                 <p className="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-100/68">Scripture reference: {snapshot.resolution.reference}</p>
                 <div className="mt-5 rounded-[24px] border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/78">
                   Your result: {snapshot.resolution.playerOutcome ?? "waiting"} | {formatDelta(snapshot.resolution.playerDelta ?? 0)}
+                  {(snapshot.resolution.playerStreakBonus ?? 0) > 0 ? ` | Streak bonus +${formatPoints(snapshot.resolution.playerStreakBonus ?? 0)}` : ""}
                 </div>
                 <div className="mt-7 border-t border-white/10 pt-6">
                   <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-cyan-100/70">Updated leaderboard</div>

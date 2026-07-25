@@ -15,6 +15,8 @@ type ProjectorPlayer = {
   correctCount: number;
   wrongCount: number;
   skippedCount: number;
+  currentStreak: number;
+  bestStreak: number;
 };
 
 type ProjectorResolution = {
@@ -76,9 +78,12 @@ function ProjectorLeaderboard({ players, limit }: { players: ProjectorPlayer[]; 
     <div className="grid gap-3">
       {visiblePlayers.map((player, index) => (
         <div key={player.id} className="flex items-center justify-between gap-5 rounded-[24px] border border-white/12 bg-black/30 px-5 py-4">
-          <div className="min-w-0 text-xl font-black text-white sm:text-2xl">
-            <span className="mr-3 text-cyan-100/60">{index + 1}</span>
-            <span className="truncate">{player.name}</span>
+          <div className="min-w-0">
+            <div className="text-xl font-black text-white sm:text-2xl">
+              <span className="mr-3 text-cyan-100/60">{index + 1}</span>
+              <span className="truncate">{player.name}</span>
+            </div>
+            {player.currentStreak >= 2 ? <div className="mt-1 text-xs font-black uppercase tracking-[0.18em] text-amber-200">{player.currentStreak} answer streak</div> : null}
           </div>
           <div className="shrink-0 text-2xl font-black text-cyan-50 sm:text-3xl">{formatPoints(player.score)}</div>
         </div>

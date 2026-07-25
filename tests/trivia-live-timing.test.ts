@@ -87,7 +87,7 @@ describe("trivia pacing modes", () => {
     resolveTriviaLiveQuestion(room.sessionId, room.hostToken);
 
     const resolved = buildTriviaLiveHostSnapshot(room.sessionId, "https://example.com", room.hostToken);
-    expect(resolved.resolution?.rows[0]?.delta).toBe(500);
+    expect(resolved.resolution?.rows[0]).toMatchObject({ streakBonus: 300, delta: 800 });
   });
 
   it("rejects an answer at the standard timer boundary", () => {

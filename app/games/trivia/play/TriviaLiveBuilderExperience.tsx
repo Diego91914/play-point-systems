@@ -20,6 +20,7 @@ import {
 } from "./trivia-runtime-types";
 import { formatTriviaWinnerHeading } from "./trivia-result-utils";
 import { formatTriviaTeamWinnerHeading, getTriviaTeamLabel, type TriviaTeamStanding } from "./trivia-team-utils";
+import { formatTriviaStreakRule } from "./trivia-streak-scoring";
 import { subscribeToTriviaStream } from "./trivia-live-stream";
 import { TriviaProjectorMode } from "./TriviaProjectorMode";
 import {
@@ -38,6 +39,8 @@ type HostPlayer = {
   correctCount: number;
   wrongCount: number;
   skippedCount: number;
+  currentStreak: number;
+  bestStreak: number;
 };
 
 type HostResolutionRow = {
@@ -49,6 +52,7 @@ type HostResolutionRow = {
   wager: number | null;
   delta: number;
   speedBonus: number;
+  streakBonus: number;
   nextScore: number;
 };
 
@@ -805,7 +809,7 @@ export function TriviaLiveBuilderExperience() {
                           <div>
                             <div className="text-sm font-black text-white">{row.playerName} | {row.outcome}</div>
                             <div className="mt-1 text-xs uppercase tracking-[0.18em] text-white/46">
-                              Answered {row.responseText}{row.wager != null ? ` | Wagered ${formatPoints(row.wager)}` : ""}
+                              Answered {row.responseText}{row.wager != null ? ` | Wagered ${formatPoints(row.wager)}` : ""}{row.streakBonus > 0 ? ` | Streak +${formatPoints(row.streakBonus)}` : ""}
                             </div>
                           </div>
                           <div className="text-right">
@@ -831,6 +835,7 @@ export function TriviaLiveBuilderExperience() {
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">Players sign in on their phones</span> using the join page, code, or QR.</div>
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">This room uses {TRIVIA_PACING_OPTIONS[displayedPacingMode].label} pacing:</span> {displayedTimerSeconds} seconds per question, with fixed warm-up scoring before the countdown rounds escalate.</div>
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">Wrong answers do not subtract before the final.</span> The last question uses each player&apos;s private wager.</div>
+              <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">Streak bonuses reward accuracy:</span> {formatTriviaStreakRule()} The final wager does not add a streak bonus.</div>
             </div>
           </div>
 

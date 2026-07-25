@@ -56,6 +56,8 @@ type PersistedPlayer = {
   correct_count: number;
   wrong_count: number;
   skipped_count: number;
+  current_streak: number;
+  best_streak: number;
 };
 
 type PersistedAnswer = {
@@ -109,6 +111,8 @@ function toPublicPlayer(player: PersistedPlayer): TriviaLivePlayer {
     correctCount: player.correct_count,
     wrongCount: player.wrong_count,
     skippedCount: player.skipped_count,
+    currentStreak: player.current_streak,
+    bestStreak: player.best_streak,
   };
 }
 
@@ -395,6 +399,7 @@ export async function buildPersistentTriviaLivePlayerSnapshot(
           playerOutcome: resolutionRow?.outcome ?? null,
           playerDelta: resolutionRow?.delta ?? null,
           playerSpeedBonus: resolutionRow?.speedBonus ?? null,
+          playerStreakBonus: resolutionRow?.streakBonus ?? null,
         }
       : null,
   };
