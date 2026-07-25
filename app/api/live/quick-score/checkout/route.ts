@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyPlayerIdentity } from "@/lib/play-point-core/quick-score-server";
+import { resolveQuickScorePlayerCredentials } from "@/lib/play-point-core/quick-score-auth";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import { getStripePriceId, getStripeServerClient, isStripeConfigured } from "@/lib/play-point-core/quick-score-payments";
 import { isUuidLikePlayerId } from "@/lib/play-point-core/quick-score-payments";
@@ -26,12 +27,12 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json().catch(() => ({}));
-    const playerId = typeof body?.playerId === "string" ? body.playerId.trim() : "";
-    const recoveryCode = typeof body?.recoveryCode === "string" ? body.recoveryCode.trim() : "";
+    const credentials = resolveQuickScorePlayerCredentials(request, body);
 
-    if (!playerId || !recoveryCode) {
+    if (!credentials) {
       return NextResponse.json({ error: "Missing player identity." }, { status: 400 });
     }
+    const { playerId, recoveryCode } = credentials;
 
     if (!isUuidLikePlayerId(playerId)) {
       return NextResponse.json({ error: "Invalid player identity." }, { status: 400 });

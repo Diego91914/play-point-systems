@@ -4,6 +4,17 @@ import {
   getSupabaseServerClient,
 } from "@/lib/play-point-core/quick-score-supabase";
 import { normalizeRecoveryCode } from "@/lib/play-point-core/quick-score-server";
+import { setQuickScoreIdentityCookie } from "@/lib/play-point-core/quick-score-cookie";
+
+function identityResponse(
+  body: Record<string, unknown>,
+  identity: { playerId: string; recoveryCode: string }
+) {
+  const response = NextResponse.json(body);
+  response.headers.set("Cache-Control", "no-store");
+  setQuickScoreIdentityCookie(response, identity);
+  return response;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,6 +23,13 @@ export async function POST(request: NextRequest) {
       typeof body.existingPlayerId === "string" ? body.existingPlayerId : null;
     const existingRecoveryCode = normalizeRecoveryCode(body.existingRecoveryCode);
     const displayName = typeof body.displayName === "string" ? body.displayName : null;
+
+    if ((existingPlayerId && !existingRecoveryCode) || (!existingPlayerId && existingRecoveryCode)) {
+      return NextResponse.json(
+        { error: "Both player ID and recovery code are required to restore an identity." },
+        { status: 400 }
+      );
+    }
 
     const supabase = getSupabaseServerClient();
 
@@ -46,23 +64,25 @@ export async function POST(request: NextRequest) {
             );
           }
 
-          return NextResponse.json({
+          return identityResponse({
             success: true,
             playerId: updated.id,
             recoveryCode: updated.recovery_code,
             displayName: updated.display_name,
             restored: true,
-          });
+          }, { playerId: updated.id, recoveryCode: updated.recovery_code });
         }
 
-        return NextResponse.json({
+        return identityResponse({
           success: true,
           playerId: existing.id,
           recoveryCode: existing.recovery_code,
           displayName: existing.display_name,
           restored: true,
-        });
+        }, { playerId: existing.id, recoveryCode: existing.recovery_code });
       }
+
+      return NextResponse.json({ error: "Invalid player identity." }, { status: 403 });
     }
 
     const recoveryCode = await generateUniqueRecoveryCode();
@@ -83,13 +103,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({
+    return identityResponse({
       success: true,
       playerId: created.id,
       recoveryCode: created.recovery_code,
       displayName: created.display_name,
       restored: false,
-    });
+    }, { playerId: created.id, recoveryCode: created.recovery_code });
   } catch (err) {
     console.error("POST /api/live/quick-score/identity failed:", err);
     return NextResponse.json(

@@ -31,9 +31,38 @@ export function persistQuickScoreIdentity(identity: QuickScoreIdentity) {
   window.localStorage.setItem(PPL_QUICK_SCORE_RECOVERY_CODE_KEY, identity.recoveryCode);
 }
 
+export async function bootstrapQuickScoreIdentitySession(
+  identity: QuickScoreIdentity,
+  displayName?: string
+): Promise<QuickScoreIdentity> {
+  try {
+    const response = await fetch("/api/live/quick-score/identity", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        existingPlayerId: identity.playerId,
+        existingRecoveryCode: identity.recoveryCode,
+        ...(displayName ? { displayName } : {}),
+      }),
+    });
+    const data = await response.json().catch(() => ({}));
+    const playerId = typeof data.playerId === "string" ? data.playerId : "";
+    const recoveryCode = typeof data.recoveryCode === "string" ? data.recoveryCode : "";
+
+    if (!response.ok || !data.restored || !playerId || !recoveryCode) return identity;
+
+    const restoredIdentity = { playerId, recoveryCode };
+    persistQuickScoreIdentity(restoredIdentity);
+    return restoredIdentity;
+  } catch {
+    // Local scoring remains available if the cookie bootstrap request is offline.
+    return identity;
+  }
+}
+
 export async function ensureQuickScoreIdentity(displayName?: string): Promise<QuickScoreIdentity> {
   const existing = resolveStoredQuickScoreIdentity();
-  if (existing) return existing;
+  if (existing) return bootstrapQuickScoreIdentitySession(existing, displayName);
 
   const response = await fetch("/api/live/quick-score/identity", {
     method: "POST",

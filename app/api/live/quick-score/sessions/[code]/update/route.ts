@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
+import { resolveQuickScoreHostToken } from "@/lib/play-point-core/quick-score-auth";
+import { setQuickScoreHostCookie } from "@/lib/play-point-core/quick-score-cookie";
 import type { QuickScoreSession } from "@/lib/play-point-core/quick-score";
 
 export async function PUT(
@@ -10,7 +12,7 @@ export async function PUT(
     const { code } = await params;
     const sessionCode = code.toUpperCase();
     const body = await request.json().catch(() => ({}));
-    const hostToken = typeof body?.hostToken === "string" ? body.hostToken.trim() : "";
+    const hostToken = resolveQuickScoreHostToken(request, sessionCode, body?.hostToken);
     const session = body?.session as QuickScoreSession | undefined;
 
     if (!hostToken) {
@@ -55,11 +57,14 @@ export async function PUT(
       return NextResponse.json({ error: "Unable to update Quick Score session." }, { status: 500 });
     }
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       updatedAt: data.updated_at,
       session,
     });
+    response.headers.set("Cache-Control", "no-store");
+    setQuickScoreHostCookie(response, sessionCode, hostToken);
+    return response;
   } catch (error) {
     console.error("PUT /api/live/quick-score/sessions/[code]/update failed:", error);
     return NextResponse.json({ error: "Unable to update Quick Score session right now." }, { status: 500 });

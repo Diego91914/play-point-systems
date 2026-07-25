@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { normalizeRecoveryCode, verifyPlayerIdentity } from "@/lib/play-point-core/quick-score-server";
+import { verifyPlayerIdentity } from "@/lib/play-point-core/quick-score-server";
+import { resolveQuickScorePlayerCredentials } from "@/lib/play-point-core/quick-score-auth";
 import {
   isQuickScoreClubParticipantStatus,
   mapQuickScoreClubParticipantRow,
@@ -35,12 +36,12 @@ export async function PATCH(
   try {
     const { clubId, participantId } = await params;
     const body = await request.json().catch(() => ({}));
-    const playerId = typeof body?.playerId === "string" ? body.playerId.trim() : "";
-    const recoveryCode = normalizeRecoveryCode(body?.recoveryCode);
+    const credentials = resolveQuickScorePlayerCredentials(request, body);
 
-    if (!playerId || !recoveryCode) {
+    if (!credentials) {
       return NextResponse.json({ error: "Missing player identity." }, { status: 400 });
     }
+    const { playerId, recoveryCode } = credentials;
 
     const ownsClub = await verifyClubOwner(clubId, playerId, recoveryCode);
     if (!ownsClub) {

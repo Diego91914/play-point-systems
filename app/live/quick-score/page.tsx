@@ -24,6 +24,7 @@ import type {
   QuickScoreMatchRecord,
 } from "@/lib/play-point-core/quick-score-club";
 import { buildQuickScoreIdentityRequestHeaders } from "@/lib/play-point-core/quick-score-auth";
+import { bootstrapQuickScoreIdentitySession } from "@/lib/play-point-core/quick-score-identity";
 
 const SESSION_STORAGE_KEY = "quickScore.session.v1";
 const PPL_QUICK_SCORE_PLAYER_ID_KEY = "ppl_quick_score_player_id";
@@ -280,31 +281,33 @@ export default function QuickScorePage() {
   const wakeLockRef = useRef<WakeLockSentinelLike | null>(null);
 
   useEffect(() => {
+    let active = true;
     setHydrated(true);
     try {
       const raw = sessionStorage.getItem(SESSION_STORAGE_KEY);
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as {
-        setupStep?: QuickScoreSetupStep;
-        screenMode?: QuickScoreScreenMode;
-        draft?: QuickScoreDraft;
-        session?: QuickScoreSession | null;
-        bigScreenMode?: boolean;
-        sessionCode?: string | null;
-        hostToken?: string | null;
-        joinBaseUrl?: string;
-        lastSyncedAt?: string | null;
-      };
+      if (raw) {
+        const parsed = JSON.parse(raw) as {
+          setupStep?: QuickScoreSetupStep;
+          screenMode?: QuickScoreScreenMode;
+          draft?: QuickScoreDraft;
+          session?: QuickScoreSession | null;
+          bigScreenMode?: boolean;
+          sessionCode?: string | null;
+          hostToken?: string | null;
+          joinBaseUrl?: string;
+          lastSyncedAt?: string | null;
+        };
 
-       if (parsed.draft) setDraft(normalizeQuickScoreDraft(parsed.draft));
-      if (parsed.session) setSession(parsed.session);
-      if (parsed.setupStep) setSetupStep(parsed.setupStep);
-      if (parsed.screenMode) setScreenMode(parsed.screenMode);
-      if (parsed.bigScreenMode) setBigScreenMode(parsed.bigScreenMode);
-      if (parsed.sessionCode) setSessionCode(parsed.sessionCode);
-      if (parsed.hostToken) setHostToken(parsed.hostToken);
-      if (parsed.joinBaseUrl) setJoinBaseUrl(parsed.joinBaseUrl);
-      if (parsed.lastSyncedAt) setLastSyncedAt(parsed.lastSyncedAt);
+        if (parsed.draft) setDraft(normalizeQuickScoreDraft(parsed.draft));
+        if (parsed.session) setSession(parsed.session);
+        if (parsed.setupStep) setSetupStep(parsed.setupStep);
+        if (parsed.screenMode) setScreenMode(parsed.screenMode);
+        if (parsed.bigScreenMode) setBigScreenMode(parsed.bigScreenMode);
+        if (parsed.sessionCode) setSessionCode(parsed.sessionCode);
+        if (parsed.hostToken) setHostToken(parsed.hostToken);
+        if (parsed.joinBaseUrl) setJoinBaseUrl(parsed.joinBaseUrl);
+        if (parsed.lastSyncedAt) setLastSyncedAt(parsed.lastSyncedAt);
+      }
     } catch {
       // Ignore stale state and start fresh.
     }
@@ -313,8 +316,11 @@ export default function QuickScorePage() {
 
     const identity = resolveStoredQuickScoreIdentity();
     if (identity) {
-      setAccountPlayerId(identity.playerId);
-      setAccountRecoveryCode(identity.recoveryCode);
+      void bootstrapQuickScoreIdentitySession(identity).then((restoredIdentity) => {
+        if (!active) return;
+        setAccountPlayerId(restoredIdentity.playerId);
+        setAccountRecoveryCode(restoredIdentity.recoveryCode);
+      });
     }
 
     const checkoutState = new URLSearchParams(window.location.search).get("checkout");
@@ -329,6 +335,10 @@ export default function QuickScorePage() {
     } else if (checkoutState === "cancelled") {
       setProStatusMessage("Checkout cancelled. Local scoring stays free.");
     }
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -523,9 +533,10 @@ export default function QuickScorePage() {
 
     const storedIdentity = resolveStoredQuickScoreIdentity();
     if (storedIdentity) {
-      setAccountPlayerId(storedIdentity.playerId);
-      setAccountRecoveryCode(storedIdentity.recoveryCode);
-      return storedIdentity;
+      const restoredIdentity = await bootstrapQuickScoreIdentitySession(storedIdentity);
+      setAccountPlayerId(restoredIdentity.playerId);
+      setAccountRecoveryCode(restoredIdentity.recoveryCode);
+      return restoredIdentity;
     }
 
     try {

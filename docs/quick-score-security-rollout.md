@@ -18,6 +18,8 @@ Verification gate:
 
 ## Stage 2: HttpOnly session cookie
 
+Status: implemented in application code with legacy browser-storage, authorization-header, query, and request-body fallbacks retained until deployment verification.
+
 - Add a server-managed Quick Score session credential in an `HttpOnly`, `Secure`, `SameSite=Lax` cookie.
 - Set the cookie after identity creation or successful recovery.
 - Prefer the cookie in API routes while retaining the Stage 1 authorization header temporarily.

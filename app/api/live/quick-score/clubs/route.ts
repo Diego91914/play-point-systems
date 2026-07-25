@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { normalizeRecoveryCode, verifyPlayerIdentity } from "@/lib/play-point-core/quick-score-server";
+import { verifyPlayerIdentity } from "@/lib/play-point-core/quick-score-server";
 import { resolveQuickScorePlayerCredentials } from "@/lib/play-point-core/quick-score-auth";
 import {
   buildUniqueQuickScoreClubSlug,
@@ -98,16 +98,16 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json().catch(() => ({}));
-    const playerId = typeof body?.playerId === "string" ? body.playerId.trim() : "";
-    const recoveryCode = normalizeRecoveryCode(body?.recoveryCode);
+    const credentials = resolveQuickScorePlayerCredentials(request, body);
     const name = normalizeQuickScoreClubName(body?.name);
     const locationLabel = sanitizeQuickScoreClubLocation(body?.locationLabel);
     const notes = sanitizeQuickScoreClubNotes(body?.notes);
     const sportKeys = sanitizeQuickScoreClubSportKeys(body?.sportKeys);
 
-    if (!playerId || !recoveryCode) {
+    if (!credentials) {
       return NextResponse.json({ error: "Missing player identity." }, { status: 400 });
     }
+    const { playerId, recoveryCode } = credentials;
 
     if (!name) {
       return NextResponse.json({ error: "Club name is required." }, { status: 400 });

@@ -28,7 +28,7 @@ export async function GET(
       return NextResponse.json({ error: "Quick Score session payload is invalid." }, { status: 500 });
     }
 
-    const hostToken = resolveQuickScoreHostToken(request);
+    const hostToken = resolveQuickScoreHostToken(request, sessionCode);
 
     return NextResponse.json({
       roundId: data.id,

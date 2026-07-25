@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateUniqueSessionCode, getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import { createQuickScoreHostToken } from "@/lib/play-point-core/quick-score-credentials";
+import { setQuickScoreHostCookie } from "@/lib/play-point-core/quick-score-cookie";
 import type { QuickScoreSession } from "@/lib/play-point-core/quick-score";
 
 export async function POST(request: NextRequest) {
@@ -35,12 +36,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unable to create Quick Score spectator session." }, { status: 500 });
     }
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       roundId: data.id,
       sessionCode: data.session_code,
       hostToken,
       session,
     });
+    response.headers.set("Cache-Control", "no-store");
+    setQuickScoreHostCookie(response, data.session_code, hostToken);
+    return response;
   } catch (error) {
     console.error("POST /api/live/quick-score/sessions/create failed:", error);
     return NextResponse.json({ error: "Unable to create Quick Score session right now." }, { status: 500 });
