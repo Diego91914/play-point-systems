@@ -22,7 +22,7 @@ const recentQuestionIdsByCategory = new Map<string, string[]>();
 const AUTH_TOKEN_BYTES = 32;
 
 export type TriviaLiveSessionStatus = "lobby" | "in-progress" | "completed";
-export type TriviaLiveSessionPhase = "lobby" | "question-open" | "answer-reveal" | "completed";
+export type TriviaLiveSessionPhase = "lobby" | "wager-open" | "question-open" | "answer-reveal" | "completed";
 
 export type TriviaLivePlayer = {
   id: string;
@@ -48,6 +48,7 @@ export type TriviaLiveSubmission = {
 
 export type TriviaLiveResolutionRow = TriviaLiveSubmission & {
   playerName: string;
+  wager: number | null;
   delta: number;
   speedBonus: number;
   nextScore: number;
@@ -72,6 +73,7 @@ type TriviaLiveSession = {
   cardIndex: number;
   players: StoredTriviaLivePlayer[];
   selections: Record<string, TriviaLiveSubmission | undefined>;
+  wagers: Record<string, number | undefined>;
   openedAtMs: number | null;
   resolution: TriviaLiveResolution | null;
   createdAtMs: number;
@@ -97,6 +99,9 @@ export type TriviaLiveHostSnapshot = {
   answeredPlayerIds: string[];
   submittedCount: number;
   waitingForCount: number;
+  wageredPlayerIds: string[];
+  wagerSubmittedCount: number;
+  wagerWaitingForCount: number;
   resolution: TriviaLiveResolution | null;
   canStart: boolean;
   canReveal: boolean;
@@ -118,6 +123,11 @@ export type TriviaLivePlayerSnapshot = {
     hasSubmitted: boolean;
     response: RuntimeResponse | null;
     responseText: string | null;
+  };
+  wagerState: {
+    hasSubmitted: boolean;
+    wager: number | null;
+    maxWager: number;
   };
   leaderboard: TriviaLivePlayer[];
   resolution: {
@@ -344,6 +354,7 @@ export function createTriviaLiveSession(
     cardIndex: 0,
     players: [],
     selections: {},
+    wagers: {},
     openedAtMs: null,
     resolution: null,
     createdAtMs: timestamp,
@@ -446,6 +457,24 @@ export function submitTriviaLiveAnswer(sessionId: string, playerId: string, resp
   return session;
 }
 
+export function submitTriviaLiveWager(sessionId: string, playerId: string, wager: number, playerToken: string | null) {
+  const { session, player } = requirePlayer(sessionId, playerId, playerToken);
+
+  if (session.status !== "in-progress" || session.phase !== "wager-open") {
+    throw new Error("That room is not currently accepting wagers.");
+  }
+  if (session.wagers[player.id] !== undefined) {
+    throw new Error("This player already locked a final wager.");
+  }
+  if (!Number.isSafeInteger(wager) || wager < 0 || wager > player.score) {
+    throw new Error(`Choose a whole-number wager from 0 to ${player.score}.`);
+  }
+
+  session.wagers[player.id] = wager;
+  session.updatedAtMs = now();
+  return session;
+}
+
 export function resolveTriviaLiveQuestion(sessionId: string, hostToken: string | null) {
   const session = requireHost(sessionId, hostToken);
   const card = getCurrentCard(session);
@@ -456,6 +485,7 @@ export function resolveTriviaLiveQuestion(sessionId: string, hostToken: string |
 
   const correctChoice = getCorrectChoice(card);
   const rows: TriviaLiveResolutionRow[] = [];
+  const isFinalWagerQuestion = session.cardIndex === session.deck.cards.length - 1;
 
   session.players.forEach((player) => {
     const submission =
@@ -471,15 +501,18 @@ export function resolveTriviaLiveQuestion(sessionId: string, hostToken: string |
 
     let delta = 0;
     const speedBonus = 0;
+    const wager = isFinalWagerQuestion ? session.wagers[player.id] ?? 0 : null;
 
     if (submission.outcome === "correct") {
-      delta = calculateAvailableCorrectPoints(card, submission.responseTimeMs, session.pacingMode);
+      delta = wager === null
+        ? calculateAvailableCorrectPoints(card, submission.responseTimeMs, session.pacingMode)
+        : wager;
       player.correctCount += 1;
     } else if (submission.outcome === "wrong") {
-      delta = 0;
+      delta = wager === null ? 0 : -wager;
       player.wrongCount += 1;
     } else {
-      delta = 0;
+      delta = wager === null ? 0 : -wager;
       player.skippedCount += 1;
     }
 
@@ -488,6 +521,7 @@ export function resolveTriviaLiveQuestion(sessionId: string, hostToken: string |
     rows.push({
       ...submission,
       playerName: player.name,
+      wager,
       delta,
       speedBonus,
       nextScore: player.score,
@@ -509,8 +543,15 @@ export function resolveTriviaLiveQuestion(sessionId: string, hostToken: string |
 export function advanceTriviaLiveQuestion(sessionId: string, hostToken: string | null) {
   const session = requireHost(sessionId, hostToken);
 
-  if (session.status !== "in-progress" || session.phase !== "answer-reveal") {
+  if (session.status !== "in-progress" || !["answer-reveal", "wager-open"].includes(session.phase)) {
     throw new Error("Resolve the current question before advancing.");
+  }
+
+  if (session.phase === "wager-open") {
+    session.phase = "question-open";
+    session.openedAtMs = now();
+    session.updatedAtMs = now();
+    return session;
   }
 
   if (session.cardIndex >= session.deck.cards.length - 1) {
@@ -526,8 +567,9 @@ export function advanceTriviaLiveQuestion(sessionId: string, hostToken: string |
   session.cardIndex += 1;
   session.selections = {};
   session.resolution = null;
-  session.phase = "question-open";
-  session.openedAtMs = now();
+  const isFinalQuestion = session.cardIndex === session.deck.cards.length - 1;
+  session.phase = isFinalQuestion ? "wager-open" : "question-open";
+  session.openedAtMs = isFinalQuestion ? null : now();
   session.updatedAtMs = now();
 
   return session;
@@ -535,7 +577,9 @@ export function advanceTriviaLiveQuestion(sessionId: string, hostToken: string |
 
 export function buildTriviaLiveHostSnapshot(sessionId: string, origin: string, hostToken: string | null): TriviaLiveHostSnapshot {
   const session = requireHost(sessionId, hostToken);
-  const currentCard = getCurrentCard(session);
+  const storedCard = getCurrentCard(session);
+  const currentCard = session.phase === "wager-open" ? null : storedCard;
+  const wagers = Object.entries(session.wagers).filter((entry): entry is [string, number] => entry[1] !== undefined);
 
   return {
     sessionId: session.sessionId,
@@ -558,16 +602,19 @@ export function buildTriviaLiveHostSnapshot(sessionId: string, origin: string, h
       .map((selection) => selection.playerId),
     submittedCount: Object.values(session.selections).filter(Boolean).length,
     waitingForCount: Math.max(0, session.players.length - Object.values(session.selections).filter(Boolean).length),
+    wageredPlayerIds: wagers.map(([playerId]) => playerId),
+    wagerSubmittedCount: wagers.length,
+    wagerWaitingForCount: Math.max(0, session.players.length - wagers.length),
     resolution: session.resolution,
     canStart: session.status === "lobby" && session.players.length > 0,
     canReveal: session.status === "in-progress" && session.phase === "question-open",
-    canAdvance: session.status === "in-progress" && session.phase === "answer-reveal",
+    canAdvance: session.status === "in-progress" && ["answer-reveal", "wager-open"].includes(session.phase),
   };
 }
 
 export function buildTriviaLivePlayerSnapshot(sessionId: string, playerId: string, playerToken: string | null): TriviaLivePlayerSnapshot {
   const { session, player } = requirePlayer(sessionId, playerId, playerToken);
-  const currentCard = getCurrentCard(session);
+  const currentCard = session.phase === "wager-open" ? null : getCurrentCard(session);
   const answer = session.selections[playerId];
   const resolutionRow = session.resolution?.rows.find((row) => row.playerId === playerId) ?? null;
 
@@ -586,6 +633,11 @@ export function buildTriviaLivePlayerSnapshot(sessionId: string, playerId: strin
       hasSubmitted: Boolean(answer),
       response: answer?.response ?? null,
       responseText: answer?.responseText ?? null,
+    },
+    wagerState: {
+      hasSubmitted: session.wagers[playerId] !== undefined,
+      wager: session.wagers[playerId] ?? null,
+      maxWager: player.score,
     },
     leaderboard: getLeaderboard(session.players),
     resolution: session.resolution

@@ -66,6 +66,24 @@ export async function submitTriviaLiveAnswer(
   return memory.submitTriviaLiveAnswer(sessionId, playerId, response, playerToken);
 }
 
+export async function submitTriviaLiveWager(
+  sessionId: string,
+  playerId: string,
+  wager: number,
+  playerToken: string | null,
+) {
+  if (isPersistentStoreEnabled()) {
+    return (await persistentStore()).submitPersistentTriviaLiveWager(
+      sessionId,
+      playerId,
+      wager,
+      playerToken,
+    );
+  }
+
+  return memory.submitTriviaLiveWager(sessionId, playerId, wager, playerToken);
+}
+
 export async function resolveTriviaLiveQuestion(sessionId: string, hostToken: string | null) {
   if (isPersistentStoreEnabled()) {
     return (await persistentStore()).resolvePersistentTriviaLiveQuestion(sessionId, hostToken);
