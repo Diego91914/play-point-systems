@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { buildTriviaLiveHostSnapshot } from "../../../../games/trivia/play/trivia-live-session";
+import {
+  buildTriviaLiveHostSnapshot,
+  isTriviaLiveAuthorizationError,
+  readTriviaLiveBearerToken,
+} from "../../../../games/trivia/play/trivia-live-session";
 
 export async function GET(
   request: Request,
@@ -8,13 +12,16 @@ export async function GET(
   const { sessionId } = await context.params;
 
   try {
-    return NextResponse.json(buildTriviaLiveHostSnapshot(sessionId, new URL(request.url).origin));
+    return NextResponse.json(
+      buildTriviaLiveHostSnapshot(sessionId, new URL(request.url).origin, readTriviaLiveBearerToken(request)),
+      { headers: { "Cache-Control": "no-store" } },
+    );
   } catch (error) {
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : "Unable to load the trivia room.",
       },
-      { status: 404 },
+      { status: isTriviaLiveAuthorizationError(error) ? 401 : 404 },
     );
   }
 }

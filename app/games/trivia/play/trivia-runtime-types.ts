@@ -28,6 +28,11 @@ export interface RuntimeChoice {
   isCorrect: boolean;
 }
 
+export interface RuntimePublicChoice {
+  slot: RuntimeChoiceSlot;
+  text: string;
+}
+
 export interface RuntimeRoundScoring {
   correct: number;
   wrong: number;
@@ -59,6 +64,22 @@ export interface RuntimeDeckCard {
   explanation: string;
   reference: string;
   tags: string[];
+  roundId: string;
+  roundLabel: string;
+  roundIntro: string;
+  roundIndex: number;
+  questionNumberInRound: number;
+  totalQuestionsInRound: number;
+  totalRounds: number;
+  totalQuestions: number;
+  scoring: RuntimeRoundScoring;
+}
+
+export interface RuntimePublicDeckCard {
+  category: string;
+  difficulty: RuntimeDifficulty;
+  prompt: string;
+  choices: RuntimePublicChoice[];
   roundId: string;
   roundLabel: string;
   roundIntro: string;

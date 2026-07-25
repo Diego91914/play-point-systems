@@ -17,11 +17,8 @@ export async function POST(request: Request) {
   }
 
   try {
-    const session = createTriviaLiveSession(body.category, body.difficultyFilter);
-
-    return NextResponse.json({
-      sessionId: session.sessionId,
-      roomCode: session.roomCode,
+    return NextResponse.json(createTriviaLiveSession(body.category, body.difficultyFilter), {
+      headers: { "Cache-Control": "no-store" },
     });
   } catch (error) {
     return NextResponse.json(

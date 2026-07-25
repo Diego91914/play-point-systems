@@ -16,8 +16,14 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { session, player } = joinTriviaLiveSession(body.roomCode, body.playerName);
-    return NextResponse.json(buildTriviaLivePlayerSnapshot(session.sessionId, player.id));
+    const joined = joinTriviaLiveSession(body.roomCode, body.playerName);
+    return NextResponse.json(
+      {
+        ...buildTriviaLivePlayerSnapshot(joined.sessionId, joined.playerId, joined.playerToken),
+        playerToken: joined.playerToken,
+      },
+      { headers: { "Cache-Control": "no-store" } },
+    );
   } catch (error) {
     return NextResponse.json(
       {

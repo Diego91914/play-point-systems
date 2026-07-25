@@ -69,12 +69,13 @@ type CatalogPayload = {
   categories: RuntimeCatalogCategorySummary[];
 };
 
-const requestJson = async <T,>(url: string, init?: RequestInit) => {
+const requestJson = async <T,>(url: string, init?: RequestInit, bearerToken?: string | null) => {
   const response = await fetch(url, {
     cache: "no-store",
     ...init,
     headers: {
       "Content-Type": "application/json",
+      ...(bearerToken ? { Authorization: `Bearer ${bearerToken}` } : {}),
       ...(init?.headers ?? {}),
     },
   });
@@ -121,6 +122,7 @@ export function TriviaLiveBuilderExperience() {
   const [setupError, setSetupError] = useState<string | null>(null);
   const [creatingRoom, setCreatingRoom] = useState(false);
   const [snapshot, setSnapshot] = useState<HostSnapshot | null>(null);
+  const [hostToken, setHostToken] = useState<string | null>(null);
   const [clockNowMs, setClockNowMs] = useState(Date.now());
 
   useEffect(() => {
@@ -150,13 +152,13 @@ export function TriviaLiveBuilderExperience() {
   }, []);
 
   useEffect(() => {
-    if (!snapshot?.sessionId) {
+    if (!snapshot?.sessionId || !hostToken) {
       return;
     }
 
     const handle = window.setInterval(async () => {
       try {
-        const nextSnapshot = await requestJson<HostSnapshot>(`/api/trivia/sessions/${snapshot.sessionId}`);
+        const nextSnapshot = await requestJson<HostSnapshot>(`/api/trivia/sessions/${snapshot.sessionId}`, undefined, hostToken);
         setSnapshot(nextSnapshot);
       } catch (error) {
         setSetupError(error instanceof Error ? error.message : "Unable to refresh the trivia room.");
@@ -166,7 +168,7 @@ export function TriviaLiveBuilderExperience() {
     return () => {
       window.clearInterval(handle);
     };
-  }, [snapshot?.sessionId]);
+  }, [hostToken, snapshot?.sessionId]);
 
   useEffect(() => {
     if (snapshot?.phase !== "question-open") {
@@ -208,14 +210,15 @@ export function TriviaLiveBuilderExperience() {
     try {
       setCreatingRoom(true);
       setSetupError(null);
-      const room = await requestJson<{ sessionId: string; roomCode: string }>("/api/trivia/sessions", {
+      const room = await requestJson<{ sessionId: string; roomCode: string; hostToken: string }>("/api/trivia/sessions", {
         method: "POST",
         body: JSON.stringify({
           category: "bible",
           difficultyFilter: selectedDifficultyFilter,
         }),
       });
-      const nextSnapshot = await requestJson<HostSnapshot>(`/api/trivia/sessions/${room.sessionId}`);
+      setHostToken(room.hostToken);
+      const nextSnapshot = await requestJson<HostSnapshot>(`/api/trivia/sessions/${room.sessionId}`, undefined, room.hostToken);
       setSnapshot(nextSnapshot);
     } catch (error) {
       setSetupError(error instanceof Error ? error.message : "Unable to create the trivia room.");
@@ -225,36 +228,36 @@ export function TriviaLiveBuilderExperience() {
   }
 
   async function startRoom() {
-    if (!snapshot) {
+    if (!snapshot || !hostToken) {
       return;
     }
 
     try {
-      setSnapshot(await requestJson<HostSnapshot>(`/api/trivia/sessions/${snapshot.sessionId}/start`, { method: "POST", body: "{}" }));
+      setSnapshot(await requestJson<HostSnapshot>(`/api/trivia/sessions/${snapshot.sessionId}/start`, { method: "POST", body: "{}" }, hostToken));
     } catch (error) {
       setSetupError(error instanceof Error ? error.message : "Unable to start the trivia room.");
     }
   }
 
   async function resolveQuestion() {
-    if (!snapshot) {
+    if (!snapshot || !hostToken) {
       return;
     }
 
     try {
-      setSnapshot(await requestJson<HostSnapshot>(`/api/trivia/sessions/${snapshot.sessionId}/resolve`, { method: "POST", body: "{}" }));
+      setSnapshot(await requestJson<HostSnapshot>(`/api/trivia/sessions/${snapshot.sessionId}/resolve`, { method: "POST", body: "{}" }, hostToken));
     } catch (error) {
       setSetupError(error instanceof Error ? error.message : "Unable to resolve the trivia question.");
     }
   }
 
   async function advanceQuestion() {
-    if (!snapshot) {
+    if (!snapshot || !hostToken) {
       return;
     }
 
     try {
-      setSnapshot(await requestJson<HostSnapshot>(`/api/trivia/sessions/${snapshot.sessionId}/advance`, { method: "POST", body: "{}" }));
+      setSnapshot(await requestJson<HostSnapshot>(`/api/trivia/sessions/${snapshot.sessionId}/advance`, { method: "POST", body: "{}" }, hostToken));
     } catch (error) {
       setSetupError(error instanceof Error ? error.message : "Unable to advance the trivia question.");
     }

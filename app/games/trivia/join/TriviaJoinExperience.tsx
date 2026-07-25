@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { RuntimeDeckCard } from "../play/trivia-runtime-types";
+import type { RuntimePublicDeckCard } from "../play/trivia-runtime-types";
 
 type JoinPlayer = {
   id: string;
@@ -19,7 +19,7 @@ type JoinSnapshot = {
   phase: "lobby" | "question-open" | "answer-reveal" | "completed";
   serverTimeMs: number;
   player: JoinPlayer;
-  currentCard: RuntimeDeckCard | null;
+  currentCard: RuntimePublicDeckCard | null;
   questionOpenedAtMs: number | null;
   questionTimerSeconds: number | null;
   answerState: {
@@ -38,12 +38,17 @@ type JoinSnapshot = {
   } | null;
 };
 
-const requestJson = async <T,>(url: string, init?: RequestInit) => {
+type JoinResponse = JoinSnapshot & {
+  playerToken: string;
+};
+
+const requestJson = async <T,>(url: string, init?: RequestInit, bearerToken?: string | null) => {
   const response = await fetch(url, {
     cache: "no-store",
     ...init,
     headers: {
       "Content-Type": "application/json",
+      ...(bearerToken ? { Authorization: `Bearer ${bearerToken}` } : {}),
       ...(init?.headers ?? {}),
     },
   });
@@ -88,6 +93,7 @@ export function TriviaJoinExperience() {
   const [joinError, setJoinError] = useState<string | null>(null);
   const [joining, setJoining] = useState(false);
   const [snapshot, setSnapshot] = useState<JoinSnapshot | null>(null);
+  const [playerToken, setPlayerToken] = useState<string | null>(null);
   const [clockNowMs, setClockNowMs] = useState(Date.now());
 
   useEffect(() => {
@@ -100,13 +106,13 @@ export function TriviaJoinExperience() {
   }, []);
 
   useEffect(() => {
-    if (!snapshot?.sessionId || !snapshot?.player.id) {
+    if (!snapshot?.sessionId || !snapshot?.player.id || !playerToken) {
       return;
     }
 
     const handle = window.setInterval(async () => {
       try {
-        const nextSnapshot = await requestJson<JoinSnapshot>(`/api/trivia/sessions/${snapshot.sessionId}/players/${snapshot.player.id}`);
+        const nextSnapshot = await requestJson<JoinSnapshot>(`/api/trivia/sessions/${snapshot.sessionId}/players/${snapshot.player.id}`, undefined, playerToken);
         setSnapshot(nextSnapshot);
       } catch (error) {
         setJoinError(error instanceof Error ? error.message : "Unable to refresh the join session.");
@@ -116,7 +122,7 @@ export function TriviaJoinExperience() {
     return () => {
       window.clearInterval(handle);
     };
-  }, [snapshot?.player.id, snapshot?.sessionId]);
+  }, [playerToken, snapshot?.player.id, snapshot?.sessionId]);
 
   useEffect(() => {
     if (snapshot?.phase !== "question-open") {
@@ -130,7 +136,7 @@ export function TriviaJoinExperience() {
     return () => {
       window.clearInterval(handle);
     };
-  }, [snapshot?.phase, snapshot?.questionOpenedAtMs, snapshot?.currentCard?.sourceId]);
+  }, [snapshot?.phase, snapshot?.questionOpenedAtMs]);
 
   const countdown = getCountdownState(snapshot, clockNowMs);
 
@@ -138,14 +144,15 @@ export function TriviaJoinExperience() {
     try {
       setJoining(true);
       setJoinError(null);
-      const nextSnapshot = await requestJson<JoinSnapshot>("/api/trivia/rooms/join", {
+      const joined = await requestJson<JoinResponse>("/api/trivia/rooms/join", {
         method: "POST",
         body: JSON.stringify({
           roomCode,
           playerName,
         }),
       });
-      setSnapshot(nextSnapshot);
+      setPlayerToken(joined.playerToken);
+      setSnapshot(joined);
     } catch (error) {
       setJoinError(error instanceof Error ? error.message : "Unable to join the trivia room.");
     } finally {
@@ -154,7 +161,7 @@ export function TriviaJoinExperience() {
   }
 
   async function answer(response: string) {
-    if (!snapshot) {
+    if (!snapshot || !playerToken) {
       return;
     }
 
@@ -163,7 +170,7 @@ export function TriviaJoinExperience() {
         await requestJson<JoinSnapshot>(`/api/trivia/sessions/${snapshot.sessionId}/players/${snapshot.player.id}/answer`, {
           method: "POST",
           body: JSON.stringify({ response }),
-        }),
+        }, playerToken),
       );
     } catch (error) {
       setJoinError(error instanceof Error ? error.message : "Unable to submit the answer.");
