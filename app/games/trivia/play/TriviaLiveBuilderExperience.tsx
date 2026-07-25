@@ -12,6 +12,7 @@ import {
   type RuntimeDeckRound,
   type RuntimeDifficultyFilter,
 } from "./trivia-runtime-types";
+import { subscribeToTriviaStream } from "./trivia-live-stream";
 
 type HostPlayer = {
   id: string;
@@ -127,6 +128,7 @@ export function TriviaLiveBuilderExperience() {
   const [hostToken, setHostToken] = useState<string | null>(null);
   const [clockNowMs, setClockNowMs] = useState(Date.now());
   const [serverClockOffsetMs, setServerClockOffsetMs] = useState(0);
+  const [streamConnected, setStreamConnected] = useState(false);
   const snapshotServerTimeMs = snapshot?.serverTimeMs;
 
   useEffect(() => {
@@ -186,7 +188,7 @@ export function TriviaLiveBuilderExperience() {
   }, []);
 
   useEffect(() => {
-    if (!snapshot?.sessionId || !hostToken) {
+    if (!snapshot?.sessionId || !hostToken || streamConnected) {
       return;
     }
 
@@ -202,6 +204,19 @@ export function TriviaLiveBuilderExperience() {
     return () => {
       window.clearInterval(handle);
     };
+  }, [hostToken, snapshot?.sessionId, streamConnected]);
+
+  useEffect(() => {
+    if (!snapshot?.sessionId || !hostToken) {
+      return;
+    }
+
+    return subscribeToTriviaStream<HostSnapshot>({
+      url: `/api/trivia/sessions/${snapshot.sessionId}/events`,
+      token: hostToken,
+      onSnapshot: setSnapshot,
+      onConnectionChange: setStreamConnected,
+    });
   }, [hostToken, snapshot?.sessionId]);
 
   useEffect(() => {

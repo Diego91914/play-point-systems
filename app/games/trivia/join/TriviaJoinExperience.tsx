@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { RuntimePublicDeckCard } from "../play/trivia-runtime-types";
+import { subscribeToTriviaStream } from "../play/trivia-live-stream";
 
 type JoinPlayer = {
   id: string;
@@ -98,6 +99,7 @@ export function TriviaJoinExperience() {
   const [playerToken, setPlayerToken] = useState<string | null>(null);
   const [clockNowMs, setClockNowMs] = useState(Date.now());
   const [serverClockOffsetMs, setServerClockOffsetMs] = useState(0);
+  const [streamConnected, setStreamConnected] = useState(false);
   const snapshotServerTimeMs = snapshot?.serverTimeMs;
 
   useEffect(() => {
@@ -149,7 +151,7 @@ export function TriviaJoinExperience() {
   }, []);
 
   useEffect(() => {
-    if (!snapshot?.sessionId || !snapshot?.player.id || !playerToken) {
+    if (!snapshot?.sessionId || !snapshot?.player.id || !playerToken || streamConnected) {
       return;
     }
 
@@ -165,6 +167,19 @@ export function TriviaJoinExperience() {
     return () => {
       window.clearInterval(handle);
     };
+  }, [playerToken, snapshot?.player.id, snapshot?.sessionId, streamConnected]);
+
+  useEffect(() => {
+    if (!snapshot?.sessionId || !snapshot?.player.id || !playerToken) {
+      return;
+    }
+
+    return subscribeToTriviaStream<JoinSnapshot>({
+      url: `/api/trivia/sessions/${snapshot.sessionId}/events?playerId=${encodeURIComponent(snapshot.player.id)}`,
+      token: playerToken,
+      onSnapshot: setSnapshot,
+      onConnectionChange: setStreamConnected,
+    });
   }, [playerToken, snapshot?.player.id, snapshot?.sessionId]);
 
   useEffect(() => {
