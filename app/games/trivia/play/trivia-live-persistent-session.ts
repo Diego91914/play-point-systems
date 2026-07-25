@@ -155,6 +155,14 @@ function getCurrentCard(session: PersistedSession) {
 }
 
 async function loadSession(sessionId: string): Promise<PersistedSessionBundle> {
+  const { error: syncError } = await getSupabaseServerClient().rpc("ppl_trivia_sync_question_phase", {
+    p_session_id: sessionId,
+  });
+
+  if (syncError) {
+    throw new Error(syncError.message);
+  }
+
   const { data, error } = await getSupabaseServerClient().rpc("ppl_trivia_load_session", {
     p_session_id: sessionId,
   });
@@ -317,7 +325,7 @@ export async function buildPersistentTriviaLiveHostSnapshot(
   requireHost(bundle, hostToken);
   const { session, players, answers, wagers } = bundle;
   const storedCard = getCurrentCard(session);
-  const currentCard = session.phase === "wager-open" ? null : storedCard;
+  const currentCard = ["question-open", "answer-reveal"].includes(session.phase) ? storedCard : null;
 
   return {
     sessionId: session.id,
@@ -360,7 +368,7 @@ export async function buildPersistentTriviaLivePlayerSnapshot(
 ): Promise<TriviaLivePlayerSnapshot> {
   const bundle = await loadSession(sessionId);
   const player = requirePlayer(bundle, playerId, playerToken);
-  const currentCard = bundle.session.phase === "wager-open" ? null : getCurrentCard(bundle.session);
+  const currentCard = ["question-open", "answer-reveal"].includes(bundle.session.phase) ? getCurrentCard(bundle.session) : null;
   const answer = bundle.answers.find((candidate) => candidate.player_id === playerId);
   const wager = bundle.wagers.find((candidate) => candidate.player_id === playerId);
   const resolutionRow = bundle.session.resolution?.rows.find((row) => row.playerId === playerId) ?? null;

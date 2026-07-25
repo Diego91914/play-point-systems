@@ -29,7 +29,7 @@ type ProjectorSnapshot = {
   roomCode: string;
   qrUrl: string;
   status: "lobby" | "in-progress" | "completed";
-  phase: "lobby" | "wager-open" | "question-open" | "answer-reveal" | "completed";
+  phase: "lobby" | "wager-open" | "question-countdown" | "question-open" | "answer-reveal" | "completed";
   cardIndex: number;
   deck: RuntimeDeck;
   currentCard: RuntimeDeckCard | null;
@@ -61,6 +61,7 @@ export type ProjectorCountdown = {
 type TriviaProjectorModeProps = {
   snapshot: ProjectorSnapshot;
   countdown: ProjectorCountdown | null;
+  questionStartCountdown: number;
   onStart: () => void;
   onReveal: () => void;
   onAdvance: () => void;
@@ -111,6 +112,7 @@ function ProjectorTeamLeaderboard({ standings }: { standings: TriviaTeamStanding
 export function TriviaProjectorMode({
   snapshot,
   countdown,
+  questionStartCountdown,
   onStart,
   onReveal,
   onAdvance,
@@ -119,6 +121,7 @@ export function TriviaProjectorMode({
   const currentCard = snapshot.currentCard;
   const isLobby = snapshot.phase === "lobby";
   const isWager = snapshot.phase === "wager-open";
+  const isStartingQuestion = snapshot.phase === "question-countdown";
   const isQuestion = snapshot.phase === "question-open" && currentCard;
   const revealedResolution = snapshot.phase === "answer-reveal" ? snapshot.resolution : null;
   const isComplete = snapshot.status === "completed";
@@ -206,6 +209,12 @@ export function TriviaProjectorMode({
                   Open Final Question
                 </button>
               ) : null}
+            </div>
+          ) : isStartingQuestion ? (
+            <div className="mx-auto w-full max-w-5xl text-center">
+              <div className="text-sm font-semibold uppercase tracking-[0.34em] text-cyan-100/68">Next question</div>
+              <div className="mt-8 text-[11rem] font-black leading-none text-white sm:text-[15rem]">{questionStartCountdown || "Go"}</div>
+              <p className="mt-8 text-3xl font-black text-white/72">Get ready</p>
             </div>
           ) : isQuestion ? (
             <div className="mx-auto grid w-full max-w-[1600px] gap-8 xl:grid-cols-[1fr_270px] xl:items-center">

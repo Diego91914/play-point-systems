@@ -3,6 +3,7 @@ import { buildRuntimeDeck } from "./trivia-runtime-builder";
 import {
   calculateTriviaCorrectPoints,
   getTriviaTimerSeconds,
+  TRIVIA_QUESTION_COUNTDOWN_SECONDS,
   type TriviaPacingMode,
 } from "./trivia-live-timing";
 import type {
@@ -27,7 +28,7 @@ const recentQuestionIdsByCategory = new Map<string, string[]>();
 const AUTH_TOKEN_BYTES = 32;
 
 export type TriviaLiveSessionStatus = "lobby" | "in-progress" | "completed";
-export type TriviaLiveSessionPhase = "lobby" | "wager-open" | "question-open" | "answer-reveal" | "completed";
+export type TriviaLiveSessionPhase = "lobby" | "wager-open" | "question-countdown" | "question-open" | "answer-reveal" | "completed";
 
 export type TriviaLivePlayer = {
   id: string;
@@ -201,6 +202,8 @@ function requireHost(sessionId: string, token: string | null) {
     throw new TriviaLiveAuthorizationError("A valid host token is required.");
   }
 
+  syncTriviaQuestionPhase(session);
+
   return session;
 }
 
@@ -212,7 +215,25 @@ function requirePlayer(sessionId: string, playerId: string, token: string | null
     throw new TriviaLiveAuthorizationError("A valid player token is required.");
   }
 
+  syncTriviaQuestionPhase(session);
+
   return { session, player };
+}
+
+function syncTriviaQuestionPhase(session: TriviaLiveSession) {
+  if (
+    session.phase === "question-countdown"
+    && session.openedAtMs !== null
+    && session.openedAtMs <= now()
+  ) {
+    session.phase = "question-open";
+    session.updatedAtMs = now();
+  }
+}
+
+function beginTriviaQuestionCountdown(session: TriviaLiveSession) {
+  session.phase = "question-countdown";
+  session.openedAtMs = now() + TRIVIA_QUESTION_COUNTDOWN_SECONDS * 1000;
 }
 
 function generateRoomCode(): string {
@@ -453,8 +474,7 @@ export function startTriviaLiveSession(sessionId: string, hostToken: string | nu
   }
 
   session.status = "in-progress";
-  session.phase = "question-open";
-  session.openedAtMs = now();
+  beginTriviaQuestionCountdown(session);
   session.updatedAtMs = now();
 
   return session;
@@ -597,8 +617,7 @@ export function advanceTriviaLiveQuestion(sessionId: string, hostToken: string |
   }
 
   if (session.phase === "wager-open") {
-    session.phase = "question-open";
-    session.openedAtMs = now();
+    beginTriviaQuestionCountdown(session);
     session.updatedAtMs = now();
     return session;
   }
@@ -617,8 +636,12 @@ export function advanceTriviaLiveQuestion(sessionId: string, hostToken: string |
   session.selections = {};
   session.resolution = null;
   const isFinalQuestion = session.cardIndex === session.deck.cards.length - 1;
-  session.phase = isFinalQuestion ? "wager-open" : "question-open";
-  session.openedAtMs = isFinalQuestion ? null : now();
+  if (isFinalQuestion) {
+    session.phase = "wager-open";
+    session.openedAtMs = null;
+  } else {
+    beginTriviaQuestionCountdown(session);
+  }
   session.updatedAtMs = now();
 
   return session;
@@ -627,7 +650,7 @@ export function advanceTriviaLiveQuestion(sessionId: string, hostToken: string |
 export function buildTriviaLiveHostSnapshot(sessionId: string, origin: string, hostToken: string | null): TriviaLiveHostSnapshot {
   const session = requireHost(sessionId, hostToken);
   const storedCard = getCurrentCard(session);
-  const currentCard = session.phase === "wager-open" ? null : storedCard;
+  const currentCard = ["question-open", "answer-reveal"].includes(session.phase) ? storedCard : null;
   const wagers = Object.entries(session.wagers).filter((entry): entry is [string, number] => entry[1] !== undefined);
 
   return {
@@ -666,7 +689,7 @@ export function buildTriviaLiveHostSnapshot(sessionId: string, origin: string, h
 
 export function buildTriviaLivePlayerSnapshot(sessionId: string, playerId: string, playerToken: string | null): TriviaLivePlayerSnapshot {
   const { session, player } = requirePlayer(sessionId, playerId, playerToken);
-  const currentCard = session.phase === "wager-open" ? null : getCurrentCard(session);
+  const currentCard = ["question-open", "answer-reveal"].includes(session.phase) ? getCurrentCard(session) : null;
   const answer = session.selections[playerId];
   const resolutionRow = session.resolution?.rows.find((row) => row.playerId === playerId) ?? null;
 

@@ -52,6 +52,7 @@ export async function GET(
       let refreshInFlight = false;
       let refreshPending = false;
       let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+      let phaseTimer: ReturnType<typeof setTimeout> | null = null;
 
       const send = (event: string, data: unknown) => {
         if (!closed) {
@@ -86,6 +87,9 @@ export async function GET(
         if (refreshTimer) {
           clearTimeout(refreshTimer);
         }
+        if (phaseTimer) {
+          clearTimeout(phaseTimer);
+        }
         clearInterval(heartbeat);
         clearTimeout(lifetime);
         request.signal.removeEventListener("abort", close);
@@ -96,6 +100,23 @@ export async function GET(
         } catch {
           // The browser may have already canceled the stream.
         }
+      };
+
+      const scheduleQuestionOpen = (snapshot: unknown) => {
+        if (phaseTimer) {
+          clearTimeout(phaseTimer);
+          phaseTimer = null;
+        }
+
+        const timedSnapshot = snapshot as { phase?: string; questionOpenedAtMs?: number | null };
+        if (timedSnapshot.phase !== "question-countdown" || timedSnapshot.questionOpenedAtMs == null) {
+          return;
+        }
+
+        phaseTimer = setTimeout(
+          () => void refreshSnapshot(),
+          Math.max(0, timedSnapshot.questionOpenedAtMs - Date.now()) + 25,
+        );
       };
 
       const refreshSnapshot = async () => {
@@ -110,7 +131,9 @@ export async function GET(
         refreshInFlight = true;
 
         try {
-          send("snapshot", await loadSnapshot());
+          const nextSnapshot = await loadSnapshot();
+          send("snapshot", nextSnapshot);
+          scheduleQuestionOpen(nextSnapshot);
         } catch (error) {
           send("expired", {
             error: error instanceof Error ? error.message : "The trivia room is no longer available.",
@@ -140,6 +163,7 @@ export async function GET(
       request.signal.addEventListener("abort", close, { once: true });
       controller.enqueue(encoder.encode(`: ${" ".repeat(2048)}\nretry: 1500\n\n`));
       send("snapshot", initialSnapshot);
+      scheduleQuestionOpen(initialSnapshot);
 
       channel.subscribe((status) => {
         if (status === "SUBSCRIBED") {

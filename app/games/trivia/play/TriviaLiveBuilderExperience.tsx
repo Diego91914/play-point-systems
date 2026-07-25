@@ -27,6 +27,7 @@ import {
   calculateTriviaCorrectPoints,
   formatTriviaScoringSummary,
   getTriviaCountdownProgress,
+  getTriviaQuestionStartCountdown,
   TRIVIA_PACING_OPTIONS,
   type TriviaPacingMode,
 } from "./trivia-live-timing";
@@ -69,7 +70,7 @@ type HostSnapshot = {
   joinUrl: string;
   qrUrl: string;
   status: "lobby" | "in-progress" | "completed";
-  phase: "lobby" | "wager-open" | "question-open" | "answer-reveal" | "completed";
+  phase: "lobby" | "wager-open" | "question-countdown" | "question-open" | "answer-reveal" | "completed";
   serverTimeMs: number;
   cardIndex: number;
   deck: RuntimeDeck;
@@ -187,6 +188,7 @@ export function TriviaLiveBuilderExperience() {
   const [streamConnected, setStreamConnected] = useState(false);
   const [projectorMode, setProjectorMode] = useState(false);
   const snapshotServerTimeMs = snapshot?.serverTimeMs;
+  const snapshotPhase = snapshot?.phase;
 
   useEffect(() => {
     const storedConnection = window.sessionStorage.getItem(HOST_CONNECTION_STORAGE_KEY);
@@ -283,7 +285,7 @@ export function TriviaLiveBuilderExperience() {
   }, [snapshotServerTimeMs]);
 
   useEffect(() => {
-    if (snapshot?.phase !== "question-open") {
+    if (!snapshotPhase || !["question-countdown", "question-open"].includes(snapshotPhase)) {
       return;
     }
 
@@ -294,7 +296,7 @@ export function TriviaLiveBuilderExperience() {
     return () => {
       window.clearInterval(handle);
     };
-  }, [serverClockOffsetMs, snapshot?.phase, snapshot?.questionOpenedAtMs, snapshot?.cardIndex]);
+  }, [serverClockOffsetMs, snapshotPhase, snapshot?.questionOpenedAtMs, snapshot?.cardIndex]);
 
   const selectedCategorySummary = catalog.find((category) => category.category === "bible") ?? null;
   const availableDifficultyFilters = useMemo(
@@ -312,6 +314,9 @@ export function TriviaLiveBuilderExperience() {
   const currentCard = snapshot?.currentCard ?? null;
   const isComplete = snapshot?.status === "completed";
   const countdown = getCountdownState(snapshot, clockNowMs);
+  const questionStartCountdown = snapshot?.phase === "question-countdown"
+    ? getTriviaQuestionStartCountdown(snapshot.questionOpenedAtMs, clockNowMs)
+    : 0;
   const isFinalQuestion = Boolean(snapshot && snapshot.cardIndex === snapshot.deck.cards.length - 1);
   const displayedPacingMode = snapshot?.pacingMode ?? selectedPacingMode;
   const displayedGameMode = snapshot?.gameMode ?? selectedGameMode;
@@ -443,6 +448,7 @@ export function TriviaLiveBuilderExperience() {
         <TriviaProjectorMode
           snapshot={snapshot}
           countdown={countdown}
+          questionStartCountdown={questionStartCountdown}
           onStart={startRoom}
           onReveal={resolveQuestion}
           onAdvance={advanceQuestion}
@@ -717,6 +723,15 @@ export function TriviaLiveBuilderExperience() {
                         );
                       })}
                     </div>
+                  </div>
+                ) : null}
+
+                {snapshot.phase === "question-countdown" ? (
+                  <div className="rounded-[28px] border border-cyan-300/25 bg-[linear-gradient(180deg,rgba(45,139,190,0.24),rgba(255,255,255,0.03))] p-7 text-center sm:p-10">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-cyan-100/70">Next question</div>
+                    <div className="mt-5 text-7xl font-black text-white sm:text-8xl">{questionStartCountdown || "Go"}</div>
+                    <h3 className="mt-4 text-2xl font-black text-white">Question begins for everyone together</h3>
+                    <p className="mt-3 text-sm text-white/64">Prompts and answer choices stay hidden until the countdown ends.</p>
                   </div>
                 ) : null}
 

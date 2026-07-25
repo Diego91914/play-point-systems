@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { GET as getPublicDeck } from "../app/api/trivia/deck/route";
 import { GET as getHostSession } from "../app/api/trivia/sessions/[sessionId]/route";
 import {
@@ -19,9 +19,14 @@ function createRoomWithPlayers(...names: string[]) {
 }
 
 describe("live trivia serialization security", () => {
+  afterEach(() => vi.useRealTimers());
+
   it("never sends answer-key fields in a player card before reveal", () => {
     const { room, players } = createRoomWithPlayers("Alex");
     const [player] = players;
+    vi.useFakeTimers();
+    startTriviaLiveSession(room.sessionId, room.hostToken);
+    vi.advanceTimersByTime(3_000);
     const snapshot = buildTriviaLivePlayerSnapshot(room.sessionId, player.playerId, player.playerToken);
     const serializedCard = JSON.stringify(snapshot.currentCard);
 
@@ -36,7 +41,9 @@ describe("live trivia serialization security", () => {
   it("reveals the answer only after the host resolves the question", () => {
     const { room, players } = createRoomWithPlayers("Jordan");
     const [player] = players;
+    vi.useFakeTimers();
     startTriviaLiveSession(room.sessionId, room.hostToken);
+    vi.advanceTimersByTime(3_000);
 
     const openSnapshot = buildTriviaLivePlayerSnapshot(room.sessionId, player.playerId, player.playerToken);
     const firstSlot = openSnapshot.currentCard?.choices[0]?.slot;

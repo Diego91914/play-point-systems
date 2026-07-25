@@ -7,6 +7,7 @@ import { formatTriviaTeamWinnerHeading, getTriviaTeamLabel, type TriviaTeamStand
 import {
   calculateTriviaCorrectPoints,
   formatTriviaScoringSummary,
+  getTriviaQuestionStartCountdown,
   TRIVIA_PACING_OPTIONS,
   type TriviaPacingMode,
 } from "../play/trivia-live-timing";
@@ -27,7 +28,7 @@ type JoinSnapshot = {
   sessionId: string;
   roomCode: string;
   status: "lobby" | "in-progress" | "completed";
-  phase: "lobby" | "wager-open" | "question-open" | "answer-reveal" | "completed";
+  phase: "lobby" | "wager-open" | "question-countdown" | "question-open" | "answer-reveal" | "completed";
   serverTimeMs: number;
   player: JoinPlayer;
   currentCard: RuntimePublicDeckCard | null;
@@ -145,6 +146,7 @@ export function TriviaJoinExperience() {
   const [wagerInput, setWagerInput] = useState("");
   const [submittingWager, setSubmittingWager] = useState(false);
   const snapshotServerTimeMs = snapshot?.serverTimeMs;
+  const snapshotPhase = snapshot?.phase;
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -233,7 +235,7 @@ export function TriviaJoinExperience() {
   }, [snapshotServerTimeMs]);
 
   useEffect(() => {
-    if (snapshot?.phase !== "question-open") {
+    if (!snapshotPhase || !["question-countdown", "question-open"].includes(snapshotPhase)) {
       return;
     }
 
@@ -244,7 +246,7 @@ export function TriviaJoinExperience() {
     return () => {
       window.clearInterval(handle);
     };
-  }, [serverClockOffsetMs, snapshot?.phase, snapshot?.questionOpenedAtMs]);
+  }, [serverClockOffsetMs, snapshotPhase, snapshot?.questionOpenedAtMs]);
 
   useEffect(() => {
     if (snapshot?.phase === "wager-open" && !snapshot.wagerState.hasSubmitted) {
@@ -253,6 +255,9 @@ export function TriviaJoinExperience() {
   }, [snapshot?.phase, snapshot?.wagerState.hasSubmitted, snapshot?.wagerState.maxWager]);
 
   const countdown = getCountdownState(snapshot, clockNowMs);
+  const questionStartCountdown = snapshot?.phase === "question-countdown"
+    ? getTriviaQuestionStartCountdown(snapshot.questionOpenedAtMs, clockNowMs)
+    : 0;
   const isFinalQuestion = Boolean(
     snapshot?.currentCard
     && snapshot.currentCard.roundIndex === snapshot.currentCard.totalRounds - 1
@@ -442,6 +447,12 @@ export function TriviaJoinExperience() {
                     </button>
                   </div>
                 )}
+              </div>
+            ) : snapshot.phase === "question-countdown" ? (
+              <div className="rounded-[28px] border border-cyan-300/25 bg-[linear-gradient(180deg,rgba(45,139,190,0.26),rgba(255,255,255,0.03))] p-7 text-center">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-cyan-100/70">Get ready</div>
+                <div className="mt-5 text-8xl font-black text-white">{questionStartCountdown || "Go"}</div>
+                <p className="mt-5 text-sm leading-6 text-white/68">The next question and choices will appear for everyone together.</p>
               </div>
             ) : snapshot.phase === "question-open" && snapshot.currentCard ? (
               <div className="grid gap-4">

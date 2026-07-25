@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   advanceTriviaLiveQuestion,
   buildTriviaLiveHostSnapshot,
@@ -11,7 +11,12 @@ import {
 } from "../app/games/trivia/play/trivia-live-session";
 
 function answerCurrentQuestion(sessionId: string, hostToken: string, playerId: string, playerToken: string, correct: boolean) {
-  const card = buildTriviaLiveHostSnapshot(sessionId, "https://example.com", hostToken).currentCard!;
+  let snapshot = buildTriviaLiveHostSnapshot(sessionId, "https://example.com", hostToken);
+  if (snapshot.phase === "question-countdown") {
+    vi.advanceTimersByTime(3_000);
+    snapshot = buildTriviaLiveHostSnapshot(sessionId, "https://example.com", hostToken);
+  }
+  const card = snapshot.currentCard!;
   const choice = card.choices.find((candidate) => candidate.isCorrect === correct)!;
   submitTriviaLiveAnswer(sessionId, playerId, choice.slot, playerToken);
   resolveTriviaLiveQuestion(sessionId, hostToken);
@@ -19,7 +24,10 @@ function answerCurrentQuestion(sessionId: string, hostToken: string, playerId: s
 }
 
 describe("live trivia streaks", () => {
+  afterEach(() => vi.useRealTimers());
+
   it("awards visible consecutive-answer bonuses and resets the current streak after a miss", () => {
+    vi.useFakeTimers();
     const room = createTriviaLiveSession("bible", "mixed");
     const player = joinTriviaLiveSession(room.roomCode, "Streak Player");
     startTriviaLiveSession(room.sessionId, room.hostToken);

@@ -47,6 +47,7 @@ describe("trivia pacing modes", () => {
     const player = joinTriviaLiveSession(room.roomCode, "Relaxed Player");
 
     startTriviaLiveSession(room.sessionId, room.hostToken);
+    vi.advanceTimersByTime(3_000);
     const opened = buildTriviaLiveHostSnapshot(room.sessionId, "https://example.com", room.hostToken);
     const correctSlot = opened.currentCard?.choices.find((choice) => choice.isCorrect)?.slot;
 
@@ -69,6 +70,7 @@ describe("trivia pacing modes", () => {
     const player = joinTriviaLiveSession(room.roomCode, "Round Two Player");
 
     startTriviaLiveSession(room.sessionId, room.hostToken);
+    vi.advanceTimersByTime(3_000);
 
     for (let questionIndex = 0; questionIndex < 3; questionIndex += 1) {
       const open = buildTriviaLiveHostSnapshot(room.sessionId, "https://example.com", room.hostToken);
@@ -76,6 +78,7 @@ describe("trivia pacing modes", () => {
       submitTriviaLiveAnswer(room.sessionId, player.playerId, correctSlot!, player.playerToken);
       resolveTriviaLiveQuestion(room.sessionId, room.hostToken);
       advanceTriviaLiveQuestion(room.sessionId, room.hostToken);
+      vi.advanceTimersByTime(3_000);
     }
 
     const pressureRound = buildTriviaLiveHostSnapshot(room.sessionId, "https://example.com", room.hostToken);
@@ -97,6 +100,7 @@ describe("trivia pacing modes", () => {
     const player = joinTriviaLiveSession(room.roomCode, "Boundary Player");
 
     startTriviaLiveSession(room.sessionId, room.hostToken);
+    vi.advanceTimersByTime(3_000);
     vi.advanceTimersByTime(10_000);
 
     expect(() => submitTriviaLiveAnswer(room.sessionId, player.playerId, "A", player.playerToken)).toThrow(

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   advanceTriviaLiveQuestion,
   buildTriviaLiveHostSnapshot,
@@ -13,7 +13,12 @@ import {
 } from "../app/games/trivia/play/trivia-live-session";
 
 function correctSlot(sessionId: string, hostToken: string) {
-  const card = buildTriviaLiveHostSnapshot(sessionId, "https://example.com", hostToken).currentCard;
+  let snapshot = buildTriviaLiveHostSnapshot(sessionId, "https://example.com", hostToken);
+  if (snapshot.phase === "question-countdown") {
+    vi.advanceTimersByTime(3_000);
+    snapshot = buildTriviaLiveHostSnapshot(sessionId, "https://example.com", hostToken);
+  }
+  const card = snapshot.currentCard;
   const slot = card?.choices.find((choice) => choice.isCorrect)?.slot;
 
   if (!slot) {
@@ -27,6 +32,11 @@ function advanceToFinalWager(sessionId: string, hostToken: string) {
   while (true) {
     const snapshot = buildTriviaLiveHostSnapshot(sessionId, "https://example.com", hostToken);
 
+    if (snapshot.phase === "question-countdown") {
+      vi.advanceTimersByTime(3_000);
+      continue;
+    }
+
     if (snapshot.phase === "wager-open") {
       return snapshot;
     }
@@ -37,6 +47,9 @@ function advanceToFinalWager(sessionId: string, hostToken: string) {
 }
 
 describe("live trivia final wager", () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+
   it("pauses before the final question and keeps wagers private", () => {
     const room = createTriviaLiveSession("bible", "mixed");
     const player = joinTriviaLiveSession(room.roomCode, "Olivia");
@@ -76,6 +89,7 @@ describe("live trivia final wager", () => {
     submitTriviaLiveWager(room.sessionId, winner.playerId, 500, winner.playerToken);
     submitTriviaLiveWager(room.sessionId, loser.playerId, 500, loser.playerToken);
     advanceTriviaLiveQuestion(room.sessionId, room.hostToken);
+    vi.advanceTimersByTime(3_000);
 
     const finalCard = buildTriviaLiveHostSnapshot(room.sessionId, "https://example.com", room.hostToken).currentCard!;
     const finalCorrectSlot = finalCard.choices.find((choice) => choice.isCorrect)!.slot;

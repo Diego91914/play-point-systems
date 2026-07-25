@@ -1,6 +1,7 @@
 import type { RuntimeRoundScoring, RuntimeScoringMode } from "./trivia-runtime-types";
 
 export const TRIVIA_PACING_MODES = ["standard", "relaxed"] as const;
+export const TRIVIA_QUESTION_COUNTDOWN_SECONDS = 3;
 
 export type TriviaPacingMode = (typeof TRIVIA_PACING_MODES)[number];
 
@@ -23,6 +24,14 @@ export const TRIVIA_PACING_OPTIONS: Record<TriviaPacingMode, {
 
 export function getTriviaTimerSeconds(pacingMode: TriviaPacingMode): number {
   return TRIVIA_PACING_OPTIONS[pacingMode].timerSeconds;
+}
+
+export function getTriviaQuestionStartCountdown(questionOpensAtMs: number | null, nowMs: number) {
+  if (questionOpensAtMs === null) {
+    return 0;
+  }
+
+  return Math.max(0, Math.ceil((questionOpensAtMs - nowMs) / 1000));
 }
 
 export function calculateTriviaAvailablePoints(

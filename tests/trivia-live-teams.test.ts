@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   buildTriviaLiveHostSnapshot,
   buildTriviaLivePlayerSnapshot,
@@ -10,7 +10,10 @@ import {
 } from "../app/games/trivia/play/trivia-live-session";
 
 describe("live trivia teams", () => {
+  afterEach(() => vi.useRealTimers());
+
   it("assigns joiners evenly and rolls individual scores into team standings", () => {
+    vi.useFakeTimers();
     const room = createTriviaLiveSession("bible", "mixed", "standard", "teams", 3);
     const players = ["Olivia", "Noah", "Mia", "Liam", "Ava"].map((name) => joinTriviaLiveSession(room.roomCode, name));
     const lobby = buildTriviaLiveHostSnapshot(room.sessionId, "https://example.com", room.hostToken);
@@ -21,6 +24,7 @@ describe("live trivia teams", () => {
     expect(lobby.teamLeaderboard.map((team) => [team.id, team.playerCount])).toEqual([["blue", 2], ["gold", 2], ["red", 1]]);
 
     startTriviaLiveSession(room.sessionId, room.hostToken);
+    vi.advanceTimersByTime(3_000);
     const open = buildTriviaLiveHostSnapshot(room.sessionId, "https://example.com", room.hostToken);
     const correctSlot = open.currentCard!.choices.find((choice) => choice.isCorrect)!.slot;
     submitTriviaLiveAnswer(room.sessionId, players[0].playerId, correctSlot, players[0].playerToken);
