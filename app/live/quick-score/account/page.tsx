@@ -22,6 +22,11 @@ export default function QuickScoreAccountPage() {
   const [revealRecoveryKey, setRevealRecoveryKey] = useState(false);
   const [busy, setBusy] = useState(false);
   const [emailBusy, setEmailBusy] = useState(false);
+  const [emailAction, setEmailAction] = useState<"signin" | "signup" | "reset" | null>(null);
+  const [emailNotice, setEmailNotice] = useState<{
+    tone: "success" | "error";
+    message: string;
+  } | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [signedInEmail, setSignedInEmail] = useState("");
@@ -139,11 +144,16 @@ export default function QuickScoreAccountPage() {
 
   async function submitEmailAuth(mode: "signup" | "signin") {
     if (!email.trim() || password.length < 8) {
-      setError("Enter a valid email and a password with at least 8 characters.");
+      setEmailNotice({
+        tone: "error",
+        message: "Enter a valid email and a password with at least 8 characters.",
+      });
       return;
     }
 
     setEmailBusy(true);
+    setEmailAction(mode);
+    setEmailNotice(null);
     setError("");
     setStatusMessage("");
     try {
@@ -159,7 +169,10 @@ export default function QuickScoreAccountPage() {
 
       setPassword("");
       if (!result.data.session) {
-        setStatusMessage("Check your email to verify the account, then return here and sign in.");
+        setEmailNotice({
+          tone: "success",
+          message: `Account created. We sent a confirmation link to ${email.trim()}. Check your inbox and spam folder, then return here to sign in. Wait at least one minute before requesting another email.`,
+        });
         return;
       }
 
@@ -167,9 +180,13 @@ export default function QuickScoreAccountPage() {
       setAuthAccessToken(result.data.session.access_token);
       await connectSignedInAccount(result.data.session.access_token);
     } catch (authError) {
-      setError(authError instanceof Error ? authError.message : "Email authentication failed.");
+      setEmailNotice({
+        tone: "error",
+        message: authError instanceof Error ? authError.message : "Email authentication failed.",
+      });
     } finally {
       setEmailBusy(false);
+      setEmailAction(null);
     }
   }
 
@@ -253,11 +270,13 @@ export default function QuickScoreAccountPage() {
 
   async function sendPasswordReset() {
     if (!email.trim()) {
-      setError("Enter your email address first.");
+      setEmailNotice({ tone: "error", message: "Enter your email address first." });
       return;
     }
 
     setEmailBusy(true);
+    setEmailAction("reset");
+    setEmailNotice(null);
     setError("");
     try {
       const { error: resetError } = await getQuickScoreBrowserSupabaseClient()
@@ -265,11 +284,18 @@ export default function QuickScoreAccountPage() {
           redirectTo: `${window.location.origin}/live/quick-score/account`,
         });
       if (resetError) throw resetError;
-      setStatusMessage("Password reset email sent. Follow its link to choose a new password.");
+      setEmailNotice({
+        tone: "success",
+        message: `Password reset email sent to ${email.trim()}. Check your inbox and spam folder. Wait at least one minute before requesting another email.`,
+      });
     } catch (resetError) {
-      setError(resetError instanceof Error ? resetError.message : "Unable to send reset email.");
+      setEmailNotice({
+        tone: "error",
+        message: resetError instanceof Error ? resetError.message : "Unable to send reset email.",
+      });
     } finally {
       setEmailBusy(false);
+      setEmailAction(null);
     }
   }
 
@@ -481,7 +507,7 @@ export default function QuickScoreAccountPage() {
                     disabled={emailBusy}
                     className="rounded-2xl bg-emerald-300 px-4 py-3 text-sm font-black text-slate-950 transition hover:brightness-105 disabled:opacity-50"
                   >
-                    {emailBusy ? "Working..." : "Sign In"}
+                    {emailAction === "signin" ? "Signing In..." : "Sign In"}
                   </button>
                   <button
                     type="button"
@@ -489,7 +515,7 @@ export default function QuickScoreAccountPage() {
                     disabled={emailBusy}
                     className="rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-sm font-black text-emerald-50 transition hover:bg-emerald-400/16 disabled:opacity-50"
                   >
-                    Create Email Account
+                    {emailAction === "signup" ? "Sending..." : "Create Email Account"}
                   </button>
                 </div>
                 <button
@@ -498,8 +524,21 @@ export default function QuickScoreAccountPage() {
                   disabled={emailBusy}
                   className="justify-self-start text-sm font-bold text-emerald-100/72 underline decoration-emerald-200/30 underline-offset-4"
                 >
-                  Forgot password?
+                  {emailAction === "reset" ? "Sending reset email..." : "Forgot password?"}
                 </button>
+                {emailNotice && (
+                  <div
+                    role={emailNotice.tone === "error" ? "alert" : "status"}
+                    aria-live="polite"
+                    className={`rounded-2xl border px-4 py-3 text-sm leading-6 ${
+                      emailNotice.tone === "error"
+                        ? "border-amber-300/24 bg-amber-300/10 text-amber-50"
+                        : "border-emerald-300/24 bg-emerald-300/10 text-emerald-50"
+                    }`}
+                  >
+                    {emailNotice.message}
+                  </div>
+                )}
               </div>
             )}
           </div>
