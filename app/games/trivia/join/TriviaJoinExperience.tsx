@@ -33,6 +33,7 @@ type JoinSnapshot = {
     correctSlot: string;
     correctText: string;
     explanation: string;
+    reference: string;
     playerOutcome: "correct" | "wrong" | "skip" | null;
     playerDelta: number | null;
     playerSpeedBonus: number | null;
@@ -374,6 +375,7 @@ export function TriviaJoinExperience() {
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-100/70">Answer reveal</div>
                 <h3 className="mt-3 text-2xl font-black text-white">Correct answer: {snapshot.resolution.correctSlot} | {snapshot.resolution.correctText}</h3>
                 <p className="mt-4 text-sm leading-7 text-white/74">{snapshot.resolution.explanation}</p>
+                <p className="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-100/68">Scripture reference: {snapshot.resolution.reference}</p>
                 <div className="mt-5 rounded-[24px] border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/78">
                   Your result: {snapshot.resolution.playerOutcome ?? "waiting"} | {formatDelta(snapshot.resolution.playerDelta ?? 0)}
                 </div>

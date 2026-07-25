@@ -3,7 +3,10 @@ import {
   buildTriviaLiveHostSnapshot,
   createTriviaLiveSession,
 } from "../app/games/trivia/play/trivia-live-session";
-import { buildRuntimeDeck } from "../app/games/trivia/play/trivia-runtime-builder";
+import {
+  buildRuntimeDeck,
+  getRuntimeCatalogValidationReport,
+} from "../app/games/trivia/play/trivia-runtime-builder";
 import type { RuntimeChoiceSlot } from "../app/games/trivia/play/trivia-runtime-types";
 
 function deckSignature(seed: string) {
@@ -43,6 +46,34 @@ describe("seeded trivia deck creation", () => {
     });
 
     expect(nextDeck.cards.every((card) => !recentSourceIds.includes(card.sourceId))).toBe(true);
+  });
+
+  it("limits repetitive book-order questions and spreads them across rounds", () => {
+    for (let index = 0; index < 80; index += 1) {
+      const deck = buildRuntimeDeck("bible", "mixed", { seed: `variety-seed-${index}` });
+      const bookOrderCards = deck.cards.filter((card) => card.tags.includes("book-order"));
+      const perRoundCounts = new Map<string, number>();
+
+      bookOrderCards.forEach((card) => {
+        perRoundCounts.set(card.roundId, (perRoundCounts.get(card.roundId) ?? 0) + 1);
+      });
+
+      expect(bookOrderCards).toHaveLength(3);
+      expect(Math.max(0, ...perRoundCounts.values())).toBeLessThanOrEqual(1);
+    }
+  });
+});
+
+describe("runtime catalog quality", () => {
+  it("meets structural, balance, and minimum-size thresholds", () => {
+    const report = getRuntimeCatalogValidationReport();
+
+    expect(report.issues).toEqual([]);
+    expect(report.totalRecords).toBeGreaterThanOrEqual(1_200);
+    expect(report.bookOrderShare).toBeLessThan(0.7);
+    Object.values(report.countsByDifficulty).forEach((count) => {
+      expect(count).toBeGreaterThan(0);
+    });
   });
 });
 

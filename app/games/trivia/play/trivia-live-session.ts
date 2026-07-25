@@ -118,6 +118,7 @@ export type TriviaLivePlayerSnapshot = {
     correctSlot: string;
     correctText: string;
     explanation: string;
+    reference: string;
     playerOutcome: "correct" | "wrong" | "skip" | null;
     playerDelta: number | null;
     playerSpeedBonus: number | null;
@@ -575,6 +576,7 @@ export function buildTriviaLivePlayerSnapshot(sessionId: string, playerId: strin
           correctSlot: session.resolution.correctSlot,
           correctText: session.resolution.correctText,
           explanation: session.resolution.card.explanation,
+          reference: session.resolution.card.reference,
           playerOutcome: resolutionRow?.outcome ?? null,
           playerDelta: resolutionRow?.delta ?? null,
           playerSpeedBonus: resolutionRow?.speedBonus ?? null,

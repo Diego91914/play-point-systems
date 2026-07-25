@@ -15,6 +15,7 @@ import {
 
 const CHOICE_SLOTS: readonly RuntimeChoiceSlot[] = ["A", "B", "C", "D"];
 const MAX_RUNTIME_QUESTIONS = 12;
+const MAX_BOOK_ORDER_QUESTIONS = 3;
 const RANDOM_DOMAIN = "play-point-trivia-runtime-v1";
 const UINT32_RANGE = 0x1_0000_0000;
 
@@ -101,6 +102,10 @@ interface SourceCatalog {
 }
 
 const runtimeCatalog = catalogData as SourceCatalog;
+
+function isBookOrderRecord(record: SourceCatalogRecord) {
+  return record.tags.includes("book-order");
+}
 
 function compareDifficulty(left: RuntimeDifficulty, right: RuntimeDifficulty): number {
   return RUNTIME_DIFFICULTIES.indexOf(left) - RUNTIME_DIFFICULTIES.indexOf(right);
@@ -227,6 +232,35 @@ export function buildRuntimeDeck(
     questionCount: questionCounts[index],
   }));
   const cards: RuntimeDeckCard[] = [];
+  const bookOrderAvailable = filteredRecords.filter(isBookOrderRecord).length;
+  const nonBookOrderAvailable = filteredRecords.length - bookOrderAvailable;
+  const minimumBookOrderNeeded = Math.max(0, totalQuestions - nonBookOrderAvailable);
+  const bookOrderTarget = Math.min(
+    bookOrderAvailable,
+    Math.max(Math.min(MAX_BOOK_ORDER_QUESTIONS, totalQuestions), minimumBookOrderNeeded),
+  );
+  const bookOrderQuestionsByRound = deckRounds.map(() => 0);
+  const roundAllocationOrder = shuffleWithSeed(deckRounds.map((_, index) => index), random);
+  let bookOrderQuestionsRemaining = bookOrderTarget;
+
+  while (bookOrderQuestionsRemaining > 0) {
+    let allocatedThisPass = false;
+
+    roundAllocationOrder.forEach((roundIndex) => {
+      if (
+        bookOrderQuestionsRemaining > 0
+        && bookOrderQuestionsByRound[roundIndex] < deckRounds[roundIndex].questionCount
+      ) {
+        bookOrderQuestionsByRound[roundIndex] += 1;
+        bookOrderQuestionsRemaining -= 1;
+        allocatedThisPass = true;
+      }
+    });
+
+    if (!allocatedThisPass) {
+      break;
+    }
+  }
 
   deckRounds.forEach((round, roundIndex) => {
     const blueprint = rounds[roundIndex];
@@ -235,28 +269,46 @@ export function buildRuntimeDeck(
       difficultyFilter === "mixed"
         ? blueprint.preferredDifficulties
         : [difficultyFilter];
+    const desiredBookOrderSlots = shuffleWithSeed(
+      Array.from(
+        { length: round.questionCount },
+        (_, index) => index < bookOrderQuestionsByRound[roundIndex],
+      ),
+      random,
+    );
 
-    preferredDifficulties.forEach((difficulty) => {
-      while (selectedRecords.length < round.questionCount) {
-        const record = removeFirstMatchingRecord(remainingRecords, (candidate) => candidate.difficulty === difficulty);
+    desiredBookOrderSlots.forEach((wantsBookOrder) => {
+      let record: SourceCatalogRecord | null = null;
 
-        if (!record) {
+      for (const difficulty of preferredDifficulties) {
+        record = removeFirstMatchingRecord(
+          remainingRecords,
+          (candidate) => candidate.difficulty === difficulty && isBookOrderRecord(candidate) === wantsBookOrder,
+        );
+
+        if (record) {
           break;
         }
+      }
 
+      record ??= removeFirstMatchingRecord(
+        remainingRecords,
+        (candidate) => isBookOrderRecord(candidate) === wantsBookOrder,
+      );
+
+      for (const difficulty of preferredDifficulties) {
+        record ??= removeFirstMatchingRecord(
+          remainingRecords,
+          (candidate) => candidate.difficulty === difficulty,
+        );
+      }
+
+      record ??= remainingRecords.shift() ?? null;
+
+      if (record) {
         selectedRecords.push(record);
       }
     });
-
-    while (selectedRecords.length < round.questionCount && remainingRecords.length > 0) {
-      const record = remainingRecords.shift();
-
-      if (!record) {
-        break;
-      }
-
-      selectedRecords.push(record);
-    }
 
     selectedRecords.forEach((record, questionIndex) => {
       cards.push({
@@ -295,4 +347,55 @@ export function buildRuntimeDeck(
 
 export function getRuntimeCatalogGeneratedAt(): string {
   return runtimeCatalog.generatedAt;
+}
+
+export function getRuntimeCatalogValidationReport() {
+  const issues: string[] = [];
+  const seenSourceIds = new Set<string>();
+  const countsByDifficulty: Record<RuntimeDifficulty, number> = {
+    easy: 0,
+    medium: 0,
+    hard: 0,
+    expert: 0,
+  };
+  let totalRecords = 0;
+  let bookOrderCount = 0;
+
+  runtimeCatalog.categories.forEach((category) => {
+    if (category.totalGoldTriviaCount !== category.records.length) {
+      issues.push(`${category.category} total does not match its record count.`);
+    }
+
+    category.records.forEach((record) => {
+      totalRecords += 1;
+      countsByDifficulty[record.difficulty] += 1;
+      bookOrderCount += isBookOrderRecord(record) ? 1 : 0;
+
+      if (seenSourceIds.has(record.id)) {
+        issues.push(`Duplicate source ID: ${record.id}`);
+      }
+      seenSourceIds.add(record.id);
+
+      if (record.category !== category.category) {
+        issues.push(`${record.id} has a mismatched category.`);
+      }
+      if (!record.question.trim() || !record.explanation.trim() || !record.reference.trim()) {
+        issues.push(`${record.id} is missing required display content.`);
+      }
+      if (record.choices.length < 2 || record.choices.length > CHOICE_SLOTS.length) {
+        issues.push(`${record.id} has an invalid number of choices.`);
+      }
+      if (record.choices.filter((choice) => choice === record.answer).length !== 1) {
+        issues.push(`${record.id} must have exactly one matching answer choice.`);
+      }
+    });
+  });
+
+  return {
+    totalRecords,
+    bookOrderCount,
+    bookOrderShare: totalRecords > 0 ? bookOrderCount / totalRecords : 0,
+    countsByDifficulty,
+    issues,
+  };
 }

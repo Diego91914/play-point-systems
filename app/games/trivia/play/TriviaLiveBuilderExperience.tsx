@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import {
+  BIBLE_CANON_POLICY,
+  BIBLE_TRANSLATION_POLICY,
   formatDifficultyFilterLabel,
   PLAYPOINT_RUNTIME_ROUNDS,
   type RuntimeCatalogCategorySummary,
@@ -12,6 +14,7 @@ import {
   type RuntimeDeckRound,
   type RuntimeDifficultyFilter,
 } from "./trivia-runtime-types";
+import { formatTriviaWinnerHeading } from "./trivia-result-utils";
 import { subscribeToTriviaStream } from "./trivia-live-stream";
 
 type HostPlayer = {
@@ -421,6 +424,9 @@ export function TriviaLiveBuilderExperience() {
                       Each question starts at 1,000 points with a 10-second clock. The available score drops by 100 every second and wrong answers do not subtract.
                     </div>
                     <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
+                      <span className="font-semibold text-white">Canon: {BIBLE_CANON_POLICY}.</span> {BIBLE_TRANSLATION_POLICY}
+                    </div>
+                    <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
                       {catalogGeneratedAt
                         ? `Catalog snapshot generated ${new Date(catalogGeneratedAt).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" })}.`
                         : "Catalog snapshot time is loading."}
@@ -431,7 +437,7 @@ export function TriviaLiveBuilderExperience() {
             ) : isComplete ? (
               <div className="mt-7 rounded-[28px] border border-emerald-300/20 bg-[linear-gradient(180deg,rgba(40,94,74,0.32),rgba(255,255,255,0.03))] p-5 sm:p-6">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-100/70">Session complete</div>
-                <h3 className="mt-3 text-3xl font-black text-white">Winner: {leaderboard[0]?.name ?? "No winner yet"}</h3>
+                <h3 className="mt-3 text-3xl font-black text-white">{formatTriviaWinnerHeading(leaderboard)}</h3>
                 <div className="mt-6 grid gap-3">
                   {leaderboard.map((player, index) => (
                     <div key={player.id} className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
@@ -565,6 +571,7 @@ export function TriviaLiveBuilderExperience() {
                     <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-100/70">Resolution</div>
                     <h4 className="mt-3 text-2xl font-black text-white">Correct answer: {snapshot.resolution.correctSlot} | {snapshot.resolution.correctText}</h4>
                     <p className="mt-4 max-w-3xl text-sm leading-7 text-white/74">{snapshot.resolution.card.explanation}</p>
+                    <p className="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-100/68">Scripture reference: {snapshot.resolution.card.reference}</p>
                     <div className="mt-6 grid gap-3">
                       {snapshot.resolution.rows.map((row) => (
                         <div key={row.playerId} className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">

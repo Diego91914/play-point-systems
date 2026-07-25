@@ -337,6 +337,7 @@ export async function buildPersistentTriviaLivePlayerSnapshot(
           correctSlot: bundle.session.resolution.correctSlot,
           correctText: bundle.session.resolution.correctText,
           explanation: bundle.session.resolution.card.explanation,
+          reference: bundle.session.resolution.card.reference,
           playerOutcome: resolutionRow?.outcome ?? null,
           playerDelta: resolutionRow?.delta ?? null,
           playerSpeedBonus: resolutionRow?.speedBonus ?? null,

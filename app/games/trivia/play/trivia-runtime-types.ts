@@ -1,5 +1,7 @@
 export const RUNTIME_DIFFICULTIES = ["easy", "medium", "hard", "expert"] as const;
 export const RUNTIME_DIFFICULTY_FILTERS = ["mixed", ...RUNTIME_DIFFICULTIES] as const;
+export const BIBLE_CANON_POLICY = "66-book Protestant canon";
+export const BIBLE_TRANSLATION_POLICY = "Question wording is translation-neutral where possible; Scripture references are citations rather than quotations from a single preferred translation.";
 
 export type RuntimeDifficulty = (typeof RUNTIME_DIFFICULTIES)[number];
 export type RuntimeDifficultyFilter = (typeof RUNTIME_DIFFICULTY_FILTERS)[number];

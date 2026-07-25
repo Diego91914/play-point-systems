@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
+  BIBLE_CANON_POLICY,
+  BIBLE_TRANSLATION_POLICY,
   formatDifficultyFilterLabel,
   PLAYPOINT_RUNTIME_ROUNDS,
   type RuntimeCatalogCategorySummary,
@@ -11,6 +13,7 @@ import {
   type RuntimeDifficultyFilter,
   type RuntimeResponse,
 } from "./trivia-runtime-types";
+import { formatTriviaWinnerHeading } from "./trivia-result-utils";
 
 type SessionPlayer = {
   id: string;
@@ -425,6 +428,9 @@ export function VaultTriviaPlayExperience() {
                       Each question starts at 1,000 points on a 10-second clock. The available score drops by 100 every second and wrong answers do not subtract.
                     </div>
                     <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
+                      <span className="font-semibold text-white">Canon: {BIBLE_CANON_POLICY}.</span> {BIBLE_TRANSLATION_POLICY}
+                    </div>
+                    <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
                       {catalogGeneratedAt
                         ? `Catalog snapshot generated ${new Date(catalogGeneratedAt).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" })}.`
                         : "Catalog snapshot time is loading."}
@@ -435,7 +441,7 @@ export function VaultTriviaPlayExperience() {
             ) : isComplete ? (
               <div className="mt-7 rounded-[28px] border border-emerald-300/20 bg-[linear-gradient(180deg,rgba(40,94,74,0.32),rgba(255,255,255,0.03))] p-5 sm:p-6">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-100/70">Session complete</div>
-                <h3 className="mt-3 text-3xl font-black text-white">Winner: {leaderboard[0]?.name ?? "No winner yet"}</h3>
+                <h3 className="mt-3 text-3xl font-black text-white">{formatTriviaWinnerHeading(leaderboard)}</h3>
                 <p className="mt-4 max-w-2xl text-sm leading-7 text-white/74">
                   This room used the <span className="font-semibold text-white">{session.deck.packTitle}</span> selection from the exported Gold vault catalog. That means the web game is now pulling from real vault inventory instead of one fixed hand-curated set.
                 </p>
@@ -616,6 +622,7 @@ export function VaultTriviaPlayExperience() {
                       Correct answer: {session.resolution.correctSlot} | {session.resolution.correctText}
                     </h4>
                     <p className="mt-4 max-w-3xl text-sm leading-7 text-white/74">{session.resolution.card.explanation}</p>
+                    <p className="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-100/68">Scripture reference: {session.resolution.card.reference}</p>
                     <div className="mt-6 grid gap-3">
                       {session.resolution.rows.map((row) => (
                         <div

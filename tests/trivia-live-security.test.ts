@@ -50,6 +50,7 @@ describe("live trivia serialization security", () => {
     expect(revealed.resolution?.correctSlot).toMatch(/^[A-D]$/);
     expect(revealed.resolution?.correctText).toBeTruthy();
     expect(revealed.resolution?.explanation).toBeTruthy();
+    expect(revealed.resolution?.reference).toBeTruthy();
   });
 });
 

@@ -11,6 +11,7 @@ import {
   type DemoChoiceSlot,
   type DemoResponse,
 } from "./trivia-demo-data";
+import { formatTriviaWinnerHeading } from "./trivia-result-utils";
 
 type SessionPlayer = {
   id: string;
@@ -283,7 +284,7 @@ export function TriviaPlayExperience() {
             ) : isComplete ? (
               <div className="mt-7 rounded-[28px] border border-emerald-300/20 bg-[linear-gradient(180deg,rgba(40,94,74,0.32),rgba(255,255,255,0.03))] p-5 sm:p-6">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-100/70">Session complete</div>
-                <h3 className="mt-3 text-3xl font-black text-white">Winner: {leaderboard[0]?.name ?? "No winner yet"}</h3>
+                <h3 className="mt-3 text-3xl font-black text-white">{formatTriviaWinnerHeading(leaderboard)}</h3>
                 <p className="mt-4 max-w-2xl text-sm leading-7 text-white/74">
                   The hosted demo is complete. This first pass proves the format with local player tracking, Gold-reviewed Bible content, and countdown-based scoring that can later expand into online accounts, hosting dashboards, and sellable packs.
                 </p>
@@ -464,6 +465,7 @@ export function TriviaPlayExperience() {
                       Correct answer: {session.resolution.correctSlot} | {session.resolution.correctText}
                     </h4>
                     <p className="mt-4 max-w-3xl text-sm leading-7 text-white/74">{session.resolution.card.explanation}</p>
+                    <p className="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-100/68">Scripture reference: {session.resolution.card.reference}</p>
                     <div className="mt-6 grid gap-3">
                       {session.resolution.rows.map((row) => (
                         <div
