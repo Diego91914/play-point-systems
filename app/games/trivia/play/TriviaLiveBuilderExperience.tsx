@@ -18,9 +18,9 @@ import { formatTriviaWinnerHeading } from "./trivia-result-utils";
 import { subscribeToTriviaStream } from "./trivia-live-stream";
 import { TriviaProjectorMode } from "./TriviaProjectorMode";
 import {
-  calculateTriviaAvailablePoints,
+  calculateTriviaCorrectPoints,
+  formatTriviaScoringSummary,
   getTriviaCountdownProgress,
-  getTriviaPointsDropPerSecond,
   TRIVIA_PACING_OPTIONS,
   type TriviaPacingMode,
 } from "./trivia-live-timing";
@@ -119,16 +119,18 @@ function getCountdownState(snapshot: HostSnapshot | null, nowMs: number) {
   const timerSeconds = Math.max(snapshot.questionTimerSeconds ?? 10, 1);
   const elapsedMs = Math.max(0, nowMs - snapshot.questionOpenedAtMs);
   const remainingSeconds = Math.max(0, timerSeconds - Math.floor(elapsedMs / 1000));
-  const availablePoints = calculateTriviaAvailablePoints(
+  const isExpired = elapsedMs >= timerSeconds * 1000;
+  const availablePoints = isExpired ? 0 : calculateTriviaCorrectPoints(
     snapshot.currentCard.scoring.correct,
     elapsedMs,
     timerSeconds,
+    snapshot.currentCard.scoring.mode,
   );
 
   return {
     remainingSeconds,
     availablePoints,
-    isExpired: elapsedMs >= timerSeconds * 1000,
+    isExpired,
     progressPercent: getTriviaCountdownProgress(elapsedMs, timerSeconds),
   };
 }
@@ -506,7 +508,7 @@ export function TriviaLiveBuilderExperience() {
                       </div>
                     ) : null}
                     <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
-                      Each question starts at 1,000 points. Standard rooms use 10 seconds; Relaxed rooms use 20 seconds with a gentler point drop. Wrong answers do not subtract.
+                      The game opens with fixed 500-point questions, then climbs through 1,000-, 2,000-, and 3,000-point countdown rounds. Wrong answers do not subtract.
                     </div>
                     <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
                       <span className="font-semibold text-white">Canon: {BIBLE_CANON_POLICY}.</span> {BIBLE_TRANSLATION_POLICY}
@@ -614,7 +616,7 @@ export function TriviaLiveBuilderExperience() {
                       <div className="rounded-[24px] border border-white/10 bg-white/5 px-4 py-4 text-sm text-white/78">
                         <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">Scoring this round</div>
                         <div className="mt-2 font-semibold text-white">
-                          {snapshot.questionTimerSeconds}-second {TRIVIA_PACING_OPTIONS[snapshot.pacingMode].label.toLowerCase()} clock | starts at {formatPoints(currentCard.scoring.correct)} | {formatDelta(currentCard.scoring.wrong)} wrong | {formatDelta(currentCard.scoring.skip)} skip
+                          {snapshot.questionTimerSeconds}-second {TRIVIA_PACING_OPTIONS[snapshot.pacingMode].label.toLowerCase()} clock | {formatTriviaScoringSummary(currentCard.scoring, snapshot.questionTimerSeconds ?? displayedTimerSeconds)} | {formatDelta(currentCard.scoring.wrong)} wrong | {formatDelta(currentCard.scoring.skip)} skip
                         </div>
                       </div>
                     </div>
@@ -642,11 +644,6 @@ export function TriviaLiveBuilderExperience() {
                           Reveal Answer
                         </button>
                       ) : null}
-                      {snapshot.canAdvance ? (
-                        <button type="button" onClick={advanceQuestion} className="inline-flex rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-5 py-3 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110">
-                          {snapshot.cardIndex === snapshot.deck.cards.length - 1 ? "Finish Session" : "Next Question"}
-                        </button>
-                      ) : null}
                     </div>
                   </div>
                 ) : null}
@@ -657,6 +654,36 @@ export function TriviaLiveBuilderExperience() {
                     <h4 className="mt-3 text-2xl font-black text-white">Correct answer: {snapshot.resolution.correctSlot} | {snapshot.resolution.correctText}</h4>
                     <p className="mt-4 max-w-3xl text-sm leading-7 text-white/74">{snapshot.resolution.card.explanation}</p>
                     <p className="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-100/68">Scripture reference: {snapshot.resolution.card.reference}</p>
+
+                    <div className="mt-7 rounded-[26px] border border-cyan-300/20 bg-cyan-400/[0.08] p-4 sm:p-5">
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-cyan-100/70">Updated leaderboard</div>
+                      <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                        <div>
+                          <h5 className="text-xl font-black text-white">Standings after this question</h5>
+                          <p className="mt-1 text-sm leading-6 text-white/64">When everyone has seen the scores, move the room to the next question.</p>
+                        </div>
+                        {snapshot.canAdvance ? (
+                          <button type="button" onClick={advanceQuestion} className="inline-flex shrink-0 rounded-2xl border border-cyan-200/35 bg-cyan-300 px-5 py-3 text-sm font-black text-[#04111c] shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110">
+                            {snapshot.cardIndex === snapshot.deck.cards.length - 1 ? "Finish Session" : "Next Question"}
+                          </button>
+                        ) : null}
+                      </div>
+                      <div className="mt-5 grid gap-3">
+                        {leaderboard.map((player, index) => (
+                          <div key={player.id} className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-4">
+                            <div>
+                              <div className="text-sm font-black text-white">{index + 1}. {player.name}</div>
+                              <div className="mt-1 text-xs uppercase tracking-[0.18em] text-white/46">
+                                {player.correctCount} right | {player.wrongCount} wrong | {player.skippedCount} skipped
+                              </div>
+                            </div>
+                            <div className="text-2xl font-black text-cyan-50">{formatPoints(player.score)}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="mt-7 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">Question results</div>
                     <div className="mt-6 grid gap-3">
                       {snapshot.resolution.rows.map((row) => (
                         <div key={row.playerId} className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
@@ -685,7 +712,7 @@ export function TriviaLiveBuilderExperience() {
             <div className="mt-5 grid gap-3 text-sm text-white/76">
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">Host builds the room</span> on this page.</div>
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">Players sign in on their phones</span> using the join page, code, or QR.</div>
-              <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">This room uses {TRIVIA_PACING_OPTIONS[displayedPacingMode].label} pacing:</span> {displayedTimerSeconds} seconds per question, dropping {getTriviaPointsDropPerSecond(1_000, displayedTimerSeconds)} points each second.</div>
+              <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">This room uses {TRIVIA_PACING_OPTIONS[displayedPacingMode].label} pacing:</span> {displayedTimerSeconds} seconds per question, with fixed warm-up scoring before the countdown rounds escalate.</div>
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">Wrong answers do not subtract</span>, and players bank whatever points are left when they answer correctly.</div>
             </div>
           </div>
@@ -725,7 +752,7 @@ export function TriviaLiveBuilderExperience() {
                   <div className="mt-2 text-lg font-black text-white">{round.label}</div>
                   <div className="mt-2 text-sm leading-7 text-white/68">{round.intro}</div>
                   <div className="mt-3 text-xs uppercase tracking-[0.18em] text-white/46">
-                    {displayedTimerSeconds}s | {formatDelta(round.scoring.correct)} start | {formatDelta(round.scoring.wrong)} wrong | {formatDelta(round.scoring.skip)} skip
+                    {displayedTimerSeconds}s | {formatTriviaScoringSummary(round.scoring, displayedTimerSeconds)} | {formatDelta(round.scoring.wrong)} wrong | {formatDelta(round.scoring.skip)} skip
                   </div>
                 </div>
               ))}

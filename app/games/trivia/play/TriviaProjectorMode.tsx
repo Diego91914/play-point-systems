@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect } from "react";
 import { formatTriviaWinnerHeading } from "./trivia-result-utils";
-import { TRIVIA_PACING_OPTIONS, type TriviaPacingMode } from "./trivia-live-timing";
+import { formatTriviaScoringSummary, TRIVIA_PACING_OPTIONS, type TriviaPacingMode } from "./trivia-live-timing";
 import type { RuntimeDeck, RuntimeDeckCard } from "./trivia-runtime-types";
 
 type ProjectorPlayer = {
@@ -159,6 +159,7 @@ export function TriviaProjectorMode({
                   <div className="text-base font-black text-white/64">{snapshot.submittedCount} answered · {snapshot.waitingForCount} waiting</div>
                 </div>
                 <h1 className="mt-7 max-w-6xl text-4xl font-black leading-tight text-white sm:text-6xl lg:text-7xl">{currentCard.prompt}</h1>
+                <p className="mt-4 text-lg font-semibold text-emerald-100/70">{formatTriviaScoringSummary(currentCard.scoring, snapshot.questionTimerSeconds ?? 10)}</p>
                 <div className="mt-9 grid gap-4 sm:grid-cols-2">
                   {currentCard.choices.map((choice) => (
                     <div key={choice.slot} className="rounded-[28px] border border-white/12 bg-white/[0.06] px-6 py-5">
@@ -193,7 +194,7 @@ export function TriviaProjectorMode({
               </div>
             </div>
           ) : revealedResolution ? (
-            <div className="mx-auto grid w-full max-w-[1500px] gap-9 xl:grid-cols-[1.2fr_0.8fr] xl:items-center">
+            <div className="mx-auto grid w-full max-w-[1500px] gap-9 xl:grid-cols-[1.2fr_0.8fr] xl:items-start">
               <div className="rounded-[40px] border border-emerald-300/20 bg-emerald-400/10 p-7 sm:p-10">
                 <div className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-100/70">Correct answer</div>
                 <h1 className="mt-6 text-5xl font-black leading-tight text-white sm:text-7xl">
@@ -208,8 +209,9 @@ export function TriviaProjectorMode({
                 ) : null}
               </div>
               <div>
-                <div className="mb-5 text-sm font-semibold uppercase tracking-[0.28em] text-cyan-100/60">Leaderboard</div>
-                <ProjectorLeaderboard players={snapshot.leaderboard} limit={5} />
+                <div className="mb-2 text-sm font-semibold uppercase tracking-[0.28em] text-cyan-100/60">Updated leaderboard</div>
+                <p className="mb-5 text-lg text-white/60">The host will move to the next question.</p>
+                <ProjectorLeaderboard players={snapshot.leaderboard} />
               </div>
             </div>
           ) : isComplete ? (

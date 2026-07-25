@@ -104,7 +104,7 @@ export default function GamesTriviaPage() {
               </li>
               <li className="flex items-start gap-3 rounded-2xl border border-white/8 bg-black/20 px-4 py-3">
                 <span className="mt-1 h-2.5 w-2.5 rounded-full bg-amber-300" />
-                <span>Each question starts at 1,000 points with host-selected Standard or Relaxed pacing, and the available score drops evenly across the clock</span>
+                <span>Four distinct rounds move from fixed-score warm-up questions to 1,000-, 2,000-, and 3,000-point countdown play</span>
               </li>
             </ul>
           </div>

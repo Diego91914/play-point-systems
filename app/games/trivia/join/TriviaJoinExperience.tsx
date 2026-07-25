@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import type { RuntimePublicDeckCard } from "../play/trivia-runtime-types";
 import { subscribeToTriviaStream } from "../play/trivia-live-stream";
 import {
-  calculateTriviaAvailablePoints,
-  getTriviaPointsDropPerSecond,
+  calculateTriviaCorrectPoints,
+  formatTriviaScoringSummary,
   TRIVIA_PACING_OPTIONS,
   type TriviaPacingMode,
 } from "../play/trivia-live-timing";
@@ -88,16 +88,18 @@ function getCountdownState(snapshot: JoinSnapshot | null, nowMs: number) {
   const timerSeconds = Math.max(snapshot.questionTimerSeconds ?? 10, 1);
   const elapsedMs = Math.max(0, nowMs - snapshot.questionOpenedAtMs);
   const remainingSeconds = Math.max(0, timerSeconds - Math.floor(elapsedMs / 1000));
-  const availablePoints = calculateTriviaAvailablePoints(
+  const isExpired = elapsedMs >= timerSeconds * 1000;
+  const availablePoints = isExpired ? 0 : calculateTriviaCorrectPoints(
     snapshot.currentCard.scoring.correct,
     elapsedMs,
     timerSeconds,
+    snapshot.currentCard.scoring.mode,
   );
 
   return {
     remainingSeconds,
     availablePoints,
-    isExpired: elapsedMs >= timerSeconds * 1000,
+    isExpired,
   };
 }
 
@@ -262,15 +264,15 @@ export function TriviaJoinExperience() {
   }
 
   return (
-    <section className="px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
-      <div className="grid gap-8 xl:grid-cols-[1.08fr_0.92fr] xl:items-start">
+    <section className="px-3 py-3 sm:px-6 sm:py-6">
+      <div className="mx-auto w-full max-w-3xl">
         <div className="grid gap-6">
-          <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)] sm:p-7">
-            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-white/68">Phone sign-in</div>
-            <h2 className="mt-2 text-2xl font-black text-white sm:text-3xl">Room code and player name</h2>
-
+          <div className={snapshot ? "min-w-0" : "rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.2)] sm:p-7"}>
             {!snapshot ? (
-              <div className="mt-5 rounded-[28px] border border-white/10 bg-black/20 p-5">
+              <>
+                <div className="text-xs font-semibold uppercase tracking-[0.18em] text-white/68">Phone sign-in</div>
+                <h2 className="mt-2 text-2xl font-black text-white sm:text-3xl">Room code and player name</h2>
+                <div className="mt-5 rounded-[28px] border border-white/10 bg-black/20 p-5">
                 <label className="block text-sm font-semibold text-white/90" htmlFor="room-code">
                   Room code
                 </label>
@@ -309,35 +311,49 @@ export function TriviaJoinExperience() {
                     {joining ? "Joining..." : "Join Room"}
                   </button>
                 </div>
-              </div>
+                </div>
+              </>
             ) : snapshot.status === "completed" ? (
-              <div className="mt-7 rounded-[28px] border border-emerald-300/20 bg-[linear-gradient(180deg,rgba(40,94,74,0.32),rgba(255,255,255,0.03))] p-5">
+              <div className="rounded-[28px] border border-emerald-300/20 bg-[linear-gradient(180deg,rgba(40,94,74,0.32),rgba(255,255,255,0.03))] p-5">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-100/70">Game complete</div>
                 <h3 className="mt-3 text-3xl font-black text-white">Thanks for playing, {snapshot.player.name}</h3>
                 <p className="mt-4 text-sm leading-7 text-white/74">Your final score was {snapshot.player.score}.</p>
+                <div className="mt-6 grid gap-3">
+                  {snapshot.leaderboard.map((player, index) => (
+                    <div
+                      key={player.id}
+                      className={player.id === snapshot.player.id
+                        ? "flex items-center justify-between gap-3 rounded-2xl border border-cyan-300/35 bg-cyan-400/12 px-4 py-4"
+                        : "flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-4"}
+                    >
+                      <div className="text-sm font-black text-white">{index + 1}. {player.name}{player.id === snapshot.player.id ? " (you)" : ""}</div>
+                      <div className="text-2xl font-black text-cyan-50">{formatPoints(player.score)}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
             ) : snapshot.phase === "lobby" ? (
-              <div className="mt-7 rounded-[28px] border border-white/10 bg-black/20 p-5">
+              <div className="rounded-[28px] border border-white/10 bg-black/20 p-5">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Lobby</div>
                 <h3 className="mt-3 text-2xl font-black text-white">You are in room {snapshot.roomCode}</h3>
-                <p className="mt-4 text-sm leading-7 text-white/72">Signed in as {snapshot.player.name}. Waiting for the host to start the game.</p>
+                <p className="mt-4 text-sm leading-7 text-white/72">You are ready. Waiting for the host to start the game.</p>
               </div>
             ) : snapshot.phase === "question-open" && snapshot.currentCard ? (
-              <div className="mt-7 grid gap-6">
-                <div className="rounded-[28px] border border-white/10 bg-black/20 p-5 sm:p-6">
+              <div className="grid gap-4">
+                <div className="rounded-[24px] border border-white/10 bg-black/20 p-4 sm:rounded-[28px] sm:p-6">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/50">{snapshot.currentCard.roundLabel}</div>
-                <h3 className="mt-3 text-3xl font-black text-white sm:text-4xl">{snapshot.currentCard.prompt}</h3>
-                  <p className="mt-4 text-sm leading-7 text-white/70">{TRIVIA_PACING_OPTIONS[snapshot.pacingMode].label} pacing gives you {snapshot.questionTimerSeconds} seconds. The score drops by {getTriviaPointsDropPerSecond(snapshot.currentCard.scoring.correct, snapshot.questionTimerSeconds ?? 10)} points each second, and wrong answers do not subtract.</p>
+                <h3 className="mt-2 text-2xl font-black text-white sm:mt-3 sm:text-4xl">{snapshot.currentCard.prompt}</h3>
+                  <p className="mt-3 text-xs leading-5 text-white/64 sm:text-sm sm:leading-7">{TRIVIA_PACING_OPTIONS[snapshot.pacingMode].label} | {snapshot.questionTimerSeconds}s | {formatTriviaScoringSummary(snapshot.currentCard.scoring, snapshot.questionTimerSeconds ?? 10)}</p>
 
                   {countdown ? (
-                    <div className={countdown.isExpired ? "mt-5 rounded-[24px] border border-amber-300/30 bg-amber-400/10 px-4 py-4 text-sm font-semibold text-amber-100" : "mt-5 rounded-[24px] border border-emerald-300/25 bg-emerald-400/10 px-4 py-4 text-sm font-semibold text-emerald-100"}>
+                    <div className={countdown.isExpired ? "mt-4 rounded-[20px] border border-amber-300/30 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-100" : "mt-4 rounded-[20px] border border-emerald-300/25 bg-emerald-400/10 px-4 py-3 text-sm font-semibold text-emerald-100"}>
                       {countdown.isExpired
                         ? "Time expired. 0 points are left on this question."
                         : `${countdown.remainingSeconds}s left. ${formatPoints(countdown.availablePoints)} points are still available.`}
                     </div>
                   ) : null}
 
-                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                  <div className="mt-4 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-4">
                     {snapshot.currentCard.choices.map((choice) => (
                       <button
                         key={choice.slot}
@@ -346,8 +362,8 @@ export function TriviaJoinExperience() {
                         disabled={snapshot.answerState.hasSubmitted || countdown?.isExpired}
                         className={
                           snapshot.answerState.response === choice.slot
-                            ? "rounded-[24px] border border-cyan-300/40 bg-cyan-400/12 px-4 py-4 text-left"
-                            : "rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] px-4 py-4 text-left transition hover:bg-white/8"
+                            ? "rounded-[20px] border border-cyan-300/40 bg-cyan-400/12 px-4 py-3 text-left sm:rounded-[24px] sm:py-4"
+                            : "rounded-[20px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] px-4 py-3 text-left transition hover:bg-white/8 sm:rounded-[24px] sm:py-4"
                         }
                       >
                         <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-cyan-100/70">Choice {choice.slot}</div>
@@ -371,7 +387,7 @@ export function TriviaJoinExperience() {
                     </button>
                   </div>
 
-                  <div className="mt-5 rounded-[24px] border border-white/10 bg-white/5 px-4 py-4 text-sm text-white/72">
+                  <div className="mt-4 rounded-[20px] border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/72 sm:mt-5 sm:rounded-[24px] sm:py-4">
                     {snapshot.answerState.hasSubmitted
                       ? `Locked in: ${snapshot.answerState.responseText ?? snapshot.answerState.response}`
                       : countdown?.isExpired
@@ -381,7 +397,7 @@ export function TriviaJoinExperience() {
                 </div>
               </div>
             ) : snapshot.resolution ? (
-              <div className="mt-7 rounded-[28px] border border-emerald-300/20 bg-[linear-gradient(180deg,rgba(40,94,74,0.32),rgba(255,255,255,0.03))] p-5">
+              <div className="rounded-[24px] border border-emerald-300/20 bg-[linear-gradient(180deg,rgba(40,94,74,0.32),rgba(255,255,255,0.03))] p-4 sm:rounded-[28px] sm:p-5">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-100/70">Answer reveal</div>
                 <h3 className="mt-3 text-2xl font-black text-white">Correct answer: {snapshot.resolution.correctSlot} | {snapshot.resolution.correctText}</h3>
                 <p className="mt-4 text-sm leading-7 text-white/74">{snapshot.resolution.explanation}</p>
@@ -389,37 +405,31 @@ export function TriviaJoinExperience() {
                 <div className="mt-5 rounded-[24px] border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/78">
                   Your result: {snapshot.resolution.playerOutcome ?? "waiting"} | {formatDelta(snapshot.resolution.playerDelta ?? 0)}
                 </div>
+                <div className="mt-7 border-t border-white/10 pt-6">
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-cyan-100/70">Updated leaderboard</div>
+                  <h4 className="mt-2 text-xl font-black text-white">Waiting for the host</h4>
+                  <p className="mt-2 text-sm leading-6 text-white/64">Review the standings while the host gets the next question ready.</p>
+                  <div className="mt-5 grid gap-3">
+                    {snapshot.leaderboard.map((player, index) => (
+                      <div
+                        key={player.id}
+                        className={player.id === snapshot.player.id
+                          ? "flex items-center justify-between gap-3 rounded-2xl border border-cyan-300/35 bg-cyan-400/12 px-4 py-4"
+                          : "flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-4"}
+                      >
+                        <div>
+                          <div className="text-sm font-black text-white">{index + 1}. {player.name}{player.id === snapshot.player.id ? " (you)" : ""}</div>
+                          <div className="mt-1 text-xs uppercase tracking-[0.18em] text-white/46">
+                            {player.correctCount} right | {player.wrongCount} wrong | {player.skippedCount} skipped
+                          </div>
+                        </div>
+                        <div className="text-2xl font-black text-cyan-50">{formatPoints(player.score)}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             ) : null}
-          </div>
-        </div>
-
-        <div className="grid gap-6 xl:sticky xl:top-28">
-          <div className="rounded-[30px] border border-white/10 bg-white/[0.03] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">Signed in as</div>
-            <h3 className="mt-3 text-2xl font-black text-white">{snapshot?.player.name ?? "Waiting to join"}</h3>
-            <div className="mt-3 text-sm leading-7 text-white/72">
-              {snapshot ? `Current score: ${snapshot.player.score}` : "Join a room to start playing from your phone."}
-            </div>
-          </div>
-
-          <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.2)]">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/52">Leaderboard</div>
-            <div className="mt-5 grid gap-3">
-              {snapshot?.leaderboard?.length ? snapshot.leaderboard.map((player, index) => (
-                <div key={player.id} className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-4">
-                  <div>
-                    <div className="text-sm font-black text-white">{index + 1}. {player.name}</div>
-                    <div className="mt-1 text-xs uppercase tracking-[0.18em] text-white/46">
-                      {player.correctCount} right | {player.wrongCount} wrong | {player.skippedCount} skipped
-                    </div>
-                  </div>
-                  <div className="text-2xl font-black text-cyan-50">{player.score}</div>
-                </div>
-              )) : (
-                <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm leading-7 text-white/64">The leaderboard will appear after players join.</div>
-              )}
-            </div>
           </div>
         </div>
       </div>

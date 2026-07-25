@@ -7,6 +7,7 @@ export type RuntimeDifficulty = (typeof RUNTIME_DIFFICULTIES)[number];
 export type RuntimeDifficultyFilter = (typeof RUNTIME_DIFFICULTY_FILTERS)[number];
 export type RuntimeChoiceSlot = "A" | "B" | "C" | "D";
 export type RuntimeResponse = RuntimeChoiceSlot | "skip";
+export type RuntimeScoringMode = "fixed" | "countdown";
 
 export interface RuntimeCatalogDifficultyCounts {
   easy: number;
@@ -36,6 +37,7 @@ export interface RuntimePublicChoice {
 }
 
 export interface RuntimeRoundScoring {
+  mode: RuntimeScoringMode;
   correct: number;
   wrong: number;
   skip: number;
@@ -107,11 +109,12 @@ export interface RuntimeDeck {
 export const PLAYPOINT_RUNTIME_ROUNDS: readonly RuntimeRoundBlueprint[] = [
   {
     roundId: "hook-round",
-    label: "Hook Round",
-    intro: "Fast opener questions teach the room the 10-second countdown before the board starts moving.",
+    label: "Warm-Up",
+    intro: "Every correct answer is worth a fixed 500 points. Beat the clock, but take time to read carefully.",
     preferredDifficulties: ["easy", "medium"],
     scoring: {
-      correct: 1000,
+      mode: "fixed",
+      correct: 500,
       wrong: 0,
       skip: 0,
     },
@@ -119,9 +122,10 @@ export const PLAYPOINT_RUNTIME_ROUNDS: readonly RuntimeRoundBlueprint[] = [
   {
     roundId: "pressure-board",
     label: "Pressure Board",
-    intro: "The room knows the game now, so speed and confidence start separating the room.",
+    intro: "Countdown scoring begins here. Faster correct answers keep more of the available 1,000 points.",
     preferredDifficulties: ["medium", "hard"],
     scoring: {
+      mode: "countdown",
       correct: 1000,
       wrong: 0,
       skip: 0,
@@ -129,11 +133,12 @@ export const PLAYPOINT_RUNTIME_ROUNDS: readonly RuntimeRoundBlueprint[] = [
   },
   {
     roundId: "spotlight-sprint",
-    label: "Spotlight Sprint",
-    intro: "Harder questions hit faster here and the scoreboard can move quickly.",
+    label: "Double Points Sprint",
+    intro: "Harder questions now start at 2,000 points, with the available score falling across the clock.",
     preferredDifficulties: ["hard", "expert"],
     scoring: {
-      correct: 1000,
+      mode: "countdown",
+      correct: 2000,
       wrong: 0,
       skip: 0,
     },
@@ -141,10 +146,11 @@ export const PLAYPOINT_RUNTIME_ROUNDS: readonly RuntimeRoundBlueprint[] = [
   {
     roundId: "final-word",
     label: "Final Word",
-    intro: "The last round still uses the same countdown clock, so every second matters.",
+    intro: "The final questions start at 3,000 points. Every correct answer can reshape the leaderboard.",
     preferredDifficulties: ["expert", "hard", "medium", "easy"],
     scoring: {
-      correct: 1000,
+      mode: "countdown",
+      correct: 3000,
       wrong: 0,
       skip: 0,
     },

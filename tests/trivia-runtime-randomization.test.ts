@@ -37,6 +37,21 @@ describe("seeded trivia deck creation", () => {
     expect(new Set(sourceIds).size).toBe(sourceIds.length);
   });
 
+  it("builds four rounds with distinct escalating scoring mechanics", () => {
+    const deck = buildRuntimeDeck("bible", "mixed", { seed: "round-scoring" });
+
+    expect(deck.rounds.map((round) => ({
+      roundId: round.roundId,
+      mode: round.scoring.mode,
+      correct: round.scoring.correct,
+    }))).toEqual([
+      { roundId: "hook-round", mode: "fixed", correct: 500 },
+      { roundId: "pressure-board", mode: "countdown", correct: 1_000 },
+      { roundId: "spotlight-sprint", mode: "countdown", correct: 2_000 },
+      { roundId: "final-word", mode: "countdown", correct: 3_000 },
+    ]);
+  });
+
   it("prioritizes fresh questions over recently used source IDs", () => {
     const firstDeck = buildRuntimeDeck("bible", "mixed", { seed: "recent-history-a" });
     const recentSourceIds = firstDeck.cards.map((card) => card.sourceId);

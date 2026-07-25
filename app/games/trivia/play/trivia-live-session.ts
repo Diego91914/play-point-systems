@@ -1,7 +1,7 @@
 import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { buildRuntimeDeck } from "./trivia-runtime-builder";
 import {
-  calculateTriviaAvailablePoints,
+  calculateTriviaCorrectPoints,
   getTriviaTimerSeconds,
   type TriviaPacingMode,
 } from "./trivia-live-timing";
@@ -272,10 +272,11 @@ function calculateAvailableCorrectPoints(
   responseTimeMs: number | null,
   pacingMode: TriviaPacingMode,
 ) {
-  return calculateTriviaAvailablePoints(
+  return calculateTriviaCorrectPoints(
     card.scoring.correct,
     responseTimeMs,
     getTriviaTimerSeconds(pacingMode),
+    card.scoring.mode,
   );
 }
 
