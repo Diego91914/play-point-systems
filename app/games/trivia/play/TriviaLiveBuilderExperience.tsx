@@ -40,6 +40,7 @@ type HostResolutionRow = {
   response: string;
   responseText: string;
   outcome: "correct" | "wrong" | "skip";
+  wager: number | null;
   delta: number;
   speedBonus: number;
   nextScore: number;
@@ -58,7 +59,7 @@ type HostSnapshot = {
   joinUrl: string;
   qrUrl: string;
   status: "lobby" | "in-progress" | "completed";
-  phase: "lobby" | "question-open" | "answer-reveal" | "completed";
+  phase: "lobby" | "wager-open" | "question-open" | "answer-reveal" | "completed";
   serverTimeMs: number;
   cardIndex: number;
   deck: RuntimeDeck;
@@ -71,6 +72,9 @@ type HostSnapshot = {
   answeredPlayerIds: string[];
   submittedCount: number;
   waitingForCount: number;
+  wageredPlayerIds: string[];
+  wagerSubmittedCount: number;
+  wagerWaitingForCount: number;
   resolution: HostResolution | null;
   canStart: boolean;
   canReveal: boolean;
@@ -508,7 +512,7 @@ export function TriviaLiveBuilderExperience() {
                       </div>
                     ) : null}
                     <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
-                      The game opens with fixed 500-point questions, then climbs through 1,000-, 2,000-, and 3,000-point countdown rounds. Wrong answers do not subtract.
+                      The game opens with fixed 500-point questions, climbs through 1,000- and 2,000-point countdown rounds, then ends with one private final wager.
                     </div>
                     <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
                       <span className="font-semibold text-white">Canon: {BIBLE_CANON_POLICY}.</span> {BIBLE_TRANSLATION_POLICY}
@@ -603,6 +607,39 @@ export function TriviaLiveBuilderExperience() {
                   </div>
                 ) : null}
 
+                {snapshot.phase === "wager-open" ? (
+                  <div className="rounded-[28px] border border-amber-300/25 bg-[linear-gradient(180deg,rgba(129,91,28,0.3),rgba(255,255,255,0.03))] p-5 sm:p-6">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-amber-100/70">Final wager</div>
+                    <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                      <div>
+                        <h3 className="text-3xl font-black text-white">Players are locking private wagers</h3>
+                        <p className="mt-3 text-sm leading-7 text-white/70">Wager amounts remain private. Players who have not submitted will enter the final question with a zero-point wager.</p>
+                      </div>
+                      {snapshot.canAdvance ? (
+                        <button type="button" onClick={advanceQuestion} className="inline-flex shrink-0 rounded-2xl border border-amber-200/35 bg-amber-300 px-5 py-3 text-sm font-black text-[#1a1003] transition hover:brightness-110">
+                          Open Final Question
+                        </button>
+                      ) : null}
+                    </div>
+                    <div className="mt-5 rounded-[22px] border border-white/10 bg-black/20 px-4 py-4 text-sm font-black text-white">
+                      {snapshot.wagerSubmittedCount} wagered | {snapshot.wagerWaitingForCount} waiting
+                    </div>
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                      {snapshot.players.map((player) => {
+                        const isReady = snapshot.wageredPlayerIds.includes(player.id);
+                        return (
+                          <div key={player.id} className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-4">
+                            <div className="font-black text-white">{player.name}</div>
+                            <div className={isReady ? "text-xs font-black uppercase tracking-[0.18em] text-emerald-200" : "text-xs font-black uppercase tracking-[0.18em] text-white/42"}>
+                              {isReady ? "Ready" : "Waiting"}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : null}
+
                 {currentCard ? (
                   <div className="rounded-[28px] border border-white/10 bg-black/20 p-5 sm:p-6">
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -689,7 +726,9 @@ export function TriviaLiveBuilderExperience() {
                         <div key={row.playerId} className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
                           <div>
                             <div className="text-sm font-black text-white">{row.playerName} | {row.outcome}</div>
-                            <div className="mt-1 text-xs uppercase tracking-[0.18em] text-white/46">Answered {row.responseText}</div>
+                            <div className="mt-1 text-xs uppercase tracking-[0.18em] text-white/46">
+                              Answered {row.responseText}{row.wager !== null ? ` | Wagered ${formatPoints(row.wager)}` : ""}
+                            </div>
                           </div>
                           <div className="text-right">
                             <div className="text-lg font-black text-cyan-50">{formatDelta(row.delta)}</div>
@@ -713,7 +752,7 @@ export function TriviaLiveBuilderExperience() {
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">Host builds the room</span> on this page.</div>
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">Players sign in on their phones</span> using the join page, code, or QR.</div>
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">This room uses {TRIVIA_PACING_OPTIONS[displayedPacingMode].label} pacing:</span> {displayedTimerSeconds} seconds per question, with fixed warm-up scoring before the countdown rounds escalate.</div>
-              <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">Wrong answers do not subtract</span>, and players bank whatever points are left when they answer correctly.</div>
+              <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">Wrong answers do not subtract before the final.</span> The last question uses each player&apos;s private wager.</div>
             </div>
           </div>
 
