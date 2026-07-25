@@ -146,7 +146,7 @@ export const PLAYPOINT_RUNTIME_ROUNDS: readonly RuntimeRoundBlueprint[] = [
   {
     roundId: "final-word",
     label: "Final Word",
-    intro: "The final questions start at 3,000 points. Every correct answer can reshape the leaderboard.",
+    intro: "The round opens with 3,000-point countdown questions, then the last question uses a private wager that can reshape the leaderboard.",
     preferredDifficulties: ["expert", "hard", "medium", "easy"],
     scoring: {
       mode: "countdown",

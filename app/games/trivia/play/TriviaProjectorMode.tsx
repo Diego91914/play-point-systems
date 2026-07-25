@@ -25,7 +25,7 @@ type ProjectorSnapshot = {
   roomCode: string;
   qrUrl: string;
   status: "lobby" | "in-progress" | "completed";
-  phase: "lobby" | "question-open" | "answer-reveal" | "completed";
+  phase: "lobby" | "wager-open" | "question-open" | "answer-reveal" | "completed";
   cardIndex: number;
   deck: RuntimeDeck;
   currentCard: RuntimeDeckCard | null;
@@ -35,6 +35,9 @@ type ProjectorSnapshot = {
   leaderboard: ProjectorPlayer[];
   submittedCount: number;
   waitingForCount: number;
+  wageredPlayerIds: string[];
+  wagerSubmittedCount: number;
+  wagerWaitingForCount: number;
   resolution: ProjectorResolution | null;
   canStart: boolean;
   canReveal: boolean;
@@ -89,6 +92,7 @@ export function TriviaProjectorMode({
 }: TriviaProjectorModeProps) {
   const currentCard = snapshot.currentCard;
   const isLobby = snapshot.phase === "lobby";
+  const isWager = snapshot.phase === "wager-open";
   const isQuestion = snapshot.phase === "question-open" && currentCard;
   const revealedResolution = snapshot.phase === "answer-reveal" ? snapshot.resolution : null;
   const isComplete = snapshot.status === "completed";
@@ -149,6 +153,31 @@ export function TriviaProjectorMode({
                 <div className="text-center text-lg font-semibold text-white/62">Waiting for the host to begin</div>
               </div>
             </div>
+          ) : isWager ? (
+            <div className="mx-auto w-full max-w-6xl text-center">
+              <div className="text-sm font-semibold uppercase tracking-[0.32em] text-amber-100/70">Final wager</div>
+              <h1 className="mt-6 text-6xl font-black text-white sm:text-8xl">Choose your wager</h1>
+              <p className="mx-auto mt-6 max-w-3xl text-2xl leading-relaxed text-white/68">Use your phone to wager from zero up to your current score. Your amount stays private.</p>
+              <div className="mx-auto mt-9 grid max-w-4xl gap-3 text-left sm:grid-cols-2">
+                {snapshot.players.map((player) => {
+                  const isReady = snapshot.wageredPlayerIds.includes(player.id);
+                  return (
+                    <div key={player.id} className="flex items-center justify-between gap-4 rounded-[24px] border border-white/12 bg-black/30 px-5 py-4">
+                      <div className="text-xl font-black text-white sm:text-2xl">{player.name}</div>
+                      <div className={isReady ? "text-sm font-black uppercase tracking-[0.2em] text-emerald-200" : "text-sm font-black uppercase tracking-[0.2em] text-white/40"}>
+                        {isReady ? "Ready" : "Choosing"}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-7 text-xl font-black text-white/64">{snapshot.wagerSubmittedCount} ready · {snapshot.wagerWaitingForCount} choosing</div>
+              {snapshot.canAdvance ? (
+                <button type="button" onClick={onAdvance} className="mt-8 rounded-2xl border border-amber-200/35 bg-amber-300 px-7 py-4 text-xl font-black text-[#1a1003] transition hover:brightness-110">
+                  Open Final Question
+                </button>
+              ) : null}
+            </div>
           ) : isQuestion ? (
             <div className="mx-auto grid w-full max-w-[1600px] gap-8 xl:grid-cols-[1fr_270px] xl:items-center">
               <div>
@@ -159,7 +188,11 @@ export function TriviaProjectorMode({
                   <div className="text-base font-black text-white/64">{snapshot.submittedCount} answered · {snapshot.waitingForCount} waiting</div>
                 </div>
                 <h1 className="mt-7 max-w-6xl text-4xl font-black leading-tight text-white sm:text-6xl lg:text-7xl">{currentCard.prompt}</h1>
-                <p className="mt-4 text-lg font-semibold text-emerald-100/70">{formatTriviaScoringSummary(currentCard.scoring, snapshot.questionTimerSeconds ?? 10)}</p>
+                <p className="mt-4 text-lg font-semibold text-emerald-100/70">
+                  {snapshot.cardIndex === snapshot.deck.cards.length - 1
+                    ? "Final wager question · correct adds the wager · wrong or skipped subtracts it"
+                    : formatTriviaScoringSummary(currentCard.scoring, snapshot.questionTimerSeconds ?? 10)}
+                </p>
                 <div className="mt-9 grid gap-4 sm:grid-cols-2">
                   {currentCard.choices.map((choice) => (
                     <div key={choice.slot} className="rounded-[28px] border border-white/12 bg-white/[0.06] px-6 py-5">
@@ -183,8 +216,12 @@ export function TriviaProjectorMode({
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-black text-emerald-100">{formatPoints(countdown?.availablePoints ?? currentCard.scoring.correct)}</div>
-                  <div className="mt-1 text-xs font-semibold uppercase tracking-[0.24em] text-white/46">points available</div>
+                  <div className="text-3xl font-black text-emerald-100">
+                    {snapshot.cardIndex === snapshot.deck.cards.length - 1 ? "Wagers locked" : formatPoints(countdown?.availablePoints ?? currentCard.scoring.correct)}
+                  </div>
+                  <div className="mt-1 text-xs font-semibold uppercase tracking-[0.24em] text-white/46">
+                    {snapshot.cardIndex === snapshot.deck.cards.length - 1 ? "final question" : "points available"}
+                  </div>
                 </div>
                 {snapshot.canReveal ? (
                   <button type="button" onClick={onReveal} className="w-full rounded-2xl border border-cyan-200/35 bg-cyan-300 px-6 py-4 text-lg font-black text-[#04111c] transition hover:brightness-110">

@@ -229,6 +229,11 @@ export function TriviaJoinExperience() {
   }, [snapshot?.phase, snapshot?.wagerState.hasSubmitted, snapshot?.wagerState.maxWager]);
 
   const countdown = getCountdownState(snapshot, clockNowMs);
+  const isFinalQuestion = Boolean(
+    snapshot?.currentCard
+    && snapshot.currentCard.roundIndex === snapshot.currentCard.totalRounds - 1
+    && snapshot.currentCard.questionNumberInRound === snapshot.currentCard.totalQuestionsInRound,
+  );
 
   async function joinRoom() {
     try {
@@ -417,13 +422,17 @@ export function TriviaJoinExperience() {
                 <div className="rounded-[24px] border border-white/10 bg-black/20 p-4 sm:rounded-[28px] sm:p-6">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/50">{snapshot.currentCard.roundLabel}</div>
                 <h3 className="mt-2 text-2xl font-black text-white sm:mt-3 sm:text-4xl">{snapshot.currentCard.prompt}</h3>
-                  <p className="mt-3 text-xs leading-5 text-white/64 sm:text-sm sm:leading-7">{TRIVIA_PACING_OPTIONS[snapshot.pacingMode].label} | {snapshot.questionTimerSeconds}s | {formatTriviaScoringSummary(snapshot.currentCard.scoring, snapshot.questionTimerSeconds ?? 10)}</p>
+                  <p className="mt-3 text-xs leading-5 text-white/64 sm:text-sm sm:leading-7">
+                    {TRIVIA_PACING_OPTIONS[snapshot.pacingMode].label} | {snapshot.questionTimerSeconds}s | {isFinalQuestion ? "Your private wager is at stake" : formatTriviaScoringSummary(snapshot.currentCard.scoring, snapshot.questionTimerSeconds ?? 10)}
+                  </p>
 
                   {countdown ? (
                     <div className={countdown.isExpired ? "mt-4 rounded-[20px] border border-amber-300/30 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-100" : "mt-4 rounded-[20px] border border-emerald-300/25 bg-emerald-400/10 px-4 py-3 text-sm font-semibold text-emerald-100"}>
                       {countdown.isExpired
-                        ? "Time expired. 0 points are left on this question."
-                        : `${countdown.remainingSeconds}s left. ${formatPoints(countdown.availablePoints)} points are still available.`}
+                        ? "Time expired. Wait for the host to reveal the final result."
+                        : isFinalQuestion
+                          ? `${countdown.remainingSeconds}s left. Your locked wager is at stake.`
+                          : `${countdown.remainingSeconds}s left. ${formatPoints(countdown.availablePoints)} points are still available.`}
                     </div>
                   ) : null}
 

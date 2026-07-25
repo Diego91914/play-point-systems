@@ -279,6 +279,7 @@ export function TriviaLiveBuilderExperience() {
   const currentCard = snapshot?.currentCard ?? null;
   const isComplete = snapshot?.status === "completed";
   const countdown = getCountdownState(snapshot, clockNowMs);
+  const isFinalQuestion = Boolean(snapshot && snapshot.cardIndex === snapshot.deck.cards.length - 1);
   const displayedPacingMode = snapshot?.pacingMode ?? selectedPacingMode;
   const displayedTimerSeconds = snapshot?.questionTimerSeconds
     ?? TRIVIA_PACING_OPTIONS[displayedPacingMode].timerSeconds;
@@ -512,7 +513,7 @@ export function TriviaLiveBuilderExperience() {
                       </div>
                     ) : null}
                     <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
-                      The game opens with fixed 500-point questions, climbs through 1,000- and 2,000-point countdown rounds, then ends with one private final wager.
+                      The game opens with fixed 500-point questions, climbs through 1,000-, 2,000-, and 3,000-point countdown play, then ends with one private final wager.
                     </div>
                     <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
                       <span className="font-semibold text-white">Canon: {BIBLE_CANON_POLICY}.</span> {BIBLE_TRANSLATION_POLICY}
@@ -653,7 +654,7 @@ export function TriviaLiveBuilderExperience() {
                       <div className="rounded-[24px] border border-white/10 bg-white/5 px-4 py-4 text-sm text-white/78">
                         <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">Scoring this round</div>
                         <div className="mt-2 font-semibold text-white">
-                          {snapshot.questionTimerSeconds}-second {TRIVIA_PACING_OPTIONS[snapshot.pacingMode].label.toLowerCase()} clock | {formatTriviaScoringSummary(currentCard.scoring, snapshot.questionTimerSeconds ?? displayedTimerSeconds)} | {formatDelta(currentCard.scoring.wrong)} wrong | {formatDelta(currentCard.scoring.skip)} skip
+                          {snapshot.questionTimerSeconds}-second {TRIVIA_PACING_OPTIONS[snapshot.pacingMode].label.toLowerCase()} clock | {isFinalQuestion ? "private wagers decide the score" : `${formatTriviaScoringSummary(currentCard.scoring, snapshot.questionTimerSeconds ?? displayedTimerSeconds)} | ${formatDelta(currentCard.scoring.wrong)} wrong | ${formatDelta(currentCard.scoring.skip)} skip`}
                         </div>
                       </div>
                     </div>
@@ -661,8 +662,10 @@ export function TriviaLiveBuilderExperience() {
                     {countdown ? (
                       <div className={countdown.isExpired ? "mt-5 rounded-[24px] border border-amber-300/30 bg-amber-400/10 px-4 py-4 text-sm font-semibold text-amber-100" : "mt-5 rounded-[24px] border border-emerald-300/25 bg-emerald-400/10 px-4 py-4 text-sm font-semibold text-emerald-100"}>
                         {countdown.isExpired
-                          ? "Time expired. 0 points are left on this question."
-                          : `${countdown.remainingSeconds}s left. ${formatPoints(countdown.availablePoints)} points are still available.`}
+                          ? "Time expired. Reveal the final result when the room is ready."
+                          : isFinalQuestion
+                            ? `${countdown.remainingSeconds}s left. Private wagers are locked.`
+                            : `${countdown.remainingSeconds}s left. ${formatPoints(countdown.availablePoints)} points are still available.`}
                       </div>
                     ) : null}
 
@@ -727,7 +730,7 @@ export function TriviaLiveBuilderExperience() {
                           <div>
                             <div className="text-sm font-black text-white">{row.playerName} | {row.outcome}</div>
                             <div className="mt-1 text-xs uppercase tracking-[0.18em] text-white/46">
-                              Answered {row.responseText}{row.wager !== null ? ` | Wagered ${formatPoints(row.wager)}` : ""}
+                              Answered {row.responseText}{row.wager != null ? ` | Wagered ${formatPoints(row.wager)}` : ""}
                             </div>
                           </div>
                           <div className="text-right">

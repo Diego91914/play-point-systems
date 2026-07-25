@@ -58,10 +58,16 @@ type PersistedAnswer = {
   response_text: string;
 };
 
+type PersistedWager = {
+  player_id: string;
+  wager: number;
+};
+
 type PersistedSessionBundle = {
   session: PersistedSession;
   players: PersistedPlayer[];
   answers: PersistedAnswer[];
+  wagers: PersistedWager[];
 };
 
 function createAuthToken() {
@@ -263,6 +269,20 @@ export async function submitPersistentTriviaLiveAnswer(
   });
 }
 
+export async function submitPersistentTriviaLiveWager(
+  sessionId: string,
+  playerId: string,
+  wager: number,
+  playerToken: string | null,
+) {
+  requirePlayer(await loadSession(sessionId), playerId, playerToken);
+  await callMutation("ppl_trivia_submit_wager", {
+    p_session_id: sessionId,
+    p_player_id: playerId,
+    p_wager: wager,
+  });
+}
+
 export async function resolvePersistentTriviaLiveQuestion(sessionId: string, hostToken: string | null) {
   requireHost(await loadSession(sessionId), hostToken);
   await callMutation("ppl_trivia_resolve_session", { p_session_id: sessionId });
@@ -280,8 +300,9 @@ export async function buildPersistentTriviaLiveHostSnapshot(
 ): Promise<TriviaLiveHostSnapshot> {
   const bundle = await loadSession(sessionId);
   requireHost(bundle, hostToken);
-  const { session, players, answers } = bundle;
-  const currentCard = getCurrentCard(session);
+  const { session, players, answers, wagers } = bundle;
+  const storedCard = getCurrentCard(session);
+  const currentCard = session.phase === "wager-open" ? null : storedCard;
 
   return {
     sessionId: session.id,
@@ -302,10 +323,13 @@ export async function buildPersistentTriviaLiveHostSnapshot(
     answeredPlayerIds: answers.map((answer) => answer.player_id),
     submittedCount: answers.length,
     waitingForCount: Math.max(0, players.length - answers.length),
+    wageredPlayerIds: wagers.map((wager) => wager.player_id),
+    wagerSubmittedCount: wagers.length,
+    wagerWaitingForCount: Math.max(0, players.length - wagers.length),
     resolution: session.resolution,
     canStart: session.status === "lobby" && players.length > 0,
     canReveal: session.status === "in-progress" && session.phase === "question-open",
-    canAdvance: session.status === "in-progress" && session.phase === "answer-reveal",
+    canAdvance: session.status === "in-progress" && ["answer-reveal", "wager-open"].includes(session.phase),
   };
 }
 
@@ -316,8 +340,9 @@ export async function buildPersistentTriviaLivePlayerSnapshot(
 ): Promise<TriviaLivePlayerSnapshot> {
   const bundle = await loadSession(sessionId);
   const player = requirePlayer(bundle, playerId, playerToken);
-  const currentCard = getCurrentCard(bundle.session);
+  const currentCard = bundle.session.phase === "wager-open" ? null : getCurrentCard(bundle.session);
   const answer = bundle.answers.find((candidate) => candidate.player_id === playerId);
+  const wager = bundle.wagers.find((candidate) => candidate.player_id === playerId);
   const resolutionRow = bundle.session.resolution?.rows.find((row) => row.playerId === playerId) ?? null;
 
   return {
@@ -335,6 +360,11 @@ export async function buildPersistentTriviaLivePlayerSnapshot(
       hasSubmitted: Boolean(answer),
       response: answer?.response ?? null,
       responseText: answer?.response_text ?? null,
+    },
+    wagerState: {
+      hasSubmitted: Boolean(wager),
+      wager: wager?.wager ?? null,
+      maxWager: player.score,
     },
     leaderboard: getLeaderboard(bundle.players),
     resolution: bundle.session.resolution
