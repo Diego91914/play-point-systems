@@ -16,6 +16,12 @@ import {
 } from "./trivia-runtime-types";
 import { formatTriviaWinnerHeading } from "./trivia-result-utils";
 import { subscribeToTriviaStream } from "./trivia-live-stream";
+import {
+  calculateTriviaAvailablePoints,
+  getTriviaPointsDropPerSecond,
+  TRIVIA_PACING_OPTIONS,
+  type TriviaPacingMode,
+} from "./trivia-live-timing";
 
 type HostPlayer = {
   id: string;
@@ -57,6 +63,7 @@ type HostSnapshot = {
   currentCard: RuntimeDeckCard | null;
   questionOpenedAtMs: number | null;
   questionTimerSeconds: number | null;
+  pacingMode: TriviaPacingMode;
   players: HostPlayer[];
   leaderboard: HostPlayer[];
   answeredPlayerIds: string[];
@@ -109,9 +116,12 @@ function getCountdownState(snapshot: HostSnapshot | null, nowMs: number) {
 
   const timerSeconds = Math.max(snapshot.questionTimerSeconds ?? 10, 1);
   const elapsedMs = Math.max(0, nowMs - snapshot.questionOpenedAtMs);
-  const elapsedWholeSeconds = Math.min(timerSeconds, Math.floor(elapsedMs / 1000));
   const remainingSeconds = Math.max(0, timerSeconds - Math.floor(elapsedMs / 1000));
-  const availablePoints = Math.max(0, snapshot.currentCard.scoring.correct - elapsedWholeSeconds * 100);
+  const availablePoints = calculateTriviaAvailablePoints(
+    snapshot.currentCard.scoring.correct,
+    elapsedMs,
+    timerSeconds,
+  );
 
   return {
     remainingSeconds,
@@ -124,6 +134,7 @@ export function TriviaLiveBuilderExperience() {
   const [catalog, setCatalog] = useState<RuntimeCatalogCategorySummary[]>([]);
   const [catalogGeneratedAt, setCatalogGeneratedAt] = useState<string | null>(null);
   const [selectedDifficultyFilter, setSelectedDifficultyFilter] = useState<RuntimeDifficultyFilter>("mixed");
+  const [selectedPacingMode, setSelectedPacingMode] = useState<TriviaPacingMode>("standard");
   const [catalogError, setCatalogError] = useState<string | null>(null);
   const [setupError, setSetupError] = useState<string | null>(null);
   const [creatingRoom, setCreatingRoom] = useState(false);
@@ -258,6 +269,9 @@ export function TriviaLiveBuilderExperience() {
   const currentCard = snapshot?.currentCard ?? null;
   const isComplete = snapshot?.status === "completed";
   const countdown = getCountdownState(snapshot, clockNowMs);
+  const displayedPacingMode = snapshot?.pacingMode ?? selectedPacingMode;
+  const displayedTimerSeconds = snapshot?.questionTimerSeconds
+    ?? TRIVIA_PACING_OPTIONS[displayedPacingMode].timerSeconds;
 
   async function createRoom() {
     if (!selectedCategorySummary?.isPlayable) {
@@ -273,6 +287,7 @@ export function TriviaLiveBuilderExperience() {
         body: JSON.stringify({
           category: "bible",
           difficultyFilter: selectedDifficultyFilter,
+          pacingMode: selectedPacingMode,
         }),
       });
       setHostToken(room.hostToken);
@@ -389,6 +404,21 @@ export function TriviaLiveBuilderExperience() {
                     ))}
                   </select>
 
+                  <label className="mt-5 block text-sm font-semibold text-white/90" htmlFor="pacing-select">
+                    Question pace
+                  </label>
+                  <select
+                    id="pacing-select"
+                    value={selectedPacingMode}
+                    onChange={(event) => setSelectedPacingMode(event.target.value as TriviaPacingMode)}
+                    className="mt-3 w-full rounded-[20px] border border-white/10 bg-[#07101c] px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-300/40 focus:bg-[#091524]"
+                  >
+                    {(Object.entries(TRIVIA_PACING_OPTIONS) as [TriviaPacingMode, (typeof TRIVIA_PACING_OPTIONS)[TriviaPacingMode]][]).map(([mode, option]) => (
+                      <option key={mode} value={mode}>{option.label} — {option.timerSeconds} seconds</option>
+                    ))}
+                  </select>
+                  <p className="mt-2 text-xs leading-6 text-white/56">{TRIVIA_PACING_OPTIONS[selectedPacingMode].description}</p>
+
                   {catalogError ? <div className="mt-4 text-sm font-semibold text-amber-200">{catalogError}</div> : null}
                   {setupError ? <div className="mt-4 text-sm font-semibold text-amber-200">{setupError}</div> : null}
 
@@ -421,7 +451,7 @@ export function TriviaLiveBuilderExperience() {
                       </div>
                     ) : null}
                     <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
-                      Each question starts at 1,000 points with a 10-second clock. The available score drops by 100 every second and wrong answers do not subtract.
+                      Each question starts at 1,000 points. Standard rooms use 10 seconds; Relaxed rooms use 20 seconds with a gentler point drop. Wrong answers do not subtract.
                     </div>
                     <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
                       <span className="font-semibold text-white">Canon: {BIBLE_CANON_POLICY}.</span> {BIBLE_TRANSLATION_POLICY}
@@ -529,7 +559,7 @@ export function TriviaLiveBuilderExperience() {
                       <div className="rounded-[24px] border border-white/10 bg-white/5 px-4 py-4 text-sm text-white/78">
                         <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">Scoring this round</div>
                         <div className="mt-2 font-semibold text-white">
-                          10-second clock | starts at {formatPoints(currentCard.scoring.correct)} | {formatDelta(currentCard.scoring.wrong)} wrong | {formatDelta(currentCard.scoring.skip)} skip
+                          {snapshot.questionTimerSeconds}-second {TRIVIA_PACING_OPTIONS[snapshot.pacingMode].label.toLowerCase()} clock | starts at {formatPoints(currentCard.scoring.correct)} | {formatDelta(currentCard.scoring.wrong)} wrong | {formatDelta(currentCard.scoring.skip)} skip
                         </div>
                       </div>
                     </div>
@@ -600,7 +630,7 @@ export function TriviaLiveBuilderExperience() {
             <div className="mt-5 grid gap-3 text-sm text-white/76">
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">Host builds the room</span> on this page.</div>
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">Players sign in on their phones</span> using the join page, code, or QR.</div>
-              <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">Each question starts at 1,000</span> and drops by 100 every second on a 10-second clock.</div>
+              <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">This room uses {TRIVIA_PACING_OPTIONS[displayedPacingMode].label} pacing:</span> {displayedTimerSeconds} seconds per question, dropping {getTriviaPointsDropPerSecond(1_000, displayedTimerSeconds)} points each second.</div>
               <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4"><span className="font-semibold text-white">Wrong answers do not subtract</span>, and players bank whatever points are left when they answer correctly.</div>
             </div>
           </div>

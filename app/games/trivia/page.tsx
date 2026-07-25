@@ -104,7 +104,7 @@ export default function GamesTriviaPage() {
               </li>
               <li className="flex items-start gap-3 rounded-2xl border border-white/8 bg-black/20 px-4 py-3">
                 <span className="mt-1 h-2.5 w-2.5 rounded-full bg-amber-300" />
-                <span>Each question starts at 1,000 points on a 10-second clock, and the available score drops by 100 every second</span>
+                <span>Each question starts at 1,000 points with host-selected Standard or Relaxed pacing, and the available score drops evenly across the clock</span>
               </li>
             </ul>
           </div>
@@ -125,7 +125,7 @@ export default function GamesTriviaPage() {
             {[
               ["Builder", "The host creates the room, chooses the category, and opens the join path."],
               ["Phone Join", "Players scan the QR or enter the code on their own phones and add their names."],
-              ["Live Questions", "Everyone answers on the same 10-second clock, and whatever points are left when they answer get added to their total."],
+              ["Live Questions", "Everyone answers on the same host-selected clock, and whatever points are left when they answer get added to their total."],
               ["Finale", "The session finishes with a visible ending and a clear leaderboard winner."],
             ].map(([title, body]) => (
               <div key={title} className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5">

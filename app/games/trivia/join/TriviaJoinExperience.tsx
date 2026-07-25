@@ -3,6 +3,12 @@
 import { useEffect, useState } from "react";
 import type { RuntimePublicDeckCard } from "../play/trivia-runtime-types";
 import { subscribeToTriviaStream } from "../play/trivia-live-stream";
+import {
+  calculateTriviaAvailablePoints,
+  getTriviaPointsDropPerSecond,
+  TRIVIA_PACING_OPTIONS,
+  type TriviaPacingMode,
+} from "../play/trivia-live-timing";
 
 type JoinPlayer = {
   id: string;
@@ -23,6 +29,7 @@ type JoinSnapshot = {
   currentCard: RuntimePublicDeckCard | null;
   questionOpenedAtMs: number | null;
   questionTimerSeconds: number | null;
+  pacingMode: TriviaPacingMode;
   answerState: {
     hasSubmitted: boolean;
     response: string | null;
@@ -80,9 +87,12 @@ function getCountdownState(snapshot: JoinSnapshot | null, nowMs: number) {
 
   const timerSeconds = Math.max(snapshot.questionTimerSeconds ?? 10, 1);
   const elapsedMs = Math.max(0, nowMs - snapshot.questionOpenedAtMs);
-  const elapsedWholeSeconds = Math.min(timerSeconds, Math.floor(elapsedMs / 1000));
   const remainingSeconds = Math.max(0, timerSeconds - Math.floor(elapsedMs / 1000));
-  const availablePoints = Math.max(0, snapshot.currentCard.scoring.correct - elapsedWholeSeconds * 100);
+  const availablePoints = calculateTriviaAvailablePoints(
+    snapshot.currentCard.scoring.correct,
+    elapsedMs,
+    timerSeconds,
+  );
 
   return {
     remainingSeconds,
@@ -317,7 +327,7 @@ export function TriviaJoinExperience() {
                 <div className="rounded-[28px] border border-white/10 bg-black/20 p-5 sm:p-6">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/50">{snapshot.currentCard.roundLabel}</div>
                 <h3 className="mt-3 text-3xl font-black text-white sm:text-4xl">{snapshot.currentCard.prompt}</h3>
-                  <p className="mt-4 text-sm leading-7 text-white/70">Each question starts at 1,000 points with a 10-second clock. The available score drops by 100 every second and wrong answers do not subtract.</p>
+                  <p className="mt-4 text-sm leading-7 text-white/70">{TRIVIA_PACING_OPTIONS[snapshot.pacingMode].label} pacing gives you {snapshot.questionTimerSeconds} seconds. The score drops by {getTriviaPointsDropPerSecond(snapshot.currentCard.scoring.correct, snapshot.questionTimerSeconds ?? 10)} points each second, and wrong answers do not subtract.</p>
 
                   {countdown ? (
                     <div className={countdown.isExpired ? "mt-5 rounded-[24px] border border-amber-300/30 bg-amber-400/10 px-4 py-4 text-sm font-semibold text-amber-100" : "mt-5 rounded-[24px] border border-emerald-300/25 bg-emerald-400/10 px-4 py-4 text-sm font-semibold text-emerald-100"}>
@@ -366,7 +376,7 @@ export function TriviaJoinExperience() {
                       ? `Locked in: ${snapshot.answerState.responseText ?? snapshot.answerState.response}`
                       : countdown?.isExpired
                         ? "Time expired for this question. Wait for the host to reveal the answer."
-                        : "Choose your answer before the 10-second clock expires."}
+                        : `Choose your answer before the ${snapshot.questionTimerSeconds}-second clock expires.`}
                   </div>
                 </div>
               </div>

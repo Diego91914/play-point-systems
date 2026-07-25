@@ -1,5 +1,10 @@
 import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { buildRuntimeDeck } from "./trivia-runtime-builder";
+import {
+  calculateTriviaAvailablePoints,
+  getTriviaTimerSeconds,
+  type TriviaPacingMode,
+} from "./trivia-live-timing";
 import type {
   RuntimeChoice,
   RuntimeDeck,
@@ -10,8 +15,6 @@ import type {
 } from "./trivia-runtime-types";
 
 const ROOM_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-const QUESTION_TIMER_MS = 10000;
-const QUESTION_POINTS_DROP_PER_SECOND = 100;
 const RECENT_QUESTION_HISTORY_LIMIT = 48;
 const sessions = new Map<string, TriviaLiveSession>();
 const roomCodeToSessionId = new Map<string, string>();
@@ -62,6 +65,7 @@ type TriviaLiveSession = {
   roomCode: string;
   hostTokenHash: string;
   randomSeed: string;
+  pacingMode: TriviaPacingMode;
   deck: RuntimeDeck;
   status: TriviaLiveSessionStatus;
   phase: TriviaLiveSessionPhase;
@@ -87,6 +91,7 @@ export type TriviaLiveHostSnapshot = {
   currentCard: RuntimeDeckCard | null;
   questionOpenedAtMs: number | null;
   questionTimerSeconds: number | null;
+  pacingMode: TriviaPacingMode;
   players: TriviaLivePlayer[];
   leaderboard: TriviaLivePlayer[];
   answeredPlayerIds: string[];
@@ -108,6 +113,7 @@ export type TriviaLivePlayerSnapshot = {
   currentCard: RuntimePublicDeckCard | null;
   questionOpenedAtMs: number | null;
   questionTimerSeconds: number | null;
+  pacingMode: TriviaPacingMode;
   answerState: {
     hasSubmitted: boolean;
     response: RuntimeResponse | null;
@@ -261,11 +267,16 @@ function toPublicCard(card: RuntimeDeckCard | null): RuntimePublicDeckCard | nul
   };
 }
 
-function calculateAvailableCorrectPoints(card: RuntimeDeckCard, responseTimeMs: number | null) {
-  const clamped = Math.max(0, Math.min(responseTimeMs ?? QUESTION_TIMER_MS, QUESTION_TIMER_MS));
-  const elapsedSeconds = Math.floor(clamped / 1000);
-
-  return Math.max(0, card.scoring.correct - elapsedSeconds * QUESTION_POINTS_DROP_PER_SECOND);
+function calculateAvailableCorrectPoints(
+  card: RuntimeDeckCard,
+  responseTimeMs: number | null,
+  pacingMode: TriviaPacingMode,
+) {
+  return calculateTriviaAvailablePoints(
+    card.scoring.correct,
+    responseTimeMs,
+    getTriviaTimerSeconds(pacingMode),
+  );
 }
 
 function normalizePlayerName(name: string) {
@@ -309,6 +320,7 @@ function buildResponseText(card: RuntimeDeckCard, response: RuntimeResponse) {
 export function createTriviaLiveSession(
   category: string,
   difficultyFilter: RuntimeDifficultyFilter,
+  pacingMode: TriviaPacingMode = "standard",
 ): { sessionId: string; roomCode: string; hostToken: string } {
   const randomSeed = randomBytes(32).toString("hex");
   const deck = buildRuntimeDeck(category, difficultyFilter, {
@@ -324,6 +336,7 @@ export function createTriviaLiveSession(
     roomCode,
     hostTokenHash: hashAuthToken(hostToken),
     randomSeed,
+    pacingMode,
     deck,
     status: "lobby",
     phase: "lobby",
@@ -409,8 +422,9 @@ export function submitTriviaLiveAnswer(sessionId: string, playerId: string, resp
   const submittedAtMs = now();
   const responseTimeMs =
     session.openedAtMs === null ? null : Math.max(0, submittedAtMs - session.openedAtMs);
+  const questionTimerMs = getTriviaTimerSeconds(session.pacingMode) * 1000;
 
-  if ((responseTimeMs ?? QUESTION_TIMER_MS) >= QUESTION_TIMER_MS) {
+  if ((responseTimeMs ?? questionTimerMs) >= questionTimerMs) {
     throw new Error("Time expired for this question.");
   }
 
@@ -458,7 +472,7 @@ export function resolveTriviaLiveQuestion(sessionId: string, hostToken: string |
     const speedBonus = 0;
 
     if (submission.outcome === "correct") {
-      delta = calculateAvailableCorrectPoints(card, submission.responseTimeMs);
+      delta = calculateAvailableCorrectPoints(card, submission.responseTimeMs, session.pacingMode);
       player.correctCount += 1;
     } else if (submission.outcome === "wrong") {
       delta = 0;
@@ -534,7 +548,8 @@ export function buildTriviaLiveHostSnapshot(sessionId: string, origin: string, h
     deck: session.deck,
     currentCard,
     questionOpenedAtMs: session.openedAtMs,
-    questionTimerSeconds: currentCard ? QUESTION_TIMER_MS / 1000 : null,
+    questionTimerSeconds: currentCard ? getTriviaTimerSeconds(session.pacingMode) : null,
+    pacingMode: session.pacingMode,
     players: session.players.map(toPublicPlayer),
     leaderboard: getLeaderboard(session.players),
     answeredPlayerIds: Object.values(session.selections)
@@ -564,7 +579,8 @@ export function buildTriviaLivePlayerSnapshot(sessionId: string, playerId: strin
     player: toPublicPlayer(player),
     currentCard: toPublicCard(currentCard),
     questionOpenedAtMs: session.openedAtMs,
-    questionTimerSeconds: currentCard ? QUESTION_TIMER_MS / 1000 : null,
+    questionTimerSeconds: currentCard ? getTriviaTimerSeconds(session.pacingMode) : null,
+    pacingMode: session.pacingMode,
     answerState: {
       hasSubmitted: Boolean(answer),
       response: answer?.response ?? null,

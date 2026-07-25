@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import { createTriviaLiveSession } from "../../../games/trivia/play/trivia-live-service";
 import { RUNTIME_DIFFICULTY_FILTERS, type RuntimeDifficultyFilter } from "../../../games/trivia/play/trivia-runtime-types";
+import { TRIVIA_PACING_MODES, type TriviaPacingMode } from "../../../games/trivia/play/trivia-live-timing";
 
 export async function POST(request: Request) {
   const body = (await request.json()) as {
     category?: string;
     difficultyFilter?: RuntimeDifficultyFilter;
+    pacingMode?: TriviaPacingMode;
   };
 
   if (body.category !== "bible") {
@@ -16,8 +18,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "A valid difficulty filter is required." }, { status: 400 });
   }
 
+  if (!body.pacingMode || !TRIVIA_PACING_MODES.includes(body.pacingMode)) {
+    return NextResponse.json({ error: "A valid pacing mode is required." }, { status: 400 });
+  }
+
   try {
-    return NextResponse.json(await createTriviaLiveSession(body.category, body.difficultyFilter), {
+    return NextResponse.json(await createTriviaLiveSession(body.category, body.difficultyFilter, body.pacingMode), {
       headers: { "Cache-Control": "no-store" },
     });
   } catch (error) {

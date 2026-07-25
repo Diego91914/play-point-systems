@@ -13,7 +13,7 @@ export default function TriviaBuilderPage() {
     <ProductShell
       productName="Trivia Host"
       heading="Create a live Bible trivia room"
-      summary="Choose a difficulty, create the room, and share the join code with players."
+      summary="Choose a difficulty and pace, create the room, and share the join code with players."
       status="Preview"
       backHref="/games/trivia"
       backLabel="Trivia overview"
@@ -21,7 +21,7 @@ export default function TriviaBuilderPage() {
       helpItems={[
         "The host creates the room and controls the pace.",
         "Players join on their phones with the room code or QR link.",
-        "Questions use a 10-second, speed-based scoring clock.",
+        "Choose Standard 10-second pacing or Relaxed 20-second pacing before creating the room.",
       ]}
     >
       <TriviaLiveBuilderExperience />

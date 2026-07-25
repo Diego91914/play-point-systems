@@ -3,6 +3,7 @@ import "server-only";
 import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import { buildRuntimeDeck } from "./trivia-runtime-builder";
+import { getTriviaTimerSeconds, type TriviaPacingMode } from "./trivia-live-timing";
 import {
   TriviaLiveAuthorizationError,
   type TriviaLiveHostSnapshot,
@@ -21,7 +22,6 @@ import type {
 } from "./trivia-runtime-types";
 
 const ROOM_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-const QUESTION_TIMER_MS = 10000;
 const SESSION_LIFETIME_MS = 6 * 60 * 60 * 1000;
 const RECENT_QUESTION_HISTORY_LIMIT = 48;
 
@@ -30,6 +30,7 @@ type PersistedSession = {
   room_code: string;
   category: string;
   difficulty_filter: RuntimeDifficultyFilter;
+  pacing_mode: TriviaPacingMode;
   random_seed: string;
   deck: RuntimeDeck;
   host_token_hash: string;
@@ -178,6 +179,7 @@ async function callMutation(name: string, args: Record<string, unknown>) {
 export async function createPersistentTriviaLiveSession(
   category: string,
   difficultyFilter: RuntimeDifficultyFilter,
+  pacingMode: TriviaPacingMode,
 ): Promise<{ sessionId: string; roomCode: string; hostToken: string }> {
   const supabase = getSupabaseServerClient();
   const { data: recentRows, error: recentError } = await supabase
@@ -202,11 +204,12 @@ export async function createPersistentTriviaLiveSession(
 
   for (let attempt = 0; attempt < 8; attempt += 1) {
     const roomCode = createRoomCode();
-    const { error } = await supabase.rpc("ppl_trivia_create_session", {
+    const { error } = await supabase.rpc("ppl_trivia_create_session_with_pacing", {
       p_session_id: sessionId,
       p_room_code: roomCode,
       p_category: category,
       p_difficulty_filter: difficultyFilter,
+      p_pacing_mode: pacingMode,
       p_random_seed: randomSeed,
       p_deck: deck,
       p_host_token_hash: hashAuthToken(hostToken),
@@ -292,7 +295,8 @@ export async function buildPersistentTriviaLiveHostSnapshot(
     deck: session.deck,
     currentCard,
     questionOpenedAtMs: session.opened_at ? Date.parse(session.opened_at) : null,
-    questionTimerSeconds: currentCard ? QUESTION_TIMER_MS / 1000 : null,
+    questionTimerSeconds: currentCard ? getTriviaTimerSeconds(session.pacing_mode) : null,
+    pacingMode: session.pacing_mode,
     players: players.map(toPublicPlayer),
     leaderboard: getLeaderboard(players),
     answeredPlayerIds: answers.map((answer) => answer.player_id),
@@ -325,7 +329,8 @@ export async function buildPersistentTriviaLivePlayerSnapshot(
     player: toPublicPlayer(player),
     currentCard: toPublicCard(currentCard),
     questionOpenedAtMs: bundle.session.opened_at ? Date.parse(bundle.session.opened_at) : null,
-    questionTimerSeconds: currentCard ? QUESTION_TIMER_MS / 1000 : null,
+    questionTimerSeconds: currentCard ? getTriviaTimerSeconds(bundle.session.pacing_mode) : null,
+    pacingMode: bundle.session.pacing_mode,
     answerState: {
       hasSubmitted: Boolean(answer),
       response: answer?.response ?? null,

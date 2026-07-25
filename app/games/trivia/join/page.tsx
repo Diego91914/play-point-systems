@@ -21,7 +21,7 @@ export default function TriviaJoinPage() {
       helpItems={[
         "Scan the host's QR code or enter the six-character room code.",
         "Add your player name and wait for the host to begin.",
-        "Answer each question before the 10-second clock expires.",
+        "Answer each question before the host-selected clock expires.",
       ]}
     >
       <TriviaJoinExperience />
