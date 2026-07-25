@@ -65,12 +65,18 @@ Production configuration gate:
 
 ## Stage 5: database access hardening
 
+Status: live application tables are hardened. `anon` and `authenticated` have no privileges on public tables or sequences, `service_role` access remains intact, direct execution of `public.rls_auto_enable()` is revoked, and new objects created by the `postgres` migration owner are opt-in. Production Quick Score and trivia API checks passed after the change. `pg_graphql` remains installed because extension removal requires a separate external-integration decision.
+
+Dashboard configuration gate: complete.
+
+- **Project Settings → Data API → Settings → Automatically expose new tables and functions** is off. Live verification confirms the `postgres` migration owner has no default grants to `anon` or `authenticated`, so new application objects are opt-in. Supabase-managed defaults owned by `supabase_admin` remain platform-controlled and do not apply to objects created by the application's migration owner.
+
 - Confirm all application database calls still originate in server-only modules.
 - Revoke grants from `anon` and `authenticated` while preserving `service_role`.
 - Preserve the Data API because the server-side `supabase-js` client depends on it.
 - Revoke unnecessary execution rights on privileged functions.
 - Disable `pg_graphql` only after confirming no external integration uses it.
-- Change default privileges for both relevant object owners so future objects are opt-in.
+- Change default privileges for the application migration owner and disable automatic exposure in Data API settings so future application objects are opt-in.
 
 Rollback: prepare the exact inverse grants before deployment and run the full Quick Score verification gate immediately afterward.
 
