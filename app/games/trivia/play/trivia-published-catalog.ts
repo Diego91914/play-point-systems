@@ -64,6 +64,15 @@ function emptyDifficultyCounts(): RuntimeCatalogDifficultyCounts {
 }
 
 function formatSlug(slug: string): string {
+  const labelOverrides: Record<string, string> = {
+    "inventions-firsts": "Inventions & Firsts",
+    "words-language": "Words & Language",
+  };
+
+  if (labelOverrides[slug]) {
+    return labelOverrides[slug];
+  }
+
   return slug
     .split("-")
     .filter(Boolean)
