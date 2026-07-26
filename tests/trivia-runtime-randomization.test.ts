@@ -5,7 +5,10 @@ import {
 } from "../app/games/trivia/play/trivia-live-session";
 import {
   buildRuntimeDeck,
+  buildRuntimeDeckFromCategory,
   getRuntimeCatalogValidationReport,
+  summarizeRuntimeCatalogCategory,
+  type RuntimeSourceCatalogCategory,
 } from "../app/games/trivia/play/trivia-runtime-builder";
 import type { RuntimeChoiceSlot } from "../app/games/trivia/play/trivia-runtime-types";
 
@@ -112,6 +115,63 @@ describe("answer-choice position balance", () => {
       expect(count / total).toBeGreaterThan(0.18);
       expect(count / total).toBeLessThan(0.32);
     });
+  });
+});
+
+describe("topic-aware published catalog decks", () => {
+  const category: RuntimeSourceCatalogCategory = {
+    category: "general-knowledge",
+    label: "General Knowledge",
+    totalGoldTriviaCount: 8,
+    countsByDifficulty: { easy: 4, medium: 4, hard: 0, expert: 0 },
+    topics: [
+      {
+        topic: "everyday-life",
+        label: "Everyday Life",
+        totalGoldTriviaCount: 4,
+        countsByDifficulty: { easy: 2, medium: 2, hard: 0, expert: 0 },
+        isPlayable: true,
+      },
+      {
+        topic: "world-facts",
+        label: "World Facts",
+        totalGoldTriviaCount: 4,
+        countsByDifficulty: { easy: 2, medium: 2, hard: 0, expert: 0 },
+        isPlayable: true,
+      },
+    ],
+    records: Array.from({ length: 8 }, (_, index) => ({
+      id: `${index < 4 ? "everyday" : "world"}-${index + 1}`,
+      category: "general-knowledge",
+      topic: index < 4 ? "everyday-life" : "world-facts",
+      difficulty: index % 2 === 0 ? "easy" as const : "medium" as const,
+      question: `Published question ${index + 1}?`,
+      answer: "Correct",
+      choices: ["Correct", "Second", "Third", "Fourth"],
+      explanation: "A reviewed explanation.",
+      reference: "Reviewed source",
+      tags: [],
+    })),
+  };
+
+  it("exposes topic metadata without exposing question or answer content", () => {
+    const summary = summarizeRuntimeCatalogCategory(category);
+
+    expect(summary.topics.map((topic) => topic.topic)).toEqual(["everyday-life", "world-facts"]);
+    expect(JSON.stringify(summary)).not.toContain("Published question");
+    expect(JSON.stringify(summary)).not.toContain("Correct");
+  });
+
+  it("samples only the selected topics and still shuffles answer slots", () => {
+    const deck = buildRuntimeDeckFromCategory(category, "mixed", {
+      seed: "published-topic-selection",
+      topicIds: ["world-facts"],
+    });
+
+    expect(deck.questionsAvailable).toBe(4);
+    expect(deck.cards).toHaveLength(4);
+    expect(deck.cards.every((card) => card.sourceId.startsWith("world-"))).toBe(true);
+    expect(deck.cards.every((card) => card.choices.filter((choice) => choice.isCorrect).length === 1)).toBe(true);
   });
 });
 

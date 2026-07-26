@@ -175,6 +175,8 @@ function getCountdownState(snapshot: HostSnapshot | null, nowMs: number) {
 export function TriviaLiveBuilderExperience() {
   const [catalog, setCatalog] = useState<RuntimeCatalogCategorySummary[]>([]);
   const [catalogGeneratedAt, setCatalogGeneratedAt] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState("bible");
+  const [selectedTopicIds, setSelectedTopicIds] = useState<string[]>([]);
   const [selectedDifficultyFilter, setSelectedDifficultyFilter] = useState<RuntimeDifficultyFilter>("mixed");
   const [selectedPacingMode, setSelectedPacingMode] = useState<TriviaPacingMode>("standard");
   const [selectedGameMode, setSelectedGameMode] = useState<TriviaGameMode>("individual");
@@ -247,6 +249,11 @@ export function TriviaLiveBuilderExperience() {
         }
 
         setCatalog(payload.categories);
+        setSelectedCategory((currentCategory) => (
+          payload.categories.some((category) => category.category === currentCategory)
+            ? currentCategory
+            : payload.categories[0]?.category ?? currentCategory
+        ));
         setCatalogGeneratedAt(payload.generatedAt);
         setCatalogError(null);
       })
@@ -321,7 +328,9 @@ export function TriviaLiveBuilderExperience() {
     };
   }, [serverClockOffsetMs, snapshotPhase, snapshot?.questionOpenedAtMs, snapshot?.cardIndex]);
 
-  const selectedCategorySummary = catalog.find((category) => category.category === "bible") ?? null;
+  const selectedCategorySummary = catalog.find(
+    (category) => category.category === selectedCategory,
+  ) ?? null;
   const availableDifficultyFilters = useMemo(
     () => selectedCategorySummary?.availableDifficultyFilters ?? [],
     [selectedCategorySummary],
@@ -333,6 +342,24 @@ export function TriviaLiveBuilderExperience() {
     }
   }, [availableDifficultyFilters, selectedDifficultyFilter]);
 
+  useEffect(() => {
+    setSelectedTopicIds([]);
+  }, [selectedCategory]);
+
+  function toggleTopic(topicId: string) {
+    setSelectedTopicIds((currentTopics) => (
+      currentTopics.includes(topicId)
+        ? currentTopics.filter((topic) => topic !== topicId)
+        : [...currentTopics, topicId]
+    ));
+  }
+
+  const selectedTopicLabel = selectedTopicIds.length === 0
+    ? "All topics"
+    : selectedCategorySummary?.topics
+      .filter((topic) => selectedTopicIds.includes(topic.topic))
+      .map((topic) => topic.label)
+      .join(", ");
   const leaderboard = snapshot?.leaderboard ?? [];
   const currentCard = snapshot?.currentCard ?? null;
   const isComplete = snapshot?.status === "completed";
@@ -348,7 +375,7 @@ export function TriviaLiveBuilderExperience() {
 
   async function createRoom() {
     if (!selectedCategorySummary?.isPlayable) {
-      setSetupError("Bible Gold is the current launch category, but it is not available in the catalog yet.");
+      setSetupError("The selected category is not currently available for live play.");
       return;
     }
 
@@ -358,7 +385,8 @@ export function TriviaLiveBuilderExperience() {
       const room = await requestJson<{ sessionId: string; roomCode: string }>("/api/trivia/sessions", {
         method: "POST",
         body: JSON.stringify({
-          category: "bible",
+          category: selectedCategory,
+          topicIds: selectedTopicIds,
           difficultyFilter: selectedDifficultyFilter,
           pacingMode: selectedPacingMode,
           gameMode: selectedGameMode,
@@ -490,7 +518,7 @@ export function TriviaLiveBuilderExperience() {
                 </div>
                 <h2 className="mt-2 text-2xl font-black text-white sm:text-3xl">Create the room</h2>
                 <p className="hidden">
-                  This is the hosted builder for the first public Bible trivia MVP on playpointsystems.com. Create the room here, then let players sign in from their phones on the live join page.
+                  Choose a published trivia category and topics, create the room, then let players sign in from their phones on the live join page.
                 </p>
               </div>
               {snapshot ? (
@@ -508,14 +536,60 @@ export function TriviaLiveBuilderExperience() {
                 <div className="rounded-[28px] border border-white/10 bg-black/20 p-5">
                   <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Create a live room</div>
                   <div className="hidden">
-                    This page is the host builder only. The first public MVP is Bible trivia, and player names are entered after joining on their phones at <span className="font-semibold text-white">/games/trivia/join</span>.
+                    This page is the host builder. Player names are entered after joining on their phones at <span className="font-semibold text-white">/games/trivia/join</span>.
                   </div>
 
-                  <div className="hidden">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/46">Launch category</div>
-                    <div className="mt-2 font-black text-white">Bible Gold</div>
-                    <div className="mt-2 text-sm leading-7 text-white/68">The public builder is locked to Bible for the MVP launch so the live room flow can stabilize before category expansion.</div>
-                  </div>
+                  <label className="mt-5 block text-sm font-semibold text-white/90" htmlFor="category-select">
+                    Category
+                  </label>
+                  <select
+                    id="category-select"
+                    value={selectedCategory}
+                    onChange={(event) => setSelectedCategory(event.target.value)}
+                    className="mt-3 w-full rounded-[20px] border border-white/10 bg-[#07101c] px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-300/40 focus:bg-[#091524]"
+                  >
+                    {catalog.map((category) => (
+                      <option key={category.category} value={category.category} disabled={!category.isPlayable}>
+                        {category.label} ({category.totalGoldTriviaCount})
+                      </option>
+                    ))}
+                  </select>
+
+                  {selectedCategorySummary?.topics.length ? (
+                    <fieldset className="mt-5">
+                      <legend className="text-sm font-semibold text-white/90">Topics</legend>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          aria-pressed={selectedTopicIds.length === 0}
+                          onClick={() => setSelectedTopicIds([])}
+                          className={selectedTopicIds.length === 0
+                            ? "rounded-xl border border-cyan-200/40 bg-cyan-300/18 px-3 py-2 text-xs font-black text-cyan-50"
+                            : "rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-black text-white/64 transition hover:bg-white/10"}
+                        >
+                          All topics
+                        </button>
+                        {selectedCategorySummary.topics.map((topic) => {
+                          const isSelected = selectedTopicIds.includes(topic.topic);
+
+                          return (
+                            <button
+                              key={topic.topic}
+                              type="button"
+                              aria-pressed={isSelected}
+                              onClick={() => toggleTopic(topic.topic)}
+                              className={isSelected
+                                ? "rounded-xl border border-cyan-200/40 bg-cyan-300/18 px-3 py-2 text-xs font-black text-cyan-50"
+                                : "rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-black text-white/64 transition hover:bg-white/10"}
+                            >
+                              {topic.label} ({topic.totalGoldTriviaCount})
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <p className="mt-2 text-xs leading-6 text-white/56">{selectedTopicLabel}</p>
+                    </fieldset>
+                  ) : null}
 
                   <label className="mt-5 block text-sm font-semibold text-white/90" htmlFor="difficulty-select">
                     Difficulty profile
@@ -611,7 +685,7 @@ export function TriviaLiveBuilderExperience() {
                   <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/54">Current vault view</div>
                   <div className="mt-4 grid gap-3 text-sm text-white/78">
                     <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
-                      <span className="font-semibold text-white">{selectedCategorySummary?.label ?? "Bible"}</span>
+                      <span className="font-semibold text-white">{selectedCategorySummary?.label ?? "Trivia"}</span>
                       {selectedCategorySummary ? ` has ${selectedCategorySummary.totalGoldTriviaCount} playable Gold trivia records right now.` : " category data is loading."}
                     </div>
                     {selectedCategorySummary ? (
@@ -622,9 +696,15 @@ export function TriviaLiveBuilderExperience() {
                     <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
                       The game opens with fixed 500-point questions, climbs through 1,000-, 2,000-, and 3,000-point countdown play, then ends with one private final wager.
                     </div>
-                    <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
-                      <span className="font-semibold text-white">Canon: {BIBLE_CANON_POLICY}.</span> {BIBLE_TRANSLATION_POLICY}
-                    </div>
+                    {selectedCategory === "bible" ? (
+                      <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
+                        <span className="font-semibold text-white">Canon: {BIBLE_CANON_POLICY}.</span> {BIBLE_TRANSLATION_POLICY}
+                      </div>
+                    ) : selectedCategorySummary?.topics.length ? (
+                      <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
+                        Choose all topics, one topic, or any combination. The server samples published questions without replacement.
+                      </div>
+                    ) : null}
                     <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
                       {catalogGeneratedAt
                         ? `Catalog snapshot generated ${new Date(catalogGeneratedAt).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" })}.`

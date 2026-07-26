@@ -11,10 +11,27 @@ export async function POST(request: Request) {
     pacingMode?: TriviaPacingMode;
     gameMode?: TriviaGameMode;
     teamCount?: number;
+    topicIds?: string[];
   };
 
-  if (body.category !== "bible") {
-    return NextResponse.json({ error: "Bible is the current public launch category." }, { status: 400 });
+  if (
+    !body.category
+    || body.category.length > 64
+    || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(body.category)
+  ) {
+    return NextResponse.json({ error: "A valid published category is required." }, { status: 400 });
+  }
+
+  if (body.topicIds !== undefined && !Array.isArray(body.topicIds)) {
+    return NextResponse.json({ error: "Topic selections are invalid." }, { status: 400 });
+  }
+
+  const topicIds = [...new Set(body.topicIds ?? [])];
+  if (
+    topicIds.length > 20
+    || topicIds.some((topic) => topic.length > 64 || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(topic))
+  ) {
+    return NextResponse.json({ error: "Topic selections are invalid." }, { status: 400 });
   }
 
   if (!body.difficultyFilter || !RUNTIME_DIFFICULTY_FILTERS.includes(body.difficultyFilter)) {
@@ -36,7 +53,14 @@ export async function POST(request: Request) {
   }
 
   try {
-    const room = await createTriviaLiveSession(body.category, body.difficultyFilter, body.pacingMode, gameMode, teamCount);
+    const room = await createTriviaLiveSession(
+      body.category,
+      body.difficultyFilter,
+      body.pacingMode,
+      gameMode,
+      teamCount,
+      topicIds,
+    );
     const response = NextResponse.json({ sessionId: room.sessionId, roomCode: room.roomCode }, {
       headers: { "Cache-Control": "no-store" },
     });

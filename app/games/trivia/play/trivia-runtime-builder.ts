@@ -5,6 +5,7 @@ import {
   RUNTIME_DIFFICULTIES,
   type RuntimeCatalogCategorySummary,
   type RuntimeChoice,
+  type RuntimeCatalogTopicSummary,
   type RuntimeChoiceSlot,
   type RuntimeDeck,
   type RuntimeDeckCard,
@@ -22,6 +23,7 @@ const UINT32_RANGE = 0x1_0000_0000;
 export type RuntimeDeckBuildOptions = {
   seed?: string;
   excludedSourceIds?: readonly string[];
+  topicIds?: readonly string[];
 };
 
 class SeededCryptoRandom {
@@ -75,9 +77,10 @@ function shuffleWithSeed<T>(values: readonly T[], random: SeededCryptoRandom): T
   return shuffled;
 }
 
-interface SourceCatalogRecord {
+export interface RuntimeSourceCatalogRecord {
   id: string;
   category: string;
+  topic?: string;
   difficulty: RuntimeDifficulty;
   question: string;
   answer: string;
@@ -87,23 +90,24 @@ interface SourceCatalogRecord {
   tags: string[];
 }
 
-interface SourceCatalogCategory {
+export interface RuntimeSourceCatalogCategory {
   category: string;
   label: string;
   totalGoldTriviaCount: number;
   countsByDifficulty: Record<RuntimeDifficulty, number>;
-  records: SourceCatalogRecord[];
+  topics?: RuntimeCatalogTopicSummary[];
+  records: RuntimeSourceCatalogRecord[];
 }
 
 interface SourceCatalog {
   generatedAt: string;
   sourceReviewStatus: "gold";
-  categories: SourceCatalogCategory[];
+  categories: RuntimeSourceCatalogCategory[];
 }
 
 const runtimeCatalog = catalogData as SourceCatalog;
 
-function isBookOrderRecord(record: SourceCatalogRecord) {
+function isBookOrderRecord(record: RuntimeSourceCatalogRecord) {
   return record.tags.includes("book-order");
 }
 
@@ -112,9 +116,9 @@ function compareDifficulty(left: RuntimeDifficulty, right: RuntimeDifficulty): n
 }
 
 function removeFirstMatchingRecord(
-  records: SourceCatalogRecord[],
-  matcher: (record: SourceCatalogRecord) => boolean,
-): SourceCatalogRecord | null {
+  records: RuntimeSourceCatalogRecord[],
+  matcher: (record: RuntimeSourceCatalogRecord) => boolean,
+): RuntimeSourceCatalogRecord | null {
   const index = records.findIndex(matcher);
 
   if (index === -1) {
@@ -132,7 +136,7 @@ function buildRoundQuestionCounts(totalQuestions: number, roundCount: number): n
   return Array.from({ length: roundCount }, (_, index) => baseQuestionCount + (index < remainder ? 1 : 0));
 }
 
-function buildChoices(record: SourceCatalogRecord, random: SeededCryptoRandom): RuntimeChoice[] {
+function buildChoices(record: RuntimeSourceCatalogRecord, random: SeededCryptoRandom): RuntimeChoice[] {
   const choices = record.choices.slice(0, CHOICE_SLOTS.length).map((text) => ({
     text,
     isCorrect: text === record.answer,
@@ -148,7 +152,7 @@ function buildChoices(record: SourceCatalogRecord, random: SeededCryptoRandom): 
   }));
 }
 
-function getCategoryOrThrow(category: string): SourceCatalogCategory {
+function getCategoryOrThrow(category: string): RuntimeSourceCatalogCategory {
   const foundCategory = runtimeCatalog.categories.find((candidate) => candidate.category === category);
 
   if (!foundCategory) {
@@ -159,10 +163,14 @@ function getCategoryOrThrow(category: string): SourceCatalogCategory {
 }
 
 function getFilteredRecords(
-  category: SourceCatalogCategory,
+  category: RuntimeSourceCatalogCategory,
   difficultyFilter: RuntimeDifficultyFilter,
-): SourceCatalogRecord[] {
+  topicIds: readonly string[],
+): RuntimeSourceCatalogRecord[] {
+  const selectedTopics = new Set(topicIds);
+
   return [...category.records]
+    .filter((record) => selectedTopics.size === 0 || Boolean(record.topic && selectedTopics.has(record.topic)))
     .filter((record) => difficultyFilter === "mixed" || record.difficulty === difficultyFilter)
     .sort((left, right) => {
       const difficultyComparison = compareDifficulty(left.difficulty, right.difficulty);
@@ -175,29 +183,34 @@ function getFilteredRecords(
     });
 }
 
-export function listRuntimeCatalogCategories(): RuntimeCatalogCategorySummary[] {
-  return runtimeCatalog.categories.map((category) => {
-    const availableDifficultyFilters: RuntimeDifficultyFilter[] = [];
+export function summarizeRuntimeCatalogCategory(
+  category: RuntimeSourceCatalogCategory,
+): RuntimeCatalogCategorySummary {
+  const availableDifficultyFilters: RuntimeDifficultyFilter[] = [];
 
-    if (category.totalGoldTriviaCount > 0) {
-      availableDifficultyFilters.push("mixed");
+  if (category.totalGoldTriviaCount > 0) {
+    availableDifficultyFilters.push("mixed");
+  }
+
+  RUNTIME_DIFFICULTIES.forEach((difficulty) => {
+    if (category.countsByDifficulty[difficulty] > 0) {
+      availableDifficultyFilters.push(difficulty);
     }
-
-    RUNTIME_DIFFICULTIES.forEach((difficulty) => {
-      if (category.countsByDifficulty[difficulty] > 0) {
-        availableDifficultyFilters.push(difficulty);
-      }
-    });
-
-    return {
-      category: category.category,
-      label: category.label,
-      totalGoldTriviaCount: category.totalGoldTriviaCount,
-      countsByDifficulty: category.countsByDifficulty,
-      availableDifficultyFilters,
-      isPlayable: category.totalGoldTriviaCount > 0,
-    };
   });
+
+  return {
+    category: category.category,
+    label: category.label,
+    totalGoldTriviaCount: category.totalGoldTriviaCount,
+    countsByDifficulty: category.countsByDifficulty,
+    availableDifficultyFilters,
+    isPlayable: category.totalGoldTriviaCount > 0,
+    topics: category.topics ?? [],
+  };
+}
+
+export function listRuntimeCatalogCategories(): RuntimeCatalogCategorySummary[] {
+  return runtimeCatalog.categories.map(summarizeRuntimeCatalogCategory);
 }
 
 export function buildRuntimeDeck(
@@ -205,11 +218,21 @@ export function buildRuntimeDeck(
   difficultyFilter: RuntimeDifficultyFilter,
   options: RuntimeDeckBuildOptions = {},
 ): RuntimeDeck {
-  const category = getCategoryOrThrow(categoryKey);
+  return buildRuntimeDeckFromCategory(getCategoryOrThrow(categoryKey), difficultyFilter, options);
+}
+
+export function buildRuntimeDeckFromCategory(
+  category: RuntimeSourceCatalogCategory,
+  difficultyFilter: RuntimeDifficultyFilter,
+  options: RuntimeDeckBuildOptions = {},
+): RuntimeDeck {
   const seed = options.seed ?? randomBytes(32).toString("hex");
   const random = new SeededCryptoRandom(seed);
   const excludedSourceIds = new Set(options.excludedSourceIds ?? []);
-  const shuffledRecords = shuffleWithSeed(getFilteredRecords(category, difficultyFilter), random);
+  const shuffledRecords = shuffleWithSeed(
+    getFilteredRecords(category, difficultyFilter, options.topicIds ?? []),
+    random,
+  );
   const filteredRecords = [
     ...shuffledRecords.filter((record) => !excludedSourceIds.has(record.id)),
     ...shuffledRecords.filter((record) => excludedSourceIds.has(record.id)),
@@ -264,7 +287,7 @@ export function buildRuntimeDeck(
 
   deckRounds.forEach((round, roundIndex) => {
     const blueprint = rounds[roundIndex];
-    const selectedRecords: SourceCatalogRecord[] = [];
+    const selectedRecords: RuntimeSourceCatalogRecord[] = [];
     const preferredDifficulties =
       difficultyFilter === "mixed"
         ? blueprint.preferredDifficulties
@@ -278,7 +301,7 @@ export function buildRuntimeDeck(
     );
 
     desiredBookOrderSlots.forEach((wantsBookOrder) => {
-      let record: SourceCatalogRecord | null = null;
+      let record: RuntimeSourceCatalogRecord | null = null;
 
       for (const difficulty of preferredDifficulties) {
         record = removeFirstMatchingRecord(

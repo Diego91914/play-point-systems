@@ -31,6 +31,14 @@ export interface RuntimeCatalogDifficultyCounts {
   expert: number;
 }
 
+export interface RuntimeCatalogTopicSummary {
+  topic: string;
+  label: string;
+  totalGoldTriviaCount: number;
+  countsByDifficulty: RuntimeCatalogDifficultyCounts;
+  isPlayable: boolean;
+}
+
 export interface RuntimeCatalogCategorySummary {
   category: string;
   label: string;
@@ -38,6 +46,7 @@ export interface RuntimeCatalogCategorySummary {
   countsByDifficulty: RuntimeCatalogDifficultyCounts;
   availableDifficultyFilters: RuntimeDifficultyFilter[];
   isPlayable: boolean;
+  topics: RuntimeCatalogTopicSummary[];
 }
 
 export interface RuntimeChoice {

@@ -2,7 +2,7 @@ import "server-only";
 
 import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
-import { buildRuntimeDeck } from "./trivia-runtime-builder";
+import { buildServerRuntimeDeck } from "./trivia-published-catalog";
 import { getTriviaTimerSeconds, type TriviaPacingMode } from "./trivia-live-timing";
 import {
   TriviaLiveAuthorizationError,
@@ -207,6 +207,7 @@ export async function createPersistentTriviaLiveSession(
   pacingMode: TriviaPacingMode,
   gameMode: TriviaGameMode,
   teamCount: number,
+  topicIds: readonly string[] = [],
 ): Promise<{ sessionId: string; roomCode: string; hostToken: string }> {
   const supabase = getSupabaseServerClient();
   const { data: recentRows, error: recentError } = await supabase
@@ -221,9 +222,10 @@ export async function createPersistentTriviaLiveSession(
   }
 
   const randomSeed = randomBytes(32).toString("hex");
-  const deck = buildRuntimeDeck(category, difficultyFilter, {
+  const deck = await buildServerRuntimeDeck(category, difficultyFilter, {
     seed: randomSeed,
     excludedSourceIds: [...new Set((recentRows ?? []).map((row) => row.source_id as string))],
+    topicIds,
   });
   const sessionId = randomUUID();
   const hostToken = createAuthToken();

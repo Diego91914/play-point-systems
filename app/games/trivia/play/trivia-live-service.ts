@@ -30,9 +30,21 @@ export async function createTriviaLiveSession(
   pacingMode: TriviaPacingMode,
   gameMode: TriviaGameMode,
   teamCount: number,
+  topicIds: readonly string[] = [],
 ) {
   if (isPersistentStoreEnabled()) {
-    return (await persistentStore()).createPersistentTriviaLiveSession(category, difficultyFilter, pacingMode, gameMode, teamCount);
+    return (await persistentStore()).createPersistentTriviaLiveSession(
+      category,
+      difficultyFilter,
+      pacingMode,
+      gameMode,
+      teamCount,
+      topicIds,
+    );
+  }
+
+  if (topicIds.length > 0) {
+    throw new Error("Topic selection requires the persistent trivia catalog.");
   }
 
   return memory.createTriviaLiveSession(category, difficultyFilter, pacingMode, gameMode, teamCount);
