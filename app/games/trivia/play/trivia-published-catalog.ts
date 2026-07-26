@@ -65,7 +65,20 @@ function emptyDifficultyCounts(): RuntimeCatalogDifficultyCounts {
 
 function formatSlug(slug: string): string {
   const labelOverrides: Record<string, string> = {
+    "1950s-1980s": "1950s–1980s",
+    "1990s-today": "1990s–Today",
+    "actors-directors-awards": "Actors, Directors & Awards",
+    "animation-family": "Animation & Family",
+    "artists-bands": "Artists & Bands",
+    "genres-instruments-history": "Genres, Instruments & Music History",
     "inventions-firsts": "Inventions & Firsts",
+    "medieval-renaissance": "Medieval & Renaissance",
+    movies: "Movies & TV",
+    "olympics-individual-sports": "Olympics & Individual Sports",
+    "soccer-world-sports": "Soccer & World Sports",
+    "songs-albums": "Songs & Albums",
+    "us-history": "U.S. History",
+    "wars-revolutions-leaders": "Wars, Revolutions & Leaders",
     "words-language": "Words & Language",
   };
 

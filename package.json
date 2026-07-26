@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
+    "trivia:import-pack": "node --env-file=.env.local scripts/import-trivia-pack.mjs",
     "test:e2e": "playwright test"
   },
   "dependencies": {
