@@ -9,7 +9,7 @@
   }
 
   .section-label {
-    @apply text-[11px] font-semibold uppercase tracking-[0.22em] text-white/70;
+    @apply text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-100/75;
   }
 }
 
@@ -28,7 +28,7 @@ body {
 
 body {
   color: #ffffff;
-  background: #050912;
+  background: #030303;
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -65,13 +65,13 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid #67e8f9;
+  outline: 2px solid #e4bd72;
   outline-offset: 3px;
 }
 
 ::selection {
   color: #ffffff;
-  background: rgba(34, 211, 238, 0.35);
+  background: rgba(213, 174, 95, 0.42);
 }
 
 .reveal-up {

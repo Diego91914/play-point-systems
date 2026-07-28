@@ -25,6 +25,13 @@ export const metadata: Metadata = {
   keywords: ["live scoring", "group games", "trivia", "disc golf", "Shot Caddy", "Play Point Live", "Play Point Records"],
   authors: [{ name: "Channing Stovall" }],
   creator: "Channing Stovall",
+  icons: {
+    icon: [
+      { url: "/images/brand/play-point-systems-icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/images/brand/play-point-systems-icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/images/brand/play-point-systems-icon-192.png", sizes: "192x192", type: "image/png" }],
+  },
   openGraph: {
     type: "website",
     url: "https://www.playpointsystems.com",
@@ -45,6 +52,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     "@type": "Organization",
     name: "Play Point Systems LLC",
     url: "https://www.playpointsystems.com",
+    logo: "https://www.playpointsystems.com/images/brand/play-point-systems-logo.png",
     founder: {
       "@type": "Person",
       name: "Channing Stovall",

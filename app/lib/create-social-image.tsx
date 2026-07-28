@@ -1,4 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { ImageResponse } from "next/og";
+
+const brandEmblem = readFile(
+  path.join(process.cwd(), "public", "images", "brand", "play-point-systems-emblem.png"),
+);
 
 type SocialImageOptions = {
   eyebrow: string;
@@ -11,13 +18,15 @@ type SocialImageOptions = {
 export const socialImageSize = { width: 1200, height: 630 };
 export const socialImageContentType = "image/png";
 
-export function createSocialImage({
+export async function createSocialImage({
   eyebrow,
   title,
   description,
   accent,
   secondaryAccent,
 }: SocialImageOptions) {
+  const emblem = `data:image/png;base64,${(await brandEmblem).toString("base64")}`;
+
   return new ImageResponse(
     (
       <div
@@ -60,23 +69,13 @@ export function createSocialImage({
 
         <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-            <div
-              style={{
-                width: 68,
-                height: 68,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 18,
-                border: "2px solid rgba(255,255,255,0.22)",
-                background: "rgba(255,255,255,0.08)",
-                fontSize: 25,
-                fontWeight: 900,
-                color: "#f8d17c",
-              }}
-            >
-              PP
-            </div>
+            <img
+              src={emblem}
+              alt=""
+              width={68}
+              height={68}
+              style={{ borderRadius: 18, objectFit: "contain" }}
+            />
             <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
               <div style={{ fontSize: 24, fontWeight: 800 }}>Play Point Systems</div>
               <div style={{ fontSize: 15, letterSpacing: 4, textTransform: "uppercase", color: "rgba(255,255,255,0.7)" }}>

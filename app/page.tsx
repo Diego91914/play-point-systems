@@ -28,14 +28,14 @@ export default function PlayPointSystemsPage() {
             <h1 className="marketing-headline mt-6 max-w-4xl leading-[1.05] lg:text-7xl xl:text-[5.2rem] xl:leading-[0.96]">
               {hero.headline}
             </h1>
-            <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-cyan-100/88 sm:text-xl">
+            <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-amber-100/90 sm:text-xl">
               {hero.subheadline}
             </p>
             <p className="mt-5 max-w-3xl text-base leading-8 text-white/76 sm:text-lg">{hero.intro}</p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
                 href="/live/quick-score"
-                className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
+                className="inline-flex items-center justify-center rounded-2xl border border-amber-200/40 bg-[linear-gradient(120deg,rgba(224,188,111,0.38),rgba(158,112,34,0.24))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(205,157,66,0.22)] transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
               >
                 Start Quick Score
               </Link>

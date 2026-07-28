@@ -17,13 +17,13 @@ export function GET() {
       categories: ["sports", "games", "utilities"],
       icons: [
         {
-          src: "/images/pps-logo.png",
-          sizes: "512x512",
+          src: "/images/brand/play-point-systems-icon-192.png",
+          sizes: "192x192",
           type: "image/png",
           purpose: "any",
         },
         {
-          src: "/images/pps-logo.png",
+          src: "/images/brand/play-point-systems-icon-512.png",
           sizes: "512x512",
           type: "image/png",
           purpose: "maskable",

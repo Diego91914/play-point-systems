@@ -44,7 +44,7 @@ export function ProductShell({
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3">
           <Link href="/" className="flex min-w-0 items-center gap-3" aria-label="Play Point Systems home">
             <span className="relative block h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-white/15 bg-[#111820]">
-              <Image src="/images/brand/play-point-emblem.png" alt="" fill priority sizes="40px" className="object-contain p-1" />
+              <Image src="/images/brand/play-point-systems-emblem.png" alt="" fill priority sizes="40px" className="object-contain" />
             </span>
             <span className="min-w-0">
               <span className="block truncate text-sm font-black text-white sm:text-base">{productName}</span>

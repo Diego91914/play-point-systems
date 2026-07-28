@@ -42,32 +42,42 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
       >
         Skip to content
       </a>
-      <div className="min-h-screen overflow-x-clip bg-[#050912] text-white">
+      <div className="min-h-screen overflow-x-clip bg-[#030303] text-white">
       <div className="pointer-events-none fixed inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(121,171,255,0.2),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(116,243,204,0.12),_transparent_28%),linear-gradient(180deg,_#09111d_0%,_#050912_48%,_#04070d_100%)]" />
-        <div className="absolute left-[-4%] top-[12%] h-72 w-72 rounded-full bg-cyan-300/10 blur-3xl" />
-        <div className="absolute bottom-[10%] right-[-4%] h-80 w-80 rounded-full bg-emerald-300/10 blur-3xl" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(213,174,95,0.22),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(255,255,255,0.08),_transparent_30%),linear-gradient(180deg,_#0d0d0d_0%,_#060606_50%,_#030303_100%)]" />
+        <div className="absolute left-[-4%] top-[12%] h-72 w-72 rounded-full bg-amber-300/10 blur-3xl" />
+        <div className="absolute bottom-[10%] right-[-4%] h-80 w-80 rounded-full bg-white/5 blur-3xl" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-2 py-3 min-[360px]:px-4 min-[360px]:py-6 sm:px-6 lg:px-8">
         <div className="rounded-[36px] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] shadow-[0_30px_120px_rgba(0,0,0,0.4)]">
           <header className="sticky top-4 z-50 px-4 pt-4 sm:px-6 lg:px-8">
-            <div className="rounded-[28px] border border-white/12 bg-[linear-gradient(180deg,rgba(8,15,28,0.95),rgba(8,15,28,0.78))] px-4 py-3 shadow-[0_18px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:px-6">
+            <div className="rounded-[28px] border border-amber-200/15 bg-[linear-gradient(180deg,rgba(8,8,8,0.96),rgba(8,8,8,0.84))] px-4 py-3 shadow-[0_18px_40px_rgba(0,0,0,0.42)] backdrop-blur-xl sm:px-6">
               <div className="flex items-center justify-between gap-2 min-[380px]:gap-4">
-                <Link href="/" className="flex min-w-0 items-center gap-2 min-[380px]:gap-3 sm:gap-4">
-                  <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-white/15 bg-[#111820] shadow-[0_0_24px_rgba(255,195,80,0.16)]">
+                <Link href="/" aria-label="Play Point Systems home" className="flex min-w-0 items-center gap-2 min-[380px]:gap-3">
+                  <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-amber-200/20 bg-black shadow-[0_0_24px_rgba(213,174,95,0.18)] sm:hidden">
                     <Image
-                      src="/images/brand/play-point-emblem.png"
+                      src="/images/brand/play-point-systems-emblem.png"
                       alt=""
                       fill
                       priority
                       sizes="44px"
-                      className="object-contain p-1"
+                      className="object-contain"
                     />
                   </div>
-                  <div className="min-w-0">
+                  <div className="min-w-0 sm:hidden">
                     <div className="hidden truncate text-[11px] font-semibold uppercase tracking-[0.14em] text-white/72 min-[380px]:block">Products · Live · Music</div>
                     <div className="whitespace-nowrap text-[13px] font-extrabold tracking-[0.005em] text-white min-[380px]:mt-1 min-[380px]:text-base sm:text-xl">Play Point Systems</div>
+                  </div>
+                  <div className="relative hidden h-[54px] w-[232px] shrink-0 sm:block">
+                    <Image
+                      src="/images/brand/play-point-systems-logo.png"
+                      alt=""
+                      fill
+                      priority
+                      sizes="232px"
+                      className="object-contain"
+                    />
                   </div>
                 </Link>
 
@@ -76,7 +86,7 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
                     {navItems.map((item) => {
                       const active = current === item.key || (item.key === "games" && current === "shot-caddy");
                       const className = active
-                        ? "rounded-full border border-cyan-300/35 bg-cyan-400/14 px-4 py-2 text-cyan-50"
+                        ? "rounded-full border border-amber-200/35 bg-amber-300/12 px-4 py-2 text-amber-50"
                         : "rounded-full border border-white/15 bg-black/20 px-4 py-2 transition hover:border-white/25 hover:bg-white/8 hover:text-white";
 
                       return (
@@ -89,7 +99,7 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
 
                   <Link
                     href="/live/quick-score"
-                    className="inline-flex rounded-full border border-cyan-200/40 bg-[linear-gradient(120deg,rgba(118,225,255,0.34),rgba(120,170,255,0.2))] px-4 py-2 text-sm font-bold text-white shadow-[0_8px_22px_rgba(92,180,255,0.2)] transition hover:brightness-110"
+                    className="inline-flex rounded-full border border-amber-200/40 bg-[linear-gradient(120deg,rgba(224,188,111,0.34),rgba(158,112,34,0.22))] px-4 py-2 text-sm font-bold text-white shadow-[0_8px_22px_rgba(205,157,66,0.18)] transition hover:brightness-110"
                   >
                     Start Scoring
                   </Link>
@@ -98,7 +108,7 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
                 <button
                   type="button"
                   onClick={() => setMobileOpen((value) => !value)}
-                  className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/12 bg-white/5 text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 lg:hidden"
+                  className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/12 bg-white/5 text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300 lg:hidden"
                   aria-expanded={mobileOpen}
                   aria-controls="mobile-navigation"
                   aria-label="Toggle navigation menu"
@@ -113,7 +123,7 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
                     {navItems.map((item) => {
                       const active = current === item.key || (item.key === "games" && current === "shot-caddy");
                       const className = active
-                        ? "rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-4 py-3 text-cyan-50"
+                        ? "rounded-2xl border border-amber-200/30 bg-amber-300/10 px-4 py-3 text-amber-50"
                         : "rounded-2xl border border-white/10 px-4 py-3 transition hover:bg-white/5";
 
                       return (
@@ -124,7 +134,7 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
                     })}
                     <Link
                       href="/live/quick-score"
-                      className="rounded-2xl border border-cyan-300/30 bg-cyan-400/12 px-4 py-3 text-cyan-50"
+                      className="rounded-2xl border border-amber-200/30 bg-amber-300/10 px-4 py-3 text-amber-50"
                       onClick={() => setMobileOpen(false)}
                     >
                       Start Scoring
@@ -140,7 +150,14 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
           <footer className="border-t border-white/10 px-5 py-8 sm:px-8 lg:px-10">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/68">Play Point Systems</div>
+                <Image
+                  src="/images/brand/play-point-systems-logo.png"
+                  alt="Play Point Systems"
+                  width={1496}
+                  height={376}
+                  sizes="220px"
+                  className="h-auto w-[220px] max-w-full"
+                />
                 <div className="mt-2 max-w-md text-sm leading-7 text-white/52">The parent company for Play Point Live, Shot Caddy, and Play Point Records. Creator-led, purpose-built, and honest about the work.</div>
               </div>
               <nav aria-label="Footer navigation" className="flex flex-wrap items-center gap-1.5">
@@ -159,7 +176,7 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
                 <Link href="/about" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/40">
                   About
                 </Link>
-                <Link href="/contact" className="rounded-full border border-cyan-300/25 bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-50 transition hover:border-cyan-300/35 hover:bg-cyan-400/16 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400">
+                <Link href="/contact" className="rounded-full border border-amber-300/25 bg-amber-300/10 px-4 py-2 text-sm font-semibold text-amber-50 transition hover:border-amber-300/35 hover:bg-amber-300/16 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300">
                   Contact
                 </Link>
               </nav>
