@@ -4,7 +4,7 @@ import {
   gamesSessionOwns,
   verifyGamesSessionToken,
   type GamesSessionClaims,
-} from "@/lib/play-point-core/games-session";
+} from "../lib/play-point-core/games-session";
 
 const SECRET = "unit-test-games-session-secret-that-is-long-enough";
 
