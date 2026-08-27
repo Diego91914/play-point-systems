@@ -26,6 +26,10 @@ function requiredGameSku(pathname: string): string | null {
     return "game.play_point_trivia";
   }
 
+  if (pathname === "/games/chain-reaction") {
+    return "game.chain_reaction";
+  }
+
   return null;
 }
 
@@ -46,14 +50,23 @@ function signInRedirect(request: NextRequest) {
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const isChainJoinPage =
+    pathname === "/games/chain-reaction" && Boolean(request.nextUrl.searchParams.get("code"));
+  const isChainApi =
+    pathname === "/api/games/chain-reaction" ||
+    pathname.startsWith("/api/games/chain-reaction/");
 
   if (
     pathname === "/games/sign-in" ||
     pathname.startsWith("/games/sign-in/") ||
     pathname === ACCOUNT_SESSION_PATH ||
-    pathname.endsWith("/opengraph-image")
+    pathname.endsWith("/opengraph-image") ||
+    isChainJoinPage ||
+    isChainApi
   ) {
-    return NextResponse.next();
+    const response = NextResponse.next();
+    response.headers.set("Cache-Control", "private, no-store");
+    return response;
   }
 
   const token = request.cookies.get(GAMES_SESSION_COOKIE)?.value;
