@@ -9,15 +9,23 @@ function safeNextPath(value: string): string {
   return value;
 }
 
+function gamesAuthReturnUrl(destination: string): string {
+  const origin =
+    typeof window === "undefined" ? "https://playpointsystems.com" : window.location.origin;
+  return `${origin}/games/sign-in?next=${encodeURIComponent(destination)}`;
+}
+
 export function GamesSignInClient({ nextPath }: { nextPath: string }) {
   const destination = safeNextPath(nextPath);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
-  const [action, setAction] = useState<"signin" | "signup" | "reset" | "update" | null>(null);
+  const [action, setAction] = useState<"signin" | "signup" | "reset" | "update" | "recover-link" | null>(null);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [passwordRecovery, setPasswordRecovery] = useState(false);
+  const [recoveryUrl, setRecoveryUrl] = useState("");
+  const [showRecoveryBridge, setShowRecoveryBridge] = useState(false);
 
   async function establishGamesSession(accessToken: string) {
     const response = await fetch("/api/games/account/session", {
@@ -37,9 +45,16 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
 
   useEffect(() => {
     const supabase = getPlayPointBrowserSupabaseClient();
+    const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+    const recoveryHash = hash.get("type") === "recovery";
+    if (recoveryHash) setPasswordRecovery(true);
 
     void supabase.auth.getSession().then(({ data }) => {
       if (!data.session) return;
+      if (recoveryHash) {
+        setPasswordRecovery(true);
+        return;
+      }
       void establishGamesSession(data.session.access_token).catch((sessionError) => {
         setError(
           sessionError instanceof Error
@@ -82,7 +97,7 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
               email: cleanEmail,
               password,
               options: {
-                emailRedirectTo: `https://www.playpointsystems.com/games/sign-in?next=${encodeURIComponent(destination)}`,
+                emailRedirectTo: gamesAuthReturnUrl(destination),
               },
             })
           : await supabase.auth.signInWithPassword({
@@ -125,15 +140,73 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
     try {
       const { error: resetError } = await getPlayPointBrowserSupabaseClient()
         .auth.resetPasswordForEmail(cleanEmail, {
-          redirectTo: `https://www.playpointsystems.com/games/sign-in?next=${encodeURIComponent(destination)}`,
+          redirectTo: gamesAuthReturnUrl(destination),
         });
       if (resetError) throw resetError;
-      setNotice(`Password reset email sent to ${cleanEmail}.`);
+      setShowRecoveryBridge(true);
+      setNotice(
+        `Password reset email sent to ${cleanEmail}. If the link still opens localhost, copy that full localhost address and paste it below.`
+      );
     } catch (resetError) {
       setError(
         resetError instanceof Error
           ? resetError.message
           : "Unable to send the password reset email."
+      );
+    } finally {
+      setBusy(false);
+      setAction(null);
+    }
+  }
+
+  async function recoverFromLocalhostUrl() {
+    const rawUrl = recoveryUrl.trim();
+    if (!rawUrl) {
+      setError("Paste the full localhost recovery address first.");
+      return;
+    }
+
+    setBusy(true);
+    setAction("recover-link");
+    setError("");
+    setNotice("");
+
+    try {
+      const parsed = new URL(rawUrl);
+      const params = new URLSearchParams(parsed.hash.replace(/^#/, ""));
+      const accessToken = params.get("access_token");
+      const refreshToken = params.get("refresh_token");
+      const type = params.get("type");
+
+      if (!accessToken || !refreshToken || type !== "recovery") {
+        throw new Error(
+          "That address does not contain a valid password-recovery session. Open the newest reset email link, then copy the full localhost address from the browser bar."
+        );
+      }
+
+      const supabase = getPlayPointBrowserSupabaseClient();
+      const { data, error: sessionError } = await supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      });
+      if (sessionError || !data.session) {
+        throw sessionError ?? new Error("The recovery session could not be restored.");
+      }
+
+      setRecoveryUrl("");
+      setPasswordRecovery(true);
+      setShowRecoveryBridge(false);
+      window.history.replaceState(
+        null,
+        "",
+        `/games/sign-in?next=${encodeURIComponent(destination)}`
+      );
+      setNotice("Recovery verified. Choose your new password below.");
+    } catch (recoveryError) {
+      setError(
+        recoveryError instanceof Error
+          ? recoveryError.message
+          : "Unable to restore the password reset session."
       );
     } finally {
       setBusy(false);
@@ -201,19 +274,17 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
         </div>
 
         {!passwordRecovery ? (
-          <>
-            <label className="mt-6 block text-sm font-bold text-white/74">
-              Email
-              <input
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                placeholder="you@example.com"
-                className="mt-2 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3.5 text-white outline-none placeholder:text-white/30 focus:border-cyan-300/60"
-              />
-            </label>
-          </>
+          <label className="mt-6 block text-sm font-bold text-white/74">
+            Email
+            <input
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="you@example.com"
+              className="mt-2 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3.5 text-white outline-none placeholder:text-white/30 focus:border-cyan-300/60"
+            />
+          </label>
         ) : null}
 
         <label className="mt-4 block text-sm font-bold text-white/74">
@@ -276,6 +347,30 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
             >
               {action === "reset" ? "Sending reset…" : "Forgot password?"}
             </button>
+
+            {showRecoveryBridge ? (
+              <div className="mt-5 rounded-2xl border border-amber-200/20 bg-amber-300/8 p-4">
+                <div className="text-sm font-black text-amber-50">Reset link opened localhost?</div>
+                <p className="mt-1 text-xs leading-5 text-amber-50/70">
+                  Copy the entire localhost address from that browser tab and paste it here. We will securely restore the recovery session on Play Point Systems.
+                </p>
+                <textarea
+                  value={recoveryUrl}
+                  onChange={(event) => setRecoveryUrl(event.target.value)}
+                  placeholder="http://localhost:3000/#access_token=..."
+                  rows={3}
+                  className="mt-3 w-full resize-y rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-xs text-white outline-none placeholder:text-white/28 focus:border-amber-200/50"
+                />
+                <button
+                  type="button"
+                  onClick={() => void recoverFromLocalhostUrl()}
+                  disabled={busy}
+                  className="mt-3 w-full rounded-xl border border-amber-200/25 bg-amber-200/12 px-4 py-3 text-sm font-black text-amber-50 transition hover:bg-amber-200/18 disabled:opacity-50"
+                >
+                  {action === "recover-link" ? "Restoring reset…" : "Continue password reset"}
+                </button>
+              </div>
+            ) : null}
           </>
         )}
 
