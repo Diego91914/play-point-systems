@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getPlayPointBrowserSupabaseClient } from "@/lib/play-point-core/play-point-browser-supabase";
 
 function safeNextPath(value: string): string {
   if (!value.startsWith("/games") || value.startsWith("//")) return "/games";
@@ -9,238 +8,64 @@ function safeNextPath(value: string): string {
   return value;
 }
 
-function gamesAuthReturnUrl(destination: string): string {
-  const origin =
-    typeof window === "undefined" ? "https://playpointsystems.com" : window.location.origin;
-  return `${origin}/games/sign-in?next=${encodeURIComponent(destination)}`;
-}
-
 export function GamesSignInClient({ nextPath }: { nextPath: string }) {
   const destination = safeNextPath(nextPath);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
-  const [action, setAction] = useState<"signin" | "signup" | "reset" | "update" | "recover-link" | null>(null);
-  const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
-  const [passwordRecovery, setPasswordRecovery] = useState(false);
-  const [recoveryUrl, setRecoveryUrl] = useState("");
-  const [showRecoveryBridge, setShowRecoveryBridge] = useState(false);
-
-  async function establishGamesSession(accessToken: string) {
-    const response = await fetch("/api/games/account/session", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) {
-      throw new Error(
-        typeof (data as { error?: unknown }).error === "string"
-          ? (data as { error: string }).error
-          : "Unable to open your Play Point Games account."
-      );
-    }
-    window.location.replace(destination);
-  }
 
   useEffect(() => {
-    const supabase = getPlayPointBrowserSupabaseClient();
-    const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-    const recoveryHash = hash.get("type") === "recovery";
-    if (recoveryHash) setPasswordRecovery(true);
+    const params = new URLSearchParams(window.location.search);
+    const handoff = params.get("handoff")?.trim() ?? "";
+    if (!handoff) return;
 
-    void supabase.auth.getSession().then(({ data }) => {
-      if (!data.session) return;
-      if (recoveryHash) {
-        setPasswordRecovery(true);
-        return;
-      }
-      void establishGamesSession(data.session.access_token).catch((sessionError) => {
-        setError(
-          sessionError instanceof Error
-            ? sessionError.message
-            : "Unable to restore your Games session."
-        );
+    let cancelled = false;
+    setBusy(true);
+    setError("");
+
+    void fetch("/api/games/account/shot-caddy-handoff", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: handoff }),
+      cache: "no-store",
+    })
+      .then(async (response) => {
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(
+            typeof payload?.error === "string"
+              ? payload.error
+              : "Unable to verify your Shot Caddy account.",
+          );
+        }
+        if (!cancelled) window.location.replace(destination);
+      })
+      .catch((handoffError) => {
+        if (!cancelled) {
+          window.history.replaceState(
+            null,
+            "",
+            `/games/sign-in?next=${encodeURIComponent(destination)}`,
+          );
+          setError(
+            handoffError instanceof Error
+              ? handoffError.message
+              : "Unable to verify your Shot Caddy account.",
+          );
+          setBusy(false);
+        }
       });
-    });
 
-    const { data: listener } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY") setPasswordRecovery(true);
-    });
+    return () => {
+      cancelled = true;
+    };
+  }, [destination]);
 
-    return () => listener.subscription.unsubscribe();
-  // destination is stable for this page load.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  async function submitAuth(mode: "signin" | "signup") {
-    const cleanEmail = email.trim();
-    if (!cleanEmail || !password) {
-      setError("Enter your email and password.");
-      return;
-    }
-    if (mode === "signup" && password.length < 8) {
-      setError("Use a password with at least 8 characters when creating an account.");
-      return;
-    }
-
+  function continueWithShotCaddy() {
     setBusy(true);
-    setAction(mode);
     setError("");
-    setNotice("");
-
-    try {
-      const supabase = getPlayPointBrowserSupabaseClient();
-      const result =
-        mode === "signup"
-          ? await supabase.auth.signUp({
-              email: cleanEmail,
-              password,
-              options: {
-                emailRedirectTo: gamesAuthReturnUrl(destination),
-              },
-            })
-          : await supabase.auth.signInWithPassword({
-              email: cleanEmail,
-              password,
-            });
-
-      if (result.error) throw result.error;
-      setPassword("");
-
-      if (!result.data.session) {
-        setNotice(
-          `Account created. Check ${cleanEmail} for the confirmation link, then return here to sign in.`
-        );
-        return;
-      }
-
-      await establishGamesSession(result.data.session.access_token);
-    } catch (authError) {
-      setError(
-        authError instanceof Error ? authError.message : "Account sign-in failed."
-      );
-    } finally {
-      setBusy(false);
-      setAction(null);
-    }
-  }
-
-  async function sendPasswordReset() {
-    const cleanEmail = email.trim();
-    if (!cleanEmail) {
-      setError("Enter your email address first.");
-      return;
-    }
-
-    setBusy(true);
-    setAction("reset");
-    setError("");
-    setNotice("");
-    try {
-      const { error: resetError } = await getPlayPointBrowserSupabaseClient()
-        .auth.resetPasswordForEmail(cleanEmail, {
-          redirectTo: gamesAuthReturnUrl(destination),
-        });
-      if (resetError) throw resetError;
-      setShowRecoveryBridge(true);
-      setNotice(
-        `Password reset email sent to ${cleanEmail}. If the link still opens localhost, copy that full localhost address and paste it below.`
-      );
-    } catch (resetError) {
-      setError(
-        resetError instanceof Error
-          ? resetError.message
-          : "Unable to send the password reset email."
-      );
-    } finally {
-      setBusy(false);
-      setAction(null);
-    }
-  }
-
-  async function recoverFromLocalhostUrl() {
-    const rawUrl = recoveryUrl.trim();
-    if (!rawUrl) {
-      setError("Paste the full localhost recovery address first.");
-      return;
-    }
-
-    setBusy(true);
-    setAction("recover-link");
-    setError("");
-    setNotice("");
-
-    try {
-      const parsed = new URL(rawUrl);
-      const params = new URLSearchParams(parsed.hash.replace(/^#/, ""));
-      const accessToken = params.get("access_token");
-      const refreshToken = params.get("refresh_token");
-      const type = params.get("type");
-
-      if (!accessToken || !refreshToken || type !== "recovery") {
-        throw new Error(
-          "That address does not contain a valid password-recovery session. Open the newest reset email link, then copy the full localhost address from the browser bar."
-        );
-      }
-
-      const supabase = getPlayPointBrowserSupabaseClient();
-      const { data, error: sessionError } = await supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      });
-      if (sessionError || !data.session) {
-        throw sessionError ?? new Error("The recovery session could not be restored.");
-      }
-
-      setRecoveryUrl("");
-      setPasswordRecovery(true);
-      setShowRecoveryBridge(false);
-      window.history.replaceState(
-        null,
-        "",
-        `/games/sign-in?next=${encodeURIComponent(destination)}`
-      );
-      setNotice("Recovery verified. Choose your new password below.");
-    } catch (recoveryError) {
-      setError(
-        recoveryError instanceof Error
-          ? recoveryError.message
-          : "Unable to restore the password reset session."
-      );
-    } finally {
-      setBusy(false);
-      setAction(null);
-    }
-  }
-
-  async function updateRecoveredPassword() {
-    if (password.length < 8) {
-      setError("Use a new password with at least 8 characters.");
-      return;
-    }
-
-    setBusy(true);
-    setAction("update");
-    setError("");
-    setNotice("");
-    try {
-      const supabase = getPlayPointBrowserSupabaseClient();
-      const { error: updateError } = await supabase.auth.updateUser({ password });
-      if (updateError) throw updateError;
-      const { data } = await supabase.auth.getSession();
-      if (!data.session) throw new Error("Your recovery session expired. Request another reset link.");
-      setPassword("");
-      setPasswordRecovery(false);
-      await establishGamesSession(data.session.access_token);
-    } catch (updateError) {
-      setError(
-        updateError instanceof Error ? updateError.message : "Unable to update your password."
-      );
-    } finally {
-      setBusy(false);
-      setAction(null);
-    }
+    const target = new URL("https://shotcaddy.net/account/play-point");
+    target.searchParams.set("next", destination);
+    window.location.assign(target.toString());
   }
 
   return (
@@ -250,132 +75,52 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
           Play Point Systems · Games
         </div>
         <h1 className="marketing-headline mt-5 text-4xl sm:text-5xl">
-          Sign in to your games.
+          Your games. One account.
         </h1>
         <p className="mt-5 text-base leading-8 text-white/72">
-          One Play Point account opens your game library. The library keeps your owned Play Point titles together and gives you one place to launch connected Shot Caddy games.
+          Your Shot Caddy account is your Play Point Games account. Sign in once with the account you already use and your access follows you into the Games library.
         </p>
         <div className="mt-7 grid gap-3 text-sm text-white/74">
           <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-            <span className="font-black text-white">Account first.</span> Every Games route requires a verified sign-in.
+            <span className="font-black text-white">Same identity.</span> No second Play Point password to remember.
           </div>
           <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-            <span className="font-black text-white">Ownership second.</span> Your library determines which games you can open.
+            <span className="font-black text-white">Same Founder access.</span> Founder status is verified from the Shot Caddy account itself.
           </div>
           <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-            <span className="font-black text-white">One library.</span> Play Point Games and Shot Caddy launches live together here.
+            <span className="font-black text-white">One library.</span> Play Point titles and connected Shot Caddy games stay together here.
           </div>
         </div>
       </section>
 
-      <section className="rounded-[32px] border border-cyan-300/15 bg-[linear-gradient(145deg,rgba(18,42,56,0.82),rgba(5,12,18,0.95))] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.32)] sm:p-8">
+      <section className="flex flex-col justify-center rounded-[32px] border border-cyan-300/15 bg-[linear-gradient(145deg,rgba(18,42,56,0.82),rgba(5,12,18,0.95))] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.32)] sm:p-8">
         <div className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-100/65">
-          {passwordRecovery ? "Choose a new password" : "Play Point account"}
+          Play Point Account
         </div>
-
-        {!passwordRecovery ? (
-          <label className="mt-6 block text-sm font-bold text-white/74">
-            Email
-            <input
-              type="email"
-              autoComplete="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="you@example.com"
-              className="mt-2 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3.5 text-white outline-none placeholder:text-white/30 focus:border-cyan-300/60"
-            />
-          </label>
-        ) : null}
-
-        <label className="mt-4 block text-sm font-bold text-white/74">
-          {passwordRecovery ? "New password" : "Password"}
-          <input
-            type="password"
-            autoComplete={passwordRecovery ? "new-password" : "current-password"}
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            placeholder={passwordRecovery ? "At least 8 characters" : "Your account password"}
-            className="mt-2 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3.5 text-white outline-none placeholder:text-white/30 focus:border-cyan-300/60"
-          />
-        </label>
+        <h2 className="mt-4 text-3xl font-black tracking-tight text-white">
+          Continue with Shot Caddy
+        </h2>
+        <p className="mt-4 text-sm leading-7 text-white/66">
+          If you are already signed in on Shot Caddy, you will come straight back here. Otherwise Shot Caddy will ask you to sign in using its normal account screen.
+        </p>
 
         {error ? (
-          <div role="alert" className="mt-4 rounded-2xl border border-red-300/20 bg-red-400/10 px-4 py-3 text-sm text-red-100">
+          <div role="alert" className="mt-5 rounded-2xl border border-red-300/20 bg-red-400/10 px-4 py-3 text-sm text-red-100">
             {error}
           </div>
         ) : null}
-        {notice ? (
-          <div className="mt-4 rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-100">
-            {notice}
-          </div>
-        ) : null}
 
-        {passwordRecovery ? (
-          <button
-            type="button"
-            onClick={() => void updateRecoveredPassword()}
-            disabled={busy}
-            className="mt-6 w-full rounded-2xl bg-cyan-300 px-5 py-3.5 font-black text-slate-950 transition hover:brightness-105 disabled:opacity-50"
-          >
-            {action === "update" ? "Updating…" : "Update password & open Games"}
-          </button>
-        ) : (
-          <>
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              <button
-                type="button"
-                onClick={() => void submitAuth("signin")}
-                disabled={busy}
-                className="rounded-2xl bg-cyan-300 px-5 py-3.5 font-black text-slate-950 transition hover:brightness-105 disabled:opacity-50"
-              >
-                {action === "signin" ? "Signing in…" : "Sign in"}
-              </button>
-              <button
-                type="button"
-                onClick={() => void submitAuth("signup")}
-                disabled={busy}
-                className="rounded-2xl border border-white/15 bg-white/8 px-5 py-3.5 font-black text-white transition hover:bg-white/12 disabled:opacity-50"
-              >
-                {action === "signup" ? "Creating…" : "Create account"}
-              </button>
-            </div>
-            <button
-              type="button"
-              onClick={() => void sendPasswordReset()}
-              disabled={busy}
-              className="mt-4 text-sm font-bold text-cyan-100/72 underline decoration-cyan-200/30 underline-offset-4 hover:text-cyan-50 disabled:opacity-50"
-            >
-              {action === "reset" ? "Sending reset…" : "Forgot password?"}
-            </button>
+        <button
+          type="button"
+          onClick={continueWithShotCaddy}
+          disabled={busy}
+          className="mt-7 w-full rounded-2xl bg-cyan-300 px-5 py-4 text-base font-black text-slate-950 transition hover:brightness-105 disabled:opacity-50"
+        >
+          {busy ? "Connecting…" : "Continue with Shot Caddy"}
+        </button>
 
-            {showRecoveryBridge ? (
-              <div className="mt-5 rounded-2xl border border-amber-200/20 bg-amber-300/8 p-4">
-                <div className="text-sm font-black text-amber-50">Reset link opened localhost?</div>
-                <p className="mt-1 text-xs leading-5 text-amber-50/70">
-                  Copy the entire localhost address from that browser tab and paste it here. We will securely restore the recovery session on Play Point Systems.
-                </p>
-                <textarea
-                  value={recoveryUrl}
-                  onChange={(event) => setRecoveryUrl(event.target.value)}
-                  placeholder="http://localhost:3000/#access_token=..."
-                  rows={3}
-                  className="mt-3 w-full resize-y rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-xs text-white outline-none placeholder:text-white/28 focus:border-amber-200/50"
-                />
-                <button
-                  type="button"
-                  onClick={() => void recoverFromLocalhostUrl()}
-                  disabled={busy}
-                  className="mt-3 w-full rounded-xl border border-amber-200/25 bg-amber-200/12 px-4 py-3 text-sm font-black text-amber-50 transition hover:bg-amber-200/18 disabled:opacity-50"
-                >
-                  {action === "recover-link" ? "Restoring reset…" : "Continue password reset"}
-                </button>
-              </div>
-            ) : null}
-          </>
-        )}
-
-        <p className="mt-6 text-xs leading-6 text-white/46">
-          Signing in confirms your account first. Game access is then checked against Founder access or the ownership attached to that account.
+        <p className="mt-5 text-xs leading-6 text-white/46">
+          Play Point never receives your Shot Caddy password. Shot Caddy sends a short-lived, one-time account confirmation that is consumed immediately after sign-in.
         </p>
       </section>
     </div>
