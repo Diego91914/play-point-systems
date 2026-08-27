@@ -8,6 +8,8 @@ export type SurfacePlayer = {
   streetBet: number;
   contribution: number;
   status: string;
+  sittingOut?: boolean;
+  finishPlace?: number | null;
   isDealer: boolean;
   isSmallBlind: boolean;
   isBigBlind: boolean;
@@ -93,7 +95,8 @@ function seatPosition(index: number, total: number) {
 }
 
 function PlayerSeat({ player, position, isMe }: { player: SurfacePlayer; position: { left: string; top: string }; isMe: boolean }) {
-  const folded = player.status === "folded" || player.status === "out";
+  const eliminated = player.finishPlace != null;
+  const folded = player.status === "folded" || player.status === "out" || eliminated;
   const allIn = player.status === "all_in";
   const showHiddenCards = player.holeCards.length === 0 && (player.status === "active" || player.status === "all_in");
   return (
@@ -104,7 +107,7 @@ function PlayerSeat({ player, position, isMe }: { player: SurfacePlayer; positio
           : isMe
             ? "border-cyan-300/45 bg-[#071a21]/95"
             : "border-white/15 bg-black/80"
-      } ${folded ? "opacity-45 grayscale" : "opacity-100"}`}
+      } ${folded || player.sittingOut ? "opacity-45 grayscale" : "opacity-100"}`}
       style={position}
     >
       <div className="flex items-center justify-center gap-1 text-[9px] font-black uppercase tracking-[0.08em] sm:text-[10px]">
@@ -112,6 +115,8 @@ function PlayerSeat({ player, position, isMe }: { player: SurfacePlayer; positio
         {player.isSmallBlind && <span className="rounded-full bg-cyan-300/18 px-1.5 py-0.5 text-cyan-100">SB</span>}
         {player.isBigBlind && <span className="rounded-full bg-violet-300/18 px-1.5 py-0.5 text-violet-100">BB</span>}
         {allIn && <span className="rounded-full bg-red-400/18 px-1.5 py-0.5 text-red-100">ALL IN</span>}
+        {player.sittingOut && <span className="rounded-full bg-white/10 px-1.5 py-0.5 text-white/65">SIT OUT</span>}
+        {eliminated && <span className="rounded-full bg-white/10 px-1.5 py-0.5 text-white/65">#{player.finishPlace}</span>}
       </div>
       <div className="mt-1 truncate text-xs font-black text-white sm:text-sm">{player.name}{isMe ? " · You" : ""}</div>
       <div className="mt-0.5 text-[11px] font-bold text-amber-200 sm:text-xs">{formatChips(player.stack)}</div>
