@@ -10,11 +10,25 @@ import {
   type HoldemPlayer,
   type HoldemState,
 } from "@/lib/play-point-core/holdem";
+import {
+  applyManagementAction,
+  configureManagedState,
+  finalizeTournamentAfterHand,
+  normalizeManagedState,
+  prepareManagedHand,
+  restoreExcludedPlayers,
+  tournamentProjection,
+  type HoldemManagementAction,
+  type HoldemMode,
+  type HoldemTournamentPreset,
+  type ManagedHoldemState,
+} from "@/lib/play-point-core/holdem-management";
 
 const ROOM_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const DEFAULT_SETTINGS = { startingStack: 10000, smallBlind: 50, bigBlind: 100, maxPlayers: 8 };
 
-type TableRow = { code: string; state: HoldemState; version: number };
+type TableRow = { code: string; state: ManagedHoldemState; version: number };
+export type HoldemRequestAction = HoldemAction | HoldemManagementAction;
 
 function cleanName(value: unknown): string {
   if (typeof value !== "string") throw new Error("Enter your name.");
@@ -33,6 +47,15 @@ function cleanRoomCode(value: unknown): string {
   const code = typeof value === "string" ? value.trim().toUpperCase() : "";
   if (!/^[A-Z2-9]{6}$/.test(code)) throw new Error("Enter a valid 6-character room code.");
   return code;
+}
+
+function cleanMode(value: unknown): HoldemMode {
+  return value === "tournament" ? "tournament" : "cash";
+}
+
+function cleanPreset(value: unknown): HoldemTournamentPreset {
+  if (value === "deep" || value === "turbo") return value;
+  return "standard";
 }
 
 function createRoomCode(): string {
@@ -65,29 +88,32 @@ async function readTable(code: string): Promise<TableRow | null> {
     .eq("code", code)
     .maybeSingle();
   if (error) throw new Error(`Unable to load table: ${error.message}`);
-  return data as TableRow | null;
+  if (!data) return null;
+  return { code: data.code, state: normalizeManagedState(data.state as HoldemState), version: data.version };
 }
 
 async function updateTable(row: TableRow, state: HoldemState): Promise<TableRow | null> {
+  const normalized = normalizeManagedState(state);
   const supabase = getSupabaseServerClient();
   const { data, error } = await supabase
     .from("ppl_holdem_tables")
-    .update({ state, version: row.version + 1, updated_at: new Date().toISOString(), expires_at: new Date(Date.now() + 7 * 86400000).toISOString() })
+    .update({ state: normalized, version: row.version + 1, updated_at: new Date().toISOString(), expires_at: new Date(Date.now() + 7 * 86400000).toISOString() })
     .eq("code", row.code)
     .eq("version", row.version)
     .select("code, state, version")
     .maybeSingle();
   if (error) throw new Error(`Unable to update table: ${error.message}`);
-  return data as TableRow | null;
+  if (!data) return null;
+  return { code: data.code, state: normalizeManagedState(data.state as HoldemState), version: data.version };
 }
 
-function authenticate(state: HoldemState, playerId: string, token: string): HoldemPlayer {
+function authenticate(state: ManagedHoldemState, playerId: string, token: string): HoldemPlayer {
   const player = state.players.find((candidate) => candidate.id === playerId);
   if (!player || !tokenMatches(player.tokenHash, token)) throw new Error("Invalid player session.");
   return player;
 }
 
-function projectedPlayer(player: HoldemPlayer, state: HoldemState, revealPrivate: boolean) {
+function projectedPlayer(player: ManagedHoldemState["players"][number], state: ManagedHoldemState, revealPrivate: boolean) {
   const revealAtShowdown = state.status === "showdown" && player.status !== "folded" && player.status !== "out";
   return {
     id: player.id,
@@ -98,6 +124,9 @@ function projectedPlayer(player: HoldemPlayer, state: HoldemState, revealPrivate
     contribution: player.contribution,
     status: player.status,
     acted: player.acted,
+    sittingOut: Boolean(player.sittingOut),
+    finishPlace: player.finishPlace ?? null,
+    eliminatedAtHand: player.eliminatedAtHand ?? null,
     isDealer: state.dealerSeat === player.seat,
     isSmallBlind: state.smallBlindSeat === player.seat,
     isBigBlind: state.bigBlindSeat === player.seat,
@@ -106,7 +135,8 @@ function projectedPlayer(player: HoldemPlayer, state: HoldemState, revealPrivate
   };
 }
 
-export function projectTable(state: HoldemState, viewerId: string) {
+export function projectTable(input: HoldemState, viewerId: string) {
+  const state = normalizeManagedState(input);
   const me = state.players.find((player) => player.id === viewerId);
   if (!me) throw new Error("Player not found.");
   const toCall = Math.max(0, state.currentBet - me.streetBet);
@@ -124,6 +154,7 @@ export function projectTable(state: HoldemState, viewerId: string) {
     code: state.code,
     status: state.status,
     settings: state.settings,
+    tournament: tournamentProjection(state),
     handNumber: state.handNumber,
     street: state.street,
     board: state.board,
@@ -142,6 +173,8 @@ export function projectTable(state: HoldemState, viewerId: string) {
       seat: me.seat,
       stack: me.stack,
       status: me.status,
+      sittingOut: Boolean(me.sittingOut),
+      finishPlace: me.finishPlace ?? null,
       holeCards: me.holeCards,
       isHost: state.hostPlayerId === me.id,
       isTurn: state.actionSeat === me.seat,
@@ -155,11 +188,13 @@ export function projectTable(state: HoldemState, viewerId: string) {
   };
 }
 
-export function projectPublicTable(state: HoldemState) {
+export function projectPublicTable(input: HoldemState) {
+  const state = normalizeManagedState(input);
   return {
     code: state.code,
     status: state.status,
     settings: state.settings,
+    tournament: tournamentProjection(state),
     handNumber: state.handNumber,
     street: state.street,
     board: state.board,
@@ -176,12 +211,22 @@ export function projectPublicTable(state: HoldemState) {
   };
 }
 
-export async function createTable(input: { name: unknown; startingStack?: unknown; smallBlind?: unknown; bigBlind?: unknown; maxPlayers?: unknown }) {
+export async function createTable(input: {
+  name: unknown;
+  startingStack?: unknown;
+  smallBlind?: unknown;
+  bigBlind?: unknown;
+  maxPlayers?: unknown;
+  mode?: unknown;
+  tournamentPreset?: unknown;
+}) {
   const name = cleanName(input.name);
   const startingStack = cleanInteger(input.startingStack, DEFAULT_SETTINGS.startingStack, 1000, 1000000);
   const smallBlind = cleanInteger(input.smallBlind, DEFAULT_SETTINGS.smallBlind, 1, 100000);
   const bigBlind = cleanInteger(input.bigBlind, DEFAULT_SETTINGS.bigBlind, 2, 200000);
   const maxPlayers = cleanInteger(input.maxPlayers, DEFAULT_SETTINGS.maxPlayers, 2, 8);
+  const mode = cleanMode(input.mode);
+  const tournamentPreset = cleanPreset(input.tournamentPreset);
   if (bigBlind <= smallBlind) throw new Error("Big blind must be larger than small blind.");
   if (startingStack < bigBlind * 10) throw new Error("Starting stack must be at least 10 big blinds.");
 
@@ -190,7 +235,8 @@ export async function createTable(input: { name: unknown; startingStack?: unknow
     const code = createRoomCode();
     const token = createPlayerToken();
     const playerId = randomUUID();
-    const state = createInitialState({ code, hostPlayerId: playerId, hostName: name, hostTokenHash: hashToken(token), startingStack, smallBlind, bigBlind, maxPlayers });
+    const base = createInitialState({ code, hostPlayerId: playerId, hostName: name, hostTokenHash: hashToken(token), startingStack, smallBlind, bigBlind, maxPlayers });
+    const state = configureManagedState(base, mode, tournamentPreset);
     const { error } = await supabase.from("ppl_holdem_tables").insert({ code, state });
     if (!error) return { playerId, token, table: projectTable(state, playerId) };
     if (error.code !== "23505") throw new Error(`Unable to create table: ${error.message}`);
@@ -205,8 +251,9 @@ export async function joinTable(codeInput: unknown, nameInput: unknown) {
   for (let attempt = 0; attempt < 6; attempt += 1) {
     const row = await readTable(code);
     if (!row) throw new Error("Table not found.");
-    const state = structuredClone(row.state);
-    if (state.status !== "lobby") throw new Error("This table has already started.");
+    const state = normalizeManagedState(row.state);
+    if (state.status === "playing") throw new Error("Wait until the current hand is complete before joining.");
+    if (state.settings.mode === "tournament" && state.handNumber > 0) throw new Error("This tournament has already started.");
     if (state.players.length >= state.settings.maxPlayers) throw new Error("This table is full.");
     if (state.players.some((player) => player.name.toLowerCase() === name.toLowerCase())) throw new Error("That name is already seated at this table.");
 
@@ -215,7 +262,23 @@ export async function joinTable(codeInput: unknown, nameInput: unknown) {
     if (seat == null) throw new Error("This table is full.");
     const playerId = randomUUID();
     const token = createPlayerToken();
-    state.players.push({ id: playerId, name, seat, stack: state.settings.startingStack, streetBet: 0, contribution: 0, status: "waiting", holeCards: [], acted: false, raiseLocked: false, tokenHash: hashToken(token) });
+    state.players.push({
+      id: playerId,
+      name,
+      seat,
+      stack: state.settings.startingStack,
+      streetBet: 0,
+      contribution: 0,
+      status: "waiting",
+      holeCards: [],
+      acted: false,
+      raiseLocked: false,
+      tokenHash: hashToken(token),
+      sittingOut: false,
+      handStartStack: state.settings.startingStack,
+      finishPlace: null,
+      eliminatedAtHand: null,
+    });
     state.message = `${name} joined the table.`;
     state.updatedAt = new Date().toISOString();
     const saved = await updateTable(row, state);
@@ -239,14 +302,27 @@ export async function getPublicTable(codeInput: string) {
   return projectPublicTable(row.state);
 }
 
-export async function performTableAction(codeInput: string, playerId: string, token: string, action: HoldemAction) {
+export async function performTableAction(codeInput: string, playerId: string, token: string, action: HoldemRequestAction) {
   const code = cleanRoomCode(codeInput);
   for (let attempt = 0; attempt < 6; attempt += 1) {
     const row = await readTable(code);
     if (!row) throw new Error("Table not found.");
     const player = authenticate(row.state, playerId, token);
-    if (action.type === "start_hand" && row.state.hostPlayerId !== player.id) throw new Error("Only the host can deal the next hand.");
-    const nextState = applyAction(row.state, player.id, action);
+    let nextState: ManagedHoldemState;
+
+    if (action.type === "start_hand") {
+      if (row.state.hostPlayerId !== player.id) throw new Error("Only the host can deal the next hand.");
+      const { activeState, excludedPlayers } = prepareManagedHand(row.state);
+      const dealt = applyAction(activeState, player.id, { type: "start_hand" });
+      nextState = restoreExcludedPlayers(dealt, excludedPlayers);
+      nextState = finalizeTournamentAfterHand(nextState);
+    } else if (action.type === "sit_out" || action.type === "return" || action.type === "host_remove" || action.type === "host_reset_stack") {
+      nextState = applyManagementAction(row.state, player.id, action);
+    } else {
+      nextState = normalizeManagedState(applyAction(row.state, player.id, action));
+      nextState = finalizeTournamentAfterHand(nextState);
+    }
+
     const saved = await updateTable(row, nextState);
     if (saved) return projectTable(saved.state, player.id);
   }
