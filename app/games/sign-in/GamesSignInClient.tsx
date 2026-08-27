@@ -60,8 +60,12 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
 
   async function submitAuth(mode: "signin" | "signup") {
     const cleanEmail = email.trim();
-    if (!cleanEmail || password.length < 8) {
-      setError("Enter your email and a password with at least 8 characters.");
+    if (!cleanEmail || !password) {
+      setError("Enter your email and password.");
+      return;
+    }
+    if (mode === "signup" && password.length < 8) {
+      setError("Use a password with at least 8 characters when creating an account.");
       return;
     }
 
@@ -219,7 +223,7 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
             autoComplete={passwordRecovery ? "new-password" : "current-password"}
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            placeholder="At least 8 characters"
+            placeholder={passwordRecovery ? "At least 8 characters" : "Your account password"}
             className="mt-2 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3.5 text-white outline-none placeholder:text-white/30 focus:border-cyan-300/60"
           />
         </label>
