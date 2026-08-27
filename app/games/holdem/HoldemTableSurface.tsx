@@ -181,10 +181,11 @@ export function HoldemTableSurface({
           })}
         </div>
         {winners.length > 0 && (
-          <div className="holdem-winner-pop mx-auto mt-4 max-w-sm rounded-2xl border border-amber-300/35 bg-black/75 px-4 py-3 shadow-[0_0_45px_rgba(252,211,77,.18)]">
-            <div className="text-[9px] font-black uppercase tracking-[0.22em] text-amber-200/65">Winner</div>
+          <div className="holdem-winner-pop mx-auto mt-4 max-w-md rounded-2xl border border-amber-300/35 bg-black/80 px-4 py-3 shadow-[0_0_45px_rgba(252,211,77,.18)]">
+            <div className="text-[9px] font-black uppercase tracking-[0.22em] text-amber-200/65">Showdown</div>
             <div className="mt-1 text-lg font-black text-white">{winners.map((winner) => winner.name).join(" · ")}</div>
             <div className="mt-1 text-xs font-semibold text-amber-100/80">{winners.map((winner) => `${winner.handName} · +${formatChips(winner.amount)}`).join(" · ")}</div>
+            {winners[0]?.bestFive?.length > 0 && <div className="mt-3 flex justify-center -space-x-1">{winners[0].bestFive.map((card, index) => <PlayingCard key={`winning-${card}`} card={card} small delay={index * 70} />)}</div>}
           </div>
         )}
       </div>
