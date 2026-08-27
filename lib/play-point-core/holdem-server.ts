@@ -29,6 +29,12 @@ function cleanInteger(value: unknown, fallback: number, min: number, max: number
   return Math.min(max, Math.max(min, Math.floor(parsed)));
 }
 
+function cleanRoomCode(value: unknown): string {
+  const code = typeof value === "string" ? value.trim().toUpperCase() : "";
+  if (!/^[A-Z2-9]{6}$/.test(code)) throw new Error("Enter a valid 6-character room code.");
+  return code;
+}
+
 function createRoomCode(): string {
   let code = "";
   const bytes = randomBytes(6);
@@ -81,8 +87,8 @@ function authenticate(state: HoldemState, playerId: string, token: string): Hold
   return player;
 }
 
-function publicPlayer(player: HoldemPlayer, state: HoldemState, viewerId: string) {
-  const reveal = viewerId === player.id || (state.status === "showdown" && player.status !== "folded" && player.status !== "out");
+function projectedPlayer(player: HoldemPlayer, state: HoldemState, revealPrivate: boolean) {
+  const revealAtShowdown = state.status === "showdown" && player.status !== "folded" && player.status !== "out";
   return {
     id: player.id,
     name: player.name,
@@ -96,7 +102,7 @@ function publicPlayer(player: HoldemPlayer, state: HoldemState, viewerId: string
     isSmallBlind: state.smallBlindSeat === player.seat,
     isBigBlind: state.bigBlindSeat === player.seat,
     isTurn: state.actionSeat === player.seat,
-    holeCards: reveal ? player.holeCards : [],
+    holeCards: revealPrivate || revealAtShowdown ? player.holeCards : [],
   };
 }
 
@@ -126,7 +132,10 @@ export function projectTable(state: HoldemState, viewerId: string) {
     winners: state.winners,
     message: state.message,
     lastAction: state.lastAction,
-    players: state.players.slice().sort((a, b) => a.seat - b.seat).map((player) => publicPlayer(player, state, viewerId)),
+    players: state.players
+      .slice()
+      .sort((a, b) => a.seat - b.seat)
+      .map((player) => projectedPlayer(player, state, player.id === viewerId)),
     me: {
       id: me.id,
       name: me.name,
@@ -142,6 +151,27 @@ export function projectTable(state: HoldemState, viewerId: string) {
       raiseLocked: me.raiseLocked,
       bestHand,
     },
+    updatedAt: state.updatedAt,
+  };
+}
+
+export function projectPublicTable(state: HoldemState) {
+  return {
+    code: state.code,
+    status: state.status,
+    settings: state.settings,
+    handNumber: state.handNumber,
+    street: state.street,
+    board: state.board,
+    currentBet: state.currentBet,
+    pot: state.players.reduce((sum, player) => sum + player.contribution, 0),
+    winners: state.winners,
+    message: state.message,
+    lastAction: state.lastAction,
+    players: state.players
+      .slice()
+      .sort((a, b) => a.seat - b.seat)
+      .map((player) => projectedPlayer(player, state, false)),
     updatedAt: state.updatedAt,
   };
 }
@@ -169,8 +199,7 @@ export async function createTable(input: { name: unknown; startingStack?: unknow
 }
 
 export async function joinTable(codeInput: unknown, nameInput: unknown) {
-  const code = typeof codeInput === "string" ? codeInput.trim().toUpperCase() : "";
-  if (!/^[A-Z2-9]{6}$/.test(code)) throw new Error("Enter a valid 6-character room code.");
+  const code = cleanRoomCode(codeInput);
   const name = cleanName(nameInput);
 
   for (let attempt = 0; attempt < 6; attempt += 1) {
@@ -196,15 +225,22 @@ export async function joinTable(codeInput: unknown, nameInput: unknown) {
 }
 
 export async function getTableForPlayer(codeInput: string, playerId: string, token: string) {
-  const code = codeInput.trim().toUpperCase();
+  const code = cleanRoomCode(codeInput);
   const row = await readTable(code);
   if (!row) throw new Error("Table not found.");
   authenticate(row.state, playerId, token);
   return projectTable(row.state, playerId);
 }
 
+export async function getPublicTable(codeInput: string) {
+  const code = cleanRoomCode(codeInput);
+  const row = await readTable(code);
+  if (!row) throw new Error("Table not found.");
+  return projectPublicTable(row.state);
+}
+
 export async function performTableAction(codeInput: string, playerId: string, token: string, action: HoldemAction) {
-  const code = codeInput.trim().toUpperCase();
+  const code = cleanRoomCode(codeInput);
   for (let attempt = 0; attempt < 6; attempt += 1) {
     const row = await readTable(code);
     if (!row) throw new Error("Table not found.");
