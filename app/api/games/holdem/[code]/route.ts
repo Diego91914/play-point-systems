@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getTableForPlayer, performTableAction } from "@/lib/play-point-core/holdem-server";
-import type { HoldemAction } from "@/lib/play-point-core/holdem";
+import { getTableForPlayer, performTableAction, type HoldemRequestAction } from "@/lib/play-point-core/holdem-server";
 
 function credentials(request: NextRequest) {
   return {
@@ -29,9 +28,23 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const { playerId, token } = credentials(request);
     if (!playerId || !token) return NextResponse.json({ error: "Missing player session." }, { status: 401 });
     const body = await request.json().catch(() => ({}));
-    const allowed = new Set(["start_hand", "fold", "check", "call", "raise", "all_in"]);
+    const allowed = new Set([
+      "start_hand", "fold", "check", "call", "raise", "all_in",
+      "sit_out", "return", "host_remove", "host_reset_stack",
+    ]);
     if (!allowed.has(body?.type)) return NextResponse.json({ error: "Unknown poker action." }, { status: 400 });
-    const action = (body?.type === "raise" ? { type: "raise", raiseTo: Number(body.raiseTo) } : { type: body.type }) as HoldemAction;
+
+    let action: HoldemRequestAction;
+    if (body.type === "raise") {
+      action = { type: "raise", raiseTo: Number(body.raiseTo) };
+    } else if (body.type === "host_remove") {
+      action = { type: "host_remove", playerId: String(body.playerId ?? "") };
+    } else if (body.type === "host_reset_stack") {
+      action = { type: "host_reset_stack", playerId: String(body.playerId ?? ""), amount: Number(body.amount) };
+    } else {
+      action = { type: body.type } as HoldemRequestAction;
+    }
+
     const table = await performTableAction(code, playerId, token, action);
     return NextResponse.json({ success: true, table });
   } catch (error) {
