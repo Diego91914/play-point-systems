@@ -21,7 +21,7 @@ export type HoldemTournamentState = {
   championPlayerId: string | null;
 };
 
-export type ManagedHoldemState = HoldemState & {
+export type ManagedHoldemState = Omit<HoldemState, "settings" | "players"> & {
   settings: HoldemState["settings"] & { mode?: HoldemMode };
   players: ManagedHoldemPlayer[];
   tournament?: HoldemTournamentState | null;
@@ -277,7 +277,7 @@ export function applyManagementAction(
       target.stack = amount;
       target.finishPlace = null;
       target.eliminatedAtHand = null;
-      target.status = target.sittingOut ? "waiting" : "waiting";
+      target.status = "waiting";
       state.message = `${target.name}'s stack was reset to ${amount.toLocaleString()}.`;
     }
   }
