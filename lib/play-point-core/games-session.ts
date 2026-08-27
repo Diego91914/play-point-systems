@@ -38,6 +38,12 @@ function utf8(value: string): Uint8Array {
   return new TextEncoder().encode(value);
 }
 
+function bytesToArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  const buffer = new ArrayBuffer(bytes.byteLength);
+  new Uint8Array(buffer).set(bytes);
+  return buffer;
+}
+
 function bytesToBase64Url(bytes: Uint8Array): string {
   let binary = "";
   for (const byte of bytes) binary += String.fromCharCode(byte);
@@ -57,7 +63,7 @@ function base64UrlToBytes(value: string): Uint8Array {
 async function importHmacKey(secret: string): Promise<CryptoKey> {
   return crypto.subtle.importKey(
     "raw",
-    utf8(secret),
+    bytesToArrayBuffer(utf8(secret)),
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign", "verify"]
@@ -81,7 +87,11 @@ export async function createGamesSessionToken(
   const signedValue = `${GAMES_SESSION_VERSION}.${payload}`;
   const key = await importHmacKey(options?.secret ?? getGamesSessionSecret());
   const signature = new Uint8Array(
-    await crypto.subtle.sign("HMAC", key, utf8(signedValue))
+    await crypto.subtle.sign(
+      "HMAC",
+      key,
+      bytesToArrayBuffer(utf8(signedValue))
+    )
   );
 
   return `${signedValue}.${bytesToBase64Url(signature)}`;
@@ -109,8 +119,8 @@ export async function verifyGamesSessionToken(
     const validSignature = await crypto.subtle.verify(
       "HMAC",
       key,
-      base64UrlToBytes(signatureValue),
-      utf8(signedValue)
+      bytesToArrayBuffer(base64UrlToBytes(signatureValue)),
+      bytesToArrayBuffer(utf8(signedValue))
     );
     if (!validSignature) return null;
 
