@@ -11,6 +11,17 @@ export type PlayPointGameCatalogItem = {
 
 export const PLAY_POINT_GAME_CATALOG: readonly PlayPointGameCatalogItem[] = [
   {
+    sku: "game.chain_reaction",
+    title: "Chain Reaction",
+    family: "Play Point Games",
+    description:
+      "A fast face-to-face family word game: connect each word to the last, defend surprising links, and let the table decide what counts.",
+    href: "/games/chain-reaction",
+    external: false,
+    badge: "Playable preview",
+    ownershipAuthority: "play_point",
+  },
+  {
     sku: "game.phone_holdem",
     title: "Phone Hold'em",
     family: "Play Point Games",
