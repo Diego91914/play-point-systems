@@ -56,7 +56,7 @@ export function PlayingCard({
   if (hidden || !card) {
     return (
       <div
-        className={`${size} holdem-card-back shrink-0 rounded-xl border border-cyan-100/30 shadow-[0_10px_28px_rgba(0,0,0,0.4)]`}
+        className={`${size} holdem-card-back holdem-card-deal shrink-0 rounded-xl border border-cyan-100/30 shadow-[0_10px_28px_rgba(0,0,0,0.4)]`}
         style={{ animationDelay: `${delay}ms` }}
         aria-label="Hidden playing card"
       />
@@ -95,6 +95,7 @@ function seatPosition(index: number, total: number) {
 function PlayerSeat({ player, position, isMe }: { player: SurfacePlayer; position: { left: string; top: string }; isMe: boolean }) {
   const folded = player.status === "folded" || player.status === "out";
   const allIn = player.status === "all_in";
+  const showHiddenCards = player.holeCards.length === 0 && (player.status === "active" || player.status === "all_in");
   return (
     <div
       className={`absolute z-20 w-[112px] -translate-x-1/2 -translate-y-1/2 rounded-2xl border px-2.5 py-2.5 text-center shadow-[0_14px_32px_rgba(0,0,0,0.38)] transition duration-300 sm:w-[142px] sm:px-3 ${
@@ -116,9 +117,11 @@ function PlayerSeat({ player, position, isMe }: { player: SurfacePlayer; positio
       <div className="mt-0.5 text-[11px] font-bold text-amber-200 sm:text-xs">{formatChips(player.stack)}</div>
       {player.streetBet > 0 && <div className="mt-1 text-[9px] font-semibold text-white/55 sm:text-[10px]">Bet {formatChips(player.streetBet)}</div>}
       {player.status === "folded" && <div className="mt-1 text-[9px] font-black uppercase tracking-wider text-white/40">Folded</div>}
-      {player.holeCards.length > 0 && (
+      {(player.holeCards.length > 0 || showHiddenCards) && (
         <div className="mt-2 flex justify-center -space-x-2">
-          {player.holeCards.map((card, index) => <PlayingCard key={card} card={card} small delay={index * 120} />)}
+          {player.holeCards.length > 0
+            ? player.holeCards.map((card, index) => <PlayingCard key={card} card={card} small delay={index * 120} />)
+            : [0, 1].map((index) => <PlayingCard key={`hidden-${player.id}-${index}`} hidden small delay={index * 120} />)}
         </div>
       )}
     </div>
