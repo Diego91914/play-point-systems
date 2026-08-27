@@ -6,6 +6,7 @@ const marketingRoutes = [
   "/live",
   "/shot-caddy",
   "/games/trivia",
+  "/games/holdem",
   "/music",
   "/about",
   "/contact",
@@ -38,7 +39,7 @@ for (const route of marketingRoutes) {
 test("the mobile brand mark and company name remain fully visible", async ({ page }) => {
   await page.goto("/");
 
-  const logo = page.locator('header img[src*="play-point-emblem"]').first();
+  const logo = page.locator('header img[src*="play-point-systems-emblem"]').first();
   await expect(logo).toBeVisible();
   const logoBounds = await logo.boundingBox();
   expect(logoBounds).not.toBeNull();
@@ -60,4 +61,21 @@ test("task routes surface their primary control without a marketing preamble", a
 
   await page.goto("/games/trivia/builder");
   await expect(page.getByRole("button", { name: /create live room/i })).toBeVisible();
+});
+
+test("Hold'em mode and host controls remain usable on mobile", async ({ page }) => {
+  await page.goto("/games/holdem");
+
+  await expect(page.getByRole("button", { name: /cash-style/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /tournament/i })).toBeVisible();
+  await expect(page.getByPlaceholder("Your name").first()).toBeVisible();
+  await expect(page.getByRole("button", { name: /create private table/i })).toBeVisible();
+
+  await page.getByRole("button", { name: /tournament/i }).click();
+  await expect(page.getByRole("button", { name: /deep/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /standard/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /turbo/i })).toBeVisible();
+
+  const pageFits = await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1);
+  expect(pageFits).toBe(true);
 });
