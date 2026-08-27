@@ -65,7 +65,7 @@ test("Games pages require a Play Point account sign-in", async ({ page }) => {
     await page.goto(route);
     await expect(page).toHaveURL(/\/games\/sign-in/);
     await expect(
-      page.getByRole("heading", { name: /sign in to your games/i })
+      page.getByRole("heading", { name: /your games\. one account/i })
     ).toBeVisible();
   }
 });
@@ -84,14 +84,13 @@ test("Games APIs reject unauthenticated requests before game logic runs", async 
   });
 });
 
-test("Games sign-in controls remain usable on mobile", async ({ page }) => {
+test("Games sign-in uses the Shot Caddy account on mobile", async ({ page }) => {
   await page.goto("/games/sign-in");
 
-  await expect(page.getByPlaceholder("you@example.com")).toBeVisible();
-  await expect(page.getByPlaceholder("At least 8 characters")).toBeVisible();
-  await expect(page.getByRole("button", { name: /^sign in$/i })).toBeVisible();
-  await expect(page.getByRole("button", { name: /create account/i })).toBeVisible();
-  await expect(page.getByRole("button", { name: /forgot password/i })).toBeVisible();
+  const continueButton = page.getByRole("button", { name: /continue with shot caddy/i });
+  await expect(continueButton).toBeVisible();
+  await expect(page.getByText(/no second play point password/i)).toBeVisible();
+  await expect(page.getByPlaceholder("you@example.com")).toHaveCount(0);
 
   const pageFits = await page.evaluate(
     () => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1
