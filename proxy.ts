@@ -6,6 +6,7 @@ import {
 } from "@/lib/play-point-core/games-session";
 
 const ACCOUNT_SESSION_PATH = "/api/games/account/session";
+const SHOT_CADDY_HANDOFF_PATH = "/api/games/account/shot-caddy-handoff";
 
 function requiredGameSku(pathname: string): string | null {
   if (
@@ -60,6 +61,7 @@ export async function proxy(request: NextRequest) {
     pathname === "/games/sign-in" ||
     pathname.startsWith("/games/sign-in/") ||
     pathname === ACCOUNT_SESSION_PATH ||
+    pathname === SHOT_CADDY_HANDOFF_PATH ||
     pathname.endsWith("/opengraph-image") ||
     isChainJoinPage ||
     isChainApi
