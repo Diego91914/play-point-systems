@@ -169,6 +169,16 @@ main [class*="xl:grid-cols-[0.82fr_1.18fr]"] > :nth-child(2) {
   width: 100%;
 }
 
+/*
+ * At showdown every player's hole cards are already visible at their seat.
+ * The center winner panel was also drawing the winner's full five-card best
+ * hand, which collided with the viewer's bottom seat in heads-up play. Keep
+ * the center panel to the result only: winner, hand name, and chips won.
+ */
+main .holdem-winner-pop.mx-auto > .mt-3.flex {
+  display: none !important;
+}
+
 @media (max-width: 1023px) {
   @supports selector(div:has(*)) {
     main div:has(> div > div > input[aria-label="Raise amount"]) {
