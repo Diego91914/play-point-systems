@@ -2,16 +2,18 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-type SocialGame = "on-my-list" | "chain-reaction" | "how-close" | "inside-man";
+type SocialGame = "on-my-list" | "chain-reaction" | "how-close" | "inside-man" | "holdem";
 type Session = { code: string; playerId: string; token: string };
 
 export function SocialRoomController({
   game,
   storageKey,
+  storageKeyPrefix,
   roomApiBase,
 }: {
   game: SocialGame;
-  storageKey: string;
+  storageKey?: string;
+  storageKeyPrefix?: string;
   roomApiBase: string;
 }) {
   const [isHost, setIsHost] = useState(false);
@@ -20,9 +22,22 @@ export function SocialRoomController({
   const [open, setOpen] = useState(false);
   const observerRef = useRef<MutationObserver | null>(null);
 
+  const activeStorageKey = useCallback(() => {
+    if (storageKey) return storageKey;
+    const code = new URLSearchParams(window.location.search).get("code")?.trim().toUpperCase();
+    return storageKeyPrefix && code ? `${storageKeyPrefix}${code}` : null;
+  }, [storageKey, storageKeyPrefix]);
+
+  const clearSession = useCallback(() => {
+    const key = activeStorageKey();
+    if (key) localStorage.removeItem(key);
+  }, [activeStorageKey]);
+
   const getSession = useCallback((): Session | null => {
     try {
-      const raw = localStorage.getItem(storageKey);
+      const key = activeStorageKey();
+      if (!key) return null;
+      const raw = localStorage.getItem(key);
       if (!raw) return null;
       const parsed = JSON.parse(raw) as Partial<Session>;
       if (!parsed.code || !parsed.playerId || !parsed.token) return null;
@@ -30,7 +45,7 @@ export function SocialRoomController({
     } catch {
       return null;
     }
-  }, [storageKey]);
+  }, [activeStorageKey]);
 
   const enforceInviteOnly = useCallback(() => {
     const invitedCode = new URLSearchParams(window.location.search).get("code");
@@ -45,7 +60,8 @@ export function SocialRoomController({
     }
 
     for (const element of Array.from(document.querySelectorAll("div"))) {
-      if (element.textContent?.trim().toLowerCase() === "or join a table") {
+      const text = element.textContent?.trim().toLowerCase() ?? "";
+      if (text === "or join a table" || text === "or join a room") {
         (element as HTMLElement).style.display = "none";
       }
     }
@@ -68,20 +84,20 @@ export function SocialRoomController({
       const json = await response.json();
       if (!response.ok) {
         if (response.status === 403) {
-          localStorage.removeItem(storageKey);
+          clearSession();
           setIsHost(false);
         }
         return;
       }
       if (json.ended) {
-        localStorage.removeItem(storageKey);
+        clearSession();
         setEnded(true);
         setIsHost(false);
       } else {
         setIsHost(Boolean(json.isHost));
       }
     } catch {}
-  }, [game, getSession, storageKey]);
+  }, [clearSession, game, getSession]);
 
   useEffect(() => {
     enforceInviteOnly();
@@ -101,12 +117,19 @@ export function SocialRoomController({
     if (!session || !window.confirm("Start over and return everyone to the QR/join lobby? Current scores and round progress will be cleared.")) return;
     setBusy(true);
     try {
-      const response = await fetch(`${roomApiBase}/${session.code}`, {
-        method: "POST",
-        cache: "no-store",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ playerId: session.playerId, token: session.token, action: "restart", payload: {} }),
-      });
+      const response = game === "holdem"
+        ? await fetch("/api/games/social-room-control", {
+            method: "POST",
+            cache: "no-store",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ action: "start-over", game, ...session }),
+          })
+        : await fetch(`${roomApiBase}/${session.code}`, {
+            method: "POST",
+            cache: "no-store",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ playerId: session.playerId, token: session.token, action: "restart", payload: {} }),
+          });
       const json = await response.json();
       if (!response.ok) throw new Error(json.error || "Unable to start over.");
       setOpen(false);
@@ -130,7 +153,7 @@ export function SocialRoomController({
       });
       const json = await response.json();
       if (!response.ok) throw new Error(json.error || "Unable to end game.");
-      localStorage.removeItem(storageKey);
+      clearSession();
       setEnded(true);
       setIsHost(false);
       setOpen(false);
