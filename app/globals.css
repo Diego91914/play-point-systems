@@ -91,6 +91,80 @@ textarea:focus-visible {
   }
 }
 
+/*
+ * Hold'em is phone-first. The raise amount used to sit below the action
+ * buttons, which made the flow feel backwards: adjust the amount, then hunt
+ * upward for the button that actually sends it. Reorder the existing action
+ * panel so sizing comes first and the confirmation action comes last.
+ */
+@supports selector(div:has(*)) {
+  main div:has(> div > div > input[aria-label="Raise amount"]) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  main div:has(> div > div > input[aria-label="Raise amount"]) > div:first-child {
+    order: 1;
+  }
+
+  main div:has(> div > div > input[aria-label="Raise amount"]) > div:has(input[aria-label="Raise amount"]) {
+    order: 2;
+    border-color: rgba(110, 231, 183, 0.24);
+    background: linear-gradient(145deg, rgba(16, 185, 129, 0.10), rgba(0, 0, 0, 0.32));
+  }
+
+  main div:has(> div > div > input[aria-label="Raise amount"]) > .grid {
+    order: 3;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin-top: 0.85rem;
+  }
+
+  main div:has(> div > div > input[aria-label="Raise amount"]) > .grid > button {
+    min-height: 58px;
+    border-radius: 16px;
+  }
+
+  main div:has(> div > div > input[aria-label="Raise amount"]) > .grid > button:nth-child(3) {
+    grid-column: 1 / -1;
+    min-height: 68px;
+    border-color: rgba(110, 231, 183, 0.54);
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.95), rgba(16, 185, 129, 0.82));
+    color: #03130d;
+    font-size: 1.05rem;
+    box-shadow: 0 16px 38px rgba(16, 185, 129, 0.18);
+  }
+
+  main div:has(> div > div > input[aria-label="Raise amount"]) > .grid > button:nth-child(4) {
+    grid-column: 1 / -1;
+    min-height: 52px;
+  }
+
+  input[aria-label="Raise amount"] {
+    min-height: 34px;
+  }
+
+  input[aria-label="Raise to"] {
+    width: 8.5rem !important;
+    min-height: 48px;
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 1023px) {
+  @supports selector(div:has(*)) {
+    main div:has(> div > div > input[aria-label="Raise amount"]) {
+      position: sticky;
+      bottom: 0.75rem;
+      z-index: 40;
+      border-color: rgba(252, 211, 77, 0.48);
+      background: rgba(10, 10, 10, 0.94);
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(252, 211, 77, 0.08);
+      backdrop-filter: blur(18px);
+    }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal-up,
   .reveal-up-delay {
