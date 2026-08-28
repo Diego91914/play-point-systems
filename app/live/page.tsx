@@ -1,165 +1,90 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AvailabilityBadge } from "../components/AvailabilityBadge";
 import { ProductPreview } from "../components/ProductPreview";
 import { SiteShell } from "../components/SiteShell";
 
 export const metadata: Metadata = {
-  title: "Play Point Live",
-  description: "Live scoring and group-play experiences for backyards, clubs, venues, and recurring events.",
+  title: "Score Caddy | Play Point Systems",
+  description: "Simple scoring for disc golf, golf, pickleball, bocce, cornhole, horseshoes, and custom games.",
   alternates: { canonical: "/live" },
-  openGraph: {
-    title: "Play Point Live",
-    description: "Fast live scoreboards for backyards, clubs, recurring events, and venue game nights.",
-    url: "/live",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Play Point Live",
-    description: "Fast live scoreboards for backyards, clubs, recurring events, and venue game nights.",
-  },
 };
 
-const experiences = [
+const quickMatchGames = ["Pickleball", "Bocce", "Cornhole", "Horseshoes", "Washers", "Ping Pong", "Custom"] as const;
+
+const scoreModes = [
   {
-    title: "Quick Score",
-    status: "Available",
-    body: "A fast, flexible scoreboard for casual games and friendly competition. Start locally, then share a live board when the group wants to follow along.",
-    examples: ["No-login local scoring", "Multiple scoring formats", "Spectator-friendly live boards"],
-    href: "/live/quick-score",
-    cta: "Start Quick Score",
+    title: "Round",
+    eyebrow: "Golf-style scoring",
+    body: "Keep a clean round score for disc golf and golf without loading the full Shot Caddy game layer.",
+    examples: ["Player-by-player scoring", "Round-first workflow", "Simple enough for a casual group"],
   },
   {
-    title: "Club Play",
-    status: "Preview",
-    body: "Keep recurring groups organized with participants, events, completed matches, and a history that makes every gathering part of a bigger season.",
-    examples: ["Participant rosters", "Event and match history", "Built for recurring groups"],
-    href: "/live/quick-score/clubs",
-    cta: "Explore Clubs",
-  },
-  {
-    title: "Venue Experiences",
-    status: "Internal demo",
-    body: "Turn the room into part of the game with host controls, player participation, live prompts, and shared moments designed for a crowd.",
-    examples: ["Host-controlled experiences", "Phone-friendly participation", "Designed for live rooms"],
-    href: "/live/football-mvp",
-    cta: "Open the Venue Demo",
+    title: "Quick Match",
+    eyebrow: "Score almost anything",
+    body: "Use flexible point scoring for backyard games, racquet games, table games, and made-up family competition.",
+    examples: ["Points and target scores", "Sets, games, or ends", "Custom names and scoring"],
   },
 ] as const;
 
-const steps = [
-  { number: "01", title: "Choose the game", body: "Select a scoring style that matches the competition." },
-  { number: "02", title: "Add the players", body: "Name the sides and set the winning target in a few taps." },
-  { number: "03", title: "Play and share", body: "Keep score locally or publish a live board for spectators." },
-] as const;
-
-const gameFormats = ["Cornhole", "Pickleball", "Bocce", "Horseshoes", "Washers", "Table games", "Custom matchups"] as const;
-
-export default function PlayPointLivePage() {
+export default function ScoreCaddyLandingPage() {
   return (
-    <SiteShell current="live">
-      <section className="px-5 pb-12 pt-10 sm:px-8 sm:pb-16 sm:pt-12 lg:px-10 lg:pb-20 lg:pt-16 xl:pt-20">
-        <div className="grid gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:items-center xl:gap-14">
-          <div className="max-w-4xl reveal-up">
-            <div className="inline-flex rounded-full border border-cyan-300/20 bg-cyan-400/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-cyan-50/82">
-              Live scoring and group play
-            </div>
-            <h1 className="marketing-headline mt-6 lg:text-7xl xl:text-[5rem] xl:leading-[0.96]">
-              Make every game easier to follow—and harder to forget.
-            </h1>
-            <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-cyan-100/88 sm:text-xl">
-              Play Point Live brings clear scoring, shared boards, and recurring group history to backyards, clubs, and venues.
-            </p>
-            <p className="mt-5 max-w-3xl text-base leading-8 text-white/76 sm:text-lg">
-              Start a casual match in seconds, give spectators a live view, or build an ongoing experience for a group that plays together every week.
-            </p>
+    <SiteShell current="score-caddy">
+      <section className="px-5 pb-12 pt-12 sm:px-8 sm:pb-16 sm:pt-16 lg:px-10 lg:pb-20 lg:pt-20">
+        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:items-center">
+          <div>
+            <div className="inline-flex rounded-full border border-cyan-300/20 bg-cyan-400/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.26em] text-cyan-50/82">Score Caddy</div>
+            <h1 className="marketing-headline mt-6 leading-[0.98] lg:text-7xl xl:text-[5rem]">Keep score. Keep playing.</h1>
+            <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-cyan-100/88 sm:text-xl">The simple scorekeeper for whatever you're playing.</p>
+            <p className="mt-5 max-w-3xl text-base leading-8 text-white/68 sm:text-lg">Use <strong className="text-white">Round</strong> for golf-style scoring or <strong className="text-white">Quick Match</strong> for pickleball, bocce, cornhole, horseshoes, and almost any point game. Score Caddy stays out of the way so the game stays in front of you.</p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Link href="/live/quick-score" className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.24)] transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400">
-                Start Quick Score
-              </Link>
-              <Link href="/contact" className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-black/25 px-6 py-3.5 text-sm font-semibold text-white/90 transition hover:border-white/30 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50">
-                Talk About a Venue
-              </Link>
+              <Link href="/live/quick-score" className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/35 bg-[linear-gradient(120deg,rgba(118,225,255,0.36),rgba(120,170,255,0.2))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(92,180,255,0.22)] transition hover:-translate-y-0.5 hover:brightness-110">Open Score Caddy</Link>
+              <Link href="/shot-caddy" className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/[0.045] px-6 py-3.5 text-sm font-black text-white/88 transition hover:bg-white/[0.08]">Want more? Try Shot Caddy</Link>
             </div>
           </div>
 
-          <aside className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.13),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.22)] sm:p-7">
+          <aside className="rounded-[34px] border border-cyan-200/15 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.14),transparent_42%),rgba(255,255,255,0.025)] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.22)] sm:p-7">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="section-label">Quick Score</div>
-              <span className="rounded-full border border-emerald-300/25 bg-emerald-400/10 px-3 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-100">Free to start</span>
+              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-cyan-100/58">Free scoring utility</div>
+              <span className="rounded-full border border-emerald-300/25 bg-emerald-400/10 px-3 py-2 text-[10px] font-black uppercase tracking-[0.16em] text-emerald-100">Free to start</span>
             </div>
-            <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl">From zero to game time in seconds.</h2>
             <div className="mt-5"><ProductPreview kind="quick-score" /></div>
             <div className="mt-6 flex flex-wrap gap-2">
-              {gameFormats.map((game) => (
-                <span key={game} className="rounded-full border border-white/12 bg-black/20 px-3 py-2 text-xs font-semibold text-white/78">{game}</span>
-              ))}
+              {quickMatchGames.map((game) => <span key={game} className="rounded-full border border-white/12 bg-black/20 px-3 py-2 text-xs font-semibold text-white/72">{game}</span>)}
             </div>
-            <Link href="/live/quick-score" className="mt-6 inline-flex w-full items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-400/12 px-5 py-3.5 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/18">
-              Open the Scoreboard
-            </Link>
           </aside>
         </div>
       </section>
 
-      <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
-        <div className="max-w-3xl">
-          <div className="section-label">Ways to play</div>
-          <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">One platform for casual games, clubs, and live rooms.</h2>
-        </div>
-        <div className="mt-8 grid gap-5 lg:grid-cols-3">
-          {experiences.map((experience) => (
-            <article key={experience.title} className="flex flex-col rounded-[30px] border border-white/10 bg-white/[0.03] p-6">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <h3 className="text-3xl font-black text-white">{experience.title}</h3>
-                <AvailabilityBadge status={experience.status} />
-              </div>
-              <p className="mt-4 text-sm leading-7 text-white/74">{experience.body}</p>
-              <ul className="mt-5 grid gap-3 text-sm text-white/82">
-                {experience.examples.map((example) => (
-                  <li key={example} className="flex items-start gap-3">
-                    <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-cyan-300" />
-                    <span>{example}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link href={experience.href} className="mt-6 inline-flex w-fit rounded-2xl border border-white/15 bg-white/8 px-4 py-3 text-sm font-black text-white transition hover:bg-white/12">
-                {experience.cta}
-              </Link>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
-        <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
-          <div>
-            <div className="section-label">How it works</div>
-            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Less setup. More playing.</h2>
-            <p className="mt-4 max-w-xl text-sm leading-7 text-white/72">Quick Score is designed to stay out of the way until the group needs more—from spectator links to recurring club history.</p>
+      <section className="border-t border-white/10 px-5 py-11 sm:px-8 lg:px-10 lg:py-14">
+        <div className="mx-auto max-w-6xl">
+          <div className="max-w-3xl">
+            <div className="text-[11px] font-black uppercase tracking-[0.22em] text-white/42">Choose the scoring style</div>
+            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Two simple doors. No clutter.</h2>
           </div>
-          <div className="grid gap-4 sm:grid-cols-3">
-            {steps.map((step) => (
-              <article key={step.number} className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5">
-                <div className="text-sm font-black text-cyan-200/72">{step.number}</div>
-                <h3 className="mt-3 text-2xl font-black text-white">{step.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-white/72">{step.body}</p>
+          <div className="mt-7 grid gap-5 md:grid-cols-2">
+            {scoreModes.map((mode) => (
+              <article key={mode.title} className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6">
+                <div className="text-[11px] font-black uppercase tracking-[0.2em] text-cyan-100/52">{mode.eyebrow}</div>
+                <h3 className="mt-3 text-4xl font-black text-white">{mode.title}</h3>
+                <p className="mt-4 text-sm leading-7 text-white/64">{mode.body}</p>
+                <ul className="mt-5 grid gap-3 text-sm text-white/72">
+                  {mode.examples.map((example) => <li key={example} className="flex items-start gap-3"><span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-cyan-300" /><span>{example}</span></li>)}
+                </ul>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="border-t border-white/10 px-5 py-10 sm:px-8 lg:px-10 lg:py-14">
-        <div className="rounded-[32px] border border-cyan-300/18 bg-[linear-gradient(120deg,rgba(111,182,255,0.12),rgba(255,255,255,0.03))] p-7 sm:flex sm:items-center sm:justify-between sm:gap-8">
-          <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-cyan-100/70">Ready when you are</div>
-            <h2 className="mt-3 text-3xl font-black text-white">Start a scoreboard or plan a bigger experience.</h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-white/72">Quick Score is ready now. For recurring groups and venue conversations, contact Play Point Systems directly.</p>
-          </div>
-          <div className="mt-6 flex shrink-0 flex-wrap gap-3 sm:mt-0">
-            <Link href="/live/quick-score" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">Start Scoring</Link>
-            <Link href="/contact" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">Contact Us</Link>
+      <section className="border-t border-white/10 px-5 py-11 sm:px-8 lg:px-10 lg:py-14">
+        <div className="mx-auto max-w-6xl rounded-[32px] border border-emerald-300/15 bg-[linear-gradient(120deg,rgba(16,185,129,0.09),rgba(255,255,255,0.025))] p-7 sm:p-8">
+          <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div>
+              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-emerald-100/52">When scoring isn't enough</div>
+              <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Score Caddy keeps score. Shot Caddy changes the game.</h2>
+              <p className="mt-4 max-w-3xl text-sm leading-7 text-white/62">When you want challenges, Special Plays, competitive formats, and strategic overlays, move into Shot Caddy without confusing the simple scorer with the full game platform.</p>
+            </div>
+            <Link href="/shot-caddy" className="inline-flex items-center justify-center rounded-2xl border border-emerald-200/25 bg-emerald-400/10 px-5 py-3.5 text-sm font-black text-emerald-50 transition hover:bg-emerald-400/16">Explore Shot Caddy →</Link>
           </div>
         </div>
       </section>
