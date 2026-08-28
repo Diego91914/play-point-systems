@@ -10,6 +10,7 @@ export type PlayPointGameCatalogItem = {
 };
 
 export const PLAY_POINT_GAME_CATALOG: readonly PlayPointGameCatalogItem[] = [
+  { sku:"game.get_there", title:"GET THERE", family:"Play Point Games", description:"A face-to-face conversation game: hide the destination, follow the answers around the table, and decide when to use a road or pass it forever.", href:"/games/get-there", external:false, badge:"Playable preview", ownershipAuthority:"play_point" },
   { sku:"game.chain_reaction", title:"Chain Reaction", family:"Play Point Games", description:"A fast face-to-face family word game: connect each word to the last, defend surprising links, and let the table decide what counts.", href:"/games/chain-reaction", external:false, badge:"Playable preview", ownershipAuthority:"play_point" },
   { sku:"game.how_close", title:"How Close Are We?", family:"Play Point Games", description:"Everyone privately rates the same family-friendly question from 1 to 100, then the table reveals how close their minds really are.", href:"/games/how-close", external:false, badge:"Playable preview", ownershipAuthority:"play_point" },
   { sku:"game.phone_holdem", title:"Phone Hold'em", family:"Play Point Games", description:"Face-to-face Texas Hold'em where every phone is a private seat and the table software handles cards, chips, betting, side pots, and tournaments.", href:"/games/holdem", external:false, badge:"Playable preview", ownershipAuthority:"play_point" },
