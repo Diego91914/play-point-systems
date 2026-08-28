@@ -7,6 +7,7 @@ import {
 
 const ACCOUNT_SESSION_PATH = "/api/games/account/session";
 const SHOT_CADDY_HANDOFF_PATH = "/api/games/account/shot-caddy-handoff";
+const SOCIAL_ROOM_CONTROL_PATH = "/api/games/social-room-control";
 
 // Multiplayer phone games use one access model: the host must own/access the game,
 // while invited guests may enter an existing room with a room code and first name.
@@ -40,7 +41,7 @@ export async function proxy(request: NextRequest) {
   const guestJoinPage = isGuestRoomPage(pathname, hasRoomCode);
   const guestRoomApi = isGuestRoomApi(pathname);
 
-  if (pathname === "/games/sign-in" || pathname.startsWith("/games/sign-in/") || pathname === ACCOUNT_SESSION_PATH || pathname === SHOT_CADDY_HANDOFF_PATH || pathname.endsWith("/opengraph-image") || guestJoinPage || guestRoomApi) {
+  if (pathname === "/games/sign-in" || pathname.startsWith("/games/sign-in/") || pathname === ACCOUNT_SESSION_PATH || pathname === SHOT_CADDY_HANDOFF_PATH || pathname === SOCIAL_ROOM_CONTROL_PATH || pathname.endsWith("/opengraph-image") || guestJoinPage || guestRoomApi) {
     const response=NextResponse.next();response.headers.set("Cache-Control","private, no-store");return response;
   }
 
