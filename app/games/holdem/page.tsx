@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SiteShell } from "../../components/SiteShell";
+import { RulesCorner } from "@/app/games/_components/RulesCorner";
 import { HoldemClient } from "./HoldemClient";
 import { HoldemPreAction } from "./HoldemPreAction";
 
@@ -14,6 +15,7 @@ export default function HoldemPage() {
     <SiteShell current="games">
       <HoldemClient />
       <HoldemPreAction />
+      <RulesCorner game="holdem" />
     </SiteShell>
   );
 }
