@@ -5,7 +5,7 @@ export const ON_MY_LIST_QUESTIONS: readonly OnMyListQuestion[] = [
   {id:"oml-002",count:5,prompt:"Name 5 things that annoy {name} in public."},
   {id:"oml-003",count:5,prompt:"Name 5 places {name} would most like to visit."},
   {id:"oml-004",count:5,prompt:"Name 5 things {name} would grab first if they had to leave home quickly."},
-  {id:"oml-005",count:6,prompt:"Name 6 people, real or fictional, {name} would invite to dinner."},
+  {id:"oml-005",count:6,prompt:"Name 6 real or fictional people, living or dead, {name} would most want to invite to dinner."},
   {id:"oml-006",count:5,prompt:"Name 5 things {name} would want on a deserted island."},
   {id:"oml-007",count:5,prompt:"Name 5 ways {name} would spend a completely free Saturday."},
   {id:"oml-008",count:5,prompt:"Name 5 things that can instantly put {name} in a better mood."},
@@ -67,6 +67,8 @@ export const ON_MY_LIST_QUESTIONS: readonly OnMyListQuestion[] = [
   {id:"oml-064",count:6,prompt:"Name 6 things {name} would do if they won a free week off with all expenses paid."},
   {id:"oml-065",count:7,prompt:"Name 7 things {name} would want if they were stuck at home for a snow day."},
   {id:"oml-066",count:7,prompt:"Name 7 foods {name} would put on their ultimate comfort-food menu."},
+  {id:"oml-067",count:6,prompt:"Name 6 living people {name} would most want to invite to dinner."},
+  {id:"oml-068",count:6,prompt:"Name 6 people from history {name} would most want to invite to dinner."},
 ] as const;
 
 export function formatOnMyListPrompt(prompt: string, name: string) { return prompt.replaceAll("{name}", name); }
