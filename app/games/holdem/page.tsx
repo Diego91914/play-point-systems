@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SiteShell } from "../../components/SiteShell";
 import { HoldemClient } from "./HoldemClient";
+import { HoldemPreAction } from "./HoldemPreAction";
 
 export const metadata: Metadata = {
   title: "Phone Hold'em",
@@ -12,6 +13,7 @@ export default function HoldemPage() {
   return (
     <SiteShell current="games">
       <HoldemClient />
+      <HoldemPreAction />
     </SiteShell>
   );
 }
