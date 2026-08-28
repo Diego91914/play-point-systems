@@ -23,8 +23,17 @@ function signInRedirect(request: NextRequest) { const target=request.nextUrl.clo
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const hasRoomCode = Boolean(request.nextUrl.searchParams.get("code"));
-  const isFamilyJoinPage = hasRoomCode && (pathname === "/games/chain-reaction" || pathname === "/games/how-close" || pathname === "/games/inside-man");
-  const isFamilyRoomApi = pathname === "/api/games/chain-reaction" || pathname.startsWith("/api/games/chain-reaction/") || pathname === "/api/games/how-close" || pathname.startsWith("/api/games/how-close/") || pathname === "/api/games/inside-man" || pathname.startsWith("/api/games/inside-man/");
+  const isFamilyJoinPage = hasRoomCode && (
+    pathname === "/games/chain-reaction" ||
+    pathname === "/games/how-close" ||
+    pathname === "/games/inside-man" ||
+    pathname === "/games/on-my-list"
+  );
+  const isFamilyRoomApi =
+    pathname === "/api/games/chain-reaction" || pathname.startsWith("/api/games/chain-reaction/") ||
+    pathname === "/api/games/how-close" || pathname.startsWith("/api/games/how-close/") ||
+    pathname === "/api/games/inside-man" || pathname.startsWith("/api/games/inside-man/") ||
+    pathname === "/api/games/on-my-list" || pathname.startsWith("/api/games/on-my-list/");
   if (pathname === "/games/sign-in" || pathname.startsWith("/games/sign-in/") || pathname === ACCOUNT_SESSION_PATH || pathname === SHOT_CADDY_HANDOFF_PATH || pathname.endsWith("/opengraph-image") || isFamilyJoinPage || isFamilyRoomApi) { const response=NextResponse.next();response.headers.set("Cache-Control","private, no-store");return response; }
   const token=request.cookies.get(GAMES_SESSION_COOKIE)?.value; const claims=await verifyGamesSessionToken(token);
   if(!claims){if(isApiRequest(pathname))return NextResponse.json({error:"Play Point account sign-in is required."},{status:401,headers:{"Cache-Control":"private, no-store"}});return signInRedirect(request)}
