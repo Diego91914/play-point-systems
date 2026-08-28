@@ -1,173 +1,169 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
-import { ProductPreview } from "./components/ProductPreview";
 import { SiteShell } from "./components/SiteShell";
-import { artist, divisions, founder, hero, principles, siteLinks } from "./site-content";
 
 export const metadata: Metadata = {
   title: "Play Point Systems",
-  description: "Interactive games, live scoring, golf-first products, and original music created by Play Point Systems.",
+  description: "Games, scoring, and interactive experiences built to bring people together.",
 };
 
-const quickScoreBenefits = [
-  "Start a scoreboard without an account",
-  "Score cornhole, pickleball, bocce, horseshoes, and more",
-  "Share live spectator boards and save club history",
+const playDoors = [
+  {
+    title: "Social",
+    kicker: "Games for the people you're with",
+    body: "Fast, face-to-face games for families, friends, restaurants, trips, and nights around the table.",
+    href: "/play#social",
+    examples: "Inside Man · How Close Are We? · Chain Reaction",
+    accent: "from-fuchsia-400/16 via-violet-400/8 to-transparent",
+  },
+  {
+    title: "Disc Golf",
+    kicker: "Turn the round into a game",
+    body: "Shot Caddy challenges, strategy, scoring, and competitive formats built for real rounds.",
+    href: "/play#disc-golf",
+    examples: "Classic · Battle · CYS · Challenge Skins Pro",
+    accent: "from-emerald-400/16 via-lime-300/7 to-transparent",
+  },
+  {
+    title: "Golf",
+    kicker: "Competitive overlays for the course",
+    body: "Golf-compatible Shot Caddy games that add pressure, decisions, and stakes without replacing the round.",
+    href: "/play#golf",
+    examples: "Call Your Score · Challenge Skins Pro",
+    accent: "from-green-400/14 via-emerald-300/7 to-transparent",
+  },
+  {
+    title: "Backyard",
+    kicker: "Score it. Play it. Settle it.",
+    body: "Simple scoring and growing game formats for bocce, pickleball, cornhole, horseshoes, and whatever you invent next.",
+    href: "/play#backyard",
+    examples: "Score Caddy Quick Match · Backyard Games",
+    accent: "from-amber-300/16 via-orange-300/7 to-transparent",
+  },
+  {
+    title: "Cards & Trivia",
+    kicker: "Bring the table to life",
+    body: "Private-phone card play and hosted group trivia without the clutter of chips, decks, answer sheets, or scorekeeping.",
+    href: "/play#cards-trivia",
+    examples: "Phone Hold'em · Play Point Trivia",
+    accent: "from-sky-400/15 via-cyan-300/7 to-transparent",
+  },
+  {
+    title: "Adventure",
+    kicker: "Your choices become the story",
+    body: "Quest Caddy turns play into a persistent fantasy journey with choices, identity, progression, and a Chronicle worth keeping.",
+    href: "/play#adventure",
+    examples: "Quest Caddy",
+    accent: "from-indigo-400/16 via-blue-400/7 to-transparent",
+  },
 ] as const;
 
 export default function PlayPointSystemsPage() {
   return (
     <SiteShell current="home">
-      <section className="px-4 pb-12 pt-10 min-[360px]:px-5 sm:px-8 sm:pb-16 sm:pt-12 lg:px-10 lg:pb-20 lg:pt-16 xl:pt-20">
-        <div className="grid gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:items-center xl:gap-14">
-          <div className="min-w-0 max-w-4xl reveal-up">
-            <div className="inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-white/82">
-              Creator-led. Purpose-built.
-            </div>
-            <h1 className="marketing-headline mt-6 max-w-4xl leading-[1.05] lg:text-7xl xl:text-[5.2rem] xl:leading-[0.96]">
-              {hero.headline}
-            </h1>
-            <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-amber-100/90 sm:text-xl">
-              {hero.subheadline}
-            </p>
-            <p className="mt-5 max-w-3xl text-base leading-8 text-white/76 sm:text-lg">{hero.intro}</p>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Link
-                href="/live/quick-score"
-                className="inline-flex items-center justify-center rounded-2xl border border-amber-200/40 bg-[linear-gradient(120deg,rgba(224,188,111,0.38),rgba(158,112,34,0.24))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(205,157,66,0.22)] transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
-              >
-                Start Quick Score
-              </Link>
-              <Link
-                href="/games"
-                className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-black/25 px-6 py-3.5 text-sm font-semibold text-white/90 transition hover:border-white/30 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50"
-              >
-                Explore Products
-              </Link>
-              <Link
-                href="/music"
-                className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-black/25 px-6 py-3.5 text-sm font-semibold text-white/90 transition hover:border-white/30 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50"
-              >
-                Hear the Latest Music
-              </Link>
-            </div>
+      <section className="px-5 pb-12 pt-12 sm:px-8 sm:pb-16 sm:pt-16 lg:px-10 lg:pb-20 lg:pt-20">
+        <div className="mx-auto max-w-6xl text-center">
+          <div className="inline-flex rounded-full border border-amber-200/20 bg-amber-300/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-amber-100">
+            Play Point Systems
           </div>
-
-          <aside className="reveal-up reveal-up-delay rounded-[32px] border border-cyan-200/15 bg-[linear-gradient(160deg,rgba(86,174,255,0.16),rgba(255,255,255,0.035))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.24)] sm:p-7">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-cyan-100/70">Available now</div>
-                <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Quick Score</h2>
-              </div>
-              <span className="rounded-full border border-emerald-300/25 bg-emerald-400/10 px-3 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-100">
-                Free to start
-              </span>
-            </div>
-            <p className="mt-4 text-sm leading-7 text-white/74">
-              Turn any friendly competition into a clean, shareable live scoreboard in seconds.
-            </p>
-            <div className="mt-5"><ProductPreview kind="quick-score" /></div>
-            <ul className="mt-5 grid gap-3 text-sm text-white/82">
-              {quickScoreBenefits.map((benefit) => (
-                <li key={benefit} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
-                  <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-amber-300" />
-                  <span>{benefit}</span>
-                </li>
-              ))}
-            </ul>
-            <Link
-              href="/live/quick-score"
-              className="mt-6 inline-flex w-full items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-400/12 px-5 py-3.5 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/18 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
-            >
-              Open Quick Score
-            </Link>
-          </aside>
-        </div>
-      </section>
-
-      <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
-        <div className="max-w-3xl">
-          <div className="section-label">The portfolio</div>
-          <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Three focused brands. One standard for the work.</h2>
-          <p className="mt-4 text-sm leading-7 text-white/72">
-            Each division has a distinct audience and identity, connected by a commitment to clarity, usefulness, and experiences that feel personal.
+          <h1 className="marketing-headline mx-auto mt-6 max-w-5xl leading-[0.98] lg:text-7xl xl:text-[5.35rem]">
+            What do you want to play?
+          </h1>
+          <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-white/70 sm:text-xl sm:leading-9">
+            Pick the kind of experience you want. Play Point handles the prompts, private information, scoring, and game logic so the fun stays with the people around you.
           </p>
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
+            <Link href="/play" className="inline-flex items-center justify-center rounded-2xl border border-amber-200/40 bg-[linear-gradient(120deg,rgba(224,188,111,0.38),rgba(158,112,34,0.24))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(205,157,66,0.22)] transition hover:-translate-y-0.5 hover:brightness-110">
+              Explore Everything
+            </Link>
+            <Link href="/live/quick-score" className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/25 bg-cyan-400/10 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-400/16">
+              Open Score Caddy
+            </Link>
+          </div>
         </div>
 
-        <div className="mt-8 grid gap-5 lg:grid-cols-3">
-          {divisions.map((division) => (
-            <article key={division.name} className="flex flex-col rounded-[30px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
-              <div className="section-label">{division.eyebrow}</div>
-              <h3 className="mt-3 text-3xl font-black text-white">{division.name}</h3>
-              <p className="mt-4 text-sm leading-7 text-white/74">{division.description}</p>
-              <ul className="mt-5 grid gap-3 text-sm text-white/82">
-                {division.points.map((point) => (
-                  <li key={point} className="flex items-start gap-3">
-                    <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-amber-300" />
-                    <span>{point}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link href={division.href} className="mt-6 inline-flex w-fit rounded-2xl border border-white/15 bg-white/8 px-4 py-3 text-sm font-black text-white transition hover:bg-white/12 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50">
-                {division.cta}
-              </Link>
-            </article>
+        <div className="mx-auto mt-12 grid max-w-6xl gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {playDoors.map((door) => (
+            <Link key={door.title} href={door.href} className="group relative overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.035] p-6 shadow-[0_20px_55px_rgba(0,0,0,0.2)] transition duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.055]">
+              <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${door.accent}`} />
+              <div className="relative flex h-full min-h-[250px] flex-col">
+                <div className="text-[11px] font-black uppercase tracking-[0.2em] text-white/48">Choose your play</div>
+                <h2 className="mt-4 text-4xl font-black tracking-tight text-white">{door.title}</h2>
+                <div className="mt-2 text-sm font-bold text-amber-100/86">{door.kicker}</div>
+                <p className="mt-4 flex-1 text-sm leading-7 text-white/68">{door.body}</p>
+                <div className="mt-5 border-t border-white/10 pt-4 text-xs leading-6 text-white/46">{door.examples}</div>
+                <div className="mt-4 text-sm font-black text-white transition group-hover:translate-x-1">Explore {door.title} →</div>
+              </div>
+            </Link>
           ))}
         </div>
       </section>
 
-      <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
-        <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
-          <div className="overflow-hidden rounded-[30px] border border-white/10 bg-black/20 p-4">
-            <Image
-              src="/images/music/house-with-the-lights-on.webp"
-              alt="House With The Lights On cover art"
-              width={1254}
-              height={1254}
-              sizes="(min-width: 1024px) 42vw, 100vw"
-              className="h-auto w-full rounded-[22px]"
-            />
-          </div>
-          <div className="rounded-[32px] border border-amber-300/15 bg-[linear-gradient(180deg,rgba(255,204,142,0.12),rgba(255,255,255,0.03))] p-7">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-amber-100/70">Latest from Play Point Records</div>
-            <h2 className="mt-4 text-4xl font-black text-white sm:text-5xl">{artist.currentRelease}</h2>
-            <p className="mt-4 text-base leading-8 text-white/76">
-              Country Christian storytelling about grace, return, and the light that stays on when someone finds their way home.
+      <section className="border-t border-white/10 px-5 py-12 sm:px-8 lg:px-10 lg:py-16">
+        <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1.08fr_0.92fr]">
+          <div className="rounded-[34px] border border-cyan-200/15 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.13),transparent_42%),rgba(255,255,255,0.025)] p-7 sm:p-9">
+            <div className="text-[11px] font-black uppercase tracking-[0.24em] text-cyan-100/60">Free utility</div>
+            <h2 className="mt-4 text-4xl font-black text-white sm:text-5xl">Score Caddy</h2>
+            <p className="mt-4 max-w-2xl text-lg font-semibold leading-8 text-cyan-50/88">The simple scorekeeper for whatever you're playing.</p>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-white/65">
+              Use Round for golf-style scoring or Quick Match for pickleball, bocce, cornhole, horseshoes, and custom point games. No need to turn a simple score into a complicated app.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <a href={siteLinks.houseWithTheLightsOn} target="_blank" rel="noreferrer" className="inline-flex rounded-2xl border border-amber-200/25 bg-amber-300/12 px-5 py-3 text-sm font-black text-amber-50 transition hover:bg-amber-300/18 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300">
-                Listen Now
-              </a>
-              <Link href="/music" className="inline-flex rounded-2xl border border-white/15 bg-black/20 px-5 py-3 text-sm font-black text-white transition hover:bg-black/28 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50">
-                Explore the Music
-              </Link>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                <div className="font-black text-white">Round</div>
+                <div className="mt-1 text-sm text-white/56">Golf and disc-golf-style scoring.</div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                <div className="font-black text-white">Quick Match</div>
+                <div className="mt-1 text-sm text-white/56">Points, games, sets, ends, or custom scoring.</div>
+              </div>
             </div>
+            <Link href="/live/quick-score" className="mt-6 inline-flex rounded-2xl border border-cyan-200/30 bg-cyan-400/12 px-5 py-3.5 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/18">
+              Start Scoring — Free
+            </Link>
+          </div>
+
+          <div className="grid gap-4">
+            <Link href="/shot-caddy" className="group rounded-[30px] border border-emerald-300/15 bg-[linear-gradient(145deg,rgba(16,185,129,0.1),rgba(255,255,255,0.025))] p-6 transition hover:-translate-y-0.5 hover:border-emerald-300/25">
+              <div className="text-[11px] font-black uppercase tracking-[0.2em] text-emerald-100/56">Physical play</div>
+              <div className="mt-3 text-3xl font-black text-white">Shot Caddy</div>
+              <p className="mt-3 text-sm leading-7 text-white/62">Challenges, Special Plays, strategy, and competitive formats that change how the round feels.</p>
+              <div className="mt-4 text-sm font-black text-emerald-100 transition group-hover:translate-x-1">Explore Shot Caddy →</div>
+            </Link>
+            <Link href="/play#social" className="group rounded-[30px] border border-fuchsia-300/15 bg-[linear-gradient(145deg,rgba(217,70,239,0.09),rgba(255,255,255,0.025))] p-6 transition hover:-translate-y-0.5 hover:border-fuchsia-300/25">
+              <div className="text-[11px] font-black uppercase tracking-[0.2em] text-fuchsia-100/56">Face-to-face</div>
+              <div className="mt-3 text-3xl font-black text-white">Play Point Social</div>
+              <p className="mt-3 text-sm leading-7 text-white/62">One person owns it. Everyone plays. Phones facilitate the game; the people create the fun.</p>
+              <div className="mt-4 text-sm font-black text-fuchsia-100 transition group-hover:translate-x-1">See Social Games →</div>
+            </Link>
           </div>
         </div>
       </section>
 
-      <section className="border-t border-white/10 px-5 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
-        <div className="grid gap-6 lg:grid-cols-[1fr_0.92fr]">
-          <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(111,182,255,0.1),rgba(255,255,255,0.03))] p-7">
-            <div className="section-label">Founder story</div>
-            <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl">Built by {founder.name}</h2>
-            <p className="mt-5 text-base leading-8 text-white/76">
-              Play Point Systems brings together Channing&apos;s work in interactive products, sports experiences, and faith-driven music. The formats change, but the goal remains the same: create something clear, honest, and worth returning to.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/about" className="inline-flex rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-sm font-black text-white transition hover:bg-white/12">Read the Story</Link>
-              <Link href="/contact" className="inline-flex rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-400/16">Start a Conversation</Link>
+      <section className="border-t border-white/10 px-5 py-12 sm:px-8 lg:px-10 lg:py-16">
+        <div className="mx-auto max-w-6xl rounded-[34px] border border-amber-300/15 bg-[linear-gradient(120deg,rgba(205,157,66,0.11),rgba(255,255,255,0.025))] p-7 sm:p-9">
+          <div className="grid gap-7 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div>
+              <div className="text-[11px] font-black uppercase tracking-[0.24em] text-amber-100/58">Simple ownership</div>
+              <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl">Try it. Own it. Build your collection.</h2>
+              <p className="mt-4 max-w-3xl text-sm leading-7 text-white/65">
+                Play Point is being designed around simple ownership instead of subscriptions for casual games. The host owns the game, guests join without buying their own copy, and your library keeps everything you own in one place.
+              </p>
             </div>
+            <Link href="/games" className="inline-flex min-w-[160px] items-center justify-center rounded-2xl border border-white/15 bg-white/[0.06] px-5 py-3.5 text-sm font-black text-white transition hover:bg-white/[0.1]">
+              My Games
+            </Link>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-            {principles.slice(0, 3).map((principle) => (
-              <div key={principle.title} className="rounded-[24px] border border-white/10 bg-white/[0.03] px-5 py-4">
-                <div className="text-lg font-black text-white">{principle.title}</div>
-                <div className="mt-2 text-sm leading-7 text-white/72">{principle.body}</div>
-              </div>
-            ))}
+        </div>
+      </section>
+
+      <section className="border-t border-white/10 px-5 py-10 sm:px-8 lg:px-10 lg:py-12">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 rounded-[26px] border border-white/8 bg-black/20 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="text-sm font-black text-white">Play Point Records is still part of the family.</div>
+            <div className="mt-1 text-sm text-white/50">Original country and Christian music lives in its own lane so the game experience stays focused.</div>
           </div>
+          <Link href="/music" className="shrink-0 text-sm font-black text-amber-100 transition hover:text-white">Explore the music →</Link>
         </div>
       </section>
     </SiteShell>
