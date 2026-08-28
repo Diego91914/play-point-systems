@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { SiteShell } from "@/app/components/SiteShell";
 import { RoomInviteSessionGuard } from "@/app/games/_components/RoomInviteSessionGuard";
+import { RulesCorner } from "@/app/games/_components/RulesCorner";
 import { HowCloseClient } from "./HowCloseClient";
 
-export const metadata:Metadata={title:"How Close Are We? | Play Point Systems",description:"A family table game where everyone privately rates the same question from 1 to 100.",robots:{index:false,follow:false}};
-export default function Page(){return <SiteShell current="games"><RoomInviteSessionGuard storageKey="pps-how-close-session"><HowCloseClient/></RoomInviteSessionGuard></SiteShell>}
+export const metadata:Metadata={title:"How Close Are We? | Play Point Systems",description:"A family table game where one Spotlight Player answers honestly and everyone else guesses their 1–100 answer.",robots:{index:false,follow:false}};
+export default function Page(){return <SiteShell current="games"><RoomInviteSessionGuard storageKey="pps-how-close-session"><HowCloseClient/><RulesCorner game="how-close"/></RoomInviteSessionGuard></SiteShell>}
