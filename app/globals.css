@@ -151,6 +151,24 @@ textarea:focus-visible {
   }
 }
 
+/*
+ * The felt already shows each player's private cards at their seat. The
+ * separate "Your Hand / Best Hand" dashboard duplicated that information and
+ * pushed the actual poker controls off to the side. Remove that duplicate
+ * panel and make the action area the full-width first element under the felt.
+ */
+main [class*="xl:grid-cols-[0.82fr_1.18fr]"] {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+main [class*="xl:grid-cols-[0.82fr_1.18fr]"] > :first-child {
+  display: none !important;
+}
+
+main [class*="xl:grid-cols-[0.82fr_1.18fr]"] > :nth-child(2) {
+  width: 100%;
+}
+
 @media (max-width: 1023px) {
   @supports selector(div:has(*)) {
     main div:has(> div > div > input[aria-label="Raise amount"]) {
