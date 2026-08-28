@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SiteShell } from "../../components/SiteShell";
 import { RulesCorner } from "@/app/games/_components/RulesCorner";
+import { SocialRoomController } from "@/app/games/_components/SocialRoomController";
 import { HoldemClient } from "./HoldemClient";
 import { HoldemPreAction } from "./HoldemPreAction";
 
@@ -16,6 +17,7 @@ export default function HoldemPage() {
       <HoldemClient />
       <HoldemPreAction />
       <RulesCorner game="holdem" />
+      <SocialRoomController game="holdem" storageKeyPrefix="pps-holdem-" roomApiBase="/api/games/holdem" />
     </SiteShell>
   );
 }
