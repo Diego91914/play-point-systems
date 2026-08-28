@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
 export type GameRulesGuideProps = {
   gameName: string;
   goal: string;
-  turns: string[];
-  scoring: string[];
+  turns: readonly string[];
+  scoring: readonly string[];
   ending: string;
   example?: string;
   className?: string;
@@ -30,4 +30,4 @@ export function GameRulesGuide({gameName,goal,turns,scoring,ending,example,class
   </>;
 }
 
-function Rule({title,children}:{title:string;children:React.ReactNode}){return <section className="mt-5"><h3 className="text-sm font-black uppercase tracking-widest text-white">{title}</h3><div className="mt-2 text-sm leading-6 text-white/65">{children}</div></section>}
+function Rule({title,children}:{title:string;children:ReactNode}){return <section className="mt-5"><h3 className="text-sm font-black uppercase tracking-widest text-white">{title}</h3><div className="mt-2 text-sm leading-6 text-white/65">{children}</div></section>}
