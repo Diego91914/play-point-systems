@@ -8,7 +8,9 @@ import {
 const ACCOUNT_SESSION_PATH = "/api/games/account/session";
 const SHOT_CADDY_HANDOFF_PATH = "/api/games/account/shot-caddy-handoff";
 
-const GUEST_ROOM_GAMES = ["chain-reaction", "how-close", "inside-man", "on-my-list"] as const;
+// Multiplayer phone games use one access model: the host must own/access the game,
+// while invited guests may enter an existing room with a room code and first name.
+const GUEST_ROOM_GAMES = ["chain-reaction", "how-close", "inside-man", "on-my-list", "holdem"] as const;
 
 function isGuestRoomPage(pathname: string, hasRoomCode: boolean) {
   return hasRoomCode && GUEST_ROOM_GAMES.some((slug) => pathname === `/games/${slug}`);
