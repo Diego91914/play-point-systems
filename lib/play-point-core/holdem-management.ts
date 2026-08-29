@@ -31,7 +31,8 @@ export type HoldemManagementAction =
   | { type: "sit_out" }
   | { type: "return" }
   | { type: "host_remove"; playerId: string }
-  | { type: "host_reset_stack"; playerId: string; amount?: number };
+  | { type: "host_reset_stack"; playerId: string; amount?: number }
+  | { type: "host_restart" };
 
 const LEVEL_FACTORS = [1, 1.5, 2, 3, 4, 6, 8, 12, 16, 20, 30, 40, 60, 80, 120, 160] as const;
 
@@ -259,6 +260,47 @@ export function applyManagementAction(
     actor.sittingOut = false;
     if (state.status !== "playing") actor.status = actor.stack > 0 ? "waiting" : "out";
     state.message = state.status === "playing" ? `${actor.name} will return next hand.` : `${actor.name} is back in.`;
+  } else if (action.type === "host_restart") {
+    if (state.hostPlayerId !== actor.id) throw new Error("Only the host can restart the table.");
+    if (state.status === "playing") throw new Error("Finish the current hand before restarting the table.");
+
+    if (state.settings.mode === "tournament" && state.tournament) {
+      state.settings.smallBlind = state.tournament.baseSmallBlind;
+      state.settings.bigBlind = state.tournament.baseBigBlind;
+      state.tournament.currentLevel = 0;
+      state.tournament.startedAt = null;
+      state.tournament.completedAt = null;
+      state.tournament.championPlayerId = null;
+    }
+
+    for (const player of state.players) {
+      player.stack = state.settings.startingStack;
+      player.streetBet = 0;
+      player.contribution = 0;
+      player.status = "waiting";
+      player.holeCards = [];
+      player.acted = false;
+      player.raiseLocked = false;
+      player.sittingOut = false;
+      player.handStartStack = state.settings.startingStack;
+      player.finishPlace = null;
+      player.eliminatedAtHand = null;
+    }
+
+    state.status = "lobby";
+    state.handNumber = 0;
+    state.dealerSeat = null;
+    state.smallBlindSeat = null;
+    state.bigBlindSeat = null;
+    state.actionSeat = null;
+    state.street = "preflop";
+    state.deck = [];
+    state.board = [];
+    state.currentBet = 0;
+    state.lastRaiseSize = state.settings.bigBlind;
+    state.winners = [];
+    state.lastAction = null;
+    state.message = "Table reset. Ready for another game.";
   } else {
     if (state.hostPlayerId !== actor.id) throw new Error("Only the host can manage another player's seat.");
     if (state.status === "playing") throw new Error("Table management is available between hands only.");
