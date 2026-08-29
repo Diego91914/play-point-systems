@@ -5,6 +5,7 @@ import { useState, type ReactNode } from "react";
 export type GameRulesGuideProps = {
   gameName: string;
   goal: string;
+  setup?: readonly string[];
   turns: readonly string[];
   scoring: readonly string[];
   ending: string;
@@ -12,8 +13,10 @@ export type GameRulesGuideProps = {
   className?: string;
 };
 
-export function GameRulesGuide({ gameName, goal, turns, scoring, ending, example, className = "" }: GameRulesGuideProps) {
+export function GameRulesGuide({ gameName, goal, setup, turns, scoring, ending, example, className = "" }: GameRulesGuideProps) {
   const [open, setOpen] = useState(false);
+  let number = 1;
+  const nextNumber = () => String(number++).padStart(2, "0");
 
   return <>
     <button
@@ -21,7 +24,7 @@ export function GameRulesGuide({ gameName, goal, turns, scoring, ending, example
       onClick={() => setOpen(true)}
       className={`min-h-11 rounded-2xl border border-amber-200/20 bg-[linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025))] px-4 py-2 text-xs font-black uppercase tracking-[.14em] text-white/78 shadow-[0_10px_30px_rgba(0,0,0,.18)] transition hover:border-amber-200/35 hover:text-white ${className}`}
     >
-      ? How to play
+      ? How to Play
     </button>
 
     {open && <div
@@ -38,19 +41,20 @@ export function GameRulesGuide({ gameName, goal, turns, scoring, ending, example
         <div className="pointer-events-none absolute right-0 top-0 h-48 w-48 rounded-full bg-cyan-300/[.05] blur-3xl" />
         <div className="relative flex items-start justify-between gap-4 border-b border-white/10 pb-5">
           <div>
-            <div className="text-[10px] font-black uppercase tracking-[.26em] text-amber-100/60">Play Point Games · Quick guide</div>
+            <div className="text-[10px] font-black uppercase tracking-[.26em] text-amber-100/60">Play Point Games · Rules guide</div>
             <h2 className="mt-2 text-3xl font-black tracking-tight text-white sm:text-4xl">{gameName}</h2>
-            <p className="mt-2 text-xs text-white/45">Everything you need to start playing.</p>
+            <p className="mt-2 text-xs leading-5 text-white/45">Setup, turn flow, scoring, and how to win — all in one place.</p>
           </div>
           <button type="button" onClick={() => setOpen(false)} className="min-h-11 min-w-11 shrink-0 rounded-full border border-white/15 bg-white/[.04] text-xl font-black text-white transition hover:bg-white/[.09]" aria-label="Close rules">×</button>
         </div>
 
         <div className="relative">
-          <Rule number="01" title="The goal"><p>{goal}</p></Rule>
-          <Rule number="02" title="How a turn works"><ol className="list-decimal space-y-2.5 pl-5">{turns.map((x, i) => <li key={i}>{x}</li>)}</ol></Rule>
-          <Rule number="03" title="Scoring"><ul className="list-disc space-y-2.5 pl-5">{scoring.map((x, i) => <li key={i}>{x}</li>)}</ul></Rule>
-          <Rule number="04" title="How it ends"><p>{ending}</p></Rule>
-          {example && <Rule number="05" title="Example"><p>{example}</p></Rule>}
+          <Rule number={nextNumber()} title="The goal"><p>{goal}</p></Rule>
+          {setup && setup.length > 0 && <Rule number={nextNumber()} title="Before you start"><ul className="list-disc space-y-2.5 pl-5">{setup.map((x, i) => <li key={i}>{x}</li>)}</ul></Rule>}
+          <Rule number={nextNumber()} title="How play works"><ol className="list-decimal space-y-2.5 pl-5">{turns.map((x, i) => <li key={i}>{x}</li>)}</ol></Rule>
+          <Rule number={nextNumber()} title="Scoring"><ul className="list-disc space-y-2.5 pl-5">{scoring.map((x, i) => <li key={i}>{x}</li>)}</ul></Rule>
+          <Rule number={nextNumber()} title="How to win"><p>{ending}</p></Rule>
+          {example && <Rule number={nextNumber()} title="Example"><p>{example}</p></Rule>}
         </div>
 
         <button type="button" onClick={() => setOpen(false)} className="relative mt-7 min-h-14 w-full rounded-2xl bg-[linear-gradient(135deg,#f5d58a,#d5ae5f)] px-4 py-4 font-black text-slate-950 shadow-[0_14px_38px_rgba(213,174,95,.18)] transition hover:brightness-105 active:scale-[.99]">GOT IT — LET'S PLAY</button>
