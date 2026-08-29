@@ -3,17 +3,18 @@ type PreviewKind = "quick-score" | "trivia" | "venue" | "shot-caddy";
 export function ProductPreview({ kind, compact = false }: { kind: PreviewKind; compact?: boolean }) {
   if (kind === "quick-score") {
     return (
-      <div className={`overflow-hidden rounded-[24px] border border-cyan-300/20 bg-[#07111d] ${compact ? "p-3" : "p-4"}`} aria-label="Quick Score interface preview">
-        <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-[0.16em] text-cyan-100/70">
-          <span>Quick Score</span><span className="text-emerald-200">Live</span>
+      <div className={`overflow-hidden rounded-[24px] border border-amber-300/30 bg-[linear-gradient(145deg,#11110f,#07090c)] shadow-[0_18px_50px_rgba(0,0,0,.34)] ${compact ? "p-3" : "p-4"}`} aria-label="Score Caddy live scoring interface preview">
+        <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-[0.18em] text-amber-100/80">
+          <span>Live Score</span>
+          <span className="inline-flex items-center gap-1.5 text-emerald-200"><span className="h-1.5 w-1.5 rounded-full bg-emerald-300 shadow-[0_0_10px_rgba(110,231,183,.8)]" />Live</span>
         </div>
         <div className="mt-3 grid grid-cols-2 gap-3">
           {[["Home", "18"], ["Away", "14"]].map(([name, score]) => (
-            <div key={name} className="rounded-2xl border border-white/10 bg-white/[0.05] p-3">
+            <div key={name} className="rounded-2xl border border-white/10 bg-white/[0.055] p-3 shadow-inner shadow-black/20">
               <div className="text-xs font-semibold text-white/64">{name}</div>
               <div className="mt-1 text-3xl font-black text-white">{score}</div>
               <div className="mt-3 flex gap-1.5">
-                {[1, 2, 3].map((point) => <span key={point} className="flex h-7 min-w-7 items-center justify-center rounded-lg bg-cyan-400/12 text-xs font-black text-cyan-50">+{point}</span>)}
+                {[1, 2, 3].map((point) => <span key={point} className="flex h-7 min-w-7 items-center justify-center rounded-lg border border-amber-300/15 bg-amber-300/10 text-xs font-black text-amber-100">+{point}</span>)}
               </div>
             </div>
           ))}
