@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SiteShell } from "@/app/components/SiteShell";
 import {
   PLAY_POINT_GAME_CATALOG,
+  getSalesReadyCatalog,
   type PlayPointCategory,
   type PlayPointGameCatalogItem,
 } from "@/lib/play-point-core/games-catalog";
@@ -63,6 +64,14 @@ const sections: readonly PlaySection[] = [
     categories: ["cards", "trivia"],
     accent: "border-cyan-300/15 bg-cyan-300/[0.055]",
   },
+  {
+    id: "adventure",
+    title: "Adventure",
+    kicker: "Your choices become the story.",
+    description: "Quest Caddy turns a real round into a persistent fantasy journey with identity, progression, secret Callings, and a Chronicle worth keeping.",
+    categories: ["adventure"],
+    accent: "border-indigo-300/15 bg-indigo-300/[0.055]",
+  },
 ] as const;
 
 function matchesSection(product: PlayPointGameCatalogItem, section: PlaySection) {
@@ -71,6 +80,7 @@ function matchesSection(product: PlayPointGameCatalogItem, section: PlaySection)
 
 function ProductCard({ product }: { product: PlayPointGameCatalogItem }) {
   const typeLabel = product.productType === "standalone_game" ? "Standalone game" : product.productType.replaceAll("_", " ");
+  const priceLabel = product.priceUsd === null ? null : `$${product.priceUsd.toFixed(2)} one time`;
   const content = (
     <article className="group flex h-full flex-col rounded-[26px] border border-white/10 bg-black/20 p-5 transition duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.045]">
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -79,8 +89,16 @@ function ProductCard({ product }: { product: PlayPointGameCatalogItem }) {
       </div>
       <h3 className="mt-4 text-2xl font-black text-white">{product.title}</h3>
       <p className="mt-3 flex-1 text-sm leading-7 text-white/62">{product.description}</p>
-      <div className="mt-5 border-t border-white/8 pt-4 text-sm font-black text-white/82 transition group-hover:text-white">
-        {product.external ? "Explore in Shot Caddy ↗" : `Explore ${product.title} →`}
+      <div className="mt-5 border-t border-white/8 pt-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <span className={`rounded-full border px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.13em] ${product.status === "live" ? "border-emerald-300/20 bg-emerald-300/10 text-emerald-100" : "border-cyan-300/20 bg-cyan-300/10 text-cyan-100"}`}>
+            {product.badge}
+          </span>
+          {priceLabel ? <span className="text-sm font-black text-amber-100">{priceLabel}</span> : null}
+        </div>
+        <div className="mt-4 text-sm font-black text-white/82 transition group-hover:text-white">
+          {product.external ? "Explore in Shot Caddy ↗" : `Explore ${product.title} →`}
+        </div>
       </div>
     </article>
   );
@@ -97,14 +115,16 @@ function ProductCard({ product }: { product: PlayPointGameCatalogItem }) {
 }
 
 export default function PlayPage() {
+  const readyToSellCount = getSalesReadyCatalog().length;
+
   return (
     <SiteShell current="play">
       <section className="px-5 pb-10 pt-12 sm:px-8 sm:pb-14 sm:pt-16 lg:px-10 lg:pt-20">
         <div className="mx-auto max-w-6xl">
           <div className="max-w-4xl">
-            <div className="inline-flex rounded-full border border-amber-200/20 bg-amber-300/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-amber-100">Find your game</div>
+            <div className="inline-flex rounded-full border border-amber-200/20 bg-amber-300/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-amber-100">{readyToSellCount} finished games</div>
             <h1 className="marketing-headline mt-6 leading-[1] lg:text-7xl">What are we playing?</h1>
-            <p className="mt-5 max-w-3xl text-lg leading-8 text-white/68">Start with the setting, not the brand. Pick what you're doing and we'll show you the Play Point experiences that fit.</p>
+            <p className="mt-5 max-w-3xl text-lg leading-8 text-white/68">Explore every finished Play Point game, see the one-time price, and choose the experience that fits your group.</p>
           </div>
 
           <nav aria-label="Play categories" className="mt-8 flex flex-wrap gap-2">
@@ -113,7 +133,6 @@ export default function PlayPage() {
                 {section.title}
               </a>
             ))}
-            <a href="#adventure" className="rounded-full border border-indigo-300/20 bg-indigo-300/[0.07] px-4 py-2 text-sm font-bold text-indigo-50 transition hover:border-indigo-300/35">Adventure</a>
           </nav>
         </div>
       </section>
@@ -141,7 +160,7 @@ export default function PlayPage() {
                     {products.length > 0 ? products.map((product) => <ProductCard key={product.sku} product={product} />) : (
                       <div className="md:col-span-2 rounded-[26px] border border-dashed border-white/12 bg-black/15 p-6">
                         <div className="text-lg font-black text-white">More is being built here.</div>
-                        <p className="mt-2 text-sm leading-7 text-white/52">This category is part of the Play Point roadmap. We won't fill it with weak reskins just to make the shelf look bigger.</p>
+                        <p className="mt-2 text-sm leading-7 text-white/52">This category is part of the Play Point roadmap. We won&apos;t fill it with weak reskins just to make the shelf look bigger.</p>
                       </div>
                     )}
                   </div>
@@ -151,24 +170,6 @@ export default function PlayPage() {
           </section>
         );
       })}
-
-      <section id="adventure" className="scroll-mt-28 border-t border-white/10 px-5 py-11 sm:px-8 lg:px-10 lg:py-14">
-        <div className="mx-auto max-w-6xl rounded-[34px] border border-indigo-300/15 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.16),transparent_42%),rgba(255,255,255,0.025)] p-7 sm:p-9">
-          <div className="grid gap-7 lg:grid-cols-[1fr_0.8fr] lg:items-end">
-            <div>
-              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-indigo-100/55">Premium experience</div>
-              <h2 className="mt-4 text-4xl font-black text-white sm:text-5xl">Quest Caddy</h2>
-              <p className="mt-4 max-w-3xl text-lg font-semibold leading-8 text-indigo-50/84">Play as a guest. Own Quest Caddy to keep your story.</p>
-              <p className="mt-4 max-w-3xl text-sm leading-7 text-white/60">A persistent fantasy journey layered onto play, with choices, progression, identity, secret Callings, and a Chronicle that records who you became.</p>
-            </div>
-            <div className="rounded-[26px] border border-white/10 bg-black/20 p-5">
-              <div className="text-xs font-black uppercase tracking-[0.18em] text-white/42">Current status</div>
-              <div className="mt-3 text-xl font-black text-white">Controlled early access</div>
-              <p className="mt-2 text-sm leading-6 text-white/52">Quest Caddy stays intentionally separate from lightweight Play Point games while the premium experience is completed.</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section className="border-t border-white/10 px-5 py-11 sm:px-8 lg:px-10 lg:py-14">
         <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-2">

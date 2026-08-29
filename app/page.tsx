@@ -13,7 +13,7 @@ const playDoors = [
     kicker: "Games for the people you're with",
     body: "Fast, face-to-face games for families, friends, restaurants, trips, and nights around the table.",
     href: "/play#social",
-    examples: "Inside Man · How Close Are We? · Chain Reaction",
+    examples: "On My List · Chain Reaction · How Close Are We? · The Inside Man",
     accent: "from-fuchsia-400/16 via-violet-400/8 to-transparent",
   },
   {
@@ -21,7 +21,7 @@ const playDoors = [
     kicker: "Turn the round into a game",
     body: "Shot Caddy challenges, strategy, scoring, and competitive formats built for real rounds.",
     href: "/play#disc-golf",
-    examples: "Classic · Battle · CYS · Challenge Skins Pro",
+    examples: "Classic · Chaos · Battle · CYS · Challenge Skins Pro · Card Shark",
     accent: "from-emerald-400/16 via-lime-300/7 to-transparent",
   },
   {
@@ -70,7 +70,7 @@ export default function PlayPointSystemsPage() {
             What do you want to play?
           </h1>
           <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-white/70 sm:text-xl sm:leading-9">
-            Pick the kind of experience you want. Play Point handles the prompts, private information, scoring, and game logic so the fun stays with the people around you.
+            Choose from 12 finished games across Play Point Social, Shot Caddy, Cards, and Adventure. One owner brings the game; everyone else joins the fun.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
             <Link href="/play" className="inline-flex items-center justify-center rounded-2xl border border-amber-200/40 bg-[linear-gradient(120deg,rgba(224,188,111,0.38),rgba(158,112,34,0.24))] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_30px_rgba(205,157,66,0.22)] transition hover:-translate-y-0.5 hover:brightness-110">
@@ -104,7 +104,7 @@ export default function PlayPointSystemsPage() {
           <div className="rounded-[34px] border border-cyan-200/15 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.13),transparent_42%),rgba(255,255,255,0.025)] p-7 sm:p-9">
             <div className="text-[11px] font-black uppercase tracking-[0.24em] text-cyan-100/60">Free utility</div>
             <h2 className="mt-4 text-4xl font-black text-white sm:text-5xl">Score Caddy</h2>
-            <p className="mt-4 max-w-2xl text-lg font-semibold leading-8 text-cyan-50/88">The simple scorekeeper for whatever you're playing.</p>
+            <p className="mt-4 max-w-2xl text-lg font-semibold leading-8 text-cyan-50/88">The simple scorekeeper for whatever you&apos;re playing.</p>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-white/65">
               Use Round for golf-style scoring or Quick Match for pickleball, bocce, cornhole, horseshoes, and custom point games. No need to turn a simple score into a complicated app.
             </p>

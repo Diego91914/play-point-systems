@@ -92,7 +92,9 @@ export default async function GamesPage({
                     : "Not owned";
 
               const actionLabel = !game.launchable
-                ? "Ownership required"
+                ? game.priceUsd === null
+                  ? "Ownership required"
+                  : `Available for $${game.priceUsd.toFixed(2)}`
                 : game.external
                   ? "Open in Shot Caddy"
                   : `Play ${game.title}`;
@@ -114,6 +116,12 @@ export default async function GamesPage({
                   <p className="mt-4 flex-1 text-sm leading-7 text-white/68">
                     {game.description}
                   </p>
+
+                  {game.priceUsd !== null ? (
+                    <div className="mt-5 text-sm font-black text-amber-100">
+                      ${game.priceUsd.toFixed(2)} one-time
+                    </div>
+                  ) : null}
 
                   <div className="mt-6 border-t border-white/8 pt-5">
                     <div
