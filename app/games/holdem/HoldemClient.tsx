@@ -348,7 +348,7 @@ export function HoldemClient() {
             </div>
 
             <div className="mt-4 grid gap-4 xl:grid-cols-[0.82fr_1.18fr]">
-              <div className="rounded-[30px] border border-cyan-300/15 bg-[linear-gradient(145deg,rgba(8,38,48,.82),rgba(0,0,0,.42))] p-5 sm:p-6">
+              <div className="order-2 rounded-[30px] border border-cyan-300/15 bg-[linear-gradient(145deg,rgba(8,38,48,.82),rgba(0,0,0,.42))] p-5 sm:p-6 xl:order-1">
                 <div className="flex items-center justify-between gap-3">
                   <div><div className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-100/48">Your hand</div><div className="mt-1 text-xl font-black text-white">{table.me.name}</div></div>
                   <div className="text-right"><div className="text-[10px] uppercase tracking-wider text-white/35">Stack</div><div className="text-xl font-black text-amber-200">{formatChips(table.me.stack)}</div></div>
@@ -365,7 +365,7 @@ export function HoldemClient() {
                 </div>
               </div>
 
-              <div ref={actionPanelRef} className={`rounded-[30px] border p-5 sm:p-6 ${table.me.isTurn ? "border-amber-300/45 bg-amber-300/[0.07] shadow-[0_0_40px_rgba(252,211,77,.08)]" : "border-white/10 bg-white/[0.025]"}`}>
+              <div ref={actionPanelRef} className={`order-1 rounded-[30px] border p-5 sm:p-6 xl:order-2 ${table.me.isTurn ? "border-amber-300/45 bg-amber-300/[0.07] shadow-[0_0_40px_rgba(252,211,77,.08)]" : "border-white/10 bg-white/[0.025]"}`}>
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <div className="text-[10px] font-black uppercase tracking-[0.22em] text-white/40">Action</div>
@@ -382,29 +382,38 @@ export function HoldemClient() {
 
                 {table.status === "playing" && table.me.isTurn && (
                   <>
-                    <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                      <button disabled={busy} onClick={() => void act({ type: "fold" })} className="rounded-2xl border border-red-300/20 bg-red-400/10 px-4 py-3 font-black text-red-100 transition hover:bg-red-400/16 disabled:opacity-40">Fold</button>
+                    <div className="mt-4 grid grid-cols-[0.82fr_1.18fr] gap-3">
+                      <button disabled={busy} onClick={() => void act({ type: "fold" })} className="min-h-16 rounded-2xl border border-red-300/35 bg-red-400/16 px-4 py-4 text-lg font-black text-red-50 shadow-[0_8px_26px_rgba(248,113,113,.08)] transition hover:bg-red-400/22 active:scale-[0.99] disabled:opacity-40">Fold</button>
                       {table.me.toCall === 0
-                        ? <button disabled={busy} onClick={() => void act({ type: "check" })} className="rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-4 py-3 font-black text-cyan-50 transition hover:bg-cyan-300/16 disabled:opacity-40">Check</button>
-                        : <button disabled={busy} onClick={() => void act({ type: "call" })} className="rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-4 py-3 font-black text-cyan-50 transition hover:bg-cyan-300/16 disabled:opacity-40">Call {formatChips(Math.min(table.me.toCall, table.me.stack))}</button>}
-                      <button disabled={busy || !canRegularRaise} onClick={() => void act({ type: "raise", raiseTo })} className="rounded-2xl border border-emerald-300/25 bg-emerald-300/12 px-4 py-3 font-black text-emerald-50 transition hover:bg-emerald-300/18 disabled:opacity-35">{actionVerb} {formatChips(raiseTo)}</button>
-                      <button disabled={busy || table.me.stack <= 0} onClick={() => void act({ type: "all_in" })} className="rounded-2xl border border-violet-300/25 bg-violet-300/12 px-4 py-3 font-black text-violet-50 transition hover:bg-violet-300/18 disabled:opacity-35">All-in {formatChips(table.me.stack)}</button>
+                        ? <button disabled={busy} onClick={() => void act({ type: "check" })} className="min-h-16 rounded-2xl border border-cyan-200/35 bg-cyan-300 px-4 py-4 text-xl font-black text-slate-950 shadow-[0_10px_30px_rgba(103,232,249,.14)] transition hover:brightness-105 active:scale-[0.99] disabled:opacity-40">Check</button>
+                        : <button disabled={busy} onClick={() => void act({ type: "call" })} className="min-h-16 rounded-2xl border border-cyan-200/35 bg-cyan-300 px-4 py-4 text-xl font-black text-slate-950 shadow-[0_10px_30px_rgba(103,232,249,.14)] transition hover:brightness-105 active:scale-[0.99] disabled:opacity-40">Call {formatChips(Math.min(table.me.toCall, table.me.stack))}</button>}
                     </div>
 
-                    {canRegularRaise && (
-                      <div className="mt-4 rounded-2xl border border-white/10 bg-black/20 p-4">
-                        <div className="grid grid-cols-3 gap-2">
-                          <button onClick={() => quickRaise(0.5)} className="rounded-xl bg-white/7 px-3 py-2 text-xs font-black text-white/75 transition hover:bg-white/12">½ Pot</button>
-                          <button onClick={() => quickRaise(0.67)} className="rounded-xl bg-white/7 px-3 py-2 text-xs font-black text-white/75 transition hover:bg-white/12">⅔ Pot</button>
-                          <button onClick={() => quickRaise(1)} className="rounded-xl bg-white/7 px-3 py-2 text-xs font-black text-white/75 transition hover:bg-white/12">Pot</button>
+                    <div className="mt-3 rounded-2xl border border-emerald-300/15 bg-black/20 p-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-100/45">Raise options</div>
+                          <div className="mt-1 text-sm font-black text-white/80">{canRegularRaise ? `${actionVerb} ${formatChips(raiseTo)}` : "Raising is not available"}</div>
                         </div>
-                        <div className="mt-4 flex items-center gap-3">
-                          <input aria-label="Raise amount" type="range" min={table.me.minRaiseTo} max={table.me.maxRaiseTo} step={Math.max(1, table.settings.smallBlind)} value={Math.min(table.me.maxRaiseTo, Math.max(table.me.minRaiseTo, raiseTo))} onChange={(event) => setRaiseTo(Number(event.target.value))} className="min-w-0 flex-1 accent-emerald-300" />
-                          <input aria-label="Raise to" type="number" min={table.me.minRaiseTo} max={table.me.maxRaiseTo} value={raiseTo} onChange={(event) => setRaiseTo(Math.min(table.me.maxRaiseTo, Math.max(table.me.minRaiseTo, Number(event.target.value))))} className="w-28 rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-right font-black text-white outline-none focus:border-emerald-300/50" />
-                        </div>
-                        <div className="mt-2 flex justify-between text-[10px] font-semibold text-white/35"><span>Minimum {formatChips(table.me.minRaiseTo)}</span><span>Maximum {formatChips(table.me.maxRaiseTo)}</span></div>
+                        <button disabled={busy || table.me.stack <= 0} onClick={() => void act({ type: "all_in" })} className="shrink-0 rounded-xl border border-violet-300/25 bg-violet-300/10 px-3 py-2 text-xs font-black text-violet-50 transition hover:bg-violet-300/16 disabled:opacity-35">All-in {formatChips(table.me.stack)}</button>
                       </div>
-                    )}
+
+                      {canRegularRaise && (
+                        <>
+                          <div className="mt-3 grid grid-cols-3 gap-2">
+                            <button onClick={() => quickRaise(0.5)} className="rounded-xl bg-white/7 px-3 py-2 text-xs font-black text-white/75 transition hover:bg-white/12">½ Pot</button>
+                            <button onClick={() => quickRaise(0.67)} className="rounded-xl bg-white/7 px-3 py-2 text-xs font-black text-white/75 transition hover:bg-white/12">⅔ Pot</button>
+                            <button onClick={() => quickRaise(1)} className="rounded-xl bg-white/7 px-3 py-2 text-xs font-black text-white/75 transition hover:bg-white/12">Pot</button>
+                          </div>
+                          <div className="mt-4 flex items-center gap-3">
+                            <input aria-label="Raise amount" type="range" min={table.me.minRaiseTo} max={table.me.maxRaiseTo} step={Math.max(1, table.settings.smallBlind)} value={Math.min(table.me.maxRaiseTo, Math.max(table.me.minRaiseTo, raiseTo))} onChange={(event) => setRaiseTo(Number(event.target.value))} className="min-w-0 flex-1 accent-emerald-300" />
+                            <input aria-label="Raise to" type="number" min={table.me.minRaiseTo} max={table.me.maxRaiseTo} value={raiseTo} onChange={(event) => setRaiseTo(Math.min(table.me.maxRaiseTo, Math.max(table.me.minRaiseTo, Number(event.target.value))))} className="w-24 rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-right font-black text-white outline-none focus:border-emerald-300/50 sm:w-28" />
+                          </div>
+                          <div className="mt-2 flex justify-between text-[10px] font-semibold text-white/35"><span>Min {formatChips(table.me.minRaiseTo)}</span><span>Max {formatChips(table.me.maxRaiseTo)}</span></div>
+                          <button disabled={busy} onClick={() => void act({ type: "raise", raiseTo })} className="mt-4 w-full rounded-2xl bg-emerald-400 px-5 py-3.5 text-lg font-black text-emerald-950 transition hover:brightness-105 active:scale-[0.995] disabled:opacity-35">{actionVerb} {formatChips(raiseTo)}</button>
+                        </>
+                      )}
+                    </div>
 
                     {table.me.raiseLocked && <div className="mt-3 rounded-xl border border-amber-300/15 bg-amber-300/8 px-4 py-2.5 text-xs text-amber-100/80">A short all-in did not reopen raising. You can still fold, call/check, or go all-in if applicable.</div>}
                   </>
