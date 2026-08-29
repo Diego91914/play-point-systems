@@ -178,7 +178,7 @@ export function HoldemTableSurface({
       <div className="absolute inset-[7%] rounded-[46%] border-[9px] border-[#6e4325] bg-[radial-gradient(ellipse_at_center,#147451_0%,#0c5a40_48%,#073c2d_78%,#052a20_100%)] shadow-[inset_0_0_80px_rgba(0,0,0,.55),0_0_0_2px_rgba(255,255,255,.08)] sm:border-[13px]" />
       <div className="pointer-events-none absolute inset-[11%] rounded-[46%] border border-emerald-100/10" />
 
-      <div className="absolute left-1/2 top-1/2 z-10 w-[78%] -translate-x-1/2 -translate-y-1/2 text-center sm:w-auto">
+      <div className="absolute left-1/2 top-1/2 z-10 w-[82%] -translate-x-1/2 -translate-y-1/2 text-center sm:w-auto">
         <div className="text-[9px] font-black uppercase tracking-[0.24em] text-emerald-100/48">Hand {handNumber} · {street}</div>
         <div className="mt-1 text-xs font-black uppercase tracking-[0.14em] text-amber-200/80">Pot {formatChips(pot)}</div>
         <div className="mt-3 flex origin-center scale-[0.82] justify-center gap-1.5 sm:scale-100 sm:gap-2">
@@ -190,11 +190,23 @@ export function HoldemTableSurface({
           })}
         </div>
         {winners.length > 0 && (
-          <div className="holdem-winner-pop mx-auto mt-4 max-w-md rounded-2xl border border-amber-300/35 bg-black/80 px-4 py-3 shadow-[0_0_45px_rgba(252,211,77,.18)]">
-            <div className="text-[9px] font-black uppercase tracking-[0.22em] text-amber-200/65">Showdown</div>
-            <div className="mt-1 text-lg font-black text-white">{winners.map((winner) => winner.name).join(" · ")}</div>
-            <div className="mt-1 text-xs font-semibold text-amber-100/80">{winners.map((winner) => `${winner.handName} · +${formatChips(winner.amount)}`).join(" · ")}</div>
-            {winners[0]?.bestFive?.length > 0 && <div className="mt-3 flex justify-center -space-x-1">{winners[0].bestFive.map((card, index) => <PlayingCard key={`winning-${card}`} card={card} small delay={index * 70} />)}</div>}
+          <div className="holdem-winner-pop mx-auto mt-3 w-full max-w-xl rounded-[24px] border-2 border-amber-300/70 bg-[linear-gradient(145deg,rgba(35,25,3,.97),rgba(0,0,0,.96))] px-4 py-4 shadow-[0_0_60px_rgba(252,211,77,.32)] sm:px-6 sm:py-5">
+            <div className="text-[10px] font-black uppercase tracking-[0.32em] text-amber-300 sm:text-xs">{winners.length > 1 ? "Split pot" : "Winner"}</div>
+            <div className="mt-2 grid gap-4">
+              {winners.map((winner) => (
+                <div key={`winner-reveal-${winner.playerId}`}>
+                  <div className="text-2xl font-black leading-none text-white sm:text-4xl">{winner.name}</div>
+                  <div className="mt-2 text-[10px] font-black uppercase tracking-[0.24em] text-white/55">Wins with</div>
+                  <div className="mt-1 text-xl font-black text-amber-200 sm:text-2xl">{winner.handName}</div>
+                  <div className="mt-1 text-sm font-black text-emerald-200">+{formatChips(winner.amount)} chips</div>
+                  {winner.bestFive?.length > 0 && (
+                    <div className="mt-3 flex origin-center scale-[0.8] justify-center -space-x-1 sm:scale-100">
+                      {winner.bestFive.map((card, index) => <PlayingCard key={`winning-${winner.playerId}-${card}`} card={card} small delay={index * 70} />)}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
