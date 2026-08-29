@@ -166,12 +166,16 @@ export function SocialRoomController({
 
   if (ended) {
     return (
-      <div className="fixed inset-0 z-[100] grid place-items-center bg-slate-950/95 px-5 text-center backdrop-blur">
-        <div className="w-full max-w-md rounded-[30px] border border-white/10 bg-white/[.06] p-7 shadow-2xl">
-          <div className="text-xs font-black uppercase tracking-[.22em] text-white/45">Game ended</div>
-          <h2 className="mt-3 text-3xl font-black text-white">The host ended this game.</h2>
-          <p className="mt-3 text-sm leading-6 text-white/60">This room is closed and your saved room session has been cleared.</p>
-          <button onClick={() => { window.location.href = "/"; }} className="mt-6 w-full rounded-2xl bg-white px-4 py-4 font-black text-slate-950">DONE</button>
+      <div className="fixed inset-0 z-[100] grid place-items-center bg-black/90 px-5 text-center backdrop-blur-md">
+        <div className="relative w-full max-w-md overflow-hidden rounded-[34px] border border-amber-200/15 bg-[radial-gradient(circle_at_top_left,rgba(213,174,95,.14),transparent_38%),linear-gradient(155deg,#111318,#050608_75%)] p-7 shadow-[0_32px_120px_rgba(0,0,0,.72)]">
+          <div className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full bg-cyan-300/[.05] blur-3xl" />
+          <div className="relative">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-amber-200/20 bg-amber-300/[.08] text-xl text-amber-100">✓</div>
+            <div className="mt-5 text-[10px] font-black uppercase tracking-[.26em] text-amber-100/55">Play Point Games · Room closed</div>
+            <h2 className="mt-3 text-3xl font-black tracking-tight text-white">The host ended this game.</h2>
+            <p className="mt-3 text-sm leading-6 text-white/58">Your room session has been cleared. You can head back to Play Point and join or start another game anytime.</p>
+            <button onClick={() => { window.location.href = "/play"; }} className="mt-7 min-h-14 w-full rounded-2xl bg-[linear-gradient(135deg,#f5d58a,#d5ae5f)] px-4 py-4 font-black text-slate-950 shadow-[0_14px_38px_rgba(213,174,95,.18)] transition hover:brightness-105 active:scale-[.99]">BACK TO PLAY</button>
+          </div>
         </div>
       </div>
     );
@@ -180,15 +184,18 @@ export function SocialRoomController({
   if (!isHost) return null;
 
   return (
-    <div className="fixed bottom-5 left-5 z-[80]">
+    <div className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-4 z-[80] sm:left-5">
       {open && (
-        <div className="mb-2 w-64 rounded-2xl border border-white/10 bg-slate-950/95 p-3 shadow-2xl backdrop-blur">
-          <div className="px-2 pb-2 text-xs font-black uppercase tracking-widest text-white/40">Host controls</div>
-          <button disabled={busy} onClick={() => void startOver()} className="w-full rounded-xl border border-white/10 px-3 py-3 text-left text-sm font-black text-white disabled:opacity-40">↻ START OVER</button>
-          <button disabled={busy} onClick={() => void quitGame()} className="mt-2 w-full rounded-xl border border-rose-300/20 bg-rose-300/10 px-3 py-3 text-left text-sm font-black text-rose-100 disabled:opacity-40">QUIT GAME</button>
+        <div className="mb-2 w-[min(19rem,calc(100vw-2rem))] overflow-hidden rounded-[24px] border border-amber-200/15 bg-[radial-gradient(circle_at_top_left,rgba(213,174,95,.12),transparent_42%),rgba(5,6,8,.97)] p-3 shadow-[0_24px_70px_rgba(0,0,0,.6)] backdrop-blur-xl">
+          <div className="px-2 pb-3 pt-1">
+            <div className="text-[10px] font-black uppercase tracking-[.24em] text-amber-100/55">Host controls</div>
+            <div className="mt-1 text-xs leading-5 text-white/45">Manage the whole room from here.</div>
+          </div>
+          <button disabled={busy} onClick={() => void startOver()} className="min-h-12 w-full rounded-2xl border border-white/10 bg-white/[.04] px-4 py-3 text-left text-sm font-black text-white transition hover:bg-white/[.08] disabled:opacity-40">↻ &nbsp;START OVER</button>
+          <button disabled={busy} onClick={() => void quitGame()} className="mt-2 min-h-12 w-full rounded-2xl border border-rose-300/20 bg-rose-300/[.08] px-4 py-3 text-left text-sm font-black text-rose-100 transition hover:bg-rose-300/[.13] disabled:opacity-40">QUIT GAME</button>
         </div>
       )}
-      <button onClick={() => setOpen((value) => !value)} className="rounded-full border border-white/15 bg-slate-950/90 px-4 py-3 text-xs font-black uppercase tracking-wider text-white shadow-xl backdrop-blur">Host</button>
+      <button onClick={() => setOpen((value) => !value)} aria-expanded={open} className="min-h-12 rounded-full border border-amber-200/20 bg-[linear-gradient(145deg,rgba(17,18,21,.97),rgba(5,6,8,.97))] px-5 py-3 text-[11px] font-black uppercase tracking-[.16em] text-amber-50 shadow-[0_14px_42px_rgba(0,0,0,.48)] backdrop-blur-xl transition hover:border-amber-200/35">{open ? "CLOSE" : "HOST MENU"}</button>
     </div>
   );
 }
