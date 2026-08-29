@@ -14,6 +14,10 @@ const SOCIAL_ROOM_CONTROL_PATH = "/api/games/social-room-control";
 const GUEST_ROOM_GAMES = ["chain-reaction", "how-close", "inside-man", "on-my-list", "holdem"] as const;
 
 function isGuestRoomPage(pathname: string, hasRoomCode: boolean) {
+  // Phone Hold'em also supports manual desktop joining. Guests can open the landing
+  // page without an account, enter the host's room code, and take a seat. Creating
+  // a table remains entitlement-protected inside the Hold'em API.
+  if (pathname === "/games/holdem") return true;
   return hasRoomCode && GUEST_ROOM_GAMES.some((slug) => pathname === `/games/${slug}`);
 }
 
