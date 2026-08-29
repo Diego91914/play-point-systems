@@ -30,7 +30,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const body = await request.json().catch(() => ({}));
     const allowed = new Set([
       "start_hand", "fold", "check", "call", "raise", "all_in",
-      "sit_out", "return", "host_remove", "host_reset_stack",
+      "sit_out", "return", "host_remove", "host_reset_stack", "host_restart",
     ]);
     if (!allowed.has(body?.type)) return NextResponse.json({ error: "Unknown poker action." }, { status: 400 });
 
