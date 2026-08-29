@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { HoldemPublicExitControl } from "./HoldemPublicExitControl";
 import { HoldemPublicTable } from "./HoldemPublicTable";
 
 export const metadata: Metadata = {
@@ -8,5 +9,10 @@ export const metadata: Metadata = {
 };
 
 export default function HoldemTablePage() {
-  return <HoldemPublicTable />;
+  return (
+    <>
+      <HoldemPublicTable />
+      <HoldemPublicExitControl />
+    </>
+  );
 }
