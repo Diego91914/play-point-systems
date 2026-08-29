@@ -66,7 +66,7 @@ type TableView = {
 };
 type Credentials = { code: string; playerId: string; token: string };
 
-const AUTO_DEAL_DELAY_MS = 4000;
+const AUTO_DEAL_DELAY_MS = 6000;
 
 function storageKey(code: string) {
   return `pps-holdem-${code}`;
@@ -443,7 +443,11 @@ export function HoldemClient() {
                       {pendingText
                         ? pendingText
                         : table.status === "showdown"
-                          ? table.tournament?.completed ? "Tournament complete" : "Hand complete"
+                          ? table.tournament?.completed
+                            ? "Tournament complete"
+                            : table.winners.length > 0
+                              ? `${table.winners.map((winner) => winner.name).join(" & ")} ${table.winners.length > 1 ? "split the pot" : "wins"}`
+                              : "Hand complete"
                           : table.me.isTurn
                             ? table.me.toCall > 0 ? `Your turn · ${formatChips(table.me.toCall)} to call` : "Your turn · You can check"
                             : table.me.status === "folded" ? "You folded" : table.me.status === "all_in" ? "You are all-in" : table.me.sittingOut ? "Sitting out next hand" : `Waiting on ${activePlayer?.name ?? "the table"}`}
@@ -451,6 +455,23 @@ export function HoldemClient() {
                   </div>
                   {table.currentBet > 0 && <div className="rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-right"><div className="text-[9px] uppercase tracking-wider text-white/35">Current bet</div><div className="font-black text-white">{formatChips(table.currentBet)}</div></div>}
                 </div>
+
+                {table.status === "showdown" && table.winners.length > 0 && (
+                  <div className="mt-4 rounded-[22px] border-2 border-amber-300/55 bg-[linear-gradient(145deg,rgba(52,36,4,.72),rgba(0,0,0,.46))] p-4 text-center shadow-[0_0_36px_rgba(252,211,77,.12)]">
+                    <div className="text-[10px] font-black uppercase tracking-[0.28em] text-amber-300">{table.winners.length > 1 ? "Split pot" : "Hand winner"}</div>
+                    <div className="mt-3 grid gap-4">
+                      {table.winners.map((winner) => (
+                        <div key={`action-winner-${winner.playerId}`}>
+                          <div className="text-3xl font-black leading-none text-white">{winner.name}</div>
+                          <div className="mt-2 text-[10px] font-black uppercase tracking-[0.22em] text-white/50">Wins with</div>
+                          <div className="mt-1 text-xl font-black text-amber-200">{winner.handName}</div>
+                          <div className="mt-1 text-sm font-black text-emerald-200">+{formatChips(winner.amount)} chips</div>
+                          {winner.bestFive?.length > 0 && <div className="mt-3 flex origin-center scale-[0.82] justify-center -space-x-1 sm:scale-100">{winner.bestFive.map((card, index) => <PlayingCard key={`action-winning-${winner.playerId}-${card}`} card={card} small delay={index * 55} />)}</div>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {table.status === "playing" && table.me.isTurn && (
                   <>
