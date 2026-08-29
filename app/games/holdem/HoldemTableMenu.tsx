@@ -21,6 +21,43 @@ export function HoldemTableMenu() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    const style = document.createElement("style");
+    style.dataset.holdemTouchSafety = "true";
+    style.textContent = `
+      body[data-holdem-touch-safe="true"] button,
+      body[data-holdem-touch-safe="true"] [role="button"] {
+        touch-action: manipulation;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+      }
+    `;
+    document.head.appendChild(style);
+    document.body.dataset.holdemTouchSafe = "true";
+
+    const isPokerControl = (target: EventTarget | null) =>
+      target instanceof Element && Boolean(target.closest("button, [role='button']"));
+
+    const suppressContextMenu = (event: MouseEvent) => {
+      if (isPokerControl(event.target)) event.preventDefault();
+    };
+
+    const suppressDrag = (event: DragEvent) => {
+      if (isPokerControl(event.target)) event.preventDefault();
+    };
+
+    document.addEventListener("contextmenu", suppressContextMenu, true);
+    document.addEventListener("dragstart", suppressDrag, true);
+
+    return () => {
+      document.removeEventListener("contextmenu", suppressContextMenu, true);
+      document.removeEventListener("dragstart", suppressDrag, true);
+      delete document.body.dataset.holdemTouchSafe;
+      style.remove();
+    };
+  }, []);
+
+  useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code")?.trim().toUpperCase();
     if (!code) return;
     try {
