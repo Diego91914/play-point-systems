@@ -316,7 +316,13 @@ export async function performTableAction(codeInput: string, playerId: string, to
       const dealt = applyAction(activeState, player.id, { type: "start_hand" });
       nextState = restoreExcludedPlayers(dealt, excludedPlayers);
       nextState = finalizeTournamentAfterHand(nextState);
-    } else if (action.type === "sit_out" || action.type === "return" || action.type === "host_remove" || action.type === "host_reset_stack") {
+    } else if (
+      action.type === "sit_out"
+      || action.type === "return"
+      || action.type === "host_remove"
+      || action.type === "host_reset_stack"
+      || action.type === "host_restart"
+    ) {
       nextState = applyManagementAction(row.state, player.id, action);
     } else {
       nextState = normalizeManagedState(applyAction(row.state, player.id, action));
