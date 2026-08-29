@@ -87,8 +87,6 @@ function orderedAroundViewer(players: SurfacePlayer[], viewerSeat: number | null
 }
 
 function seatPosition(index: number, total: number) {
-  // Keep the viewer centered on the bottom rail, but pull every seat far enough
-  // inside the felt that cards, labels, and active-turn glow never clip the shell.
   const angle = ((90 + (index * 360) / Math.max(1, total)) * Math.PI) / 180;
   const horizontalRadius = total <= 2 ? 0 : total <= 4 ? 39 : 41;
   const verticalRadius = total <= 2 ? 34 : total <= 4 ? 33 : 34;
@@ -98,22 +96,43 @@ function seatPosition(index: number, total: number) {
   };
 }
 
-function PlayerSeat({ player, position, isMe }: { player: SurfacePlayer; position: { left: string; top: string }; isMe: boolean }) {
+function PlayerSeat({
+  player,
+  position,
+  isMe,
+  isWinner = false,
+  isResult = false,
+}: {
+  player: SurfacePlayer;
+  position: { left: string; top: string };
+  isMe: boolean;
+  isWinner?: boolean;
+  isResult?: boolean;
+}) {
   const eliminated = player.finishPlace != null;
   const folded = player.status === "folded" || player.status === "out" || eliminated;
   const allIn = player.status === "all_in";
   const showHiddenCards = player.holeCards.length === 0 && (player.status === "active" || player.status === "all_in");
+  const resultDimmed = isResult && !isWinner && !folded;
+
   return (
     <div
       className={`absolute z-20 w-[112px] -translate-x-1/2 -translate-y-1/2 rounded-2xl border px-2.5 py-2 text-center shadow-[0_14px_32px_rgba(0,0,0,0.38)] transition duration-300 sm:w-[136px] sm:px-3 sm:py-2.5 ${
-        player.isTurn
-          ? "holdem-turn-pulse border-amber-300/80 bg-[#221b08]"
-          : isMe
-            ? "border-cyan-300/45 bg-[#071a21]/95"
-            : "border-white/15 bg-black/80"
-      } ${folded || player.sittingOut ? "opacity-45 grayscale" : "opacity-100"}`}
+        isWinner
+          ? "holdem-winning-seat border-amber-200 bg-[#2b2108]/98 shadow-[0_0_0_3px_rgba(252,211,77,.18),0_0_42px_rgba(252,211,77,.34)]"
+          : player.isTurn
+            ? "holdem-turn-pulse border-amber-300/80 bg-[#221b08]"
+            : isMe
+              ? "border-cyan-300/45 bg-[#071a21]/95"
+              : "border-white/15 bg-black/80"
+      } ${folded || player.sittingOut ? "opacity-35 grayscale" : resultDimmed ? "opacity-55" : "opacity-100"}`}
       style={position}
     >
+      {isWinner && (
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-amber-100/50 bg-amber-300 px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.16em] text-amber-950 shadow-lg sm:text-[9px]">
+          Winner
+        </div>
+      )}
       <div className="flex min-h-5 items-center justify-center gap-1 text-[9px] font-black uppercase tracking-[0.08em] sm:text-[10px]">
         {player.isDealer && <span className="rounded-full bg-white px-1.5 py-0.5 text-slate-950">D</span>}
         {player.isSmallBlind && <span className="rounded-full bg-cyan-300/18 px-1.5 py-0.5 text-cyan-100">SB</span>}
@@ -159,29 +178,33 @@ export function HoldemTableSurface({
   const viewer = viewerId ? players.find((player) => player.id === viewerId) : null;
   const ordered = orderedAroundViewer(players, publicMode ? null : viewer?.seat ?? null);
   const winningIds = new Set(winners.map((winner) => winner.playerId));
+  const isResult = winners.length > 0;
 
   return (
-    <div className="relative min-h-[500px] overflow-hidden rounded-[36px] border border-emerald-200/20 bg-[#04120e] shadow-[0_28px_80px_rgba(0,0,0,0.42)] sm:min-h-[600px] sm:rounded-[42px]">
+    <div className={`holdem-table-surface relative min-h-[440px] overflow-hidden rounded-[34px] border bg-[#04120e] shadow-[0_28px_80px_rgba(0,0,0,0.42)] sm:min-h-[600px] sm:rounded-[42px] ${isResult ? "border-amber-300/40" : "border-emerald-200/20"}`}>
       <style>{`
         @keyframes holdemDeal { 0% { opacity:0; transform:translate(0,-42px) rotate(-8deg) scale(.72); } 70% { transform:translate(0,4px) rotate(1deg) scale(1.03); } 100% { opacity:1; transform:none; } }
         @keyframes holdemReveal { 0% { opacity:0; transform:translateY(-24px) rotateY(90deg) scale(.82); } 55% { opacity:1; transform:translateY(2px) rotateY(-8deg) scale(1.04); } 100% { transform:none; } }
         @keyframes holdemPulse { 0%,100% { box-shadow:0 0 0 1px rgba(252,211,77,.35),0 14px 32px rgba(0,0,0,.38); } 50% { box-shadow:0 0 0 5px rgba(252,211,77,.14),0 0 34px rgba(252,211,77,.30); } }
-        @keyframes holdemWinner { 0% { transform:scale(.88); opacity:.35; } 55% { transform:scale(1.05); opacity:1; } 100% { transform:scale(1); } }
+        @keyframes holdemWinner { 0% { transform:scale(.9); opacity:.25; } 55% { transform:scale(1.045); opacity:1; } 100% { transform:scale(1); opacity:1; } }
+        @keyframes holdemWinningSeat { 0%,100% { box-shadow:0 0 0 3px rgba(252,211,77,.18),0 0 30px rgba(252,211,77,.24); } 50% { box-shadow:0 0 0 5px rgba(252,211,77,.24),0 0 52px rgba(252,211,77,.44); } }
         .holdem-card-deal { animation:holdemDeal .46s cubic-bezier(.2,.8,.2,1) both; transform-origin:center; }
         .holdem-board-reveal { animation:holdemReveal .52s cubic-bezier(.2,.75,.2,1) both; transform-origin:center; }
         .holdem-turn-pulse { animation:holdemPulse 1.5s ease-in-out infinite; }
-        .holdem-winner-pop { animation:holdemWinner .5s ease-out both; }
+        .holdem-winner-pop { animation:holdemWinner .55s ease-out both; }
+        .holdem-winning-seat { animation:holdemWinningSeat 1.3s ease-in-out infinite; }
         .holdem-card-back { background:linear-gradient(135deg,rgba(7,58,79,.98),rgba(8,34,54,.98)),repeating-linear-gradient(45deg,transparent,transparent 6px,rgba(255,255,255,.09) 6px,rgba(255,255,255,.09) 8px); }
-        @media (prefers-reduced-motion: reduce) { .holdem-card-deal,.holdem-board-reveal,.holdem-turn-pulse,.holdem-winner-pop { animation:none !important; } }
+        @media (prefers-reduced-motion: reduce) { .holdem-card-deal,.holdem-board-reveal,.holdem-turn-pulse,.holdem-winner-pop,.holdem-winning-seat { animation:none !important; } }
       `}</style>
 
-      <div className="absolute inset-[7%] rounded-[46%] border-[9px] border-[#6e4325] bg-[radial-gradient(ellipse_at_center,#147451_0%,#0c5a40_48%,#073c2d_78%,#052a20_100%)] shadow-[inset_0_0_80px_rgba(0,0,0,.55),0_0_0_2px_rgba(255,255,255,.08)] sm:border-[13px]" />
+      <div className={`absolute inset-[7%] rounded-[46%] border-[9px] border-[#6e4325] bg-[radial-gradient(ellipse_at_center,#147451_0%,#0c5a40_48%,#073c2d_78%,#052a20_100%)] shadow-[inset_0_0_80px_rgba(0,0,0,.55),0_0_0_2px_rgba(255,255,255,.08)] transition sm:border-[13px] ${isResult ? "brightness-[.72] saturate-[.78]" : ""}`} />
       <div className="pointer-events-none absolute inset-[11%] rounded-[46%] border border-emerald-100/10" />
+      {isResult && <div className="pointer-events-none absolute inset-0 z-[4] bg-[radial-gradient(circle_at_center,rgba(0,0,0,.02),rgba(0,0,0,.28)_72%)]" />}
 
       <div className="absolute left-1/2 top-1/2 z-10 w-[82%] -translate-x-1/2 -translate-y-1/2 text-center sm:w-auto">
-        <div className="text-[9px] font-black uppercase tracking-[0.24em] text-emerald-100/48">Hand {handNumber} · {street}</div>
+        <div className={`text-[9px] font-black uppercase tracking-[0.24em] ${isResult ? "text-amber-300" : "text-emerald-100/48"}`}>{isResult ? `Showdown · Hand ${handNumber}` : `Hand ${handNumber} · ${street}`}</div>
         <div className="mt-1 text-xs font-black uppercase tracking-[0.14em] text-amber-200/80">Pot {formatChips(pot)}</div>
-        <div className="mt-3 flex origin-center scale-[0.82] justify-center gap-1.5 sm:scale-100 sm:gap-2">
+        <div className={`mt-3 flex origin-center justify-center gap-1.5 sm:scale-100 sm:gap-2 ${isResult ? "scale-[0.72] sm:scale-[0.9]" : "scale-[0.78] sm:scale-100"}`}>
           {Array.from({ length: 5 }, (_, index) => {
             const card = board[index];
             return card
@@ -189,21 +212,20 @@ export function HoldemTableSurface({
               : <div key={`empty-${index}`} className="h-[86px] w-[58px] rounded-xl border border-dashed border-white/12 bg-black/10 sm:h-[108px] sm:w-[72px]" />;
           })}
         </div>
-        {winners.length > 0 && (
-          <div className="holdem-winner-pop mx-auto mt-3 w-full max-w-xl rounded-[24px] border-2 border-amber-300/70 bg-[linear-gradient(145deg,rgba(35,25,3,.97),rgba(0,0,0,.96))] px-4 py-4 shadow-[0_0_60px_rgba(252,211,77,.32)] sm:px-6 sm:py-5">
-            <div className="text-[10px] font-black uppercase tracking-[0.32em] text-amber-300 sm:text-xs">{winners.length > 1 ? "Split pot" : "Winner"}</div>
-            <div className="mt-2 grid gap-4">
+
+        {isResult && (
+          <div className="holdem-winner-pop mx-auto mt-1 w-full max-w-lg rounded-[22px] border-2 border-amber-300/70 bg-[linear-gradient(145deg,rgba(35,25,3,.98),rgba(0,0,0,.97))] px-4 py-3 shadow-[0_0_60px_rgba(252,211,77,.34)] sm:mt-3 sm:px-6 sm:py-5">
+            <div className="text-[9px] font-black uppercase tracking-[0.32em] text-amber-300 sm:text-xs">{winners.length > 1 ? "Hand winners" : "Hand winner"}</div>
+            <div className="mt-2 grid gap-3">
               {winners.map((winner) => (
                 <div key={`winner-reveal-${winner.playerId}`}>
                   <div className="text-2xl font-black leading-none text-white sm:text-4xl">{winner.name}</div>
-                  <div className="mt-2 text-[10px] font-black uppercase tracking-[0.24em] text-white/55">Wins with</div>
-                  <div className="mt-1 text-xl font-black text-amber-200 sm:text-2xl">{winner.handName}</div>
-                  <div className="mt-1 text-sm font-black text-emerald-200">+{formatChips(winner.amount)} chips</div>
-                  {winner.bestFive?.length > 0 && (
-                    <div className="mt-3 flex origin-center scale-[0.8] justify-center -space-x-1 sm:scale-100">
-                      {winner.bestFive.map((card, index) => <PlayingCard key={`winning-${winner.playerId}-${card}`} card={card} small delay={index * 70} />)}
-                    </div>
+                  {winner.handName === "Uncontested" ? (
+                    <div className="mt-2 text-sm font-black text-amber-200 sm:text-lg">Wins uncontested</div>
+                  ) : (
+                    <div className="mt-2 text-sm font-black text-white/70 sm:text-base">Wins with <span className="text-amber-200">{winner.handName}</span></div>
                   )}
+                  <div className="mt-1 text-xs font-black text-emerald-200 sm:text-sm">+{formatChips(winner.amount)} chips</div>
                 </div>
               ))}
             </div>
@@ -212,9 +234,14 @@ export function HoldemTableSurface({
       </div>
 
       {ordered.map((player, index) => (
-        <div key={player.id} className={winningIds.has(player.id) ? "holdem-winner-pop" : "contents"}>
-          <PlayerSeat player={player} position={seatPosition(index, ordered.length)} isMe={player.id === viewerId} />
-        </div>
+        <PlayerSeat
+          key={player.id}
+          player={player}
+          position={seatPosition(index, ordered.length)}
+          isMe={player.id === viewerId}
+          isWinner={winningIds.has(player.id)}
+          isResult={isResult}
+        />
       ))}
     </div>
   );
