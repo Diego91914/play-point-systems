@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteShell } from "@/app/components/SiteShell";
+import { GameLibraryCard } from "@/app/play/GameLibraryCard";
 import {
   PLAY_POINT_GAME_CATALOG,
   getSalesReadyCatalog,
@@ -78,42 +79,6 @@ function matchesSection(product: PlayPointGameCatalogItem, section: PlaySection)
   return product.playCategories.some((category) => section.categories.includes(category));
 }
 
-function ProductCard({ product }: { product: PlayPointGameCatalogItem }) {
-  const typeLabel = product.productType === "standalone_game" ? "Standalone game" : product.productType.replaceAll("_", " ");
-  const priceLabel = product.priceUsd === null ? null : `$${product.priceUsd.toFixed(2)} one time`;
-  const content = (
-    <article className="group flex h-full flex-col rounded-[26px] border border-white/10 bg-black/20 p-5 transition duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.045]">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="text-[10px] font-black uppercase tracking-[0.18em] text-white/42">{product.brand}</span>
-        <span className="rounded-full border border-white/10 bg-white/[0.035] px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.12em] text-white/48">{typeLabel}</span>
-      </div>
-      <h3 className="mt-4 text-2xl font-black text-white">{product.title}</h3>
-      <p className="mt-3 flex-1 text-sm leading-7 text-white/62">{product.description}</p>
-      <div className="mt-5 border-t border-white/8 pt-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <span className={`rounded-full border px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.13em] ${product.status === "live" ? "border-emerald-300/20 bg-emerald-300/10 text-emerald-100" : "border-cyan-300/20 bg-cyan-300/10 text-cyan-100"}`}>
-            {product.badge}
-          </span>
-          {priceLabel ? <span className="text-sm font-black text-amber-100">{priceLabel}</span> : null}
-        </div>
-        <div className="mt-4 text-sm font-black text-white/82 transition group-hover:text-white">
-          {product.external ? "Explore in Shot Caddy ↗" : `Explore ${product.title} →`}
-        </div>
-      </div>
-    </article>
-  );
-
-  return product.external ? (
-    <a href={product.href} target="_blank" rel="noreferrer" className="block h-full rounded-[26px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300">
-      {content}
-    </a>
-  ) : (
-    <Link href={product.href} className="block h-full rounded-[26px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300">
-      {content}
-    </Link>
-  );
-}
-
 export default function PlayPage() {
   const readyToSellCount = getSalesReadyCatalog().length;
 
@@ -125,6 +90,10 @@ export default function PlayPage() {
             <div className="inline-flex rounded-full border border-amber-200/20 bg-amber-300/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-amber-100">{readyToSellCount} finished games</div>
             <h1 className="marketing-headline mt-6 leading-[1] lg:text-7xl">What are we playing?</h1>
             <p className="mt-5 max-w-3xl text-lg leading-8 text-white/68">Explore every finished Play Point game, see the one-time price, and choose the experience that fits your group.</p>
+            <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-amber-300/15 bg-amber-300/[0.055] px-4 py-2 text-xs font-bold text-amber-50/80">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full border border-amber-200/30 text-[11px]">i</span>
+              Tap About on any game for a quick explanation.
+            </div>
           </div>
 
           <nav aria-label="Play categories" className="mt-8 flex flex-wrap gap-2">
@@ -157,7 +126,7 @@ export default function PlayPage() {
                   </div>
 
                   <div className="grid gap-4 md:grid-cols-2">
-                    {products.length > 0 ? products.map((product) => <ProductCard key={product.sku} product={product} />) : (
+                    {products.length > 0 ? products.map((product) => <GameLibraryCard key={product.sku} product={product} />) : (
                       <div className="md:col-span-2 rounded-[26px] border border-dashed border-white/12 bg-black/15 p-6">
                         <div className="text-lg font-black text-white">More is being built here.</div>
                         <p className="mt-2 text-sm leading-7 text-white/52">This category is part of the Play Point roadmap. We won&apos;t fill it with weak reskins just to make the shelf look bigger.</p>
