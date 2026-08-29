@@ -45,6 +45,7 @@ type TableView = {
   lastAction: string | null;
   winners: SurfaceWinner[];
   players: TablePlayer[];
+  updatedAt: string;
   me: {
     id: string;
     name: string;
@@ -65,6 +66,8 @@ type TableView = {
 };
 type Credentials = { code: string; playerId: string; token: string };
 
+const AUTO_DEAL_DELAY_MS = 4000;
+
 function storageKey(code: string) {
   return `pps-holdem-${code}`;
 }
@@ -74,6 +77,16 @@ function formatClock(seconds: number | null) {
   const minutes = Math.floor(seconds / 60);
   const remaining = seconds % 60;
   return `${minutes}:${String(remaining).padStart(2, "0")}`;
+}
+
+function pendingActionText(type: string | null) {
+  if (type === "fold") return "Folding…";
+  if (type === "check") return "Checking…";
+  if (type === "call") return "Calling…";
+  if (type === "raise") return "Sending raise…";
+  if (type === "all_in") return "Going all-in…";
+  if (type === "start_hand") return "Dealing…";
+  return type ? "Updating table…" : null;
 }
 
 export function HoldemClient() {
@@ -88,10 +101,14 @@ export function HoldemClient() {
   const [tournamentPreset, setTournamentPreset] = useState<TournamentPreset>("standard");
   const [raiseTo, setRaiseTo] = useState(200);
   const [busy, setBusy] = useState(false);
+  const [pendingAction, setPendingAction] = useState<string | null>(null);
+  const [autoDealSeconds, setAutoDealSeconds] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [origin, setOrigin] = useState("");
   const wasMyTurn = useRef(false);
   const actionPanelRef = useRef<HTMLDivElement | null>(null);
+  const actionInFlightRef = useRef(false);
+  const pollGenerationRef = useRef(0);
 
   useEffect(() => {
     setOrigin(window.location.origin);
@@ -113,6 +130,8 @@ export function HoldemClient() {
     if (!credentials) return;
     let cancelled = false;
     const load = async () => {
+      if (actionInFlightRef.current) return;
+      const generation = pollGenerationRef.current;
       try {
         const response = await fetch(`/api/games/holdem/${credentials.code}`, {
           cache: "no-store",
@@ -123,12 +142,14 @@ export function HoldemClient() {
         });
         const data = await response.json();
         if (!response.ok) throw new Error(data.error ?? "Unable to load table.");
-        if (!cancelled) {
+        if (!cancelled && generation === pollGenerationRef.current && !actionInFlightRef.current) {
           setTable(data.table);
           setError("");
         }
       } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : "Unable to load table.");
+        if (!cancelled && generation === pollGenerationRef.current && !actionInFlightRef.current) {
+          setError(err instanceof Error ? err.message : "Unable to load table.");
+        }
       }
     };
     void load();
@@ -187,8 +208,12 @@ export function HoldemClient() {
   }
 
   async function act(body: Record<string, unknown>) {
-    if (!credentials) return;
+    if (!credentials || actionInFlightRef.current) return;
+    const actionType = typeof body.type === "string" ? body.type : "action";
+    actionInFlightRef.current = true;
+    pollGenerationRef.current += 1;
     setBusy(true);
+    setPendingAction(actionType);
     setError("");
     try {
       const response = await fetch(`/api/games/holdem/${credentials.code}`, {
@@ -206,9 +231,53 @@ export function HoldemClient() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Action failed.");
     } finally {
+      actionInFlightRef.current = false;
+      setPendingAction(null);
       setBusy(false);
     }
   }
+
+  const autoDealEligibleCount = table?.players.filter((player) => player.stack > 0 && !player.sittingOut && player.finishPlace == null).length ?? 0;
+
+  useEffect(() => {
+    const shouldAutoDeal = Boolean(
+      table
+      && credentials
+      && table.status === "showdown"
+      && !table.tournament?.completed
+      && autoDealEligibleCount >= 2
+    );
+
+    if (!shouldAutoDeal || !table) {
+      setAutoDealSeconds(null);
+      return;
+    }
+
+    const parsedUpdatedAt = Date.parse(table.updatedAt);
+    const showdownAt = Number.isFinite(parsedUpdatedAt) ? parsedUpdatedAt : Date.now();
+    const deadline = showdownAt + AUTO_DEAL_DELAY_MS;
+
+    const updateCountdown = () => {
+      const remaining = Math.max(0, deadline - Date.now());
+      setAutoDealSeconds(Math.max(1, Math.ceil(remaining / 1000)));
+    };
+
+    updateCountdown();
+    const interval = window.setInterval(updateCountdown, 250);
+    let timeout: number | null = null;
+
+    if (table.me.isHost && !busy) {
+      const remaining = Math.max(100, deadline - Date.now());
+      timeout = window.setTimeout(() => {
+        void act({ type: "start_hand" });
+      }, remaining);
+    }
+
+    return () => {
+      window.clearInterval(interval);
+      if (timeout != null) window.clearTimeout(timeout);
+    };
+  }, [table?.status, table?.handNumber, table?.updatedAt, table?.me.isHost, table?.tournament?.completed, autoDealEligibleCount, credentials, busy]);
 
   function quickRaise(fraction: number) {
     if (!table) return;
@@ -286,6 +355,7 @@ export function HoldemClient() {
   const canRegularRaise = table.me.isTurn && !table.me.raiseLocked && table.me.maxRaiseTo >= table.me.minRaiseTo && table.me.maxRaiseTo > table.currentBet;
   const actionVerb = table.currentBet === 0 ? "Bet" : "Raise to";
   const canDeal = eligiblePlayers.length >= 2 && !table.tournament?.completed;
+  const pendingText = pendingActionText(pendingAction);
 
   return (
     <section className="min-h-[82vh] px-3 py-4 sm:px-5 lg:px-7">
@@ -329,7 +399,7 @@ export function HoldemClient() {
                 ))}
               </div>
               {table.me.isHost
-                ? <button disabled={busy || !canDeal} onClick={() => void act({ type: "start_hand" })} className="mt-8 w-full rounded-2xl bg-emerald-400 px-5 py-4 text-lg font-black text-emerald-950 transition hover:brightness-105 disabled:opacity-40">{tableMode === "tournament" ? "Start tournament" : "Deal the cards"}</button>
+                ? <button disabled={busy || !canDeal} onClick={() => void act({ type: "start_hand" })} className="mt-8 w-full touch-manipulation rounded-2xl bg-emerald-400 px-5 py-4 text-lg font-black text-emerald-950 transition hover:brightness-105 disabled:opacity-40">{pendingAction === "start_hand" ? "Dealing…" : tableMode === "tournament" ? "Start tournament" : "Deal the cards"}</button>
                 : <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-center font-semibold text-white/65">Waiting for the host to deal…</div>}
             </div>
 
@@ -370,11 +440,13 @@ export function HoldemClient() {
                   <div>
                     <div className="text-[10px] font-black uppercase tracking-[0.22em] text-white/40">Action</div>
                     <div className="mt-1 text-xl font-black text-white">
-                      {table.status === "showdown"
-                        ? table.tournament?.completed ? "Tournament complete" : "Hand complete"
-                        : table.me.isTurn
-                          ? table.me.toCall > 0 ? `Your turn · ${formatChips(table.me.toCall)} to call` : "Your turn · You can check"
-                          : table.me.status === "folded" ? "You folded" : table.me.status === "all_in" ? "You are all-in" : table.me.sittingOut ? "Sitting out next hand" : `Waiting on ${activePlayer?.name ?? "the table"}`}
+                      {pendingText
+                        ? pendingText
+                        : table.status === "showdown"
+                          ? table.tournament?.completed ? "Tournament complete" : "Hand complete"
+                          : table.me.isTurn
+                            ? table.me.toCall > 0 ? `Your turn · ${formatChips(table.me.toCall)} to call` : "Your turn · You can check"
+                            : table.me.status === "folded" ? "You folded" : table.me.status === "all_in" ? "You are all-in" : table.me.sittingOut ? "Sitting out next hand" : `Waiting on ${activePlayer?.name ?? "the table"}`}
                     </div>
                   </div>
                   {table.currentBet > 0 && <div className="rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-right"><div className="text-[9px] uppercase tracking-wider text-white/35">Current bet</div><div className="font-black text-white">{formatChips(table.currentBet)}</div></div>}
@@ -383,10 +455,10 @@ export function HoldemClient() {
                 {table.status === "playing" && table.me.isTurn && (
                   <>
                     <div className="mt-4 grid grid-cols-[0.82fr_1.18fr] gap-3">
-                      <button disabled={busy} onClick={() => void act({ type: "fold" })} className="min-h-16 rounded-2xl border border-red-300/35 bg-red-400/16 px-4 py-4 text-lg font-black text-red-50 shadow-[0_8px_26px_rgba(248,113,113,.08)] transition hover:bg-red-400/22 active:scale-[0.99] disabled:opacity-40">Fold</button>
+                      <button disabled={busy} onClick={() => void act({ type: "fold" })} className="min-h-16 touch-manipulation rounded-2xl border border-red-300/35 bg-red-400/16 px-4 py-4 text-lg font-black text-red-50 shadow-[0_8px_26px_rgba(248,113,113,.08)] transition hover:bg-red-400/22 active:scale-[0.99] disabled:opacity-40">{pendingAction === "fold" ? "Folding…" : "Fold"}</button>
                       {table.me.toCall === 0
-                        ? <button disabled={busy} onClick={() => void act({ type: "check" })} className="min-h-16 rounded-2xl border border-cyan-200/35 bg-cyan-300 px-4 py-4 text-xl font-black text-slate-950 shadow-[0_10px_30px_rgba(103,232,249,.14)] transition hover:brightness-105 active:scale-[0.99] disabled:opacity-40">Check</button>
-                        : <button disabled={busy} onClick={() => void act({ type: "call" })} className="min-h-16 rounded-2xl border border-cyan-200/35 bg-cyan-300 px-4 py-4 text-xl font-black text-slate-950 shadow-[0_10px_30px_rgba(103,232,249,.14)] transition hover:brightness-105 active:scale-[0.99] disabled:opacity-40">Call {formatChips(Math.min(table.me.toCall, table.me.stack))}</button>}
+                        ? <button disabled={busy} onClick={() => void act({ type: "check" })} className="min-h-16 touch-manipulation rounded-2xl border border-cyan-200/35 bg-cyan-300 px-4 py-4 text-xl font-black text-slate-950 shadow-[0_10px_30px_rgba(103,232,249,.14)] transition hover:brightness-105 active:scale-[0.99] disabled:opacity-40">{pendingAction === "check" ? "Checking…" : "Check"}</button>
+                        : <button disabled={busy} onClick={() => void act({ type: "call" })} className="min-h-16 touch-manipulation rounded-2xl border border-cyan-200/35 bg-cyan-300 px-4 py-4 text-xl font-black text-slate-950 shadow-[0_10px_30px_rgba(103,232,249,.14)] transition hover:brightness-105 active:scale-[0.99] disabled:opacity-40">{pendingAction === "call" ? "Calling…" : `Call ${formatChips(Math.min(table.me.toCall, table.me.stack))}`}</button>}
                     </div>
 
                     <div className="mt-3 rounded-2xl border border-emerald-300/15 bg-black/20 p-4">
@@ -395,22 +467,22 @@ export function HoldemClient() {
                           <div className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-100/45">Raise options</div>
                           <div className="mt-1 text-sm font-black text-white/80">{canRegularRaise ? `${actionVerb} ${formatChips(raiseTo)}` : "Raising is not available"}</div>
                         </div>
-                        <button disabled={busy || table.me.stack <= 0} onClick={() => void act({ type: "all_in" })} className="shrink-0 rounded-xl border border-violet-300/25 bg-violet-300/10 px-3 py-2 text-xs font-black text-violet-50 transition hover:bg-violet-300/16 disabled:opacity-35">All-in {formatChips(table.me.stack)}</button>
+                        <button disabled={busy || table.me.stack <= 0} onClick={() => void act({ type: "all_in" })} className="shrink-0 touch-manipulation rounded-xl border border-violet-300/25 bg-violet-300/10 px-3 py-2 text-xs font-black text-violet-50 transition hover:bg-violet-300/16 disabled:opacity-35">{pendingAction === "all_in" ? "All-in…" : `All-in ${formatChips(table.me.stack)}`}</button>
                       </div>
 
                       {canRegularRaise && (
                         <>
                           <div className="mt-3 grid grid-cols-3 gap-2">
-                            <button onClick={() => quickRaise(0.5)} className="rounded-xl bg-white/7 px-3 py-2 text-xs font-black text-white/75 transition hover:bg-white/12">½ Pot</button>
-                            <button onClick={() => quickRaise(0.67)} className="rounded-xl bg-white/7 px-3 py-2 text-xs font-black text-white/75 transition hover:bg-white/12">⅔ Pot</button>
-                            <button onClick={() => quickRaise(1)} className="rounded-xl bg-white/7 px-3 py-2 text-xs font-black text-white/75 transition hover:bg-white/12">Pot</button>
+                            <button disabled={busy} onClick={() => quickRaise(0.5)} className="touch-manipulation rounded-xl bg-white/7 px-3 py-2 text-xs font-black text-white/75 transition hover:bg-white/12 disabled:opacity-40">½ Pot</button>
+                            <button disabled={busy} onClick={() => quickRaise(0.67)} className="touch-manipulation rounded-xl bg-white/7 px-3 py-2 text-xs font-black text-white/75 transition hover:bg-white/12 disabled:opacity-40">⅔ Pot</button>
+                            <button disabled={busy} onClick={() => quickRaise(1)} className="touch-manipulation rounded-xl bg-white/7 px-3 py-2 text-xs font-black text-white/75 transition hover:bg-white/12 disabled:opacity-40">Pot</button>
                           </div>
                           <div className="mt-4 flex items-center gap-3">
-                            <input aria-label="Raise amount" type="range" min={table.me.minRaiseTo} max={table.me.maxRaiseTo} step={Math.max(1, table.settings.smallBlind)} value={Math.min(table.me.maxRaiseTo, Math.max(table.me.minRaiseTo, raiseTo))} onChange={(event) => setRaiseTo(Number(event.target.value))} className="min-w-0 flex-1 accent-emerald-300" />
-                            <input aria-label="Raise to" type="number" min={table.me.minRaiseTo} max={table.me.maxRaiseTo} value={raiseTo} onChange={(event) => setRaiseTo(Math.min(table.me.maxRaiseTo, Math.max(table.me.minRaiseTo, Number(event.target.value))))} className="w-24 rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-right font-black text-white outline-none focus:border-emerald-300/50 sm:w-28" />
+                            <input disabled={busy} aria-label="Raise amount" type="range" min={table.me.minRaiseTo} max={table.me.maxRaiseTo} step={Math.max(1, table.settings.smallBlind)} value={Math.min(table.me.maxRaiseTo, Math.max(table.me.minRaiseTo, raiseTo))} onChange={(event) => setRaiseTo(Number(event.target.value))} className="min-w-0 flex-1 accent-emerald-300 disabled:opacity-40" />
+                            <input disabled={busy} aria-label="Raise to" type="number" min={table.me.minRaiseTo} max={table.me.maxRaiseTo} value={raiseTo} onChange={(event) => setRaiseTo(Math.min(table.me.maxRaiseTo, Math.max(table.me.minRaiseTo, Number(event.target.value))))} className="w-24 rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-right font-black text-white outline-none focus:border-emerald-300/50 disabled:opacity-40 sm:w-28" />
                           </div>
                           <div className="mt-2 flex justify-between text-[10px] font-semibold text-white/35"><span>Min {formatChips(table.me.minRaiseTo)}</span><span>Max {formatChips(table.me.maxRaiseTo)}</span></div>
-                          <button disabled={busy} onClick={() => void act({ type: "raise", raiseTo })} className="mt-4 w-full rounded-2xl bg-emerald-400 px-5 py-3.5 text-lg font-black text-emerald-950 transition hover:brightness-105 active:scale-[0.995] disabled:opacity-35">{actionVerb} {formatChips(raiseTo)}</button>
+                          <button disabled={busy} onClick={() => void act({ type: "raise", raiseTo })} className="mt-4 w-full touch-manipulation rounded-2xl bg-emerald-400 px-5 py-3.5 text-lg font-black text-emerald-950 transition hover:brightness-105 active:scale-[0.995] disabled:opacity-35">{pendingAction === "raise" ? "Sending raise…" : `${actionVerb} ${formatChips(raiseTo)}`}</button>
                         </>
                       )}
                     </div>
@@ -420,10 +492,18 @@ export function HoldemClient() {
                 )}
 
                 {table.status === "showdown" && !table.tournament?.completed && (
-                  <div className="mt-5">
-                    {table.me.isHost
-                      ? <button disabled={busy || !canDeal} onClick={() => void act({ type: "start_hand" })} className="w-full rounded-2xl bg-emerald-400 px-5 py-4 text-lg font-black text-emerald-950 transition hover:brightness-105 disabled:opacity-40">Deal next hand</button>
-                      : <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-center font-semibold text-white/65">Waiting for the host to deal the next hand…</div>}
+                  <div className="mt-5 rounded-2xl border border-emerald-300/15 bg-emerald-300/[0.06] px-4 py-4">
+                    {canDeal ? (
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-100/45">Next hand</div>
+                          <div className="mt-1 font-black text-white">{pendingAction === "start_hand" ? "Dealing now…" : `Auto-dealing in ${autoDealSeconds ?? 1}…`}</div>
+                        </div>
+                        {table.me.isHost && <button disabled={busy} onClick={() => void act({ type: "start_hand" })} className="touch-manipulation rounded-xl bg-emerald-400 px-4 py-2.5 text-sm font-black text-emerald-950 transition hover:brightness-105 disabled:opacity-40">Deal now</button>}
+                      </div>
+                    ) : (
+                      <div className="text-sm font-semibold text-white/65">Waiting for at least two eligible players before the next hand.</div>
+                    )}
                   </div>
                 )}
               </div>
