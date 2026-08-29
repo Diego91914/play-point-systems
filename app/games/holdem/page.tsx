@@ -5,6 +5,7 @@ import { SocialRoomController } from "@/app/games/_components/SocialRoomControll
 import { HoldemClient } from "./HoldemClient";
 import { HoldemHostStartControl } from "./HoldemHostStartControl";
 import { HoldemPreAction } from "./HoldemPreAction";
+import { HoldemTableMenu } from "./HoldemTableMenu";
 
 export const metadata: Metadata = {
   title: "Phone Hold'em",
@@ -17,6 +18,7 @@ export default function HoldemPage() {
     <SiteShell current="games">
       <HoldemClient />
       <HoldemHostStartControl />
+      <HoldemTableMenu />
       <HoldemPreAction />
       <RulesCorner game="holdem" />
       <SocialRoomController game="holdem" storageKeyPrefix="pps-holdem-" roomApiBase="/api/games/holdem" />
