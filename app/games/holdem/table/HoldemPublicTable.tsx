@@ -41,10 +41,18 @@ export function HoldemPublicTable() {
   const [code, setCode] = useState("");
   const [table, setTable] = useState<PublicTable | null>(null);
   const [error, setError] = useState("");
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     const incoming = new URLSearchParams(window.location.search).get("code")?.toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 6) ?? "";
     if (incoming) setCode(incoming);
+  }, []);
+
+  useEffect(() => {
+    const syncFullscreen = () => setIsFullscreen(Boolean(document.fullscreenElement));
+    syncFullscreen();
+    document.addEventListener("fullscreenchange", syncFullscreen);
+    return () => document.removeEventListener("fullscreenchange", syncFullscreen);
   }, []);
 
   useEffect(() => {
@@ -96,6 +104,52 @@ export function HoldemPublicTable() {
 
   const joinUrl = `${window.location.origin}/games/holdem?code=${table.code}`;
   const mode = table.settings.mode ?? "cash";
+
+  if (isFullscreen) {
+    return (
+      <main className="holdem-public-fullscreen relative h-screen overflow-hidden bg-[#020605] text-white">
+        <style>{`
+          .holdem-public-fullscreen .holdem-table-surface {
+            height: 100vh !important;
+            min-height: 0 !important;
+            border-radius: 0 !important;
+            border-width: 0 !important;
+          }
+        `}</style>
+
+        <div className="absolute inset-0">
+          <HoldemTableSurface players={table.players} board={table.board} pot={table.pot} street={table.street} handNumber={table.handNumber} winners={table.winners} publicMode />
+        </div>
+
+        <header className="absolute left-3 right-3 top-3 z-[80] flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/65 px-4 py-3 shadow-2xl backdrop-blur-xl">
+          <div className="min-w-0">
+            <div className="text-[9px] font-black uppercase tracking-[0.2em] text-emerald-100/50">Play Point Hold&apos;em · {mode}</div>
+            <div className="mt-0.5 text-lg font-black">Room <span className="text-emerald-300">{table.code}</span></div>
+          </div>
+          <div className="flex shrink-0 items-center gap-5">
+            <div className="text-right"><div className="text-[9px] uppercase tracking-wider text-white/40">Blinds</div><div className="text-sm font-black">{formatChips(table.settings.smallBlind)}/{formatChips(table.settings.bigBlind)}</div></div>
+            {table.tournament && !table.tournament.completed && <div className="hidden text-right sm:block"><div className="text-[9px] uppercase tracking-wider text-white/40">Level {table.tournament.currentLevel}</div><div className="text-sm font-black text-amber-100">{table.tournament.pendingLevel ? `Level ${table.tournament.pendingLevel} next` : formatClock(table.tournament.secondsToNextLevel)}</div></div>}
+            <button onClick={() => void enterFullscreen()} className="rounded-xl border border-white/15 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-white transition hover:bg-white/15">Exit fullscreen</button>
+          </div>
+        </header>
+
+        {table.status === "lobby" && (
+          <aside className="absolute bottom-4 right-4 z-[75] w-[250px] rounded-[24px] border border-white/10 bg-black/70 p-4 text-center shadow-2xl backdrop-blur-xl">
+            <div className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50">Scan to join</div>
+            <div className="mx-auto mt-3 w-fit rounded-xl bg-white p-2"><QRCodeSVG value={joinUrl} size={150} /></div>
+            <div className="mt-3 text-2xl font-black tracking-[0.2em]">{table.code}</div>
+          </aside>
+        )}
+
+        {table.tournament?.completed && (
+          <div className="absolute bottom-4 left-1/2 z-[75] -translate-x-1/2 rounded-2xl border border-amber-300/30 bg-black/75 px-7 py-4 text-center shadow-2xl backdrop-blur-xl">
+            <div className="text-[9px] font-black uppercase tracking-[0.28em] text-amber-100/55">Tournament Champion</div>
+            <div className="mt-1 text-3xl font-black text-white">{table.tournament.championName}</div>
+          </div>
+        )}
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,#0d241b,#020605_66%)] p-3 text-white sm:p-5">
