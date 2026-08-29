@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ProductShell } from "../../../components/ProductShell";
+import { RulesCorner } from "../../_components/RulesCorner";
 import { TriviaJoinExperience } from "./TriviaJoinExperience";
 
 export const metadata: Metadata = {
@@ -25,6 +26,7 @@ export default function TriviaJoinPage() {
       ]}
     >
       <TriviaJoinExperience />
+      <RulesCorner game="trivia" />
     </ProductShell>
   );
 }
