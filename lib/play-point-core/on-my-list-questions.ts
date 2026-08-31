@@ -19,7 +19,6 @@ export const ON_MY_LIST_QUESTIONS: readonly OnMyListQuestion[] = [
   {id:"oml-016",count:5,prompt:"Name 5 things {name} would want in their dream backyard."},
   {id:"oml-017",count:5,prompt:"Name 5 things {name} would do with an unexpected day off."},
   {id:"oml-018",count:5,prompt:"Name 5 foods {name} would never choose if other options were available."},
-  {id:"oml-019",count:5,prompt:"Name 5 things {name} is unusually picky about."},
   {id:"oml-020",count:5,prompt:"Name 5 things {name} would pack for a weekend getaway."},
   {id:"oml-021",count:5,prompt:"Name 5 celebrities {name} would recognize immediately."},
   {id:"oml-022",count:5,prompt:"Name 5 things {name} would do if the power went out all evening."},
