@@ -1,0 +1,17 @@
+export const ON_MY_LIST_FAMILY_FEUD_QUESTIONS = [
+  { id: "oml-301", prompt: "List foods {name} would order if calories did not count." },
+  { id: "oml-302", prompt: "List things {name} is most likely to do within the first hour after getting home." },
+  { id: "oml-303", prompt: "List things {name} would procrastinate doing as long as possible." },
+  { id: "oml-304", prompt: "List foods {name} thinks are better with cheese on them." },
+  { id: "oml-305", prompt: "List things from {name}'s childhood they wish kids today could experience." },
+  { id: "oml-306", prompt: "List things about being a teenager {name} would never want to go through again." },
+  { id: "oml-307", prompt: "List things almost guaranteed to embarrass {name} in public." },
+  { id: "oml-308", prompt: "List things {name} would grab from a convenience store before a long drive." },
+  { id: "oml-309", prompt: "List foods {name} would put on an anything-goes cheat-day menu." },
+  { id: "oml-310", prompt: "List things {name} would miss most during a month without electricity." },
+  { id: "oml-311", prompt: "List reasons {name} might leave a restaurant disappointed." },
+  { id: "oml-312", prompt: "List meals {name} would most want someone else to cook for them at home." },
+  { id: "oml-313", prompt: "List things {name} would want waiting for them after a really bad day." },
+  { id: "oml-314", prompt: "List places {name} would stop if they had one free day in a city they had never visited." },
+  { id: "oml-315", prompt: "List things {name} would want in the room for a perfect night watching a big game." },
+] as const;
