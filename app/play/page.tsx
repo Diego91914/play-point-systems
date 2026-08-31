@@ -11,7 +11,7 @@ import {
 
 export const metadata: Metadata = {
   title: "Play | Play Point Systems",
-  description: "Find Play Point games by how and where you want to play: social, disc golf, golf, backyard, cards, trivia, and adventure.",
+  description: "Find Play Point games by how and where you want to play: private phone rooms, social, disc golf, golf, backyard, cards, trivia, and adventure.",
   alternates: { canonical: "/play" },
 };
 
@@ -22,9 +22,28 @@ type PlaySection = {
   description: string;
   categories: readonly PlayPointCategory[];
   accent: string;
+  skus?: readonly string[];
 };
 
+const PHONE_ROOM_GAME_SKUS = [
+  "game.chain_reaction",
+  "game.how_close",
+  "game.on_my_list",
+  "game.inside_man",
+  "game.phone_holdem",
+  "game.play_point_trivia",
+] as const;
+
 const sections: readonly PlaySection[] = [
+  {
+    id: "phone-room-games",
+    title: "Phone Room Games",
+    kicker: "One room. Private phones. Everybody plays together.",
+    description: "Create a private room, share the room code or QR invite, and let every player use their own phone as a private seat. These are the complete Play Point phone-room games in one place.",
+    categories: [],
+    skus: PHONE_ROOM_GAME_SKUS,
+    accent: "border-fuchsia-300/20 bg-[linear-gradient(145deg,rgba(217,70,239,0.08),rgba(34,211,238,0.045))]",
+  },
   {
     id: "social",
     title: "Social",
@@ -76,6 +95,7 @@ const sections: readonly PlaySection[] = [
 ] as const;
 
 function matchesSection(product: PlayPointGameCatalogItem, section: PlaySection) {
+  if (section.skus) return section.skus.includes(product.sku);
   return product.playCategories.some((category) => section.categories.includes(category));
 }
 
@@ -98,7 +118,7 @@ export default function PlayPage() {
 
           <nav aria-label="Play categories" className="mt-8 flex flex-wrap gap-2">
             {sections.map((section) => (
-              <a key={section.id} href={`#${section.id}`} className="rounded-full border border-white/12 bg-white/[0.035] px-4 py-2 text-sm font-bold text-white/72 transition hover:border-white/25 hover:text-white">
+              <a key={section.id} href={`#${section.id}`} className={`rounded-full border px-4 py-2 text-sm font-bold transition ${section.id === "phone-room-games" ? "border-fuchsia-300/30 bg-fuchsia-400/10 text-fuchsia-50 hover:bg-fuchsia-400/16" : "border-white/12 bg-white/[0.035] text-white/72 hover:border-white/25 hover:text-white"}`}>
                 {section.title}
               </a>
             ))}
@@ -109,6 +129,7 @@ export default function PlayPage() {
       {sections.map((section) => {
         const products = PLAY_POINT_GAME_CATALOG.filter((product) => matchesSection(product, section));
         const backyard = section.id === "backyard";
+        const phoneRoomGames = section.id === "phone-room-games";
 
         return (
           <section key={section.id} id={section.id} className="scroll-mt-28 border-t border-white/10 px-5 py-11 sm:px-8 lg:px-10 lg:py-14">
@@ -116,16 +137,21 @@ export default function PlayPage() {
               <div className={`rounded-[32px] border p-6 sm:p-8 ${section.accent}`}>
                 <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
                   <div>
-                    <div className="text-[11px] font-black uppercase tracking-[0.22em] text-white/42">Play category</div>
+                    <div className="text-[11px] font-black uppercase tracking-[0.22em] text-white/42">{phoneRoomGames ? "Private multiplayer" : "Play category"}</div>
                     <h2 className="mt-3 text-4xl font-black text-white sm:text-5xl">{section.title}</h2>
                     <div className="mt-3 text-base font-bold text-amber-100/82">{section.kicker}</div>
                     <p className="mt-4 max-w-xl text-sm leading-7 text-white/62">{section.description}</p>
+                    {phoneRoomGames ? (
+                      <div className="mt-6 rounded-2xl border border-white/10 bg-black/15 p-4 text-sm leading-6 text-white/70">
+                        <strong className="text-white">All six room games are here:</strong> Chain Reaction, How Close Are We?, On My List, The Inside Man, Phone Hold&apos;em, and Play Point Trivia.
+                      </div>
+                    ) : null}
                     {backyard ? (
                       <Link href="/live/quick-score" className="mt-6 inline-flex rounded-2xl border border-amber-200/25 bg-amber-300/10 px-4 py-3 text-sm font-black text-amber-50 transition hover:bg-amber-300/16">Open Score Caddy Quick Match →</Link>
                     ) : null}
                   </div>
 
-                  <div className="grid gap-4 md:grid-cols-2">
+                  <div className={`grid gap-4 ${phoneRoomGames ? "md:grid-cols-2 xl:grid-cols-3" : "md:grid-cols-2"}`}>
                     {products.length > 0 ? products.map((product) => <GameLibraryCard key={product.sku} product={product} />) : (
                       <div className="md:col-span-2 rounded-[26px] border border-dashed border-white/12 bg-black/15 p-6">
                         <div className="text-lg font-black text-white">More is being built here.</div>
