@@ -1,0 +1,16 @@
+export const ON_MY_LIST_CURATED_2_QUESTIONS = [
+  { id: "oml-316", prompt: "List sporting events {name} would most want to attend in person." },
+  { id: "oml-317", prompt: "List things {name} would want to do on a perfect summer day." },
+  { id: "oml-318", prompt: "List qualities {name} thinks make someone a great leader." },
+  { id: "oml-319", prompt: "List qualities {name} would use to describe themselves." },
+  { id: "oml-320", prompt: "List qualities {name} would most want their children to have as adults." },
+  { id: "oml-321", prompt: "List personality traits that would make it difficult for {name} to get along with someone." },
+  { id: "oml-322", prompt: "List things {name} is better at than most people realize." },
+  { id: "oml-323", prompt: "List things {name} could teach someone else how to do." },
+  { id: "oml-324", prompt: "List hobbies {name} has tried at some point in their life." },
+  { id: "oml-325", prompt: "List hobbies {name} would never have any interest in trying." },
+  { id: "oml-326", prompt: "List habits {name} would most like to change about themselves." },
+  { id: "oml-327", prompt: "List colors {name} most likes to wear." },
+  { id: "oml-328", prompt: "List things {name} would never wear, no matter how fashionable they became." },
+  { id: "oml-329", prompt: "List sounds that immediately annoy {name}." },
+] as const;
