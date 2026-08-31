@@ -8,6 +8,7 @@ import {
 const ACCOUNT_SESSION_PATH = "/api/games/account/session";
 const SHOT_CADDY_HANDOFF_PATH = "/api/games/account/shot-caddy-handoff";
 const SOCIAL_ROOM_CONTROL_PATH = "/api/games/social-room-control";
+const PLAY_AMPLIFIED_HOSTS = new Set(["playamplified.com", "www.playamplified.com"]);
 
 // Multiplayer phone games use one access model: the host must own/access the game,
 // while invited guests may enter an existing room with a room code and first name.
@@ -41,6 +42,23 @@ function signInRedirect(request: NextRequest) { const target=request.nextUrl.clo
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // One codebase, two front doors. The company domain keeps the corporate homepage,
+  // while PlayAmplified.com gets the consumer game destination.
+  if (pathname === "/") {
+    const host = (request.headers.get("host") || request.nextUrl.hostname)
+      .split(":")[0]
+      .toLowerCase();
+
+    if (PLAY_AMPLIFIED_HOSTS.has(host)) {
+      const target = request.nextUrl.clone();
+      target.pathname = "/play-amplified";
+      return NextResponse.rewrite(target);
+    }
+
+    return NextResponse.next();
+  }
+
   const hasRoomCode = Boolean(request.nextUrl.searchParams.get("code"));
   const guestJoinPage = isGuestRoomPage(pathname, hasRoomCode);
   const guestRoomApi = isGuestRoomApi(pathname);
@@ -56,4 +74,4 @@ export async function proxy(request: NextRequest) {
   const response=NextResponse.next();response.headers.set("Cache-Control","private, no-store");return response;
 }
 
-export const config={matcher:["/games","/games/:path*","/api/games/:path*","/api/trivia/:path*"]};
+export const config={matcher:["/","/games","/games/:path*","/api/games/:path*","/api/trivia/:path*"]};
