@@ -1,11 +1,13 @@
 import { ON_MY_LIST_QUESTIONS as BASE_QUESTIONS } from "@/lib/play-point-core/on-my-list-questions";
 import { ON_MY_LIST_EXTRA_QUESTIONS } from "@/lib/play-point-core/on-my-list-questions-extra";
+import { ON_MY_LIST_RESTORED_QUESTIONS } from "@/lib/play-point-core/on-my-list-questions-restored";
 
 export type OnMyListQuestion = { id: string; prompt: string };
 
 export const ON_MY_LIST_QUESTIONS: readonly OnMyListQuestion[] = [
   ...BASE_QUESTIONS.map(({ id, prompt }) => ({ id, prompt })),
   ...ON_MY_LIST_EXTRA_QUESTIONS,
+  ...ON_MY_LIST_RESTORED_QUESTIONS,
 ];
 
 function normalizePrompt(prompt: string) {
