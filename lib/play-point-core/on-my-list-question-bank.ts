@@ -1,26 +1,18 @@
 import { ON_MY_LIST_QUESTIONS as BASE_QUESTIONS } from "@/lib/play-point-core/on-my-list-questions";
 import { ON_MY_LIST_EXTRA_QUESTIONS } from "@/lib/play-point-core/on-my-list-questions-extra";
-import { ON_MY_LIST_REUNION_QUESTIONS } from "@/lib/play-point-core/on-my-list-reunion-questions";
 
 export type OnMyListQuestion = { id: string; prompt: string };
-export type OnMyListQuestionPack = "classic" | "reunion";
 
 export const ON_MY_LIST_QUESTIONS: readonly OnMyListQuestion[] = [
   ...BASE_QUESTIONS.map(({ id, prompt }) => ({ id, prompt })),
   ...ON_MY_LIST_EXTRA_QUESTIONS,
 ];
 
-export const ON_MY_LIST_REUNION_PACK: readonly OnMyListQuestion[] = [
-  ...ON_MY_LIST_REUNION_QUESTIONS,
-];
+// Kept as an alias for server compatibility while On My List is Classic-only.
+export const ON_MY_LIST_ALL_QUESTIONS: readonly OnMyListQuestion[] = ON_MY_LIST_QUESTIONS;
 
-export const ON_MY_LIST_ALL_QUESTIONS: readonly OnMyListQuestion[] = [
-  ...ON_MY_LIST_QUESTIONS,
-  ...ON_MY_LIST_REUNION_PACK,
-];
-
-export function getOnMyListQuestionPack(pack: OnMyListQuestionPack | undefined) {
-  return pack === "reunion" ? ON_MY_LIST_REUNION_PACK : ON_MY_LIST_QUESTIONS;
+export function getOnMyListQuestionPack() {
+  return ON_MY_LIST_QUESTIONS;
 }
 
 export function formatOnMyListPrompt(prompt: string, name: string) {
