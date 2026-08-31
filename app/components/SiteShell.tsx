@@ -22,6 +22,12 @@ const navItems = [
 export function SiteShell({ children, current, showAccessNotice = false }: SiteShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showAccessBanner, setShowAccessBanner] = useState(true);
+  const [isPlayAmplifiedHost, setIsPlayAmplifiedHost] = useState(false);
+
+  useEffect(() => {
+    const hostname = window.location.hostname.toLowerCase();
+    setIsPlayAmplifiedHost(hostname === "playamplified.com" || hostname === "www.playamplified.com");
+  }, []);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -51,17 +57,34 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
             <header className="sticky top-4 z-50 px-4 pt-4 sm:px-6 lg:px-8">
               <div className="rounded-[28px] border border-amber-200/15 bg-[linear-gradient(180deg,rgba(8,8,8,0.97),rgba(8,8,8,0.88))] px-4 py-3 shadow-[0_18px_40px_rgba(0,0,0,0.42)] backdrop-blur-xl sm:px-6">
                 <div className="flex items-center justify-between gap-2 min-[380px]:gap-4">
-                  <Link href="/" aria-label="Play Point Systems home" className="flex min-w-0 items-center gap-2 min-[380px]:gap-3">
-                    <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-amber-200/20 bg-black shadow-[0_0_24px_rgba(213,174,95,0.18)] sm:hidden">
-                      <Image src="/images/brand/play-point-systems-emblem.png" alt="" fill priority sizes="44px" className="object-contain" />
-                    </div>
+                  <Link href="/" aria-label={isPlayAmplifiedHost ? "Play Amplified home" : "Play Point Systems home"} className="flex min-w-0 items-center gap-2 min-[380px]:gap-3">
+                    {isPlayAmplifiedHost ? (
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-cyan-200/20 bg-[linear-gradient(135deg,rgba(34,211,238,0.14),rgba(168,85,247,0.14))] text-sm font-black tracking-[-0.04em] text-white shadow-[0_0_24px_rgba(34,211,238,0.12)] sm:hidden">
+                        PA
+                      </div>
+                    ) : (
+                      <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-amber-200/20 bg-black shadow-[0_0_24px_rgba(213,174,95,0.18)] sm:hidden">
+                        <Image src="/images/brand/play-point-systems-emblem.png" alt="" fill priority sizes="44px" className="object-contain" />
+                      </div>
+                    )}
                     <div className="min-w-0 sm:hidden">
-                      <div className="hidden truncate text-[10px] font-semibold uppercase tracking-[0.14em] text-white/56 min-[380px]:block">Play · Score · Adventure</div>
-                      <div className="whitespace-nowrap text-[13px] font-extrabold tracking-[0.005em] text-white min-[380px]:mt-1 min-[380px]:text-base sm:text-xl">Play Point Systems</div>
+                      <div className="hidden truncate text-[10px] font-semibold uppercase tracking-[0.14em] text-white/56 min-[380px]:block">
+                        {isPlayAmplifiedHost ? "Phones in the game · People in the moment" : "Play · Score · Adventure"}
+                      </div>
+                      <div className="whitespace-nowrap text-[13px] font-extrabold tracking-[0.005em] text-white min-[380px]:mt-1 min-[380px]:text-base sm:text-xl">
+                        {isPlayAmplifiedHost ? "Play Amplified" : "Play Point Systems"}
+                      </div>
                     </div>
-                    <div className="relative hidden h-[54px] w-[232px] shrink-0 sm:block">
-                      <Image src="/images/brand/play-point-systems-logo.png" alt="Play Point Systems" fill priority sizes="232px" className="object-contain" />
-                    </div>
+                    {isPlayAmplifiedHost ? (
+                      <div className="hidden sm:block">
+                        <div className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-100/45">Play Point Systems presents</div>
+                        <div className="mt-1 text-2xl font-black tracking-[-0.035em] text-white">PLAY AMPLIFIED</div>
+                      </div>
+                    ) : (
+                      <div className="relative hidden h-[54px] w-[232px] shrink-0 sm:block">
+                        <Image src="/images/brand/play-point-systems-logo.png" alt="Play Point Systems" fill priority sizes="232px" className="object-contain" />
+                      </div>
+                    )}
                   </Link>
 
                   <div className="hidden items-center gap-2 lg:flex">
@@ -114,20 +137,35 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
             <footer className="border-t border-white/10 px-5 py-8 sm:px-8 lg:px-10">
               <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <Image src="/images/brand/play-point-systems-logo.png" alt="Play Point Systems" width={1496} height={376} sizes="220px" className="h-auto w-[220px] max-w-full" />
-                  <div className="mt-2 max-w-md text-sm leading-7 text-white/52">Games, scoring, adventure, and original music — built to bring people together.</div>
+                  {isPlayAmplifiedHost ? (
+                    <>
+                      <div className="text-2xl font-black tracking-[-0.035em] text-white">PLAY AMPLIFIED</div>
+                      <div className="mt-2 max-w-md text-sm leading-7 text-white/52">Phones in the game. People in the moment.</div>
+                    </>
+                  ) : (
+                    <>
+                      <Image src="/images/brand/play-point-systems-logo.png" alt="Play Point Systems" width={1496} height={376} sizes="220px" className="h-auto w-[220px] max-w-full" />
+                      <div className="mt-2 max-w-md text-sm leading-7 text-white/52">Games, scoring, adventure, and original music — built to bring people together.</div>
+                    </>
+                  )}
                 </div>
                 <nav aria-label="Footer navigation" className="flex flex-wrap items-center gap-1.5">
                   <Link href="/play" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">Play</Link>
                   <Link href="/live/quick-score" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">Score Caddy</Link>
                   <Link href="/shot-caddy" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">Shot Caddy</Link>
                   <Link href="/games" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">My Games</Link>
-                  <Link href="/music" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">Music</Link>
-                  <Link href="/about" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">About</Link>
+                  {isPlayAmplifiedHost ? (
+                    <a href="https://playpointsystems.com" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">Company</a>
+                  ) : (
+                    <>
+                      <Link href="/music" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">Music</Link>
+                      <Link href="/about" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">About</Link>
+                    </>
+                  )}
                 </nav>
               </div>
               <div className="mt-6 flex flex-col gap-3 border-t border-white/8 pt-5 text-xs text-white/55 sm:flex-row sm:items-center sm:justify-between">
-                <div>© {new Date().getFullYear()} Play Point Systems LLC · Built by Channing Stovall</div>
+                <div>© {new Date().getFullYear()} Play Point Systems LLC{isPlayAmplifiedHost ? " · Play Amplified" : " · Built by Channing Stovall"}</div>
                 <nav aria-label="Legal and support" className="flex flex-wrap gap-4">
                   <Link href="/support" className="transition hover:text-white">Support</Link>
                   <Link href="/privacy" className="transition hover:text-white">Privacy</Link>
