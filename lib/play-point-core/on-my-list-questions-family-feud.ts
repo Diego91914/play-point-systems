@@ -7,7 +7,6 @@ export const ON_MY_LIST_FAMILY_FEUD_QUESTIONS = [
   { id: "oml-306", prompt: "List things about being a teenager {name} would never want to go through again." },
   { id: "oml-307", prompt: "List things almost guaranteed to embarrass {name} in public." },
   { id: "oml-308", prompt: "List things {name} would grab from a convenience store before a long drive." },
-  { id: "oml-309", prompt: "List foods {name} would put on an anything-goes cheat-day menu." },
   { id: "oml-310", prompt: "List things {name} would miss most during a month without electricity." },
   { id: "oml-311", prompt: "List reasons {name} might leave a restaurant disappointed." },
   { id: "oml-312", prompt: "List meals {name} would most want someone else to cook for them at home." },
