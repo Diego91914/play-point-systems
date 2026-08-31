@@ -1,4 +1,4 @@
-﻿export const siteLinks = {
+export const siteLinks = {
   houseWithTheLightsOn: "https://distrokid.com/hyperfollow/channingstovall/house-with-the-lights-on?ref=release",
   runBackHome: "https://open.spotify.com/album/6eliw7N7GZgPygV8ahLwxc",
   nothingCanSeparate: "https://distrokid.com/hyperfollow/channingstovall/nothing-can-separate?ref=release",
@@ -7,6 +7,7 @@
   amazonMusic: "https://music.amazon.com/artists/B0GT55BDC6/channing-stovall",
   youtube: "https://www.youtube.com/results?search_query=channing+stovall",
   website: "https://playpointsystems.com",
+  playAmplified: "https://playamplified.com",
 };
 
 export const founder = {
@@ -24,27 +25,22 @@ export const hero = {
   headline: "Games, experiences, and music built to bring people together.",
   subheadline: "Interactive products and faith-rooted music made for experiences people want to return to.",
   intro:
-    "Start a live scoreboard, explore Shot Caddy and trivia, or hear the latest Play Point Records release.",
+    "Explore Play Amplified for phone-powered games that create more interaction between people already together, or hear the latest Play Point Records release.",
 };
 
 export const divisions = [
   {
-    name: "Play Point Live",
-    eyebrow: "Live games and scoring",
+    name: "Play Amplified",
+    eyebrow: "Consumer games and shared play",
     description:
-      "Fast, flexible scoring and live-play experiences for backyards, clubs, venues, and recurring events.",
-    points: ["Start Quick Score without a login", "Share spectator-friendly live boards", "Build history across clubs and events"],
-    href: "/live",
-    cta: "Explore Play Point Live",
-  },
-  {
-    name: "Shot Caddy",
-    eyebrow: "Golf-first experiences",
-    description:
-      "Purpose-built tools for disc golf, golf overlays, and more memorable round-day experiences.",
-    points: ["Disc golf at the center", "Tools designed for real rounds", "A focused home at ShotCaddy.net"],
-    href: "/shot-caddy",
-    cta: "Explore Shot Caddy",
+      "Phone-powered games that create more interaction between people already together — whether starting a shared game or adding a new layer to a real-world round or activity.",
+    points: [
+      "Phones in the game. People in the moment.",
+      "Social, cards, trivia, course, backyard, adventure, and scoring",
+      "Master consumer home at PlayAmplified.com",
+    ],
+    href: siteLinks.playAmplified,
+    cta: "Explore Play Amplified",
   },
   {
     name: "Play Point Records",
