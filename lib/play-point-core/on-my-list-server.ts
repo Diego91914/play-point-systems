@@ -2,10 +2,8 @@ import "server-only";
 import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import {
-  ON_MY_LIST_ALL_QUESTIONS,
+  ON_MY_LIST_QUESTIONS,
   formatOnMyListPrompt,
-  getOnMyListQuestionPack,
-  type OnMyListQuestionPack,
 } from "@/lib/play-point-core/on-my-list-question-bank";
 import { scoreOnMyListAnswers } from "@/lib/play-point-core/on-my-list-scoring";
 
@@ -21,7 +19,6 @@ type State = {
   round: number;
   maxRounds: number;
   questionOrder: string[];
-  questionPack?: OnMyListQuestionPack;
   surveyStartSeat: number;
   answers: Answer[];
   misses: Record<string, number>;
@@ -29,6 +26,8 @@ type State = {
   turnIndex: number;
   pendingHitBy: string | null;
   message: string;
+  // Legacy rooms may still contain this field in persisted JSON. It is ignored.
+  questionPack?: unknown;
 };
 type Row = { code: string; state: State; version: number };
 
@@ -47,9 +46,6 @@ function cleanCode(v: unknown) {
   if (!/^[A-Z2-9]{6}$/.test(c)) throw new Error("Enter a valid 6-character room code.");
   return c;
 }
-function cleanQuestionPack(v: unknown): OnMyListQuestionPack {
-  return v === "reunion" ? "reunion" : "classic";
-}
 function roomCode() {
   const b = randomBytes(6);
   return Array.from(b, v => ALPHABET[v % ALPHABET.length]).join("");
@@ -63,8 +59,8 @@ function shuffle<T>(items: T[]) {
   }
   return c;
 }
-function activePack(state: State) {
-  return getOnMyListQuestionPack(state.questionPack ?? "classic");
+function activePack() {
+  return ON_MY_LIST_QUESTIONS;
 }
 function surveyed(state: State) {
   if (!state.players.length) return null;
@@ -73,7 +69,7 @@ function surveyed(state: State) {
 }
 function question(state: State) {
   const id = state.questionOrder[state.round];
-  return ON_MY_LIST_ALL_QUESTIONS.find(q => q.id === id) ?? null;
+  return ON_MY_LIST_QUESTIONS.find(q => q.id === id) ?? null;
 }
 function currentGuesser(state: State) {
   if (state.status !== "guessing" || state.pendingHitBy) return null;
@@ -98,7 +94,7 @@ function allOut(state: State) {
   return state.guessOrder.length > 0 && state.guessOrder.every(id => (state.misses[id] ?? 0) >= 2);
 }
 function refillFutureQuestions(state: State, startIndex: number) {
-  const bank = activePack(state);
+  const bank = activePack();
   const needed = Math.max(0, state.maxRounds - startIndex);
   if (!needed) return;
   const usedBefore = new Set(state.questionOrder.slice(0, startIndex));
@@ -139,10 +135,9 @@ function project(state: State, viewer: string) {
     text: (a.revealed || showAll || isSurvey) ? a.text : "",
     foundBy: a.revealed || showAll ? a.foundBy : null,
   }));
-  const { hostAccountId: _hostAccountId, ...publicState } = state;
+  const { hostAccountId: _hostAccountId, questionPack: _questionPack, ...publicState } = state;
   return {
     ...publicState,
-    questionPack: state.questionPack ?? "classic",
     players: state.players.map(({ tokenHash: _t, ...p }) => p),
     answers,
     pendingHitBy: state.pendingHitBy ? {
@@ -183,7 +178,6 @@ export async function createOnMyListRoom(nameValue: unknown, hostAccountId: stri
       round: 0,
       maxRounds: 0,
       questionOrder: [],
-      questionPack: "classic",
       surveyStartSeat: 0,
       answers: [],
       misses: {},
@@ -241,34 +235,13 @@ export async function actOnMyListRoom(codeValue: unknown, id: string, token: str
   auth(state, id, token);
   const s = surveyed(state);
 
-  if (action === "set-question-pack") {
-    if (state.hostPlayerId !== id) throw new Error("Only the host can change the question pack.");
-    const nextPack = cleanQuestionPack(payload.pack);
-    state.questionPack = nextPack;
-    if (state.status === "setup") {
-      refillFutureQuestions(state, state.round);
-      state.answers = [];
-      state.message = nextPack === "reunion"
-        ? "Reunion Edition is on. The current board now uses a reunion question."
-        : "Classic questions are back on. The current board now uses the classic pack.";
-    } else if (state.status === "guessing" || state.status === "round-reveal") {
-      refillFutureQuestions(state, state.round + 1);
-      state.message = nextPack === "reunion"
-        ? "Reunion Edition is on. It will begin with the next board."
-        : "Classic questions are back on. They will begin with the next board.";
-    } else {
-      state.message = nextPack === "reunion"
-        ? "Reunion Edition is on. People questions can include anyone from your Huntland school years."
-        : "Classic question pack selected.";
-    }
-  }
-  else if (action === "start") {
+  if (action === "start") {
     if (state.hostPlayerId !== id) throw new Error("Only the host can start.");
     if (state.players.length < 2) throw new Error("Invite at least one more player.");
     state.status = "setup";
     state.round = 0;
     state.maxRounds = state.players.length * 2;
-    state.questionOrder = shuffle(activePack(state).map(q => q.id)).slice(0, state.maxRounds);
+    state.questionOrder = shuffle(activePack().map(q => q.id)).slice(0, state.maxRounds);
     state.surveyStartSeat = Math.floor(Math.random() * state.players.length);
     state.answers = [];
     state.misses = {};
@@ -276,13 +249,11 @@ export async function actOnMyListRoom(codeValue: unknown, id: string, token: str
     state.turnIndex = 0;
     state.pendingHitBy = null;
     state.players.forEach(p => p.score = 0);
-    state.message = state.questionPack === "reunion"
-      ? "Reunion Edition: Surveyed Player, build your ranked board privately."
-      : "Surveyed Player: build your ranked board privately.";
+    state.message = "Surveyed Player: build your ranked board privately.";
   }
   else if (action === "skip-question") {
     if (state.status !== "setup" || !s || s.id !== id) throw new Error("Only the Surveyed Player can skip this question.");
-    const bank = activePack(state);
+    const bank = activePack();
     const currentId = state.questionOrder[state.round];
     const scheduled = new Set(state.questionOrder);
     const unused = bank.map(q => q.id).filter(qid => !scheduled.has(qid));
@@ -356,9 +327,7 @@ export async function actOnMyListRoom(codeValue: unknown, id: string, token: str
       state.guessOrder = [];
       state.turnIndex = 0;
       state.pendingHitBy = null;
-      state.message = state.questionPack === "reunion"
-        ? "Reunion Edition: new Surveyed Player. Build the next board."
-        : "New Surveyed Player. Build the next board.";
+      state.message = "New Surveyed Player. Build the next board.";
     }
   }
   else if (action === "restart") {
@@ -373,10 +342,12 @@ export async function actOnMyListRoom(codeValue: unknown, id: string, token: str
     state.turnIndex = 0;
     state.pendingHitBy = null;
     state.players.forEach(p => p.score = 0);
-    state.message = state.questionPack === "reunion" ? "Reunion Edition is ready for another game." : "Ready for another game.";
+    state.message = "Ready for another game.";
   }
   else throw new Error("Unknown action.");
 
+  // Strip the retired reunion selector from any legacy room the next time it is saved.
+  delete state.questionPack;
   const saved = await save(row, state);
   return { state: project(saved.state, id) };
 }
