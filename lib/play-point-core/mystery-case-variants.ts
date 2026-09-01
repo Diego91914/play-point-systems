@@ -4,10 +4,12 @@ export type MysteryCaseVariant = {
   id: string;
   title: string;
   culpritRoleId: string;
+  culpritLabel: string;
   releaseReady: boolean;
   motiveId: string;
   locationId: string;
   windowId: string;
+  correctSupportIds: string[];
   branchFit: (signals: MysteryBranchSignals) => number;
   solution: string;
 };
@@ -23,10 +25,22 @@ export const BLACKWOOD_CASE_VARIANTS: MysteryCaseVariant[] = [
     id: "blackwood-old-friend",
     title: "The Old Debt",
     culpritRoleId: "murderer",
+    culpritLabel: "The Old Friend",
     releaseReady: true,
     motiveId: "old_theft_exposed",
     locationId: "library",
     windowId: "1031_1035",
+    correctSupportIds: [
+      "bathroom_alibi_break",
+      "whiskey_cleanup_link",
+      "porch_route_link",
+      "ledger_old_friend_link",
+      "private_sister_timing",
+      "private_chef_drink",
+      "private_partner_door",
+      "private_lawyer_ledger",
+      "sealed_letter_old_theft",
+    ],
     branchFit: signals => signals.adrian_sealed_letter === "open" ? 20 : 10,
     solution: "Adrian confronted the Old Friend in the library with proof of a decades-old theft. The Old Friend killed Adrian during the 10:31–10:35 window, crossed the back porch in a dark jacket, and rinsed a whiskey glass in the kitchen before returning to the bathroom cover story.",
   },
@@ -34,10 +48,18 @@ export const BLACKWOOD_CASE_VARIANTS: MysteryCaseVariant[] = [
     id: "blackwood-business-partner",
     title: "The Missing Money",
     culpritRoleId: "partner",
+    culpritLabel: "The Business Partner",
     releaseReady: false,
     motiveId: "business_money",
     locationId: "library",
     windowId: "1031_1035",
+    correctSupportIds: [
+      "partner_study_gap",
+      "partner_records_link",
+      "partner_back_route",
+      "partner_cleanup_trace",
+      "sealed_letter_company_warning",
+    ],
     branchFit: signals => signals.adrian_sealed_letter === "seal" ? 20 : 0,
     solution: "Development variant. Adrian's confrontation over the missing Blackwood Holdings money becomes the fatal meeting. This variant remains disabled until its character memories, interrogation answers, evidence trail, private discoveries, scoring supports, and four-player solvability audit are complete.",
   },
