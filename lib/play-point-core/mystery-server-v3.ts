@@ -8,6 +8,7 @@ import {
 } from "@/lib/play-point-core/mystery-server-v2";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import { getMysteryCaseVariant } from "@/lib/play-point-core/mystery-case-variants";
+import { questionsPerEvidenceRound } from "@/lib/play-point-core/mystery-pacing";
 import {
   BLACKWOOD_PRELOCK_EVIDENCE,
   getPrelockAnswerOverride,
@@ -28,8 +29,12 @@ type RawState = {
   code: string;
   status: string;
   players: RawPlayer[];
+  turnIndex?: number;
   interrogationCount: number;
+  pacingQuestionCount?: number;
   evidenceIndex: number;
+  evidenceAcknowledged?: string[];
+  message?: string;
   pendingQuestion?: RawPendingQuestion;
   asked?: RawInterview[];
   caseVariantId?: string;
@@ -88,11 +93,13 @@ async function saveRaw(row: RawRow, state: RawState) {
   return data ? (data as RawRow) : null;
 }
 
-export function shouldPauseForBranchLock(state: Pick<RawState, "caseVariantId" | "evidenceIndex" | "interrogationCount" | "players">) {
+function roundTarget(state: Pick<RawState, "players">) {
+  return questionsPerEvidenceRound(state.players.length);
+}
+
+export function shouldPauseForBranchLock(state: Pick<RawState, "caseVariantId" | "evidenceIndex" | "pacingQuestionCount" | "players">) {
   if (state.caseVariantId || state.evidenceIndex < 0 || !state.players.length) return false;
-  const answerWouldFinishRound = (state.interrogationCount + 1) % state.players.length === 0;
-  const nextEvidenceIndex = state.evidenceIndex + 1;
-  return answerWouldFinishRound && nextEvidenceIndex >= 1;
+  return (state.pacingQuestionCount ?? 0) >= roundTarget(state);
 }
 
 function answerOverrideFor(raw: RawState, roleId: string | undefined, questionId: string | undefined): MysteryPromptAnswer | null {
@@ -221,6 +228,68 @@ async function patchRecordedAnswer(code: string, expected: MysteryPromptAnswer |
   throw new Error("The interview record changed while the answer was being saved. Try again.");
 }
 
+async function applyScalablePacing(code: string, before: RawState) {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const row = await readRaw(code);
+    if (!row) return;
+    const state = { ...row.state };
+    const target = roundTarget(state);
+    const count = (before.pacingQuestionCount ?? 0) + 1;
+    const v2Transitioned = before.status === "interrogation" && state.status === "evidence";
+    const due = count >= target;
+    const nextEvidenceIndex = before.evidenceIndex + 1;
+    const branchMustLock = due && nextEvidenceIndex >= 1 && !state.caseVariantId;
+
+    if (branchMustLock) {
+      if (v2Transitioned) {
+        state.status = "interrogation";
+        state.evidenceIndex = before.evidenceIndex;
+        state.evidenceAcknowledged = [];
+      }
+      state.pacingQuestionCount = target;
+      state.message = "A new development is being resolved. Check your phones before the next question.";
+    } else if (due) {
+      state.pacingQuestionCount = 0;
+      if (!v2Transitioned) {
+        state.status = "evidence";
+        state.evidenceIndex = nextEvidenceIndex;
+        state.evidenceAcknowledged = [];
+        state.message = "New information has interrupted the investigation. Everyone read it before questioning resumes.";
+      }
+    } else {
+      state.pacingQuestionCount = count;
+      if (v2Transitioned) {
+        state.status = "interrogation";
+        state.evidenceIndex = before.evidenceIndex;
+        state.evidenceAcknowledged = [];
+        state.message = "Continue the investigation.";
+      }
+    }
+
+    const saved = await saveRaw(row, state);
+    if (saved) return;
+  }
+  throw new Error("The investigation changed while pacing was being updated. Try again.");
+}
+
+async function advanceDueEvidenceAfterBranch(code: string) {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const row = await readRaw(code);
+    if (!row) return false;
+    const state = { ...row.state };
+    const due = (state.pacingQuestionCount ?? 0) >= roundTarget(state);
+    if (!due || state.status !== "interrogation" || !state.caseVariantId) return false;
+    state.status = "evidence";
+    state.evidenceIndex += 1;
+    state.evidenceAcknowledged = [];
+    state.pacingQuestionCount = 0;
+    state.message = "New information has interrupted the investigation. Everyone read it before questioning resumes.";
+    const saved = await saveRaw(row, state);
+    if (saved) return true;
+  }
+  throw new Error("The new evidence changed while it was being opened. Try again.");
+}
+
 async function clearExtendedRunState(code: string) {
   for (let attempt = 0; attempt < 2; attempt++) {
     const row = await readRaw(code);
@@ -230,6 +299,7 @@ async function clearExtendedRunState(code: string) {
     delete state.branchSignals;
     delete state.dormantEvidence;
     delete state.caseSubmissions;
+    delete state.pacingQuestionCount;
     const saved = await saveRaw(row, state);
     if (saved) return;
   }
@@ -254,8 +324,10 @@ export async function actMysteryRoom(codeValue: unknown, playerId: string, token
   const code = typeof codeValue === "string" ? codeValue.trim().toUpperCase() : "";
 
   let expectedRecordedAnswer: MysteryPromptAnswer | null = null;
+  let beforeAnswer: RawState | null = null;
   if (action === "answered") {
     const before = await readRaw(code);
+    beforeAnswer = before?.state ?? null;
     const pending = before?.state.pendingQuestion;
     const target = pending ? before?.state.players.find(item => item.id === pending.targetId) : null;
     expectedRecordedAnswer = before && pending ? answerOverrideFor(before.state, target?.roleId, pending.questionId) : null;
@@ -264,15 +336,27 @@ export async function actMysteryRoom(codeValue: unknown, playerId: string, token
   if (action === "ask") {
     const row = await readRaw(code);
     if (row && shouldPauseForBranchLock(row.state)) {
+      if (row.state.caseVariantId && await advanceDueEvidenceAfterBranch(code)) {
+        const refreshed = await getMysteryRoomV2(codeValue, playerId, token) as ProjectedResult;
+        return enhanceResult(refreshed, code, playerId);
+      }
       throw new Error("A new development is being resolved. Check your phones, then continue the investigation.");
     }
   }
 
   const result = await actMysteryRoomV2(codeValue, playerId, token, action, payload) as ProjectedResult;
 
-  if (action === "answered") {
+  if (action === "start") {
+    const row = await readRaw(code);
+    if (row) await saveRaw(row, { ...row.state, pacingQuestionCount: 0 });
+    const refreshed = await getMysteryRoomV2(codeValue, playerId, token) as ProjectedResult;
+    return enhanceResult(refreshed, code, playerId);
+  }
+
+  if (action === "answered" && beforeAnswer) {
     await patchRecordedAnswer(code, expectedRecordedAnswer);
-    const refreshed = await getMysteryRoomV2(codeValue, playerId, token, typeof payload.targetId === "string" ? payload.targetId : undefined) as ProjectedResult;
+    await applyScalablePacing(code, beforeAnswer);
+    const refreshed = await getMysteryRoomV2(codeValue, playerId, token) as ProjectedResult;
     return enhanceResult(refreshed, code, playerId);
   }
 
