@@ -1,53 +1,59 @@
-# PlayAmplified.com — Domain Connection
+# PlayAmplified.com — Production Domain State
 
-Status: **Code ready; DNS/domain attachment still required**
+Status: **Connected and active in the existing Play Point Systems Vercel project**
 
-## Target project
+Last verified from Vercel: **September 1, 2026**
+
+## Production project
 
 - GitHub: `Diego91914/play-point-systems`
 - Vercel project: `play-point-systems`
-- Consumer domain: `playamplified.com`
-- Corporate domains remain: `playpointsystems.com` and `www.playpointsystems.com`
+- Vercel project ID: `prj_v2evC9FmPaCThPYDsR9vcta3z3pg`
+- Framework: Next.js
+- Node runtime configured by Vercel: `24.x`
+- Production branch: `main`
 
-## What is already implemented
+## Active domains
 
-The same Next.js/Vercel project supports two front doors:
+The same Vercel project serves both the corporate and consumer brands:
+
+- `playpointsystems.com`
+- `www.playpointsystems.com`
+- `playamplified.com`
+- `www.playamplified.com`
+
+Vercel-generated project aliases also exist for deployment and branch access.
+
+## Routing architecture
+
+There is **not** a separate Play Amplified Vercel project and there should not be a duplicate copy of the games.
+
+The same Next.js application supports two front doors:
 
 - `playpointsystems.com/` keeps the Play Point Systems corporate homepage.
-- `playamplified.com/` is rewritten by `proxy.ts` to the Play Amplified consumer homepage at the internal route `/play-amplified`.
+- `playamplified.com/` is routed by `proxy.ts` to the Play Amplified consumer experience at the internal route `/play-amplified`.
 
-The shared marketing shell also detects the Play Amplified hostname and displays Play Amplified consumer branding on shared game/library/scoring pages.
+Shared game and platform pages can detect the Play Amplified hostname and present consumer-facing Play Amplified branding while still using the same underlying application and game engine.
 
-## Manual Vercel step
+## DNS ownership
 
-In Vercel:
+DNS is managed outside Vercel through Namecheap. Vercel is the application host and domain target.
 
-1. Open the `play-point-systems` project.
-2. Open **Settings → Domains**.
-3. Add `playamplified.com`.
-4. Also add `www.playamplified.com` and configure it to use/redirect to the preferred apex domain if desired.
-5. Vercel will show the DNS records it expects. Use those exact values in Namecheap.
+The domain connection is now complete. The previous setup instructions in this document are retained only as operational guidance if DNS ever needs to be rebuilt:
 
-## Manual Namecheap step
+1. Keep both Play Point Systems and Play Amplified attached to the existing `play-point-systems` Vercel project.
+2. Use the exact DNS values shown by Vercel if records must be recreated.
+3. Do not create a second Vercel project for Play Amplified.
+4. Do not point `playpointsystems.com` away from this project.
 
-In Namecheap:
+## Deployment source of truth
 
-1. Open **Domain List → playamplified.com → Manage → Advanced DNS**.
-2. Add the DNS records shown by Vercel.
-3. For a typical externally managed Vercel domain, Vercel documentation currently shows an apex `A` record to `76.76.21.21` and a `www` CNAME to `cname.vercel-dns-0.com`; however, use the exact values shown in the Vercel project UI if they differ.
-4. Remove any conflicting parking/redirect records for `@` or `www` that would prevent Vercel verification.
-5. Wait for Vercel to show the domain as verified and SSL as active.
+Production is deployed from GitHub `main` through the Vercel GitHub integration.
 
-## Do not change
+As of the September 1, 2026 verification:
 
-- Do not point `playpointsystems.com` away from the existing Vercel project.
-- Do not create a second copy of the game code just for Play Amplified.
-- Do not rename Shot Caddy or other individual products as part of the domain connection.
+- Vercel production deployment commit: `99829fdb6c31483bee3dd689059fe376c75cae19`
+- GitHub `main` commit: `99829fdb6c31483bee3dd689059fe376c75cae19`
+- Result: **production application code and GitHub are synchronized**.
 
-## Expected result
-
-Once DNS is connected and verified:
-
-- `https://playamplified.com` → Play Amplified consumer homepage
-- `https://playpointsystems.com` → Play Point Systems corporate homepage
-- Both domains share the same underlying game platform and deployment pipeline.
+Runtime secrets, environment-variable values, domain assignments, and other Vercel account configuration are intentionally not copied into GitHub. GitHub should document required variable names and architecture, while secret values remain in Vercel.
