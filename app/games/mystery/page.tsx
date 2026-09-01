@@ -4,10 +4,11 @@ import { RoomInviteSessionGuard } from "@/app/games/_components/RoomInviteSessio
 import { MysteryClient } from "./MysteryClient";
 import { MysteryHostControls } from "./MysteryHostControls";
 import { MysteryCaseIntelligence } from "./MysteryCaseIntelligence";
+import { MysteryCaseLayer } from "./MysteryCaseLayer";
 
 export const metadata: Metadata = {
   title: "Last Call | Play Amplified",
-  description: "A phone-guided face-to-face murder mystery where every player has private memories, evidence, and motives.",
+  description: "A phone-guided face-to-face murder mystery where every player follows a private investigative path and must build a case strong enough to convict.",
   robots: { index: false, follow: false },
 };
 
@@ -17,6 +18,7 @@ export default function Page() {
       <RoomInviteSessionGuard storageKey="pps-mystery-session">
         <MysteryClient />
         <MysteryCaseIntelligence />
+        <MysteryCaseLayer />
         <MysteryHostControls />
       </RoomInviteSessionGuard>
     </SiteShell>
