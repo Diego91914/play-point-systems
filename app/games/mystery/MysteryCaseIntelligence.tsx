@@ -26,11 +26,15 @@ function hasEvidence(caseFile: CaseFile, title: string) {
   return caseFile.evidence.some(item => item.title.toLowerCase().includes(title.toLowerCase()));
 }
 
-function findBathroomClaim(interviews: Interview[]) {
+function findInterview(interviews: Interview[], needles: string[]) {
   return interviews.find(item => {
     const answer = item.answer.toLowerCase();
-    return answer.includes("downstairs bathroom") || (answer.includes("bathroom") && answer.includes("10:40"));
+    return needles.some(needle => answer.includes(needle));
   });
+}
+
+function findBathroomClaim(interviews: Interview[]) {
+  return findInterview(interviews, ["downstairs bathroom", "bathroom at 10:30", "bathroom during the critical window"]);
 }
 
 function findOldMoneyClaim(interviews: Interview[], target: string) {
@@ -48,8 +52,7 @@ function findLedgerDenial(interviews: Interview[], target: string) {
   ));
 }
 
-function buildAlerts(caseFile?: CaseFile): IntelligenceAlert[] {
-  if (!caseFile) return [];
+function oldFriendAlerts(caseFile: CaseFile): IntelligenceAlert[] {
   const alerts: IntelligenceAlert[] = [];
   const bathroom = findBathroomClaim(caseFile.interviews);
 
@@ -72,7 +75,7 @@ function buildAlerts(caseFile?: CaseFile): IntelligenceAlert[] {
       label: "Possible contradiction",
       title: "Two parts of the timeline may not fit together",
       facts: [
-        `${bathroom.target} said they were in the downstairs bathroom through roughly 10:40.`,
+        `${bathroom.target} placed themselves around the downstairs bathroom during the critical period.`,
         "A witness saw a dark-jacket figure cross the back porch around 10:35 toward the kitchen entrance.",
       ],
       caution: `This only becomes a contradiction if the porch figure was ${bathroom.target}. The evidence does not establish that by itself.`,
@@ -88,15 +91,122 @@ function buildAlerts(caseFile?: CaseFile): IntelligenceAlert[] {
         label: "Connection worth testing",
         title: "The old financial story now matters more",
         facts: [
-          oldMoney ? `${bathroom.target} described the old financial dispute as settled.` : `${bathroom.target} said they had never seen the blue ledger.`,
-          "The recovered ledger documents a decades-old theft and contains the note: “Old friend. Last chance to make this right.”",
+          oldMoney ? `${bathroom.target} described the old financial dispute as settled.` : `${bathroom.target} denied firsthand knowledge of the ledger.`,
+          "The recovered ledger documents a decades-old theft and an unresolved personal relationship.",
         ],
-        caution: "The wording points toward a relationship, not automatically toward a specific person. Ask follow-up questions before drawing a conclusion.",
+        caution: "The wording points toward a relationship, not automatically toward a specific person. Test the connection before drawing a conclusion.",
       });
     }
   }
 
   return alerts;
+}
+
+function businessPartnerAlerts(caseFile: CaseFile): IntelligenceAlert[] {
+  const alerts: IntelligenceAlert[] = [];
+  const study = findInterview(caseFile.interviews, ["downstairs study", "study at 10:30", "stayed with the copied records"]);
+
+  if (study && hasEvidence(caseFile, "torn bank-record fragment")) {
+    alerts.push({
+      id: "study-record-fragment",
+      label: "Connection worth testing",
+      title: `${study.target}'s study story now intersects with physical evidence`,
+      facts: [
+        `${study.target} placed themselves around the downstairs study or copied records.`,
+        "A torn fragment from a copied Blackwood Holdings packet was recovered near the kitchen/back-door route.",
+      ],
+      caution: "The fragment connects locations and paperwork. It does not prove who carried it through the rear route.",
+    });
+  }
+
+  if (study && hasEvidence(caseFile, "rear route")) {
+    alerts.push({
+      id: "study-route-pressure",
+      label: "Timeline pressure",
+      title: "The study alibi deserves a minute-by-minute check",
+      facts: [
+        `${study.target}'s earlier answer places them around the study.`,
+        "The rear-route evidence shows movement from the library side near the end of the death window.",
+      ],
+      caution: "Ask whether anyone can verify the full 10:31–10:35 interval. An unverified gap is not itself proof of guilt.",
+    });
+  }
+
+  return alerts;
+}
+
+function sisterAlerts(caseFile: CaseFile): IntelligenceAlert[] {
+  const alerts: IntelligenceAlert[] = [];
+  const garden = findInterview(caseFile.interviews, ["garden gate", "family accountant", "outside near the garden"]);
+
+  if (garden && hasEvidence(caseFile, "garden-call gap")) {
+    alerts.push({
+      id: "garden-call-pressure",
+      label: "Possible contradiction",
+      title: `${garden.target}'s call may not cover the whole death window`,
+      facts: [
+        `${garden.target} used the accountant call as part of their timeline.`,
+        "Phone records show that call briefly disconnected during the fatal window before reconnecting.",
+      ],
+      caution: "A disconnected call creates opportunity, not identity. Re-check what could happen during that gap.",
+    });
+  }
+
+  if (garden && hasEvidence(caseFile, "cream-paper fragment")) {
+    alerts.push({
+      id: "garden-paper-link",
+      label: "Connection worth testing",
+      title: "The inheritance papers moved beyond the room where they belonged",
+      facts: [
+        "A cream legal-paper fragment was found near the kitchen threshold.",
+        "The paper stock matches inheritance documents involved in the family dispute.",
+      ],
+      caution: "The paper connects the dispute to a route through the house, but not automatically to the person who carried it.",
+    });
+  }
+
+  return alerts;
+}
+
+function chefAlerts(caseFile: CaseFile): IntelligenceAlert[] {
+  const alerts: IntelligenceAlert[] = [];
+  const kitchen = findInterview(caseFile.interviews, ["cleaning in the kitchen", "kitchen continuously", "kitchen at 10:30"]);
+
+  if (kitchen && hasEvidence(caseFile, "service gap")) {
+    alerts.push({
+      id: "kitchen-service-gap",
+      label: "Possible contradiction",
+      title: `${kitchen.target}'s continuous-kitchen story needs another look`,
+      facts: [
+        `${kitchen.target} described continuous kitchen work during the critical period.`,
+        "Kitchen activity logs show an unexplained pause during the fatal window.",
+      ],
+      caution: "The pause creates an unaccounted interval. It does not by itself establish where anyone went.",
+    });
+  }
+
+  if (kitchen && hasEvidence(caseFile, "rinsed prep trace")) {
+    alerts.push({
+      id: "kitchen-trace-link",
+      label: "Connection worth testing",
+      title: "The sink contains a second cleanup story",
+      facts: [
+        "A freshly rinsed prep trace contains residue from Adrian's private plate.",
+        `${kitchen.target}'s answers establish firsthand control of dinner service and cleanup.`,
+      ],
+      caution: "Kitchen access explains opportunity to handle the trace, not necessarily why or when it was rinsed.",
+    });
+  }
+
+  return alerts;
+}
+
+export function buildMysteryCaseAlerts(caseFile?: CaseFile): IntelligenceAlert[] {
+  if (!caseFile) return [];
+  if (hasEvidence(caseFile, "torn bank-record fragment") || hasEvidence(caseFile, "company records")) return businessPartnerAlerts(caseFile);
+  if (hasEvidence(caseFile, "garden-call gap") || hasEvidence(caseFile, "cream-paper fragment")) return sisterAlerts(caseFile);
+  if (hasEvidence(caseFile, "service gap") || hasEvidence(caseFile, "rinsed prep trace")) return chefAlerts(caseFile);
+  return oldFriendAlerts(caseFile);
 }
 
 export function MysteryCaseIntelligence() {
@@ -127,7 +237,7 @@ export function MysteryCaseIntelligence() {
     };
   }, []);
 
-  const alerts = useMemo(() => buildAlerts(snapshot?.caseFile), [snapshot]);
+  const alerts = useMemo(() => buildMysteryCaseAlerts(snapshot?.caseFile), [snapshot]);
   if (!snapshot || snapshot.status === "lobby" || alerts.length === 0) return null;
 
   return (
