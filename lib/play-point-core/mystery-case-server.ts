@@ -188,6 +188,8 @@ function privateRoleLeads(state: MysteryState, viewer: Player): Lead[] {
   if (state.evidenceIndex >= 1 && viewer.roleId === "chef") leads.push({ id: "private_chef_drink", title: "You know Adrian's drink habit", text: "You are certain Adrian disliked whiskey and drank red wine that evening. The rinsed whiskey glass belonged to someone else.", source: "private-clue", correctSupport: true });
   if (state.evidenceIndex >= 2 && viewer.roleId === "partner") leads.push({ id: "private_partner_door", title: "You noticed the back door later", text: "You personally saw the kitchen back door partly open at about 10:42, reinforcing the possibility that someone used that route after the murder.", source: "private-clue", correctSupport: true });
   if (state.evidenceIndex >= 3 && viewer.roleId === "lawyer") leads.push({ id: "private_lawyer_ledger", title: "Adrian directed attention to the ledger", text: "Your private legal context makes the blue ledger more significant than the room realizes: Adrian expected it to matter if his meeting went badly.", source: "private-clue", correctSupport: true });
+  if (state.evidenceIndex >= 0 && viewer.roleId === "murderer") leads.push({ id: "murderer_cover_bathroom", title: "Your bathroom cover story", text: "Your safest defense is the same story you have used all night: you stepped away to the downstairs bathroom and remained there through the critical window.", source: "suspicious", correctSupport: false });
+  if (state.evidenceIndex >= 1 && viewer.roleId === "murderer") leads.push({ id: "murderer_cover_motives", title: "The room has other believable motives", text: "The business dispute, inheritance fight, job loss, and legal conflicts give you several truthful reasons to point investigators away from you without inventing evidence.", source: "suspicious", correctSupport: false });
   return leads;
 }
 
@@ -265,7 +267,7 @@ function project(state: MysteryState, viewer: Player) {
     options: { motives: MOTIVES, locations: LOCATIONS, windows: WINDOWS },
     submittedCount: Object.keys(submissions).length,
     playerCount: state.players.length,
-    mySubmission: mySubmission ? { score: mySubmission.score, convicted: mySubmission.convicted, locked: true } : null,
+    mySubmission: mySubmission ? (state.status === "reveal" ? { score: mySubmission.score, convicted: mySubmission.convicted, locked: true } : { locked: true }) : null,
     reveal,
   };
 }
