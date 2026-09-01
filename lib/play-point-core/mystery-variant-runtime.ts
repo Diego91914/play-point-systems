@@ -37,7 +37,7 @@ const OVERRIDES: Record<string, Record<string, AnswerOverrides>> = {
 
   "blackwood-younger-sister": {
     sister: {
-      where: { mustReveal: "Say you were outside near the garden gate on a call at 10:30.", mayHide: "You returned inside during a break in the call." },
+      where: { mustReveal: "Say you were outside near the garden gate on a call at 10:30.", mayHide: "During a break in the call, you returned inside and went to the library during the fatal window." },
       victim: { mustReveal: "Say your last direct argument with Adrian was earlier over the inheritance.", mayHide: "You confronted him again privately in the library." },
       heard: { mustReveal: "Say you heard nothing clearly from the garden side.", mayHide: "You were inside during part of the fatal window." },
       motive: { mustReveal: "Admit the inheritance fight was serious and that you feared being cut out.", mayHide: "You learned Adrian planned to accuse you of concealing family assets." },
@@ -58,6 +58,7 @@ const OVERRIDES: Record<string, Record<string, AnswerOverrides>> = {
       money: { mustReveal: "Your company-money dispute was serious, but it is separate from the inheritance documents." },
     },
     murderer: {
+      where: { mustReveal: "You were near the downstairs bathroom during the critical window." },
       ledger: { mustReveal: "The old blue-ledger dispute involving you is real, but it is separate from tonight's inheritance fight." },
       drink: { mustReveal: "You drank whiskey earlier. The glass makes you look suspicious, but you did not kill Adrian in this version." },
     },
