@@ -104,7 +104,7 @@ const OVERRIDES: Record<string, Record<string, AnswerOverrides>> = {
     },
     sister: {
       where: { mustReveal: "You were outside during the 10:31–10:35 window." },
-      after: { mustReveal: "From outside you noticed brief movement near the kitchen-side porch but could not identify the person." },
+      after: { mustReveal: "After 10:35, from outside you noticed brief movement near the kitchen-side porch but could not identify the person." },
       heard: { mustReveal: "From outside you noticed brief movement near the kitchen-side porch, but you could not identify who it was." },
       door: { mustReveal: "You saw movement near the kitchen-side rear route, but not enough to identify the person." },
     },
