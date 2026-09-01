@@ -11,23 +11,23 @@ describe("Blackwood scalable interrogation pacing", () => {
     [4, 4, 16],
     [5, 5, 20],
     [6, 6, 24],
-    [7, 6, 24],
-    [8, 6, 24],
+    [7, 7, 28],
+    [8, 8, 32],
   ])("%i players uses %i questions per evidence and %i total", (players, perRound, total) => {
     expect(questionsPerEvidenceRound(players)).toBe(perRound);
     expect(totalInvestigationQuestions(players)).toBe(total);
   });
 
-  it("keeps the largest group from growing to the old 32-question case", () => {
-    expect(totalInvestigationQuestions(8)).toBe(24);
-    expect(totalInvestigationQuestions(8)).toBeLessThan(32);
+  it("lets larger tables naturally run longer instead of forcing a 24-question cap", () => {
+    expect(totalInvestigationQuestions(8)).toBe(32);
+    expect(totalInvestigationQuestions(8)).toBeGreaterThan(totalInvestigationQuestions(6));
   });
 
-  it.each([4, 5, 6, 7, 8])("gives every seat at least three personal investigation turns with %i players", players => {
-    expect(minimumInvestigatorTurnsPerPlayer(players)).toBeGreaterThanOrEqual(3);
+  it.each([4, 5, 6, 7, 8])("gives every seat four personal investigation turns with %i players", players => {
+    expect(minimumInvestigatorTurnsPerPlayer(players)).toBe(4);
     const distribution = investigationTurnDistribution(players);
     expect(distribution).toHaveLength(players);
-    expect(Math.min(...distribution)).toBeGreaterThanOrEqual(3);
-    expect(Math.max(...distribution) - Math.min(...distribution)).toBeLessThanOrEqual(1);
+    expect(Math.min(...distribution)).toBe(4);
+    expect(Math.max(...distribution)).toBe(4);
   });
 });
