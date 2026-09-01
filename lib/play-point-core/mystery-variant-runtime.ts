@@ -102,7 +102,15 @@ export function getVariantRoleMemory(variantId: string | undefined | null, roleI
   if (!variantId || !roleId) return baseMemory;
   const truth = getBlackwoodVariantContent(variantId)?.roleTruths.find(item => item.roleId === roleId);
   if (!truth) return baseMemory;
-  return [...baseMemory, ...truth.privateTruth, ...(truth.coverStory?.map(item => `COVER STORY: ${item}`) ?? [])];
+
+  // Core-role memories from the original case can contain objective statements
+  // that are false in another authored truth (including "you did not kill" or
+  // a witness memory that belongs to the culprit). Once a variant has locked,
+  // its authored role truth replaces that base memory rather than being appended.
+  return [
+    ...truth.privateTruth,
+    ...(truth.coverStory?.map(item => `COVER STORY: ${item}`) ?? []),
+  ];
 }
 
 export function getVariantEvidence(variantId: string | undefined | null) {
