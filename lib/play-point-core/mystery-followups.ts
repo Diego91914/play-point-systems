@@ -20,7 +20,7 @@ function roomPreviouslyAsked(context: FollowupContext, ids: string[]) {
   return context.asked.some(record => record.targetId === context.targetId && ids.includes(record.questionId));
 }
 
-function variantLabel(variantId: string | null | undefined, questionId: string) {
+function variantLabel(variantId: string | null | undefined, questionId: string, evidenceIndex: number) {
   if (variantId === "blackwood-business-partner") {
     const labels: Record<string, string> = {
       drink: "Now that physical evidence has appeared, what detail from dinner service could be misleading us?",
@@ -56,6 +56,7 @@ function variantLabel(variantId: string | null | undefined, questionId: string) 
   }
 
   if (variantId === "blackwood-private-chef") {
+    const householdChargesKnown = evidenceIndex >= 3;
     const labels: Record<string, string> = {
       drink: "Adrian's food and drink habits are now relevant. What do you know firsthand?",
       glass: "What was handled, rinsed, or cleaned in the kitchen after dinner?",
@@ -63,11 +64,21 @@ function variantLabel(variantId: string | null | undefined, questionId: string) 
       door: "What do you know about movement through the kitchen-side rear entrance?",
       porch_route: "Could someone leave the library and return to the kitchen quickly by the rear route?",
       dark_jacket: "Was the movement near the kitchen side clear enough to identify clothing or a person?",
-      money: "What financial damage could Adrian's firing and household-account accusations cause?",
-      old_money: "How is the Old Friend's old dispute different from the Chef's current financial problem?",
-      ledger: "Does the blue ledger actually explain the household-account charges?",
-      ledger_entry: "What evidence points to current service accounts rather than the old ledger?",
-      final_pressure: "What fact about the firing or household accounts makes your story look worst now?",
+      money: householdChargesKnown
+        ? "What financial damage could Adrian's household-account accusations cause?"
+        : "What financial damage could losing Adrian as a client cause?",
+      old_money: householdChargesKnown
+        ? "How is the Old Friend's old dispute different from the Chef's household-account problem?"
+        : "How is the Old Friend's old dispute different from the Chef's current employment conflict?",
+      ledger: householdChargesKnown
+        ? "Does the blue ledger actually explain the household-account charges?"
+        : "Does the blue ledger actually explain the Chef's current dispute with Adrian?",
+      ledger_entry: householdChargesKnown
+        ? "What evidence points to the household service accounts rather than the old ledger?"
+        : "What evidence points to tonight's service conflict rather than the old ledger?",
+      final_pressure: householdChargesKnown
+        ? "What fact about the household accounts makes your story look worst now?"
+        : "What fact about the firing makes your story look worst right now?",
     };
     return labels[questionId];
   }
@@ -95,7 +106,7 @@ function contradictionLabel(context: FollowupContext, questionId: string) {
 
 export function applyMysteryFollowupLabels<T extends QuestionOption[]>(questions: T, context: FollowupContext): T {
   return questions.map(question => {
-    let label = contradictionLabel(context, question.id) ?? variantLabel(context.variantId, question.id) ?? question.label;
+    let label = contradictionLabel(context, question.id) ?? variantLabel(context.variantId, question.id, context.evidenceIndex) ?? question.label;
 
     if (!label.startsWith("CONTRADICTION:")) {
       if (question.id === "alibi" && roomPreviouslyAsked(context, ["where"])) {
