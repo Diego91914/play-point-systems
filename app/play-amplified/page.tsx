@@ -3,6 +3,11 @@ import {
   PLAY_POINT_GAME_CATALOG,
   getSalesReadyCatalog,
 } from "@/lib/play-point-core/games-catalog";
+import {
+  FOUNDERS_BUNDLE_TIERS,
+  QUEST_CADDY_SKU,
+  isFoundersBundleEligible,
+} from "@/lib/play-point-core/founders-bundle";
 
 const startGameSkus = new Set([
   "game.on_my_list",
@@ -26,9 +31,19 @@ const amplifySkus = new Set([
 const startGames = PLAY_POINT_GAME_CATALOG.filter((game) => startGameSkus.has(game.sku));
 const amplifyGames = PLAY_POINT_GAME_CATALOG.filter((game) => amplifySkus.has(game.sku));
 const finishedGameCount = getSalesReadyCatalog().length;
+const founderBundleEligibleCount = PLAY_POINT_GAME_CATALOG.filter(isFoundersBundleEligible).length;
 
 function GameCard({ game }: { game: (typeof PLAY_POINT_GAME_CATALOG)[number] }) {
   const priceLabel = game.priceUsd === null ? null : `$${game.priceUsd.toFixed(2)}`;
+  const bundleEligible = isFoundersBundleEligible(game);
+  const priceNote = !priceLabel
+    ? "Try it now"
+    : bundleEligible
+      ? "Founder bundle eligible"
+      : game.sku === QUEST_CADDY_SKU
+        ? "Sold separately"
+        : "One-time price";
+
   const content = (
     <>
       <div className="flex items-start justify-between gap-4">
@@ -49,9 +64,7 @@ function GameCard({ game }: { game: (typeof PLAY_POINT_GAME_CATALOG)[number] }) 
       </div>
       <p className="mt-3 text-sm leading-6 text-white/60">{game.description}</p>
       <div className="mt-5 flex items-center justify-between gap-3 border-t border-white/8 pt-4">
-        <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/42">
-          {priceLabel ? "One-time price" : "Try it now"}
-        </span>
+        <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/42">{priceNote}</span>
         <span className="text-sm font-black text-cyan-100 transition group-hover:translate-x-1">View / Play →</span>
       </div>
     </>
@@ -114,6 +127,9 @@ export default function PlayAmplifiedPage() {
               <a href="#games" className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">
                 See Games & Prices
               </a>
+              <a href="#founders-special" className="inline-flex items-center justify-center rounded-2xl border border-amber-200/25 bg-amber-300/[0.08] px-6 py-3.5 text-sm font-black text-amber-50 transition hover:-translate-y-0.5 hover:bg-amber-300/[0.13]">
+                Founder&apos;s Bundle Special
+              </a>
               <Link href="/games" className="inline-flex items-center justify-center rounded-2xl border border-white/14 bg-white/[0.05] px-6 py-3.5 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-white/[0.09]">
                 My Games
               </Link>
@@ -134,6 +150,70 @@ export default function PlayAmplifiedPage() {
               <p className="mt-4 text-sm leading-7 text-white/62 sm:text-base">
                 Disc golf, golf, putting, backyard throws, and other physical play stay real. Play Amplified adds challenges, strategy, cards, predictions, powers, scoring, or story on top.
               </p>
+            </div>
+          </section>
+
+          <section id="founders-special" className="scroll-mt-6 py-16 sm:py-20">
+            <div className="overflow-hidden rounded-[34px] border border-amber-200/20 bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.14),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(34,211,238,0.10),transparent_35%),rgba(255,255,255,0.03)] p-7 sm:p-10">
+              <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+                <div className="max-w-3xl">
+                  <div className="inline-flex rounded-full border border-amber-200/25 bg-amber-300/[0.09] px-3.5 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-amber-100">
+                    Founder&apos;s Special
+                  </div>
+                  <h2 className="mt-5 text-4xl font-black tracking-tight text-white sm:text-5xl">Build your own Play Pack.</h2>
+                  <p className="mt-4 text-sm leading-7 text-white/65 sm:text-base">
+                    Mix any eligible Play Amplified games in one purchase. The more eligible games you choose, the more you save. Different game prices can be combined because the discount is applied as a percentage.
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/25 px-4 py-3 text-sm font-bold text-white/65">
+                  {founderBundleEligibleCount} games eligible today
+                </div>
+              </div>
+
+              <div className="mt-8 grid gap-4 md:grid-cols-3">
+                {FOUNDERS_BUNDLE_TIERS.map((tier) => {
+                  const isBestValue = tier.minimumEligibleGames === 8;
+                  return (
+                    <div
+                      key={tier.minimumEligibleGames}
+                      className={`rounded-[26px] border p-6 ${
+                        isBestValue
+                          ? "border-amber-200/35 bg-amber-300/[0.09]"
+                          : "border-white/10 bg-black/20"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-[10px] font-black uppercase tracking-[0.18em] text-white/50">
+                          {isBestValue ? "Best Founder Value" : "Play Pack"}
+                        </span>
+                        {isBestValue ? (
+                          <span className="rounded-full border border-amber-200/25 bg-amber-300/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.14em] text-amber-100">Founder&apos;s Special</span>
+                        ) : null}
+                      </div>
+                      <div className="mt-5 text-4xl font-black tracking-tight text-white">
+                        {tier.minimumEligibleGames}{tier.minimumEligibleGames === 8 ? "+" : ""} games
+                      </div>
+                      <div className="mt-2 text-2xl font-black text-amber-100">Save {tier.discountPercent}%</div>
+                      <p className="mt-3 text-sm leading-6 text-white/55">
+                        {tier.minimumEligibleGames === 3
+                          ? "Choose 3 or 4 eligible games."
+                          : tier.minimumEligibleGames === 5
+                            ? "Choose 5 to 7 eligible games."
+                            : "Choose 8 or more eligible games for the strongest launch discount."}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-7 grid gap-3 border-t border-white/10 pt-6 text-sm leading-6 text-white/58 md:grid-cols-2">
+                <p>
+                  <span className="font-black text-white">Quest Caddy is sold separately.</span> It does not count toward a Play Pack threshold and does not receive a Founder&apos;s bundle discount.
+                </p>
+                <p>
+                  <span className="font-black text-white">Founder&apos;s pricing is introductory.</span> Bundle rates may change for future purchases; games already purchased remain yours.
+                </p>
+              </div>
             </div>
           </section>
 
