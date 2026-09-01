@@ -2,6 +2,7 @@ import "server-only";
 
 import { createHash, timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
+import { resolveBlackwoodVariant, type MysteryBranchSignals } from "@/lib/play-point-core/mystery-case-variants";
 
 type Player = { id: string; name: string; tokenHash: string; seat: number; roleId?: string };
 type DormantChoice = { status: "available" | "opened" | "sealed"; decidedAt?: string };
@@ -11,6 +12,8 @@ type State = {
   players: Player[];
   evidenceIndex: number;
   dormantEvidence?: Record<string, DormantChoice>;
+  branchSignals?: MysteryBranchSignals;
+  caseVariantId?: string;
 };
 type Row = { code: string; state: State; version: number };
 
@@ -56,7 +59,7 @@ function project(state: State, viewer: Player) {
     status: choice.status,
     openedText: choice.status === "opened" ? "Adrian wrote that he had uncovered an old theft by someone he had trusted for decades. He planned to confront that person privately tonight and give them one final chance to admit the truth. He did not name the person." : null,
     sealedText: choice.status === "sealed" ? "You chose not to open Adrian’s envelope. It remains in your possession. You may tell the room it exists, but you do not know what is inside." : null,
-    rule: "This is a private avenue, not a required clue. Blackwood House remains solvable without opening it.",
+    rule: "This is a private avenue. Your choice may change what becomes discoverable later, but the phone never explains the machinery behind the story.",
   };
 }
 
@@ -77,10 +80,21 @@ export async function decideMysteryDormantEvidence(codeValue: unknown, playerId:
   const existing = row.state.dormantEvidence?.[playerId];
   if (existing && existing.status !== "available") throw new Error("You already made this choice.");
   if (decision !== "open" && decision !== "seal") throw new Error("Choose whether to open the envelope or keep it sealed.");
+
   row.state.dormantEvidence = {
     ...(row.state.dormantEvidence ?? {}),
     [playerId]: { status: decision === "open" ? "opened" : "sealed", decidedAt: new Date().toISOString() },
   };
+
+  // The player is never told this normal story choice is also a branch signal.
+  // Only release-ready authored variants are eligible, so an unfinished branch
+  // can never leak into a live game.
+  row.state.branchSignals = {
+    ...(row.state.branchSignals ?? {}),
+    adrian_sealed_letter: decision,
+  };
+  row.state.caseVariantId = resolveBlackwoodVariant(row.state.branchSignals, row.state.caseVariantId).id;
+
   const saved = await save(row, row.state);
   return { evidence: project(saved.state, viewer) };
 }
