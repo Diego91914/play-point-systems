@@ -37,13 +37,6 @@ type Game = {
     interruption: null | { label: string; title: string; text: string };
     acknowledged: boolean;
   };
-  votesCast: number;
-  myVote: string | null;
-  reveal: null | {
-    murderer: { id: string; name: string; role: string };
-    voteCounts: Record<string, number>;
-    solvedBy: string[];
-  };
   me: {
     id: string;
     isHost: boolean;
@@ -253,26 +246,6 @@ export function MysteryClient() {
             {game.evidence.interruption && <div className="mt-4 rounded-2xl border border-rose-200/25 bg-black/25 p-4"><div className="text-[10px] font-black uppercase tracking-widest text-rose-100">{game.evidence.interruption.label}</div><div className="mt-1 text-lg font-black text-white">{game.evidence.interruption.title}</div><p className="mt-2 text-sm leading-6 text-white/65">{game.evidence.interruption.text}</p></div>}
             {game.evidence.privateText && <div className="mt-4 rounded-2xl border border-amber-200/25 bg-amber-200/[.08] p-4"><div className="text-[10px] font-black uppercase tracking-widest text-amber-100">Only your phone shows this</div><p className="mt-2 text-sm leading-6 text-white/70">{game.evidence.privateText}</p></div>}
             <button disabled={busy || game.evidence.acknowledged} onClick={() => act("ack-evidence")} className="mt-5 w-full rounded-2xl bg-rose-200 px-4 py-4 font-black text-slate-950 disabled:opacity-40">{game.evidence.acknowledged ? "WAITING FOR EVERYONE…" : "I'VE SEEN THE EVIDENCE"}</button>
-          </section>
-        )}
-
-        {game.status === "accusation" && (
-          <section className="mt-5 rounded-[28px] border border-rose-300/25 bg-rose-300/[.07] p-6">
-            <div className="text-xs font-black uppercase tracking-[.22em] text-rose-200">Final accusation</div>
-            <h3 className="mt-2 text-3xl font-black text-white">Who killed the victim?</h3>
-            <p className="mt-2 text-sm leading-6 text-white/55">Your Case File has kept the facts. Now you decide what they mean.</p>
-            <div className="mt-5 grid gap-2 sm:grid-cols-2">{game.players.map(player => <button key={player.id} disabled={busy || Boolean(game.myVote)} onClick={() => act("vote", { targetId: player.id })} className={`rounded-2xl border px-4 py-4 text-left font-black ${game.myVote === player.id ? "border-rose-200/50 bg-rose-200/15 text-white" : "border-white/10 bg-black/20 text-white/75 disabled:opacity-50"}`}>{player.name}</button>)}</div>
-            <p className="mt-4 text-center text-sm text-white/45">{game.votesCast}/{game.players.length} accusations locked</p>
-          </section>
-        )}
-
-        {game.status === "reveal" && game.reveal && (
-          <section className="mt-5 rounded-[30px] border border-rose-300/30 bg-[radial-gradient(circle_at_top,rgba(244,63,94,.16),transparent_45%),rgba(255,255,255,.035)] p-7 text-center">
-            <div className="text-xs font-black uppercase tracking-[.24em] text-rose-200">The truth</div>
-            <h2 className="mt-3 text-4xl font-black text-white">{game.reveal.murderer.name}</h2>
-            <div className="mt-1 text-lg font-black text-rose-100">{game.reveal.murderer.role}</div>
-            <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-white/60">The Old Friend killed the victim in the library around 10:33 after the victim discovered an old theft. The dark jacket, back-porch route, rinsed whiskey glass, and blue ledger were the trail. The Business Partner's threatening text was real—but it referred to an outside audit, not murder.</p>
-            <div className="mt-5 rounded-2xl border border-white/10 bg-black/20 p-4"><div className="text-xs font-black uppercase tracking-widest text-white/40">Solved it</div><div className="mt-2 text-lg font-black text-white">{game.reveal.solvedBy.length ? game.reveal.solvedBy.join(", ") : "Nobody caught the murderer."}</div></div>
           </section>
         )}
 
