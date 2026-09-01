@@ -25,6 +25,7 @@ const CASES = [
     route: /rear route/i,
   },
 ] as const;
+const CORE_ROLES = ["murderer", "partner", "sister", "chef"] as const;
 
 function answer(variantId: string, roleId: string, key: MysteryAnswerKey) {
   const result = getVariantAnswerOverride(variantId, roleId, key);
@@ -44,11 +45,37 @@ describe("Blackwood interrogation answers agree with canonical timelines", () =>
     }
   });
 
+  it("gives every core role explicit where and timeline answers in every alternate truth", () => {
+    for (const item of CASES) {
+      for (const roleId of CORE_ROLES) {
+        const where = answer(item.variantId, roleId, "where");
+        const after = answer(item.variantId, roleId, "after");
+        expect(where.mustReveal.length).toBeGreaterThan(10);
+        expect(after.mustReveal).toMatch(/10:31|10:35|after/i);
+      }
+    }
+  });
+
   it("keeps each alternate culprit's post-murder answer tied to the real rear-route movement", () => {
     for (const item of CASES) {
       const after = answer(item.variantId, item.culpritRoleId, "after");
+      expect(after.mustReveal).toMatch(/10:31–10:35/);
       expect(after.mayHide).toMatch(item.route);
     }
+  });
+
+  it("keeps contradiction answers responsive to the evidence without forcing a confession", () => {
+    const partnerDoor = answer("blackwood-business-partner", "partner", "door");
+    expect(partnerDoor.mustReveal).toMatch(/rear-route evidence does not prove/i);
+    expect(partnerDoor.mayHide).toMatch(/used the rear route/i);
+
+    const sisterDoor = answer("blackwood-younger-sister", "sister", "door");
+    expect(sisterDoor.mustReveal).toMatch(/does not prove who used it/i);
+    expect(sisterDoor.mayHide).toMatch(/used the rear route yourself/i);
+
+    const chefDoor = answer("blackwood-private-chef", "chef", "door");
+    expect(chefDoor.mustReveal).toMatch(/do not prove you left the kitchen/i);
+    expect(chefDoor.mayHide).toMatch(/used that route/i);
   });
 
   it("keeps the Sister's answers compatible with a broken accountant call, not a porch sighting", () => {
@@ -72,7 +99,9 @@ describe("Blackwood interrogation answers agree with canonical timelines", () =>
   it("keeps innocent Old Friend answers away from the library in every alternate truth", () => {
     for (const item of CASES) {
       const where = answer(item.variantId, "murderer", "where");
+      const after = answer(item.variantId, "murderer", "after");
       expect(where.mustReveal).toMatch(/bathroom/i);
+      expect(after.mustReveal).toMatch(/bathroom/i);
       expect(where.mustReveal).not.toMatch(/library/i);
       const timeline = blackwoodTimelineFor(item.variantId, "murderer")!;
       expect(timeline.beats.some(beat => /bathroom/i.test(beat.location))).toBe(true);
