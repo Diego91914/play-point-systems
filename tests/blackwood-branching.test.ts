@@ -6,6 +6,11 @@ import {
 } from "../lib/play-point-core/mystery-case-variants";
 import { getBlackwoodVariantContent } from "../lib/play-point-core/mystery-variant-content";
 import { getVariantAnswerOverride, getVariantRoleMemory } from "../lib/play-point-core/mystery-variant-runtime";
+import {
+  BLACKWOOD_PRELOCK_EVIDENCE,
+  getPrelockAnswerOverride,
+  getPrelockRoleMemory,
+} from "../lib/play-point-core/mystery-prelock-runtime";
 
 const paths = [
   { letter: "open", voice: "listen", expected: "blackwood-old-friend" },
@@ -45,6 +50,31 @@ describe("Blackwood hidden branching", () => {
     expect(byId["blackwood-business-partner"].correctSupportIds.some(id => id.includes("sealed_letter"))).toBe(false);
     expect(byId["blackwood-younger-sister"].correctSupportIds.some(id => id.includes("voice_draft"))).toBe(false);
     expect(byId["blackwood-private-chef"].correctSupportIds.some(id => id.includes("voice_draft"))).toBe(true);
+  });
+});
+
+describe("Blackwood branch-safe first phase", () => {
+  it("does not tell any core role who the murderer is before the branch locks", () => {
+    for (const roleId of ["partner", "sister", "chef", "murderer"]) {
+      const memory = getPrelockRoleMemory(roleId, ["You are the murderer.", "You did not kill the victim."]);
+      const joined = memory.join(" ").toLowerCase();
+      expect(joined).not.toContain("you are the murderer");
+      expect(joined).not.toContain("you did not kill");
+    }
+  });
+
+  it("keeps the Sister's early rear-route information non-identifying", () => {
+    const heard = getPrelockAnswerOverride("sister", "heard");
+    expect(heard?.mustReveal.toLowerCase()).not.toContain("dark jacket");
+    expect(heard?.mustReveal.toLowerCase()).not.toContain("10:35");
+  });
+
+  it("keeps the first evidence compatible with every culprit path", () => {
+    expect(BLACKWOOD_PRELOCK_EVIDENCE.publicText).toContain("10:31 and 10:35");
+    expect(BLACKWOOD_PRELOCK_EVIDENCE.publicText.toLowerCase()).not.toContain("old friend");
+    expect(BLACKWOOD_PRELOCK_EVIDENCE.publicText.toLowerCase()).not.toContain("whiskey");
+    expect(BLACKWOOD_PRELOCK_EVIDENCE.publicText.toLowerCase()).not.toContain("inheritance");
+    expect(BLACKWOOD_PRELOCK_EVIDENCE.publicText.toLowerCase()).not.toContain("chef");
   });
 });
 
