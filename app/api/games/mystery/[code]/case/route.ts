@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getMysteryCase, submitMysteryCase } from "@/lib/play-point-core/mystery-case-server";
+import { getMysteryCase, submitMysteryCase } from "@/lib/play-point-core/mystery-case-server-v2";
 
 export async function GET(request: Request, context: { params: Promise<{ code: string }> }) {
   try {
