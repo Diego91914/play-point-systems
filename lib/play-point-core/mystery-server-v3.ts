@@ -8,6 +8,7 @@ import {
 } from "@/lib/play-point-core/mystery-server-v2";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import { getMysteryCaseVariant } from "@/lib/play-point-core/mystery-case-variants";
+import { applyMysteryFollowupLabels, followupLabelForQuestion } from "@/lib/play-point-core/mystery-followups";
 import { questionsPerEvidenceRound } from "@/lib/play-point-core/mystery-pacing";
 import {
   BLACKWOOD_PRELOCK_EVIDENCE,
@@ -110,6 +111,33 @@ function answerOverrideFor(raw: RawState, roleId: string | undefined, questionId
   return getVariantAnswerOverride(raw.caseVariantId, roleId, answerKey);
 }
 
+function applyFollowupProjection(projected: ProjectedState, raw: RawState, viewerId: string, requestedTargetId?: string) {
+  const targetId = requestedTargetId ?? raw.pendingQuestion?.targetId;
+  const targetRoleId = targetId ? raw.players.find(player => player.id === targetId)?.roleId : undefined;
+  const context = {
+    viewerId,
+    targetId,
+    targetRoleId,
+    evidenceIndex: raw.evidenceIndex,
+    variantId: raw.caseVariantId,
+    asked: raw.asked ?? [],
+  };
+
+  if (Array.isArray(projected.questions) && targetId) {
+    projected.questions = applyMysteryFollowupLabels(projected.questions, context);
+  }
+
+  if (projected.pendingQuestion && raw.pendingQuestion) {
+    projected.pendingQuestion.questionLabel = followupLabelForQuestion(
+      raw.pendingQuestion.questionId,
+      projected.pendingQuestion.questionLabel,
+      context,
+    );
+  }
+
+  return projected;
+}
+
 function applyPrelockProjection(projected: ProjectedState, raw: RawState, viewerId: string) {
   const viewer = raw.players.find(player => player.id === viewerId);
   const roleId = viewer?.roleId;
@@ -148,8 +176,10 @@ function applyPrelockProjection(projected: ProjectedState, raw: RawState, viewer
   return projected;
 }
 
-function enhanceProjection(projected: ProjectedState, raw: RawState, viewerId: string) {
-  if (!raw.caseVariantId) return applyPrelockProjection(projected, raw, viewerId);
+function enhanceProjection(projected: ProjectedState, raw: RawState, viewerId: string, requestedTargetId?: string) {
+  if (!raw.caseVariantId) {
+    return applyFollowupProjection(applyPrelockProjection(projected, raw, viewerId), raw, viewerId, requestedTargetId);
+  }
 
   const variant = getMysteryCaseVariant(raw.caseVariantId);
   const viewer = raw.players.find(player => player.id === viewerId);
@@ -203,25 +233,34 @@ function enhanceProjection(projected: ProjectedState, raw: RawState, viewerId: s
     if (culprit) projected.reveal.murderer = { id: culprit.id, name: culprit.name, role: variant.culpritLabel };
   }
 
-  return projected;
+  return applyFollowupProjection(projected, raw, viewerId, requestedTargetId);
 }
 
-async function enhanceResult<T extends ProjectedResult>(result: T, code: string, viewerId: string): Promise<T> {
+async function enhanceResult<T extends ProjectedResult>(result: T, code: string, viewerId: string, requestedTargetId?: string): Promise<T> {
   const row = await readRaw(code);
   if (!row) return result;
-  result.state = enhanceProjection(result.state, row.state, viewerId);
+  result.state = enhanceProjection(result.state, row.state, viewerId, requestedTargetId);
   return result;
 }
 
-async function patchRecordedAnswer(code: string, expected: MysteryPromptAnswer | null) {
-  if (!expected) return;
+async function patchRecordedAnswer(code: string, expected: MysteryPromptAnswer | null, before: RawState) {
   for (let attempt = 0; attempt < 2; attempt++) {
     const row = await readRaw(code);
     if (!row?.state.asked?.length) return;
     const asked = [...row.state.asked];
     const last = asked[asked.length - 1];
-    if (last.answer === expected.mustReveal) return;
-    asked[asked.length - 1] = { ...last, answer: expected.mustReveal };
+    const targetRoleId = before.players.find(player => player.id === last.targetId)?.roleId;
+    const questionLabel = followupLabelForQuestion(last.questionId, last.questionLabel, {
+      viewerId: last.questionerId,
+      targetId: last.targetId,
+      targetRoleId,
+      evidenceIndex: before.evidenceIndex,
+      variantId: before.caseVariantId,
+      asked: before.asked ?? [],
+    });
+    const answer = expected?.mustReveal ?? last.answer;
+    if (last.answer === answer && last.questionLabel === questionLabel) return;
+    asked[asked.length - 1] = { ...last, answer, questionLabel };
     const saved = await saveRaw(row, { ...row.state, asked });
     if (saved) return;
   }
@@ -317,7 +356,7 @@ export async function joinMysteryRoom(codeValue: unknown, nameValue: unknown) {
 export async function getMysteryRoom(codeValue: unknown, playerId: string, token: string, targetId?: string) {
   const code = typeof codeValue === "string" ? codeValue.trim().toUpperCase() : "";
   const result = await getMysteryRoomV2(codeValue, playerId, token, targetId) as ProjectedResult;
-  return enhanceResult(result, code, playerId);
+  return enhanceResult(result, code, playerId, targetId);
 }
 
 export async function actMysteryRoom(codeValue: unknown, playerId: string, token: string, action: string, payload: Record<string, unknown> = {}) {
@@ -354,7 +393,7 @@ export async function actMysteryRoom(codeValue: unknown, playerId: string, token
   }
 
   if (action === "answered" && beforeAnswer) {
-    await patchRecordedAnswer(code, expectedRecordedAnswer);
+    await patchRecordedAnswer(code, expectedRecordedAnswer, beforeAnswer);
     await applyScalablePacing(code, beforeAnswer);
     const refreshed = await getMysteryRoomV2(codeValue, playerId, token) as ProjectedResult;
     return enhanceResult(refreshed, code, playerId);
@@ -366,5 +405,5 @@ export async function actMysteryRoom(codeValue: unknown, playerId: string, token
     return enhanceResult(refreshed, code, playerId);
   }
 
-  return enhanceResult(result, code, playerId);
+  return enhanceResult(result, code, playerId, typeof payload.targetId === "string" ? payload.targetId : undefined);
 }
