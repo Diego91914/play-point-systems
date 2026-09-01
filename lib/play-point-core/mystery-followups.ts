@@ -15,15 +15,6 @@ type FollowupContext = {
   asked: MysteryFollowupInterview[];
 };
 
-function viewerPreviouslyAsked(context: FollowupContext, ids: string[]) {
-  if (!context.targetId) return false;
-  return context.asked.some(record =>
-    record.questionerId === context.viewerId &&
-    record.targetId === context.targetId &&
-    ids.includes(record.questionId),
-  );
-}
-
 function roomPreviouslyAsked(context: FollowupContext, ids: string[]) {
   if (!context.targetId) return false;
   return context.asked.some(record => record.targetId === context.targetId && ids.includes(record.questionId));
@@ -88,29 +79,17 @@ function contradictionLabel(context: FollowupContext, questionId: string) {
   if (context.evidenceIndex < 2 || !roomPreviouslyAsked(context, ["where", "alibi", "timeline", "after"])) return undefined;
 
   if (context.variantId === "blackwood-business-partner" && context.targetRoleId === "partner") {
-    if (questionId === "door" || questionId === "porch_route") {
-      return "CONTRADICTION: You said you stayed in the study. How do you explain the rear-route evidence tied to the company records?";
-    }
+    if (questionId === "door" || questionId === "porch_route") return "CONTRADICTION: You said you stayed in the study. How do you explain the rear-route evidence tied to the company records?";
   }
-
   if (context.variantId === "blackwood-younger-sister" && context.targetRoleId === "sister") {
-    if (questionId === "door" || questionId === "porch_route") {
-      return "CONTRADICTION: You said you stayed outside. How do you explain evidence that the rear route connects the library back toward the garden side?";
-    }
+    if (questionId === "door" || questionId === "porch_route") return "CONTRADICTION: You said you stayed outside. How do you explain evidence that the rear route connects the library back toward the garden side?";
   }
-
   if (context.variantId === "blackwood-private-chef" && context.targetRoleId === "chef") {
-    if (questionId === "door" || questionId === "porch_route") {
-      return "CONTRADICTION: You said you stayed in the kitchen. How do you explain the service gap and movement through the kitchen-side rear route?";
-    }
+    if (questionId === "door" || questionId === "porch_route") return "CONTRADICTION: You said you stayed in the kitchen. How do you explain the service gap and movement through the kitchen-side rear route?";
   }
-
   if ((!context.variantId || context.variantId === "blackwood-old-friend") && context.targetRoleId === "murderer") {
-    if (questionId === "door" || questionId === "porch_route" || questionId === "dark_jacket") {
-      return "CONTRADICTION: You said you were in the bathroom. How do you explain the rear-route evidence during the same window?";
-    }
+    if (questionId === "door" || questionId === "porch_route" || questionId === "dark_jacket") return "CONTRADICTION: You said you were in the bathroom. How do you explain the rear-route evidence during the same window?";
   }
-
   return undefined;
 }
 
@@ -134,7 +113,9 @@ export function applyMysteryFollowupLabels<T extends QuestionOption[]>(questions
       }
     }
 
-    if (!label.startsWith("CONTRADICTION:") && viewerPreviouslyAsked(context, ["where", "motive", "victim", "before", "after"]) && context.evidenceIndex >= 0) {
+    // Follow-up status belongs to the interview history, not to the screen viewer.
+    // This keeps the questioner, target, spectators, and saved Case File on one exact prompt.
+    if (!label.startsWith("CONTRADICTION:") && roomPreviouslyAsked(context, ["where", "motive", "victim", "before", "after"]) && context.evidenceIndex >= 0) {
       if (question.id === "timeline") label = `FOLLOW-UP: ${label}`;
       if (question.id === "relationship") label = `FOLLOW-UP: ${label}`;
       if (question.id === "last_words") label = `FOLLOW-UP: ${label}`;
