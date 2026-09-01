@@ -67,4 +67,19 @@ describe("Blackwood evidence-gated follow-ups", () => {
     expect(questions.find(question => question.id === "glass")?.label).toContain("kitchen");
     expect(questions.find(question => question.id === "porch_route")?.label).toContain("kitchen");
   });
+
+  it("surfaces a contradiction question when later evidence conflicts with the culprit's earlier alibi", () => {
+    const label = followupLabelForQuestion("porch_route", "Could you have used the back porch after 10:30?", {
+      viewerId: "investigator",
+      targetId: "partner-player",
+      targetRoleId: "partner",
+      evidenceIndex: 2,
+      variantId: "blackwood-business-partner",
+      asked: [{ questionerId: "other-player", targetId: "partner-player", questionId: "where" }],
+    });
+
+    expect(label).toContain("CONTRADICTION:");
+    expect(label).toContain("stayed in the study");
+    expect(label).toContain("company records");
+  });
 });
