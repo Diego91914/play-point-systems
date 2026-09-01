@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { actMysteryRoom, getMysteryRoom } from "@/lib/play-point-core/mystery-server-v2";
+import { actMysteryRoom, getMysteryRoom } from "@/lib/play-point-core/mystery-server-v3";
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ code: string }> }) {
   try {
