@@ -1,4 +1,5 @@
 import { getBlackwoodVariantContent } from "@/lib/play-point-core/mystery-variant-content";
+import { getOptionalVariantAnswer, getOptionalVariantMemory } from "@/lib/play-point-core/mystery-optional-variant";
 
 export type MysteryAnswerKey = "where" | "victim" | "heard" | "motive" | "after" | "before" | "secret" | "money" | "door" | "drink" | "ledger" | "suspect";
 export type MysteryPromptAnswer = { mustReveal: string; mayHide?: string };
@@ -95,22 +96,23 @@ const OVERRIDES: Record<string, Record<string, AnswerOverrides>> = {
 
 export function getVariantAnswerOverride(variantId: string | undefined | null, roleId: string | undefined, answerKey: MysteryAnswerKey) {
   if (!variantId || !roleId) return null;
-  return OVERRIDES[variantId]?.[roleId]?.[answerKey] ?? null;
+  return OVERRIDES[variantId]?.[roleId]?.[answerKey] ?? getOptionalVariantAnswer(variantId, roleId, answerKey);
 }
 
 export function getVariantRoleMemory(variantId: string | undefined | null, roleId: string | undefined, baseMemory: string[]) {
   if (!variantId || !roleId) return baseMemory;
   const truth = getBlackwoodVariantContent(variantId)?.roleTruths.find(item => item.roleId === roleId);
-  if (!truth) return baseMemory;
+  if (truth) {
+    return [
+      ...truth.privateTruth,
+      ...(truth.coverStory?.map(item => `COVER STORY: ${item}`) ?? []),
+    ];
+  }
 
-  // Core-role memories from the original case can contain objective statements
-  // that are false in another authored truth (including "you did not kill" or
-  // a witness memory that belongs to the culprit). Once a variant has locked,
-  // its authored role truth replaces that base memory rather than being appended.
-  return [
-    ...truth.privateTruth,
-    ...(truth.coverStory?.map(item => `COVER STORY: ${item}`) ?? []),
-  ];
+  // Optional roles need authored branch-safe memories too. Without this fallback,
+  // their original Variant A memories can leak blue-ledger or Old-Friend facts
+  // into Business Partner, Sister, or Chef cases after the truth locks.
+  return getOptionalVariantMemory(variantId, roleId) ?? baseMemory;
 }
 
 export function getVariantEvidence(variantId: string | undefined | null) {
