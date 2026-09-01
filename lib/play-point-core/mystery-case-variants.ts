@@ -23,12 +23,15 @@ export const BLACKWOOD_BRANCH_DEPTH = BLACKWOOD_BRANCH_SIGNAL_KEYS.length;
  * exist, the server may lock one of four fully authored truths.
  *
  * Path matrix:
- *   OPEN letter + LISTEN draft  -> Variant A
- *   OPEN letter + LEAVE draft   -> Variant C
+ *   OPEN letter + LISTEN draft   -> Variant A
+ *   OPEN letter + LEAVE draft    -> Variant C
  *   SEALED letter + LISTEN draft -> Variant D
  *   SEALED letter + LEAVE draft  -> Variant B
  *
  * A variant may only become live-selectable when releaseReady is true.
+ * A scored support fact must also be encounterable on that path: an unopened
+ * letter or unheard recording can shape the hidden branch, but its contents
+ * can never be credited as evidence the investigators supposedly know.
  */
 export const BLACKWOOD_CASE_VARIANTS: MysteryCaseVariant[] = [
   {
@@ -53,9 +56,9 @@ export const BLACKWOOD_CASE_VARIANTS: MysteryCaseVariant[] = [
     motiveId: "business_money",
     locationId: "library",
     windowId: "1031_1035",
-    correctSupportIds: ["partner_study_gap", "partner_records_link", "partner_back_route", "partner_cleanup_trace", "sealed_letter_company_warning"],
+    correctSupportIds: ["partner_study_gap", "partner_records_link", "partner_back_route", "partner_cleanup_trace"],
     branchFit: signals => signals.adrian_sealed_letter === "seal" && signals.adrian_voice_draft === "leave" ? 100 : 0,
-    solution: "Development variant. Adrian's confrontation over the missing Blackwood Holdings money becomes the fatal meeting.",
+    solution: "Adrian discovered that the Business Partner had diverted Blackwood Holdings money and copied records that could prove it. The Partner returned to the library during the 10:31–10:35 window, killed Adrian during the second confrontation, and used the rear route back toward the study. A torn fragment from the copied bank packet connected that movement to the company records.",
   },
   {
     id: "blackwood-younger-sister",
@@ -66,9 +69,9 @@ export const BLACKWOOD_CASE_VARIANTS: MysteryCaseVariant[] = [
     motiveId: "inheritance",
     locationId: "library",
     windowId: "1031_1035",
-    correctSupportIds: ["inheritance_document_link", "garden_timeline_gap", "sister_return_route", "family_accountant_pressure", "voice_draft_inheritance"],
+    correctSupportIds: ["inheritance_document_link", "garden_timeline_gap", "sister_return_route", "family_accountant_pressure"],
     branchFit: signals => signals.adrian_sealed_letter === "open" && signals.adrian_voice_draft === "leave" ? 100 : 0,
-    solution: "Development variant. The inheritance dispute hides a deeper confrontation that makes the Younger Sister the authored culprit.",
+    solution: "Adrian's inheritance revision threatened to cut the Younger Sister out and accuse her of concealing family assets. During a break in her accountant call she returned to the library, confronted Adrian during the 10:31–10:35 window, killed him, and used the rear route to return outside. The interrupted call and torn inheritance-paper fragment break the garden alibi.",
   },
   {
     id: "blackwood-private-chef",
@@ -81,7 +84,7 @@ export const BLACKWOOD_CASE_VARIANTS: MysteryCaseVariant[] = [
     windowId: "1031_1035",
     correctSupportIds: ["chef_service_gap", "kitchen_access_link", "glass_origin_link", "back_door_timing", "voice_draft_service_warning"],
     branchFit: signals => signals.adrian_sealed_letter === "seal" && signals.adrian_voice_draft === "listen" ? 100 : 0,
-    solution: "Development variant. Adrian's decision to end the chef's employment masks a more serious confrontation that makes the Private Chef the authored culprit.",
+    solution: "Adrian had fired the Private Chef and discovered questionable personal purchases hidden in household accounts. The Chef left the kitchen during an unexplained service gap, confronted Adrian in the library during the 10:31–10:35 window, killed him, returned through the rear route, and rinsed away a service-related trace before resuming cleanup.",
   },
 ];
 
