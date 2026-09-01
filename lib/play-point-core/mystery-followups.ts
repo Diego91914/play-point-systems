@@ -39,18 +39,30 @@ function variantLabel(variantId: string | null | undefined, questionId: string, 
   }
 
   if (variantId === "blackwood-younger-sister") {
+    const inheritancePaperKnown = evidenceIndex >= 1;
+    const revisionKnown = evidenceIndex >= 3;
     const labels: Record<string, string> = {
-      drink: "What ordinary dinner detail might distract us from the inheritance evidence?",
+      drink: "What ordinary dinner detail might distract us from the inheritance dispute?",
       glass: "Is there physical evidence from dinner that looks suspicious but may be unrelated?",
-      whiskey_owner: "Which earlier physical clues could be real but irrelevant to the inheritance confrontation?",
+      whiskey_owner: "Which earlier physical clues could be real but irrelevant to the inheritance dispute?",
       door: "What do you know about movement between the rear entrance and the garden side?",
       porch_route: "Could someone have used the rear route to return outside during the death window?",
       dark_jacket: "Could the rear-side movement have been misidentified from outside?",
       money: "How much was really at stake in the inheritance dispute?",
       old_money: "How is the old financial dispute different from the inheritance fight?",
-      ledger: "Does the blue ledger actually explain the changed inheritance documents?",
-      ledger_entry: "What evidence points to the inheritance papers rather than the old ledger?",
-      final_pressure: "What fact about the inheritance dispute makes your story look worst now?",
+      ledger: revisionKnown
+        ? "Does the blue ledger actually explain the changed inheritance documents?"
+        : inheritancePaperKnown
+          ? "Does the blue ledger actually explain the inheritance papers now in evidence?"
+          : "Does the blue ledger actually explain tonight's inheritance dispute?",
+      ledger_entry: revisionKnown
+        ? "What evidence points to the revised inheritance papers rather than the old ledger?"
+        : inheritancePaperKnown
+          ? "What evidence connects the inheritance papers to tonight rather than the old ledger?"
+          : "What evidence separates tonight's inheritance fight from the old ledger dispute?",
+      final_pressure: revisionKnown
+        ? "What fact about the inheritance revision makes your story look worst now?"
+        : "What fact about the inheritance dispute makes your story look worst right now?",
     };
     return labels[questionId];
   }
