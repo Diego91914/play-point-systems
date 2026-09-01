@@ -17,6 +17,7 @@ export type VariantSupportRule = {
   targetRoles: string[];
   questionIds: string[];
   minEvidence: number;
+  source?: "private-clue" | "personal-discovery" | "suspicious";
 };
 
 export type BlackwoodVariantContent = {
