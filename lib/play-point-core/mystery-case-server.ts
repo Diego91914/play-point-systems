@@ -108,8 +108,40 @@ function personalDiscoveries(state: MysteryState, viewer: Player, variant: Myste
   })).map(rule => ({ id: rule.id, title: rule.title, text: rule.text, source: rule.source ?? "personal-discovery", correctSupport: correct.has(rule.id) } satisfies Lead));
 }
 
+function reviewTextFor(rule: LinkRule) {
+  const id = rule.id.toLowerCase();
+  if (id.includes("timeline") || id.includes("alibi") || id.includes("gap")) return "Your Case File contains an earlier timeline answer that does not fit cleanly with later evidence. Re-read the timing before you decide what it means.";
+  if (id.includes("route") || id.includes("door") || id.includes("porch")) return "The movement evidence and an earlier answer can be connected, but the phone is not telling you whose explanation is correct. Weigh the route carefully.";
+  if (id.includes("record") || id.includes("ledger") || id.includes("document") || id.includes("money") || id.includes("account")) return "A financial or document clue now connects to something said earlier. The connection is saved here so you do not need notes; you still decide whether it proves motive, opportunity, or neither.";
+  if (id.includes("glass") || id.includes("cleanup") || id.includes("kitchen") || id.includes("service")) return "A physical trace from the service or cleanup area can be compared with an earlier statement. It may be important, or it may be an innocent trace.";
+  return "Two facts already in your Case File can be weighed together. The phone preserves the connection but does not tell you what conclusion to draw.";
+}
+
+function endgameReviewLeads(state: MysteryState, viewer: Player, variant: MysteryCaseVariant, existing: Lead[]) {
+  if (state.status !== "accusation" && state.status !== "reveal") return [] as Lead[];
+  if (viewer.roleId === variant.culpritRoleId) return [] as Lead[];
+  const correctIds = new Set(variant.correctSupportIds);
+  const existingCorrect = existing.filter(lead => lead.correctSupport).length;
+  const needed = Math.max(0, 2 - existingCorrect);
+  if (!needed) return [] as Lead[];
+  const existingIds = new Set(existing.map(lead => lead.id));
+  return activeLinkRules(variant)
+    .filter(rule => correctIds.has(rule.id) && rule.minEvidence <= state.evidenceIndex && !existingIds.has(rule.id))
+    .slice(0, needed)
+    .map(rule => ({
+      id: rule.id,
+      title: "Final review · connection worth weighing",
+      text: reviewTextFor(rule),
+      source: "personal-discovery" as const,
+      correctSupport: true,
+    }));
+}
+
 function leadsFor(state: MysteryState, viewer: Player, variant: MysteryCaseVariant | null) {
-  const combined = [...privateRoleLeads(state, viewer, variant), ...personalDiscoveries(state, viewer, variant)];
+  const earned = [...privateRoleLeads(state, viewer, variant), ...personalDiscoveries(state, viewer, variant)];
+  const uniqueEarned = earned.filter((lead, index) => earned.findIndex(item => item.id === lead.id) === index);
+  if (!variant) return uniqueEarned;
+  const combined = [...uniqueEarned, ...endgameReviewLeads(state, viewer, variant, uniqueEarned)];
   return combined.filter((lead, index) => combined.findIndex(item => item.id === lead.id) === index);
 }
 
@@ -132,6 +164,7 @@ function buildResults(state: MysteryState, variant: MysteryCaseVariant, submissi
 
 function project(state: MysteryState, viewer: Player) {
   const variant = variantFor(state); const signature = runSignature(state); const submissions = state.caseSubmissions?.runSignature === signature ? state.caseSubmissions.items : {}; const mySubmission = submissions[viewer.id] ?? null; const leads = leadsFor(state, viewer, variant); const reveal = state.status === "reveal" && variant ? buildResults(state, variant, submissions) : null;
+  const correctAvailable = variant ? leads.filter(lead => lead.correctSupport).length : 0;
   return {
     status: state.status,
     players: state.players.map(player => ({ id: player.id, name: player.name })),
@@ -139,6 +172,12 @@ function project(state: MysteryState, viewer: Player) {
     isMurderer: Boolean(variant && viewer.roleId === variant.culpritRoleId),
     privateRule: "Everyone investigates the same murder. Nobody experiences exactly the same case.",
     privateLeads: leads.map(({ correctSupport: _correctSupport, ...lead }) => lead),
+    caseReadiness: {
+      canSubmit: state.status === "accusation" ? leads.length >= 2 : true,
+      selectableSupportCount: leads.length,
+      fairConvictionPathAvailable: Boolean(variant && (viewer.roleId === variant.culpritRoleId || correctAvailable >= 2)),
+      noteTakingRequired: false,
+    },
     options: { motives: MOTIVES, locations: LOCATIONS, windows: WINDOWS },
     submittedCount: Object.keys(submissions).length,
     playerCount: state.players.length,
