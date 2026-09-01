@@ -20,139 +20,87 @@ Private information may be shared voluntarily, but the game never automatically 
 ## Unopened / undiscovered evidence rule
 Evidence may exist before the investigation without automatically becoming known merely because the game started.
 
-Examples include:
-- sealed letters or envelopes
-- scheduled emails or voicemail drafts
-- hidden photographs
-- wills or legal instructions
-- journals
-- USB drives
-- locked drawers or safes
-- packages
-- receipts or records a player forgot they possessed
+Examples include sealed letters or envelopes, scheduled messages, voicemail or voice-memo drafts, hidden photographs, wills, legal instructions, journals, USB drives, locked drawers, safes, packages, receipts, or records a player forgot they possessed.
 
-A player may need to remember, discover, unlock, open, search for, ask about, or voluntarily reveal this evidence. The phone may privately remind a player that an item exists or offer a meaningful choice such as **OPEN IT** or **KEEP IT SEALED**.
+A player may need to remember, discover, unlock, open, search for, listen to, ask about, or voluntarily reveal this evidence. The phone may privately remind a player that an item exists and offer an ordinary story decision.
 
-Unopened or undiscovered evidence may strengthen a case, unlock a new investigative avenue, alter the meaning of an earlier clue, or create a private advantage. It may not be the sole fact required to solve the mystery at the advertised minimum player count.
+Unopened or undiscovered evidence may strengthen a case, unlock a new investigative avenue, alter the meaning of an earlier clue, create a private advantage, or contribute to a hidden branch. It may not be the sole fact required to solve the mystery at the advertised minimum player count.
 
-The contents of such evidence must obey the truthful-misdirection rule. A letter may be incomplete, emotionally biased, or ambiguous, but it may not contain fabricated objective facts presented as true.
+## Two-stage hidden branch rule
+**Blackwood House does not need to determine the final authored truth after a single hidden choice. Two separate private story decisions can combine before the case path is locked.**
 
-## Hidden branch-point rule
-**Players may shape which authored version of the mystery becomes canon without being told that they are selecting a case branch.**
+The current Blackwood branch tree is 2 × 2, creating four possible authored paths:
 
-A normal story decision — opening a letter, leaving it sealed, searching a room, confronting someone early, protecting a secret, following one lead instead of another — may quietly contribute a hidden branch signal.
+- Branch Point 1: the Younger Sister decides whether to **OPEN THE LETTER** or **KEEP IT SEALED**.
+- Branch Point 2: later, the Private Chef decides whether to **LISTEN TO THE DRAFT** or **LEAVE IT UNPLAYED**.
 
-The player should experience the choice only at the story level. The phone must never say or imply: “Your choice selected the murderer,” “You unlocked Variant B,” or anything else that exposes the branching machinery.
+The player making either decision experiences only the story choice. Neither phone says that the choice is selecting, narrowing, or determining a murderer.
 
-Branching must obey these rules:
-- early objective facts must remain compatible with every still-eligible branch
-- a choice may influence which fully authored truth becomes canon
-- the choice does not need to be the only branch factor; several ordinary decisions may combine
-- once a case variant becomes canon, later evidence may reveal that truth but may never rewrite it
-- no unfinished or untested variant may become active in a live game
-- every branch must remain independently solvable at the advertised minimum player count
-- the branching system itself is never shown in the player's Case File
+The four hidden combinations may map to four separately authored culprit variants. The case remains branch-safe until both hidden signals exist. Only then may the server silently lock the final authored truth.
 
-The design goal is that a player thinks, **“I decided whether to open the envelope,”** not **“I decided who the murderer is.”**
+This branching structure must obey these rules:
+- early objective facts must remain compatible with all still-eligible paths
+- the first hidden branch narrows possibilities but does not expose or necessarily lock the final truth
+- the second hidden branch completes the path and allows the case truth to become canon
+- branch points should preferably belong to different players so one person does not unknowingly control the whole tree
+- once a case becomes canon, later evidence may reveal it but may never rewrite it
+- players are never shown branch labels, variant IDs, branch progress, or the branching machinery
+- unfinished variants may exist in development but may never become active in live play
+- each of the four authored paths must independently satisfy minimum-player solvability and timeline/evidence logic checks before release
+
+The design goal is that players think, **“I chose whether to open the letter,”** and **“I chose whether to listen to the recording,”** while never realizing those choices helped shape which version of Blackwood House they are uncovering.
 
 ## Multiple-solution / rotating-culprit framework
 A single story world may support more than one authored culprit, allowing the same mystery setting and cast to play differently across sessions.
 
-This is **not** accomplished by randomly relabeling the murderer while leaving the evidence unchanged. Each possible culprit must have a complete authored solution path with its own:
-- motive
-- opportunity
-- false or incomplete alibi
-- physical or digital evidence trail
-- cleanup / escape behavior when relevant
-- private clues and discoveries
-- red herrings that remain truthful
-- conviction scoring key
-- reveal narrative
+This is not accomplished by randomly relabeling the murderer while leaving the evidence unchanged. Each possible culprit must have a complete authored solution path with its own motive, opportunity, false or incomplete alibi, physical or digital evidence trail, cleanup or escape behavior, private clues and discoveries, truthful red herrings, conviction scoring key, and reveal narrative.
 
-A case variant may be selected at room creation or may remain unresolved through an early branch-safe phase while hidden player decisions contribute branch signals. Once enough information exists to select among release-ready authored variants, the phone silently locks the case truth.
+For the current two-stage Blackwood framework, the four development paths are:
+- Old Friend
+- Business Partner
+- Younger Sister
+- Private Chef
 
-Shared facts may remain constant across variants when they are genuinely true in every version. Variant-dependent facts must never contradict an objective fact already shown to players. The phone may withhold or reveal different truthful information, but it may not rewrite established history mid-game.
-
-The goal is for returning players to know the setting and characters without knowing the solution. Familiarity with Blackwood House should not automatically reveal who the murderer is.
-
-Every supported case variant must independently satisfy the minimum-player solvability rule and pass a full timeline/evidence logic audit before release.
+Only variants explicitly marked release-ready may become live case truths. Familiarity with Blackwood House should never automatically reveal who the murderer is.
 
 ## Conviction rule
 The ending is **Build Your Case**, not a one-tap accusation.
 
-Every player submits a private theory including:
-- who committed the murder
-- motive
-- crime location
-- murder window
-- supporting facts from that player's own Case File
+Every player submits a private theory including who committed the murder, motive, crime location, murder window, and supporting facts from that player's own Case File.
 
 A correct suspect alone is never enough for a conviction. The case must clear a hidden conviction threshold and include multiple correct supporting links. The highest-scoring non-murderer case that reaches the conviction standard wins.
 
-The murderer also submits a cover theory so the final phase looks the same on every phone, but the murderer cannot win the investigator scoring. If no investigator reaches the conviction threshold, the murderer wins because the room failed to prove the case.
-
-For Blackwood House the current scoring target is 12 points:
-- correct murderer: 4
-- correct motive: 2
-- correct location: 1
-- correct murder window: 1
-- up to four correct supporting case links: 4
-
-Conviction currently requires:
-- correct murderer
-- at least 8 total points
-- at least 2 correct supporting case links
+For Blackwood House the current scoring target is 12 points: murderer 4, motive 2, location 1, murder window 1, and up to four correct supporting links 4. Conviction currently requires the correct murderer, at least 8 total points, and at least 2 correct supporting links.
 
 ## Minimum-player solvability rule
-Every mystery must be completely solvable at its advertised minimum player count.
+Every mystery must be completely solvable at its advertised minimum player count. For Murder at Blackwood House, the minimum is 4 players.
 
-For Murder at Blackwood House, the minimum is 4 players.
+The four core roles are always present: Old Friend, Business Partner, Younger Sister, and Private Chef. This is deliberate: the four-role core can also support the four-path development tree without depending on optional 5–8 player roles.
 
-The four core roles are always present:
-- The Old Friend — current authored culprit in Variant A
-- The Business Partner — strong alternative suspect / financial motive
-- The Younger Sister — core porch witness
-- The Private Chef — core whiskey-glass knowledge
-
-Players 5–8 add optional roles, secrets, alibis, red herrings, corroboration, and investigative depth. They may never carry information that is required to solve the minimum-player version.
-
-If an optional role would otherwise hold a critical clue, that clue must also appear through public phone-controlled evidence or through a core role.
-
-A future rotating-culprit Blackwood variant may assign guilt differently, but no variant is considered playable until its four-player clue chain is independently complete.
+Players 5–8 add suspects, secrets, alibis, red herrings, corroboration, and investigative depth. They may never carry information required to solve the minimum-player version.
 
 ## Investigation structure
 - 4–8 players
-- Private character brief and timeline on each phone
-- Investigator taps a suspect and chooses an available question
-- Target phone supplies what must be revealed and what may remain private
-- Target answers aloud in their own words
-- The investigator's phone may add a private discovery based on the chosen question and that player's existing Case File
-- Turn advances automatically
-- Phones interrupt with new common evidence and role-specific private clues
-- Unopened / undiscovered evidence can create optional investigative avenues
-- Early story choices may contribute invisible branch signals without exposing that function to players
-- Case Files remain individual rather than becoming one shared evidence dump
-- After all evidence rounds, every player privately builds a complete case
-- Phones score each theory against the hidden solution and conviction standard for the active case variant
-- Highest-scoring valid conviction wins; if nobody convicts, the murderer wins
+- private character brief and timeline on each phone
+- investigator taps a suspect and chooses an available question
+- target phone supplies what must be revealed and what may remain private
+- target answers aloud in their own words
+- investigator phone may add a private discovery based on that player's path
+- phones interrupt with new common evidence and role-specific private clues
+- unopened or undiscovered evidence creates optional investigative avenues
+- two separate early/private story choices may form the hidden 2×2 branch tree
+- no branch machinery is exposed to players
+- after the active truth is locked, all later evidence, personal discoveries, scoring, and reveal must read from that variant
+- every player privately builds a complete case
+- highest-scoring valid conviction wins; if nobody convicts, the murderer wins
 
 ## Truthful misdirection rule
-The phone may misdirect through truthful, incomplete information, suspicious wording, innocent secrets, coincidences, red herrings, private clues, timed interruptions, and dormant evidence avenues. It never presents fabricated or objectively false evidence as fact.
-
-A red herring must have a truthful underlying explanation. Players should always be able to trust the evidence system even when they misinterpret what the evidence means.
+The phone may misdirect through truthful, incomplete information, suspicious wording, innocent secrets, coincidences, red herrings, private clues, timed interruptions, dormant evidence avenues, and branch-safe ambiguity. It never presents fabricated or objectively false evidence as fact.
 
 ## No-required-notes rule
-Players may take notes if they enjoy it, but note-taking is never required. The phone remembers evidence, private clues, personal discoveries, unopened/undiscovered evidence that the player has actually encountered, and important interview history. The phone organizes facts; the players make deductions.
+Players may take notes if they enjoy it, but note-taking is never required. The phone remembers evidence, private clues, personal discoveries, unopened/undiscovered evidence the player actually encountered, and important interview history. The phone organizes facts; the players make deductions.
 
 ## Content standard
-Every playable character must have:
-- public relationship to the victim
-- private backstory
-- timeline around the murder
-- plausible motive or suspicious circumstance
-- private secret
-- information they know about the case
-- explicit innocence or murderer objective for the active variant
-- authored responses to every interrogation question
+Every playable character must have a public relationship to the victim, private backstory, timeline around the murder, plausible motive or suspicious circumstance, private secret, information they know about the case, explicit innocence or murderer objective for the active variant, and authored responses to every interrogation question.
 
-Every mystery and every culprit variant must be logic-checked so timelines, evidence, private discoveries, dormant evidence, scoring paths, and required clues remain consistent at every supported player count.
+Every mystery and every culprit variant must be logic-checked so timelines, evidence, private discoveries, dormant evidence, hidden branch compatibility, scoring paths, and required clues remain consistent at every supported player count.
