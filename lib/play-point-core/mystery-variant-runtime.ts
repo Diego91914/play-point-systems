@@ -93,14 +93,14 @@ const OVERRIDES: Record<string, Record<string, AnswerOverrides>> = {
     murderer: {
       where: { mustReveal: "You were near the downstairs bathroom during the critical window." },
       after: { mustReveal: "For 10:31–10:35 you remained around the downstairs bathroom area; your whiskey and old debt are real but you did not use the rear route." },
-      ledger: { mustReveal: "The old ledger dispute involving you is real but unrelated to the Chef's household-account problem." },
+      ledger: { mustReveal: "The old ledger dispute involving you is real but unrelated to the Chef's current dispute with Adrian." },
       drink: { mustReveal: "You drank whiskey earlier, which makes the rinsed-glass clue look bad for you." },
     },
     partner: {
       where: { mustReveal: "You were in the study/hall area during the 10:31–10:35 window." },
       after: { mustReveal: "You remained around the study/hall area; around 10:42 you noticed the kitchen back door partly open." },
       door: { mustReveal: "Around 10:42 you noticed the kitchen back door partly open." },
-      money: { mustReveal: "Your current company-money dispute is real but separate from household food-account charges." },
+      money: { mustReveal: "Your current company-money dispute is real, but it is separate from the Chef's employment conflict with Adrian." },
     },
     sister: {
       where: { mustReveal: "You were outside during the 10:31–10:35 window." },
