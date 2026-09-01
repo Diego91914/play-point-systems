@@ -7,9 +7,10 @@ export type MinimumProofPlan = {
 /**
  * Release gate: every Blackwood truth must have at least one two-link proof path
  * available by Evidence 3 or earlier. With the scalable pacing model, every
- * player receives at least three investigator turns, so two of those turns can
- * be used to build a conviction-grade support chain without requiring luck or
- * an optional 5th–8th character.
+ * player receives exactly four investigator turns, so two can build a
+ * conviction-grade support chain while two remain available for alternate
+ * theories, red herrings, or follow-up pressure. No proof plan may require an
+ * optional 5th–8th character.
  */
 export const BLACKWOOD_MINIMUM_PROOF_PLANS: MinimumProofPlan[] = [
   {
