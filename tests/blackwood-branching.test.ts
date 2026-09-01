@@ -5,7 +5,7 @@ import {
   resolveBlackwoodVariant,
 } from "../lib/play-point-core/mystery-case-variants";
 import { getBlackwoodVariantContent } from "../lib/play-point-core/mystery-variant-content";
-import { getVariantAnswerOverride } from "../lib/play-point-core/mystery-variant-runtime";
+import { getVariantAnswerOverride, getVariantRoleMemory } from "../lib/play-point-core/mystery-variant-runtime";
 
 const paths = [
   { letter: "open", voice: "listen", expected: "blackwood-old-friend" },
@@ -71,6 +71,16 @@ describe("Blackwood alternate content release gates", () => {
     expect(where?.mayHide).toBeTruthy();
     expect(motive?.mustReveal).toBeTruthy();
     expect(after?.mustReveal).toBeTruthy();
+  });
+
+  it.each(alternates)("$id replaces contradictory base memories for the active culprit", variant => {
+    const memory = getVariantRoleMemory(
+      variant.id,
+      variant.culpritRoleId,
+      ["You did not kill the victim.", "Around 10:35 you saw someone cross the porch."],
+    );
+    expect(memory).not.toContain("You did not kill the victim.");
+    expect(memory.some(line => line.includes("COVER STORY:"))).toBe(true);
   });
 
   it("keeps alternate support IDs unique across authored paths", () => {
