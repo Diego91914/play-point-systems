@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createMysteryRoom, joinMysteryRoom } from "@/lib/play-point-core/mystery-server";
+import { createMysteryRoom, joinMysteryRoom } from "@/lib/play-point-core/mystery-server-v2";
 import { GAMES_SESSION_COOKIE, verifyGamesSessionToken } from "@/lib/play-point-core/games-session";
 
 export async function POST(request: NextRequest) {
