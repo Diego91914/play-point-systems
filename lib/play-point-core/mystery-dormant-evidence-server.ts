@@ -5,7 +5,7 @@ import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supab
 import { blackwoodBranchProgress, resolveBlackwoodVariant, type MysteryBranchSignals } from "@/lib/play-point-core/mystery-case-variants";
 
 type Player = { id: string; name: string; tokenHash: string; seat: number; roleId?: string };
-type DormantChoice = { status: "available" | "opened" | "sealed"; decidedAt?: string };
+type DormantChoice = { status: string; decidedAt?: string };
 type State = {
   code: string;
   status: "lobby" | "interrogation" | "evidence" | "accusation" | "reveal";
@@ -16,6 +16,17 @@ type State = {
   caseVariantId?: string;
 };
 type Row = { code: string; state: State; version: number };
+
+type PrivateEvidence = {
+  available: boolean;
+  id?: string;
+  title?: string;
+  reminder?: string;
+  status?: string;
+  decisionText?: string | null;
+  choices?: { id: string; label: string; primary?: boolean }[];
+  rule?: string;
+};
 
 const hash = (value: string) => createHash("sha256").update(value).digest("hex");
 function tokenMatches(expected: string, token: string) {
@@ -48,19 +59,66 @@ function auth(state: State, playerId: string, token: string) {
   if (!player || !tokenMatches(player.tokenHash, token)) throw new Error("Invalid player session.");
   return player;
 }
-function project(state: State, viewer: Player) {
-  if (viewer.roleId !== "sister" || state.status === "lobby" || state.evidenceIndex < 0) return { available: false };
-  const choice = state.dormantEvidence?.[viewer.id] ?? { status: "available" as const };
+function evidenceKey(playerId: string, evidenceId: string) { return `${playerId}:${evidenceId}`; }
+function getChoice(state: State, viewer: Player, evidenceId: string) {
+  const keyed = state.dormantEvidence?.[evidenceKey(viewer.id, evidenceId)];
+  if (keyed) return keyed;
+  if (evidenceId === "adrian_sealed_letter") return state.dormantEvidence?.[viewer.id]; // legacy rooms
+  return undefined;
+}
+
+function letterEvidence(state: State, viewer: Player): PrivateEvidence | null {
+  if (viewer.roleId !== "sister" || state.status === "lobby" || state.evidenceIndex < 0) return null;
+  const choice = getChoice(state, viewer, "adrian_sealed_letter");
+  const status = choice?.status ?? "available";
   return {
     available: true,
     id: "adrian_sealed_letter",
     title: "The sealed envelope",
     reminder: "Three days before dinner, Adrian gave you a sealed envelope. He said: ‘If something happens to me, open this.’ You had pushed it into your bag and, until now, forgotten it was there.",
-    status: choice.status,
-    openedText: choice.status === "opened" ? "Adrian wrote that he had uncovered something serious involving someone close to him and planned a private confrontation tonight. The letter does not fully identify the person or explain the entire dispute." : null,
-    sealedText: choice.status === "sealed" ? "You chose not to open Adrian’s envelope. It remains in your possession. You may tell the room it exists, but you do not know what is inside." : null,
-    rule: "This is a private story choice. It changes what can become discoverable later, but your phone never tells you how the mystery is being shaped.",
+    status,
+    decisionText: status === "open"
+      ? "You opened it. Adrian wrote that he had uncovered something serious involving someone close to him and planned a private confrontation tonight. He did not fully identify the person or explain the entire dispute."
+      : status === "seal"
+        ? "You kept Adrian’s envelope sealed. It remains in your possession. You may tell the room it exists, but you genuinely do not know what is inside."
+        : null,
+    choices: status === "available" ? [
+      { id: "open", label: "OPEN THE LETTER", primary: true },
+      { id: "seal", label: "KEEP IT SEALED" },
+    ] : [],
+    rule: "This is a private story choice. Your phone does not explain what other parts of the mystery it may affect.",
   };
+}
+
+function voiceDraftEvidence(state: State, viewer: Player): PrivateEvidence | null {
+  if (viewer.roleId !== "chef" || state.status === "lobby" || state.evidenceIndex < 1) return null;
+  const choice = getChoice(state, viewer, "adrian_voice_draft");
+  const status = choice?.status ?? "available";
+  return {
+    available: true,
+    id: "adrian_voice_draft",
+    title: "The unfinished voice memo",
+    reminder: "While clearing the sideboard earlier, you noticed Adrian had left his small voice recorder beside his phone charger. A draft recording was still queued and had never been sent. You remember it now because the recorder is still where he left it.",
+    status,
+    decisionText: status === "listen"
+      ? "You listened privately. Adrian sounds tense and says: ‘Tonight ends one way or another. I’m done carrying someone else’s lie.’ The recording cuts off before he names the person or explains which lie he means."
+      : status === "leave"
+        ? "You left the recording untouched. You know an unsent voice memo exists, but you do not know what Adrian said in it."
+        : null,
+    choices: status === "available" ? [
+      { id: "listen", label: "LISTEN TO THE DRAFT", primary: true },
+      { id: "leave", label: "LEAVE IT UNPLAYED" },
+    ] : [],
+    rule: "Nobody else is automatically told about the recorder. This is your private decision unless you choose to talk about it.",
+  };
+}
+
+function project(state: State, viewer: Player): PrivateEvidence {
+  const letter = letterEvidence(state, viewer);
+  if (letter) return letter;
+  const voice = voiceDraftEvidence(state, viewer);
+  if (voice) return voice;
+  return { available: false };
 }
 
 export async function getMysteryDormantEvidence(codeValue: unknown, playerId: string, token: string) {
@@ -71,21 +129,30 @@ export async function getMysteryDormantEvidence(codeValue: unknown, playerId: st
   return { evidence: project(row.state, viewer) };
 }
 
-export async function decideMysteryDormantEvidence(codeValue: unknown, playerId: string, token: string, decision: unknown) {
+export async function decideMysteryDormantEvidence(codeValue: unknown, playerId: string, token: string, evidenceIdValue: unknown, decisionValue: unknown) {
   const code = cleanCode(codeValue);
   const row = await read(code);
   if (!row) throw new Error("Mystery room not found.");
   const viewer = auth(row.state, playerId, token);
-  if (viewer.roleId !== "sister" || row.state.status === "lobby" || row.state.evidenceIndex < 0) throw new Error("That evidence is not available to you.");
-  const existing = row.state.dormantEvidence?.[playerId];
+  const evidenceId = typeof evidenceIdValue === "string" ? evidenceIdValue : "adrian_sealed_letter";
+  const decision = typeof decisionValue === "string" ? decisionValue : "";
+
+  const valid = evidenceId === "adrian_sealed_letter"
+    ? viewer.roleId === "sister" && row.state.evidenceIndex >= 0 && (decision === "open" || decision === "seal")
+    : evidenceId === "adrian_voice_draft"
+      ? viewer.roleId === "chef" && row.state.evidenceIndex >= 1 && (decision === "listen" || decision === "leave")
+      : false;
+  if (!valid || row.state.status === "lobby") throw new Error("That private evidence choice is not available to you.");
+
+  const key = evidenceKey(playerId, evidenceId);
+  const existing = getChoice(row.state, viewer, evidenceId);
   if (existing && existing.status !== "available") throw new Error("You already made this choice.");
-  if (decision !== "open" && decision !== "seal") throw new Error("Choose whether to open the envelope or keep it sealed.");
 
   row.state.dormantEvidence = {
     ...(row.state.dormantEvidence ?? {}),
-    [playerId]: { status: decision === "open" ? "opened" : "sealed", decidedAt: new Date().toISOString() },
+    [key]: { status: decision, decidedAt: new Date().toISOString() },
   };
-  row.state.branchSignals = { ...(row.state.branchSignals ?? {}), adrian_sealed_letter: decision };
+  row.state.branchSignals = { ...(row.state.branchSignals ?? {}), [evidenceId]: decision };
 
   const progress = blackwoodBranchProgress(row.state.branchSignals);
   if (progress.readyToResolve) {
