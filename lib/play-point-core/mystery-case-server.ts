@@ -26,7 +26,7 @@ const MOTIVES = [
   { id: "old_theft_exposed", label: "Adrian was about to expose a decades-old theft." },
   { id: "inheritance", label: "The changed inheritance created a family revenge motive." },
   { id: "business_money", label: "The current Blackwood Holdings money dispute triggered the murder." },
-  { id: "job_loss", label: "The firing and related household-account dispute triggered the murder." },
+  { id: "household_fraud_exposure", label: "Adrian was about to expose hidden personal purchases in the household accounts." },
   { id: "property_dispute", label: "The property lawsuit triggered the murder." },
 ];
 const LOCATIONS = [
