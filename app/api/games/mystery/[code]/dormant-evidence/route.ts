@@ -15,7 +15,13 @@ export async function POST(request: Request, context: { params: Promise<{ code: 
   try {
     const { code } = await context.params;
     const body = await request.json();
-    return NextResponse.json(await decideMysteryDormantEvidence(code, typeof body.playerId === "string" ? body.playerId : "", typeof body.token === "string" ? body.token : "", body.decision));
+    return NextResponse.json(await decideMysteryDormantEvidence(
+      code,
+      typeof body.playerId === "string" ? body.playerId : "",
+      typeof body.token === "string" ? body.token : "",
+      body.evidenceId,
+      body.decision,
+    ));
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to update private evidence." }, { status: 400 });
   }
