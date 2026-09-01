@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import { SiteShell } from "./components/SiteShell";
+import type { ReactNode } from "react";
 import { divisions, hero, siteLinks } from "./site-content";
 
 export const metadata: Metadata = {
@@ -29,10 +30,76 @@ const productFamilies = [
   },
 ] as const;
 
+function CorporateShell({ children }: { children: ReactNode }) {
+  return (
+    <div className="min-h-screen overflow-x-hidden bg-[#030303] text-white">
+      <div className="pointer-events-none fixed inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(213,174,95,0.18),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(78,168,255,0.08),transparent_30%),linear-gradient(180deg,#0d0d0d_0%,#060606_50%,#030303_100%)]" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
+        <div className="overflow-hidden rounded-[32px] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.045),rgba(255,255,255,0.018))] shadow-[0_30px_120px_rgba(0,0,0,0.42)]">
+          <header className="border-b border-white/10 px-5 py-4 sm:px-8 lg:px-10">
+            <div className="mx-auto flex max-w-6xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <Link href="/" aria-label="Play Point Systems home" className="flex min-w-0 items-center gap-3">
+                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-amber-200/20 bg-black shadow-[0_0_24px_rgba(213,174,95,0.15)] sm:hidden">
+                  <Image src="/images/brand/play-point-systems-emblem.png" alt="" fill priority sizes="48px" className="object-contain" />
+                </div>
+                <div className="sm:hidden">
+                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-100/55">Company</div>
+                  <div className="mt-1 text-lg font-black text-white">Play Point Systems</div>
+                </div>
+                <div className="relative hidden h-[56px] w-[240px] shrink-0 sm:block">
+                  <Image src="/images/brand/play-point-systems-logo.png" alt="Play Point Systems" fill priority sizes="240px" className="object-contain" />
+                </div>
+              </Link>
+
+              <nav aria-label="Corporate navigation" className="flex flex-wrap items-center gap-2 text-xs font-bold text-white/72 sm:justify-end sm:text-sm">
+                <a href="#products" className="rounded-full border border-white/10 bg-white/[0.035] px-3.5 py-2 transition hover:border-white/20 hover:text-white">Products</a>
+                <a href={siteLinks.playAmplified} className="rounded-full border border-cyan-200/15 bg-cyan-300/[0.055] px-3.5 py-2 text-cyan-50 transition hover:border-cyan-200/30">Play Amplified</a>
+                <Link href="/music" className="rounded-full border border-white/10 bg-white/[0.035] px-3.5 py-2 transition hover:border-white/20 hover:text-white">Records</Link>
+                <Link href="/about" className="rounded-full border border-white/10 bg-white/[0.035] px-3.5 py-2 transition hover:border-white/20 hover:text-white">About</Link>
+                <Link href="/contact" className="rounded-full border border-white/10 bg-white/[0.035] px-3.5 py-2 transition hover:border-white/20 hover:text-white">Contact</Link>
+              </nav>
+            </div>
+          </header>
+
+          <main>{children}</main>
+
+          <footer className="border-t border-white/10 px-5 py-8 sm:px-8 lg:px-10">
+            <div className="mx-auto max-w-6xl">
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <Image src="/images/brand/play-point-systems-logo.png" alt="Play Point Systems" width={1496} height={376} sizes="220px" className="h-auto w-[220px] max-w-full" />
+                  <p className="mt-3 max-w-lg text-sm leading-7 text-white/50">Creator-led interactive products and original music built around real people, real experiences, and ideas worth returning to.</p>
+                </div>
+                <nav aria-label="Corporate footer navigation" className="flex flex-wrap gap-2 text-sm font-semibold text-white/66">
+                  <a href={siteLinks.playAmplified} className="rounded-full border border-white/10 px-4 py-2 transition hover:text-white">Play Amplified</a>
+                  <Link href="/music" className="rounded-full border border-white/10 px-4 py-2 transition hover:text-white">Play Point Records</Link>
+                  <Link href="/about" className="rounded-full border border-white/10 px-4 py-2 transition hover:text-white">About</Link>
+                  <Link href="/contact" className="rounded-full border border-white/10 px-4 py-2 transition hover:text-white">Contact</Link>
+                </nav>
+              </div>
+              <div className="mt-6 flex flex-col gap-3 border-t border-white/8 pt-5 text-xs text-white/42 sm:flex-row sm:items-center sm:justify-between">
+                <div>© {new Date().getFullYear()} Play Point Systems LLC</div>
+                <div className="flex flex-wrap gap-4">
+                  <Link href="/support" className="transition hover:text-white">Support</Link>
+                  <Link href="/privacy" className="transition hover:text-white">Privacy</Link>
+                  <Link href="/terms" className="transition hover:text-white">Terms</Link>
+                </div>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function PlayPointSystemsPage() {
   return (
-    <SiteShell current="home">
-      <section className="px-5 pb-14 pt-12 sm:px-8 sm:pb-18 sm:pt-16 lg:px-10 lg:pb-20 lg:pt-20">
+    <CorporateShell>
+      <section className="px-5 pb-14 pt-12 sm:px-8 sm:pb-16 sm:pt-16 lg:px-10 lg:pb-20 lg:pt-20">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-[1.12fr_0.88fr] lg:items-center">
             <div>
@@ -84,7 +151,7 @@ export default function PlayPointSystemsPage() {
         </div>
       </section>
 
-      <section className="border-t border-white/10 px-5 py-12 sm:px-8 lg:px-10 lg:py-16">
+      <section id="products" className="scroll-mt-6 border-t border-white/10 px-5 py-12 sm:px-8 lg:px-10 lg:py-16">
         <div className="mx-auto max-w-6xl">
           <div className="max-w-3xl">
             <div className="text-[11px] font-black uppercase tracking-[0.24em] text-white/45">What we build</div>
@@ -172,6 +239,6 @@ export default function PlayPointSystemsPage() {
           </Link>
         </div>
       </section>
-    </SiteShell>
+    </CorporateShell>
   );
 }
