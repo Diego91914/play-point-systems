@@ -98,7 +98,7 @@ const OVERRIDES: Record<string, Record<string, AnswerOverrides>> = {
     },
     partner: {
       where: { mustReveal: "You were in the study/hall area during the 10:31–10:35 window." },
-      after: { mustReveal: "You remained around the study/hall area; around 10:42 you noticed the kitchen back door partly open." },
+      after: { mustReveal: "After the 10:31–10:35 critical window, you remained around the study/hall area; around 10:42 you noticed the kitchen back door partly open." },
       door: { mustReveal: "Around 10:42 you noticed the kitchen back door partly open." },
       money: { mustReveal: "Your current company-money dispute is real, but it is separate from the Chef's employment conflict with Adrian." },
     },
