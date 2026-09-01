@@ -79,12 +79,12 @@ export const BLACKWOOD_CASE_VARIANTS: MysteryCaseVariant[] = [
     culpritRoleId: "chef",
     culpritLabel: "The Private Chef",
     releaseReady: false,
-    motiveId: "job_loss",
+    motiveId: "household_fraud_exposure",
     locationId: "library",
     windowId: "1031_1035",
     correctSupportIds: ["chef_service_gap", "kitchen_access_link", "glass_origin_link", "back_door_timing", "voice_draft_service_warning"],
     branchFit: signals => signals.adrian_sealed_letter === "seal" && signals.adrian_voice_draft === "listen" ? 100 : 0,
-    solution: "Adrian had fired the Private Chef and discovered questionable personal purchases hidden in household accounts. The Chef left the kitchen during an unexplained service gap, confronted Adrian in the library during the 10:31–10:35 window, killed him, returned through the rear route, and rinsed away a service-related trace before resuming cleanup.",
+    solution: "Adrian had discovered that the Private Chef was hiding personal purchases in household accounts and was preparing to expose and report it. The firing raised the stakes, but the threatened fraud exposure was the real pressure behind the confrontation. The Chef left the kitchen during an unexplained service gap, confronted Adrian in the library during the 10:31–10:35 window, killed him, returned through the rear route, and rinsed away a service-related trace before resuming cleanup.",
   },
 ];
 
