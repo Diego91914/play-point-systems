@@ -7,6 +7,7 @@ describe("Private Chef motive", () => {
     expect(chef?.motiveId).toBe("household_fraud_exposure");
     expect(chef?.solution).toMatch(/household accounts/i);
     expect(chef?.solution).toMatch(/expos/i);
-    expect(chef?.solution).not.toMatch(/firing.*real pressure/i);
+    expect(chef?.solution).toMatch(/threatened fraud exposure was the real pressure/i);
+    expect(chef?.solution).not.toMatch(/firing was the real pressure/i);
   });
 });
