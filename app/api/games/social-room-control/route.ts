@@ -9,6 +9,7 @@ const ROOM_TABLES = {
   "chain-reaction": "ppl_chain_reaction_rooms",
   "how-close": "ppl_how_close_rooms",
   "inside-man": "ppl_inside_man_rooms",
+  "mystery": "ppl_mystery_rooms",
   holdem: "ppl_holdem_tables",
 } as const;
 
