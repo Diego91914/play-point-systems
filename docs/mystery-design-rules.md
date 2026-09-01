@@ -79,6 +79,22 @@ The four core roles are always present: Old Friend, Business Partner, Younger Si
 
 Players 5–8 add suspects, secrets, alibis, red herrings, corroboration, and investigative depth. They may never carry information required to solve the minimum-player version.
 
+## Investigation pacing rule
+**Last Call is paced around a satisfying investigation, not a hard stopwatch.**
+
+A typical game may land around 30–45 minutes. Larger 7–8 player games may reasonably approach 45–60 minutes if the investigation remains active and interesting. A longer game is not considered a failure merely because it exceeds 30 minutes.
+
+Every player receives one investigator turn during each evidence round. With four evidence rounds, that currently produces:
+- 4 players: 16 investigation turns
+- 5 players: 20 investigation turns
+- 6 players: 24 investigation turns
+- 7 players: 28 investigation turns
+- 8 players: 32 investigation turns
+
+The phone must prevent that extra time from becoming repetitive. Later turns should gain value through evidence-gated follow-up questions, reopened contradictions, newly unlocked investigative avenues, private discoveries, dormant evidence, and changed context around earlier answers.
+
+**Extra runtime must buy deeper investigation, not filler.** A 50-minute game with evolving suspicion is preferable to a 30-minute game that feels rushed; a 50-minute game with repeated generic questioning is not acceptable.
+
 ## Investigation structure
 - 4–8 players
 - private character brief and timeline on each phone
@@ -103,4 +119,4 @@ Players may take notes if they enjoy it, but note-taking is never required. The 
 ## Content standard
 Every playable character must have a public relationship to the victim, private backstory, timeline around the murder, plausible motive or suspicious circumstance, private secret, information they know about the case, explicit innocence or murderer objective for the active variant, and authored responses to every interrogation question.
 
-Every mystery and every culprit variant must be logic-checked so timelines, evidence, private discoveries, dormant evidence, hidden branch compatibility, scoring paths, and required clues remain consistent at every supported player count.
+Every mystery and every culprit variant must be logic-checked so timelines, evidence, private discoveries, dormant evidence, hidden branch compatibility, scoring paths, pacing, and required clues remain consistent at every supported player count.
