@@ -1,5 +1,8 @@
 import Link from "next/link";
-import { PLAY_POINT_GAME_CATALOG } from "@/lib/play-point-core/games-catalog";
+import {
+  PLAY_POINT_GAME_CATALOG,
+  getSalesReadyCatalog,
+} from "@/lib/play-point-core/games-catalog";
 
 const startGameSkus = new Set([
   "game.on_my_list",
@@ -12,6 +15,8 @@ const startGameSkus = new Set([
 
 const amplifySkus = new Set([
   "shot_caddy.mode.classic",
+  "shot_caddy.mode.chaos",
+  "shot_caddy.mode.battle",
   "shot_caddy.mode.cys",
   "shot_caddy.mode.csp",
   "shot_caddy.mode.card_shark",
@@ -20,8 +25,10 @@ const amplifySkus = new Set([
 
 const startGames = PLAY_POINT_GAME_CATALOG.filter((game) => startGameSkus.has(game.sku));
 const amplifyGames = PLAY_POINT_GAME_CATALOG.filter((game) => amplifySkus.has(game.sku));
+const finishedGameCount = getSalesReadyCatalog().length;
 
 function GameCard({ game }: { game: (typeof PLAY_POINT_GAME_CATALOG)[number] }) {
+  const priceLabel = game.priceUsd === null ? null : `$${game.priceUsd.toFixed(2)}`;
   const content = (
     <>
       <div className="flex items-start justify-between gap-4">
@@ -29,12 +36,24 @@ function GameCard({ game }: { game: (typeof PLAY_POINT_GAME_CATALOG)[number] }) 
           <div className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-100/55">{game.brand}</div>
           <h3 className="mt-2 text-xl font-black tracking-tight text-white">{game.title}</h3>
         </div>
-        <span className="shrink-0 rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white/55">
-          {game.status === "playable_preview" ? "Preview" : "Play"}
-        </span>
+        <div className="flex shrink-0 flex-col items-end gap-2">
+          <span className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white/55">
+            {game.status === "playable_preview" ? "Preview" : "Ready"}
+          </span>
+          {priceLabel ? (
+            <span className="text-lg font-black text-amber-100">{priceLabel}</span>
+          ) : (
+            <span className="text-xs font-black uppercase tracking-[0.12em] text-cyan-100/65">Free preview</span>
+          )}
+        </div>
       </div>
       <p className="mt-3 text-sm leading-6 text-white/60">{game.description}</p>
-      <div className="mt-5 text-sm font-black text-cyan-100 transition group-hover:translate-x-1">Open {game.title} →</div>
+      <div className="mt-5 flex items-center justify-between gap-3 border-t border-white/8 pt-4">
+        <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/42">
+          {priceLabel ? "One-time price" : "Try it now"}
+        </span>
+        <span className="text-sm font-black text-cyan-100 transition group-hover:translate-x-1">View / Play →</span>
+      </div>
     </>
   );
 
@@ -88,10 +107,13 @@ export default function PlayAmplifiedPage() {
             <p className="mx-auto mt-7 max-w-3xl text-base leading-8 text-white/65 sm:text-xl sm:leading-9">
               Play Amplified uses the phones everyone already has to create more conversation, competition, laughter, strategy, and connection between the people already together.
             </p>
+            <div className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full border border-amber-200/20 bg-amber-300/[0.08] px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-amber-100">
+              {finishedGameCount} finished games · One-time pricing
+            </div>
             <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-              <Link href="/play" className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">
-                Choose a Game
-              </Link>
+              <a href="#games" className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">
+                See Games & Prices
+              </a>
               <Link href="/games" className="inline-flex items-center justify-center rounded-2xl border border-white/14 bg-white/[0.05] px-6 py-3.5 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-white/[0.09]">
                 My Games
               </Link>
@@ -115,13 +137,14 @@ export default function PlayAmplifiedPage() {
             </div>
           </section>
 
-          <section className="py-16 sm:py-20">
+          <section id="games" className="scroll-mt-6 py-16 sm:py-20">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <div className="text-[11px] font-black uppercase tracking-[0.22em] text-fuchsia-100/55">Play together</div>
                 <h2 className="mt-3 text-4xl font-black tracking-tight text-white">Start the game.</h2>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-white/55">Prices are shown up front. Pay once for the game you want—no monthly subscription.</p>
               </div>
-              <Link href="/play#social" className="text-sm font-black text-cyan-100 hover:text-white">See social games →</Link>
+              <Link href="/play#phone-room-games" className="text-sm font-black text-cyan-100 hover:text-white">See full game details →</Link>
             </div>
             <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {startGames.map((game) => <GameCard key={game.sku} game={game} />)}
@@ -133,6 +156,7 @@ export default function PlayAmplifiedPage() {
               <div>
                 <div className="text-[11px] font-black uppercase tracking-[0.22em] text-emerald-100/55">Real play, amplified</div>
                 <h2 className="mt-3 text-4xl font-black tracking-tight text-white">Add another layer.</h2>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-white/55">Every finished Shot Caddy and Quest Caddy experience is shown here with its one-time price.</p>
               </div>
               <Link href="/play#disc-golf" className="text-sm font-black text-cyan-100 hover:text-white">Explore course & backyard play →</Link>
             </div>
