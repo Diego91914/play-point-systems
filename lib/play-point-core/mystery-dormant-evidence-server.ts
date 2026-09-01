@@ -91,7 +91,10 @@ function letterEvidence(state: State, viewer: Player): PrivateEvidence | null {
 }
 
 function voiceDraftEvidence(state: State, viewer: Player): PrivateEvidence | null {
-  if (viewer.roleId !== "chef" || state.status === "lobby" || state.evidenceIndex < 1) return null;
+  // Branch Point 2 is intentionally unavailable until Branch Point 1 has been
+  // resolved. It becomes available during the first evidence stage, before any
+  // variant-dependent second evidence card can legally appear.
+  if (viewer.roleId !== "chef" || state.status === "lobby" || state.evidenceIndex < 0 || !state.branchSignals?.adrian_sealed_letter) return null;
   const choice = getChoice(state, viewer, "adrian_voice_draft");
   const status = choice?.status ?? "available";
   return {
@@ -140,7 +143,7 @@ export async function decideMysteryDormantEvidence(codeValue: unknown, playerId:
   const valid = evidenceId === "adrian_sealed_letter"
     ? viewer.roleId === "sister" && row.state.evidenceIndex >= 0 && (decision === "open" || decision === "seal")
     : evidenceId === "adrian_voice_draft"
-      ? viewer.roleId === "chef" && row.state.evidenceIndex >= 1 && (decision === "listen" || decision === "leave")
+      ? viewer.roleId === "chef" && row.state.evidenceIndex >= 0 && Boolean(row.state.branchSignals?.adrian_sealed_letter) && (decision === "listen" || decision === "leave")
       : false;
   if (!valid || row.state.status === "lobby") throw new Error("That private evidence choice is not available to you.");
 
