@@ -99,7 +99,6 @@ export const BLACKWOOD_VARIANT_CONTENT: Record<string, BlackwoodVariantContent> 
       { id: "partner_records_link", title: "The records traveled", text: "The torn bank-record fragment connects materials handled by the Business Partner to the rear route after the murder.", targetRoles: ["partner", "chef"], questionIds: ["money", "secret", "heard", "after"], minEvidence: 1 },
       { id: "partner_back_route", title: "The rear route fits the missing minutes", text: "The 10:35 porch movement fits the Business Partner's unverified gap between the study and the later hallway sighting.", targetRoles: ["partner", "sister"], questionIds: ["door", "porch_route", "dark_jacket", "timeline"], minEvidence: 2 },
       { id: "partner_cleanup_trace", title: "The cleanup left a paper trace", text: "The damp record fragment suggests someone carrying the copied packet passed through the kitchen/back-door area after the fatal confrontation.", targetRoles: ["partner", "chef"], questionIds: ["door", "heard", "after", "money"], minEvidence: 2 },
-      { id: "sealed_letter_company_warning", title: "Adrian expected a financial confrontation", text: "A private pre-dinner warning establishes Adrian expected a serious confrontation over money, but does not name the culprit by itself.", targetRoles: ["partner", "sister"], questionIds: ["money", "secret", "motive"], minEvidence: 3 },
     ],
     branchSafetyNotes: [
       "The old blue ledger remains truthful but is a red herring in this variant.",
@@ -159,7 +158,6 @@ export const BLACKWOOD_VARIANT_CONTENT: Record<string, BlackwoodVariantContent> 
       { id: "garden_timeline_gap", title: "The garden alibi is not continuous", text: "Phone records and questioning expose a break in the accountant call during the exact death window.", targetRoles: ["sister"], questionIds: ["where", "alibi", "timeline", "opportunity", "after"], minEvidence: 2 },
       { id: "sister_return_route", title: "The rear route reaches the garden", text: "The porch/kitchen path provides a fast way to leave the library and return outside without crossing the main hall.", targetRoles: ["sister", "chef"], questionIds: ["door", "porch_route", "after", "heard"], minEvidence: 2 },
       { id: "family_accountant_pressure", title: "The accountant call raised the stakes", text: "Your questioning shows the call concerned whether Adrian's inheritance revision could take effect immediately, making the dispute more urgent than it first appeared.", targetRoles: ["sister"], questionIds: ["money", "motive", "secret", "relationship"], minEvidence: 3 },
-      { id: "voice_draft_inheritance", title: "Adrian expected a family confrontation", text: "A private unfinished message suggests Adrian planned to confront a family member over concealed assets that night.", targetRoles: ["sister", "chef"], questionIds: ["motive", "secret", "money"], minEvidence: 3 },
     ],
     branchSafetyNotes: [
       "The Sister's original inheritance anger remains true in every branch.",
