@@ -37,6 +37,24 @@ Unopened or undiscovered evidence may strengthen a case, unlock a new investigat
 
 The contents of such evidence must obey the truthful-misdirection rule. A letter may be incomplete, emotionally biased, or ambiguous, but it may not contain fabricated objective facts presented as true.
 
+## Hidden branch-point rule
+**Players may shape which authored version of the mystery becomes canon without being told that they are selecting a case branch.**
+
+A normal story decision — opening a letter, leaving it sealed, searching a room, confronting someone early, protecting a secret, following one lead instead of another — may quietly contribute a hidden branch signal.
+
+The player should experience the choice only at the story level. The phone must never say or imply: “Your choice selected the murderer,” “You unlocked Variant B,” or anything else that exposes the branching machinery.
+
+Branching must obey these rules:
+- early objective facts must remain compatible with every still-eligible branch
+- a choice may influence which fully authored truth becomes canon
+- the choice does not need to be the only branch factor; several ordinary decisions may combine
+- once a case variant becomes canon, later evidence may reveal that truth but may never rewrite it
+- no unfinished or untested variant may become active in a live game
+- every branch must remain independently solvable at the advertised minimum player count
+- the branching system itself is never shown in the player's Case File
+
+The design goal is that a player thinks, **“I decided whether to open the envelope,”** not **“I decided who the murderer is.”**
+
 ## Multiple-solution / rotating-culprit framework
 A single story world may support more than one authored culprit, allowing the same mystery setting and cast to play differently across sessions.
 
@@ -51,9 +69,9 @@ This is **not** accomplished by randomly relabeling the murderer while leaving t
 - conviction scoring key
 - reveal narrative
 
-At room creation, the phone may secretly choose one valid **case variant**. That variant determines which dormant evidence avenues become meaningful, which private discoveries can unlock, and how ambiguous evidence resolves.
+A case variant may be selected at room creation or may remain unresolved through an early branch-safe phase while hidden player decisions contribute branch signals. Once enough information exists to select among release-ready authored variants, the phone silently locks the case truth.
 
-Shared facts may remain constant across variants when they are genuinely true in every version. Variant-dependent facts must never contradict an objective fact already shown to players. The phone may withhold or reveal different truthful information, but it may not rewrite history mid-game.
+Shared facts may remain constant across variants when they are genuinely true in every version. Variant-dependent facts must never contradict an objective fact already shown to players. The phone may withhold or reveal different truthful information, but it may not rewrite established history mid-game.
 
 The goal is for returning players to know the setting and characters without knowing the solution. Familiarity with Blackwood House should not automatically reveal who the murderer is.
 
@@ -112,6 +130,7 @@ A future rotating-culprit Blackwood variant may assign guilt differently, but no
 - Turn advances automatically
 - Phones interrupt with new common evidence and role-specific private clues
 - Unopened / undiscovered evidence can create optional investigative avenues
+- Early story choices may contribute invisible branch signals without exposing that function to players
 - Case Files remain individual rather than becoming one shared evidence dump
 - After all evidence rounds, every player privately builds a complete case
 - Phones score each theory against the hidden solution and conviction standard for the active case variant
