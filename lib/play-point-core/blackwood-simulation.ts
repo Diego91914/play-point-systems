@@ -1,7 +1,7 @@
-import { BLACKWOOD_CASE_VARIANTS, type MysteryCaseVariant } from "@/lib/play-point-core/mystery-case-variants";
-import { BLACKWOOD_MINIMUM_PROOF_PLANS } from "@/lib/play-point-core/mystery-fairness";
-import { questionsPerEvidenceRound } from "@/lib/play-point-core/mystery-pacing";
-import { getBlackwoodVariantContent, type VariantSupportRule } from "@/lib/play-point-core/mystery-variant-content";
+import { BLACKWOOD_CASE_VARIANTS, type MysteryCaseVariant } from "./mystery-case-variants";
+import { BLACKWOOD_MINIMUM_PROOF_PLANS } from "./mystery-fairness";
+import { questionsPerEvidenceRound } from "./mystery-pacing";
+import { getBlackwoodVariantContent, type VariantSupportRule } from "./mystery-variant-content";
 
 const CORE_ROLES = ["murderer", "partner", "sister", "chef"] as const;
 const OPTIONAL_ROLES = ["lawyer", "assistant", "cousin", "neighbor"] as const;
@@ -58,7 +58,7 @@ export function simulateBlackwoodFairness(playerCount: number, variantId: string
   const activeRoles = rolesForCount(playerCount);
   const rules = rulesFor(variant);
   const proofRules = proofPlan.supportIds.map(id => rules.find(rule => rule.id === id)).filter((rule): rule is Rule => Boolean(rule));
-  const personalTurnsAvailable = 4; // one investigator turn in each of four evidence rounds
+  const personalTurnsAvailable = 4;
 
   const seats = activeRoles.map(roleId => {
     const isCulprit = roleId === variant.culpritRoleId;
