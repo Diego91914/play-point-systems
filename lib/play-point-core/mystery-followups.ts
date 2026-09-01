@@ -84,25 +84,57 @@ function variantLabel(variantId: string | null | undefined, questionId: string) 
   return undefined;
 }
 
+function contradictionLabel(context: FollowupContext, questionId: string) {
+  if (context.evidenceIndex < 2 || !roomPreviouslyAsked(context, ["where", "alibi", "timeline", "after"])) return undefined;
+
+  if (context.variantId === "blackwood-business-partner" && context.targetRoleId === "partner") {
+    if (questionId === "door" || questionId === "porch_route") {
+      return "CONTRADICTION: You said you stayed in the study. How do you explain the rear-route evidence tied to the company records?";
+    }
+  }
+
+  if (context.variantId === "blackwood-younger-sister" && context.targetRoleId === "sister") {
+    if (questionId === "door" || questionId === "porch_route") {
+      return "CONTRADICTION: You said you stayed outside. How do you explain evidence that the rear route connects the library back toward the garden side?";
+    }
+  }
+
+  if (context.variantId === "blackwood-private-chef" && context.targetRoleId === "chef") {
+    if (questionId === "door" || questionId === "porch_route") {
+      return "CONTRADICTION: You said you stayed in the kitchen. How do you explain the service gap and movement through the kitchen-side rear route?";
+    }
+  }
+
+  if ((!context.variantId || context.variantId === "blackwood-old-friend") && context.targetRoleId === "murderer") {
+    if (questionId === "door" || questionId === "porch_route" || questionId === "dark_jacket") {
+      return "CONTRADICTION: You said you were in the bathroom. How do you explain the rear-route evidence during the same window?";
+    }
+  }
+
+  return undefined;
+}
+
 export function applyMysteryFollowupLabels<T extends QuestionOption[]>(questions: T, context: FollowupContext): T {
   return questions.map(question => {
-    let label = variantLabel(context.variantId, question.id) ?? question.label;
+    let label = contradictionLabel(context, question.id) ?? variantLabel(context.variantId, question.id) ?? question.label;
 
-    if (question.id === "alibi" && roomPreviouslyAsked(context, ["where"])) {
-      label = "Earlier you gave us your location. Who can actually verify you stayed there?";
-    } else if (question.id === "timeline" && roomPreviouslyAsked(context, ["before", "after", "where"])) {
-      label = "The death window is now 10:31–10:35. Walk us through those exact minutes again.";
-    } else if (question.id === "relationship" && roomPreviouslyAsked(context, ["motive"])) {
-      label = "Earlier you admitted tension with Adrian. How serious had that conflict really become?";
-    } else if (question.id === "last_words" && roomPreviouslyAsked(context, ["victim"])) {
-      label = "You already told us when you last saw Adrian. What exactly did he say during that encounter?";
-    } else if (question.id === "library" && roomPreviouslyAsked(context, ["where", "heard"])) {
-      label = "Given the confirmed death window, what do you know about activity around the library then?";
-    } else if (question.id === "opportunity" && roomPreviouslyAsked(context, ["where"])) {
-      label = "Your earlier location is on record. Could you physically have reached the library by 10:31–10:35?";
+    if (!label.startsWith("CONTRADICTION:")) {
+      if (question.id === "alibi" && roomPreviouslyAsked(context, ["where"])) {
+        label = "Earlier you gave us your location. Who can actually verify you stayed there?";
+      } else if (question.id === "timeline" && roomPreviouslyAsked(context, ["before", "after", "where"])) {
+        label = "The death window is now 10:31–10:35. Walk us through those exact minutes again.";
+      } else if (question.id === "relationship" && roomPreviouslyAsked(context, ["motive"])) {
+        label = "Earlier you admitted tension with Adrian. How serious had that conflict really become?";
+      } else if (question.id === "last_words" && roomPreviouslyAsked(context, ["victim"])) {
+        label = "You already told us when you last saw Adrian. What exactly did he say during that encounter?";
+      } else if (question.id === "library" && roomPreviouslyAsked(context, ["where", "heard"])) {
+        label = "Given the confirmed death window, what do you know about activity around the library then?";
+      } else if (question.id === "opportunity" && roomPreviouslyAsked(context, ["where"])) {
+        label = "Your earlier location is on record. Could you physically have reached the library by 10:31–10:35?";
+      }
     }
 
-    if (viewerPreviouslyAsked(context, ["where", "motive", "victim", "before", "after"]) && context.evidenceIndex >= 0) {
+    if (!label.startsWith("CONTRADICTION:") && viewerPreviouslyAsked(context, ["where", "motive", "victim", "before", "after"]) && context.evidenceIndex >= 0) {
       if (question.id === "timeline") label = `FOLLOW-UP: ${label}`;
       if (question.id === "relationship") label = `FOLLOW-UP: ${label}`;
       if (question.id === "last_words") label = `FOLLOW-UP: ${label}`;
