@@ -2,7 +2,7 @@ import "server-only";
 
 import { createHash, timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
-import { resolveBlackwoodVariant, type MysteryBranchSignals } from "@/lib/play-point-core/mystery-case-variants";
+import { blackwoodBranchProgress, resolveBlackwoodVariant, type MysteryBranchSignals } from "@/lib/play-point-core/mystery-case-variants";
 
 type Player = { id: string; name: string; tokenHash: string; seat: number; roleId?: string };
 type DormantChoice = { status: "available" | "opened" | "sealed"; decidedAt?: string };
@@ -57,9 +57,9 @@ function project(state: State, viewer: Player) {
     title: "The sealed envelope",
     reminder: "Three days before dinner, Adrian gave you a sealed envelope. He said: ‘If something happens to me, open this.’ You had pushed it into your bag and, until now, forgotten it was there.",
     status: choice.status,
-    openedText: choice.status === "opened" ? "Adrian wrote that he had uncovered an old theft by someone he had trusted for decades. He planned to confront that person privately tonight and give them one final chance to admit the truth. He did not name the person." : null,
+    openedText: choice.status === "opened" ? "Adrian wrote that he had uncovered something serious involving someone close to him and planned a private confrontation tonight. The letter does not fully identify the person or explain the entire dispute." : null,
     sealedText: choice.status === "sealed" ? "You chose not to open Adrian’s envelope. It remains in your possession. You may tell the room it exists, but you do not know what is inside." : null,
-    rule: "This is a private avenue. Your choice may change what becomes discoverable later, but the phone never explains the machinery behind the story.",
+    rule: "This is a private story choice. It changes what can become discoverable later, but your phone never tells you how the mystery is being shaped.",
   };
 }
 
@@ -85,15 +85,13 @@ export async function decideMysteryDormantEvidence(codeValue: unknown, playerId:
     ...(row.state.dormantEvidence ?? {}),
     [playerId]: { status: decision === "open" ? "opened" : "sealed", decidedAt: new Date().toISOString() },
   };
+  row.state.branchSignals = { ...(row.state.branchSignals ?? {}), adrian_sealed_letter: decision };
 
-  // The player is never told this normal story choice is also a branch signal.
-  // Only release-ready authored variants are eligible, so an unfinished branch
-  // can never leak into a live game.
-  row.state.branchSignals = {
-    ...(row.state.branchSignals ?? {}),
-    adrian_sealed_letter: decision,
-  };
-  row.state.caseVariantId = resolveBlackwoodVariant(row.state.branchSignals, row.state.caseVariantId).id;
+  const progress = blackwoodBranchProgress(row.state.branchSignals);
+  if (progress.readyToResolve) {
+    const variant = resolveBlackwoodVariant(row.state.branchSignals, row.state.caseVariantId);
+    if (variant) row.state.caseVariantId = variant.id;
+  }
 
   const saved = await save(row, row.state);
   return { evidence: project(saved.state, viewer) };
