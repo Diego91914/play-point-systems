@@ -5,6 +5,7 @@ import { MysteryClient } from "./MysteryClient";
 import { MysteryHostControls } from "./MysteryHostControls";
 import { MysteryCaseIntelligence } from "./MysteryCaseIntelligence";
 import { MysteryCaseLayer } from "./MysteryCaseLayer";
+import { MysteryDormantEvidence } from "./MysteryDormantEvidence";
 
 export const metadata: Metadata = {
   title: "Last Call | Play Amplified",
@@ -19,6 +20,7 @@ export default function Page() {
         <MysteryClient />
         <MysteryCaseIntelligence />
         <MysteryCaseLayer />
+        <MysteryDormantEvidence />
         <MysteryHostControls />
       </RoomInviteSessionGuard>
     </SiteShell>
