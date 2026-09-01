@@ -39,6 +39,13 @@ describe("Blackwood hidden branching", () => {
       expect(resolved?.id).toBe("blackwood-old-friend");
     }
   });
+
+  it("never scores knowledge from a branch artifact the player chose not to inspect", () => {
+    const byId = Object.fromEntries(BLACKWOOD_CASE_VARIANTS.map(variant => [variant.id, variant]));
+    expect(byId["blackwood-business-partner"].correctSupportIds.some(id => id.includes("sealed_letter"))).toBe(false);
+    expect(byId["blackwood-younger-sister"].correctSupportIds.some(id => id.includes("voice_draft"))).toBe(false);
+    expect(byId["blackwood-private-chef"].correctSupportIds.some(id => id.includes("voice_draft"))).toBe(true);
+  });
 });
 
 describe("Blackwood alternate content release gates", () => {
@@ -70,5 +77,13 @@ describe("Blackwood alternate content release gates", () => {
     const ids = alternates.flatMap(variant => variant.correctSupportIds.map(id => `${variant.id}:${id}`));
     const raw = ids.map(item => item.split(":")[1]);
     expect(new Set(raw).size).toBe(raw.length);
+  });
+
+  it.each(alternates)("$id exposes multiple independent proof avenues", variant => {
+    const content = getBlackwoodVariantContent(variant.id)!;
+    const scoredRules = content.supportRules.filter(rule => variant.correctSupportIds.includes(rule.id));
+    expect(scoredRules.length).toBeGreaterThanOrEqual(4);
+    expect(new Set(scoredRules.flatMap(rule => rule.targetRoles)).size).toBeGreaterThanOrEqual(2);
+    expect(scoredRules.filter(rule => rule.minEvidence <= 2).length).toBeGreaterThanOrEqual(2);
   });
 });
