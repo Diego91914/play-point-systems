@@ -3,6 +3,7 @@ import { SiteShell } from "@/app/components/SiteShell";
 import { RoomInviteSessionGuard } from "@/app/games/_components/RoomInviteSessionGuard";
 import { MysteryClient } from "./MysteryClient";
 import { MysteryHostControls } from "./MysteryHostControls";
+import { MysteryCaseIntelligence } from "./MysteryCaseIntelligence";
 
 export const metadata: Metadata = {
   title: "Last Call | Play Amplified",
@@ -15,6 +16,7 @@ export default function Page() {
     <SiteShell current="games">
       <RoomInviteSessionGuard storageKey="pps-mystery-session">
         <MysteryClient />
+        <MysteryCaseIntelligence />
         <MysteryHostControls />
       </RoomInviteSessionGuard>
     </SiteShell>
