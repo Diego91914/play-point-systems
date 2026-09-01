@@ -82,3 +82,15 @@ export function getPrelockAnswerOverride(roleId: string | undefined, answerKey: 
   if (!roleId) return null;
   return PRELOCK_OVERRIDES[roleId]?.[answerKey] ?? null;
 }
+
+export const BLACKWOOD_PRELOCK_EVIDENCE = {
+  title: "The death window",
+  publicText: "Adrian died in the library between 10:31 and 10:35. Several people had unresolved conflicts with him, and no single early clue yet establishes who entered or left the library during those minutes.",
+  privateByRole: {
+    partner: "Your earlier argument ended before the fatal window. The exact continuity of your study timeline may still matter.",
+    sister: "Your private family-accounting call overlaps the period investigators will be reconstructing. Keep following the phone as your own timeline becomes clearer.",
+    chef: "You were handling kitchen cleanup around this period. Small service details may become important later.",
+    murderer: "Your bathroom-area timeline will likely be tested closely because of your old conflict with Adrian.",
+    lawyer: "Your legal context may help distinguish old disputes from current ones, but you do not yet have proof of which conflict became fatal.",
+  } as Record<string, string>,
+};
