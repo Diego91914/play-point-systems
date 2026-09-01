@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "vitest run tests/blackwood-full-fairness.test.ts tests/blackwood-timelines.test.ts tests/blackwood-chef-motive.test.ts tests/blackwood-answer-timeline-integrity.test.ts && next build",
+    "build": "vitest run tests/blackwood-full-fairness.test.ts tests/blackwood-timelines.test.ts tests/blackwood-chef-motive.test.ts tests/blackwood-answer-timeline-integrity.test.ts tests/blackwood-followup-viewer-consistency.test.ts && next build",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
