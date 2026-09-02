@@ -1,6 +1,6 @@
 # Blackwood House — Variant C: The Inheritance Lie
 
-Status: **development / not selectable in live games**
+Status: **code-audited / not selectable in live games / live playtest pending**
 
 ## Core truth
 
@@ -14,7 +14,7 @@ Status: **development / not selectable in live games**
 
 **OPEN letter + LEAVE voice draft** → Variant C once release-ready.
 
-The first hidden decision does not determine the culprit. The second hidden decision completes the 2×2 path. Players never see this matrix.
+The first hidden decision does not determine the culprit. The second hidden decision completes the 2×2 path. Players never see this matrix. The unopened/unheard branch artifact can shape branch selection, but artifact content that players did not encounter is never scored as proof.
 
 ## Branch-safe facts
 
@@ -42,13 +42,12 @@ The phone must not reveal the fatal-window call disconnection, the concealed-ass
 - `garden_timeline_gap`
 - `sister_return_route`
 - `family_accountant_pressure`
-- `voice_draft_inheritance`
 
-Conviction target remains 12 points with correct culprit required, 8/12 minimum, and at least two correct support links.
+No sealed-letter or voice-draft artifact is a scored support fact in this path. Conviction target remains 12 points with correct culprit required, 8/12 minimum, and at least two correct support links.
 
 ## Critical logic rule
 
-The Sister cannot remain the original porch witness in this variant. Her interrogation answers and private memory must instead reflect that she used the rear route herself. Other core players and physical evidence must carry the route corroboration.
+The Sister cannot remain the original porch witness in this variant. Her interrogation answers and private memory instead reflect that she used the rear route herself. Other core players and physical evidence carry the route corroboration.
 
 ## Red herrings that stay truthful
 
@@ -59,11 +58,14 @@ The Sister cannot remain the original porch witness in this variant. Her interro
 
 ## Release gate
 
-Do not set this variant release-ready until:
-- Sister answer prompts are variant-aware
-- Sister private memory no longer says she witnessed herself
-- evidence cards switch to the legal-paper / call-gap chain
-- personal discoveries expose at least two viable correct supports to every innocent seat
-- branch-safe pre-lock facts are audited
-- 4–8 player simulations pass
-- production build and live playtest pass
+Automated/code audit now passes for:
+- variant-aware Sister answers and private memory
+- no self-witness contradiction
+- legal-paper / call-gap evidence chain
+- evidence-gated follow-up wording
+- encounterable support facts only
+- branch-safe pre-lock facts
+- 4–8 player fairness simulation
+- production build gate
+
+**Still required before `releaseReady = true`:** a successful real multi-device live playtest covering OPEN + LEAVE, the full investigation/evidence sequence, Build Your Case submissions, reveal, and Start Over.
