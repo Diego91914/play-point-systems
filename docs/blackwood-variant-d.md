@@ -1,6 +1,6 @@
 # Blackwood House — Variant D: The Final Service
 
-Status: **development / not selectable in live games**
+Status: **code-audited / not selectable in live games / live playtest pending**
 
 ## Core truth
 
@@ -56,10 +56,14 @@ The whiskey clue must remain truthful but cannot be treated as the Chef's murder
 
 ## Release gate
 
-Do not set this variant release-ready until:
-- Chef private story and all answer prompts are variant-aware
-- evidence switches to service-gap / rinse-trace / household-charge chain
-- all innocent core seats can earn at least two correct support links
-- branch-safe pre-lock facts are audited
-- 4–8 player simulations pass
-- production build and live playtest pass
+Automated/code audit now passes for:
+- variant-aware Chef private story and answer prompts
+- service-gap / rinse-trace / household-charge evidence chain
+- evidence-gated household-account reveal timing
+- at least two encounterable correct support links for every innocent core seat
+- branch-safe pre-lock facts
+- generic voice draft excluded from scored proof
+- 4–8 player fairness simulation
+- production build gate
+
+**Still required before `releaseReady = true`:** a successful real multi-device live playtest covering SEALED + LISTEN, the full investigation/evidence sequence, Build Your Case submissions, reveal, and Start Over.
