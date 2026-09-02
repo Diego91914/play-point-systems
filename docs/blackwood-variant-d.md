@@ -14,7 +14,7 @@ Status: **development / not selectable in live games**
 
 **SEALED letter + LISTEN voice draft** → Variant D once release-ready.
 
-The Chef's voice-draft choice is an ordinary private story decision. The player is never told it is Branch Point 2.
+The Chef's voice-draft choice is an ordinary private story decision. The player is never told it is Branch Point 2. The recording is intentionally generic; it can shape the hidden branch but is **not** a scored proof fact for the household-account motive.
 
 ## Branch-safe facts
 
@@ -40,9 +40,8 @@ Do not reveal the service-log gap, hidden household charges, or berry-reduction 
 - `kitchen_access_link`
 - `glass_origin_link`
 - `back_door_timing`
-- `voice_draft_service_warning`
 
-Conviction target remains 12 points with correct culprit required, 8/12 minimum, and at least two correct support links.
+The generic voice draft is not a correct support link because it never names the Chef, staff, or household accounts. Conviction target remains 12 points with correct culprit required, 8/12 minimum, and at least two correct support links.
 
 ## Red herrings that stay truthful
 
