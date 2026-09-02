@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
+import { PlayAmplifiedPwa } from "./PlayAmplifiedPwa";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://playamplified.com"),
   applicationName: "Play Amplified",
+  manifest: "/play-amplified-manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Play Amplified",
+  },
+  themeColor: "#05070b",
   title: {
     absolute: "Play Amplified | Phones in the game. People in the moment.",
   },
@@ -26,5 +34,10 @@ export const metadata: Metadata = {
 };
 
 export default function PlayAmplifiedLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return children;
+  return (
+    <>
+      {children}
+      <PlayAmplifiedPwa />
+    </>
+  );
 }
