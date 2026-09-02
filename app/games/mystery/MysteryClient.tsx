@@ -61,6 +61,7 @@ export function MysteryClient() {
   const [questionId, setQuestionId] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [briefingAccepted, setBriefingAccepted] = useState(false);
 
   const request = useCallback(async (url: string, init?: RequestInit) => {
     const response = await fetch(url, {
@@ -107,6 +108,7 @@ export function MysteryClient() {
       localStorage.setItem(KEY, JSON.stringify(nextSession));
       setSession(nextSession);
       setGame(json.state);
+      setBriefingAccepted(false);
       history.replaceState(null, "", `/games/mystery?code=${json.code}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Unable to join.");
@@ -129,6 +131,7 @@ export function MysteryClient() {
         setTargetId("");
         setQuestionId("");
       }
+      if (action === "start" || action === "restart") setBriefingAccepted(false);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Try again.");
     } finally {
@@ -139,6 +142,7 @@ export function MysteryClient() {
   const validCode = /^[A-Z2-9]{6}$/.test(code);
   const joinUrl = game && typeof window !== "undefined" ? `${window.location.origin}/games/mystery?code=${game.code}` : "";
   const otherPlayers = useMemo(() => game?.players.filter(player => player.id !== game.me.id) ?? [], [game]);
+  const showBriefing = game?.status !== "lobby" && Boolean(game?.me.role) && !briefingAccepted;
 
   if (!game) {
     return (
@@ -181,7 +185,25 @@ export function MysteryClient() {
           </section>
         )}
 
-        {game.status !== "lobby" && game.me.role && (
+        {showBriefing && game.me.role && (
+          <section className="mt-6 rounded-[30px] border border-amber-200/25 bg-amber-200/[.06] p-6 sm:p-7">
+            <div className="text-xs font-black uppercase tracking-[.22em] text-amber-100">Before the mystery begins</div>
+            <h2 className="mt-2 text-3xl font-black text-white">How to play</h2>
+            <p className="mt-3 text-sm leading-6 text-white/60">Read this privately. Everyone has secrets — even innocent players. Your phone will tell you what the room is allowed to know.</p>
+            <div className="mt-5 space-y-3">
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><b className="text-white">1. Keep your phone private.</b><p className="mt-1 text-sm leading-6 text-white/60">Do not show anyone your character, memories, private clues, or private instructions.</p></div>
+              <div className="rounded-2xl border border-emerald-300/20 bg-emerald-300/[.06] p-4"><b className="text-emerald-100">2. MUST REVEAL means tell it.</b><p className="mt-1 text-sm leading-6 text-white/65">When someone asks you a question, say the information your phone tells you to reveal — in your own words.</p></div>
+              <div className="rounded-2xl border border-rose-300/20 bg-rose-300/[.06] p-4"><b className="text-rose-100">3. MAY HIDE means it is your choice.</b><p className="mt-1 text-sm leading-6 text-white/65">You may keep that information secret, dodge around it, or reveal it strategically. Do not invent facts or contradict information you are required to reveal.</p></div>
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><b className="text-white">4. Talk to the people, not the phones.</b><p className="mt-1 text-sm leading-6 text-white/60">Question, bluff, defend, accuse, and debate face-to-face. The phone is the brain and guide; the people are the game.</p></div>
+              <div className="rounded-2xl border border-cyan-300/15 bg-cyan-300/[.04] p-4"><b className="text-cyan-100">5. Follow the evidence.</b><p className="mt-1 text-sm leading-6 text-white/60">New evidence appears as the investigation progresses. Your Case File automatically remembers evidence and spoken interview answers, so no notepad is required.</p></div>
+              <div className="rounded-2xl border border-amber-200/15 bg-amber-200/[.04] p-4"><b className="text-amber-100">6. Build your case.</b><p className="mt-1 text-sm leading-6 text-white/60">At the end, you will name a suspect, motive, crime location, murder window, and the evidence that proves your theory.</p></div>
+            </div>
+            <div className="mt-5 rounded-2xl border border-white/10 bg-black/25 p-4 text-center text-sm font-black leading-6 text-white">Never announce whether your private screen says you are innocent or the murderer. Play your character and protect your secrets.</div>
+            <button onClick={() => setBriefingAccepted(true)} className="mt-5 w-full rounded-2xl bg-amber-200 px-4 py-4 font-black text-slate-950">I UNDERSTAND — SHOW MY CHARACTER</button>
+          </section>
+        )}
+
+        {!showBriefing && game.status !== "lobby" && game.me.role && (
           <section className={`mt-5 rounded-[28px] border p-6 ${game.me.role.isMurderer ? "border-rose-300/35 bg-rose-300/[.08]" : "border-amber-200/15 bg-amber-200/[.05]"}`}>
             <div className="text-[10px] font-black uppercase tracking-[.24em] text-white/45">Your character · private</div>
             <h2 className="mt-2 text-2xl font-black text-white">{game.me.role.title}</h2>
@@ -203,7 +225,7 @@ export function MysteryClient() {
           </section>
         )}
 
-        {game.status === "interrogation" && !game.pendingQuestion && game.currentQuestioner?.id === game.me.id && (
+        {!showBriefing && game.status === "interrogation" && !game.pendingQuestion && game.currentQuestioner?.id === game.me.id && (
           <section className="mt-5 rounded-[28px] border border-cyan-300/20 bg-cyan-300/[.05] p-6">
             <div className="text-xs font-black uppercase tracking-[.2em] text-cyan-200">Your turn to investigate</div>
             <h3 className="mt-2 text-3xl font-black text-white">Choose a person. Choose a question.</h3>
@@ -215,7 +237,7 @@ export function MysteryClient() {
           </section>
         )}
 
-        {game.status === "interrogation" && !game.pendingQuestion && game.currentQuestioner?.id !== game.me.id && (
+        {!showBriefing && game.status === "interrogation" && !game.pendingQuestion && game.currentQuestioner?.id !== game.me.id && (
           <section className="mt-5 rounded-[28px] border border-white/10 bg-white/[.035] p-7 text-center">
             <div className="text-xs font-black uppercase tracking-widest text-white/40">Investigator up</div>
             <div className="mt-2 text-3xl font-black text-white">{game.currentQuestioner?.name}</div>
@@ -223,7 +245,7 @@ export function MysteryClient() {
           </section>
         )}
 
-        {game.status === "interrogation" && game.pendingQuestion && (
+        {!showBriefing && game.status === "interrogation" && game.pendingQuestion && (
           <section className={`mt-5 rounded-[28px] border p-6 ${game.pendingQuestion.isTarget ? "border-amber-200/30 bg-amber-200/[.07]" : "border-white/10 bg-white/[.035]"}`}>
             <div className="text-xs font-black uppercase tracking-[.2em] text-white/45">{game.pendingQuestion.questioner} asks {game.pendingQuestion.target}</div>
             <h3 className="mt-3 text-2xl font-black text-white">“{game.pendingQuestion.questionLabel}”</h3>
@@ -238,7 +260,7 @@ export function MysteryClient() {
           </section>
         )}
 
-        {game.status === "evidence" && game.evidence && (
+        {!showBriefing && game.status === "evidence" && game.evidence && (
           <section className="mt-5 rounded-[28px] border border-rose-300/25 bg-rose-300/[.07] p-6">
             <div className="text-xs font-black uppercase tracking-[.22em] text-rose-200">🚨 New evidence · {game.evidence.index}/{game.evidence.total}</div>
             <h3 className="mt-3 text-3xl font-black text-white">{game.evidence.title}</h3>
