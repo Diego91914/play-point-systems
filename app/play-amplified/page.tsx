@@ -14,6 +14,7 @@ const startGameSkus = new Set([
   "game.chain_reaction",
   "game.how_close",
   "game.inside_man",
+  "game.last_call_blackwood",
   "game.phone_holdem",
   "game.play_point_trivia",
 ]);
