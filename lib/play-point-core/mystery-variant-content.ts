@@ -97,7 +97,7 @@ export const BLACKWOOD_VARIANT_CONTENT: Record<string, BlackwoodVariantContent> 
     supportRules: [
       { id: "partner_study_gap", title: "The study alibi has a gap", text: "Your questioning exposed that nobody can actually place the Business Partner continuously in the study during the fatal window.", targetRoles: ["partner"], questionIds: ["where", "alibi", "timeline", "opportunity", "after"], minEvidence: 0 },
       { id: "partner_records_link", title: "The records traveled", text: "The torn bank-record fragment connects materials handled by the Business Partner to the rear route after the murder.", targetRoles: ["partner", "chef"], questionIds: ["money", "secret", "heard", "after"], minEvidence: 1 },
-      { id: "partner_back_route", title: "The rear route fits the missing minutes", text: "The 10:35 porch movement fits the Business Partner's unverified gap between the study and the later hallway sighting.", targetRoles: ["partner", "sister"], questionIds: ["door", "porch_route", "dark_jacket", "timeline"], minEvidence: 2 },
+      { id: "partner_back_route", title: "The rear route fits the missing minutes", text: "The 10:35 rear-route movement fits the Business Partner's unverified claim that they remained continuously in the study through the fatal window.", targetRoles: ["partner", "sister"], questionIds: ["door", "porch_route", "dark_jacket", "timeline"], minEvidence: 2 },
       { id: "partner_cleanup_trace", title: "The cleanup left a paper trace", text: "The damp record fragment suggests someone carrying the copied packet passed through the kitchen/back-door area after the fatal confrontation.", targetRoles: ["partner", "chef"], questionIds: ["door", "heard", "after", "money"], minEvidence: 2 },
     ],
     branchSafetyNotes: [
@@ -216,11 +216,11 @@ export const BLACKWOOD_VARIANT_CONTENT: Record<string, BlackwoodVariantContent> 
       { id: "kitchen_access_link", title: "The kitchen gives the fastest return route", text: "Questioning connects the library-to-porch route directly back to the Chef's claimed work area.", targetRoles: ["chef", "partner", "sister"], questionIds: ["door", "porch_route", "opportunity", "after"], minEvidence: 2 },
       { id: "glass_origin_link", title: "The sink evidence is broader than whiskey", text: "The Chef's focus on the whiskey glass distracts from a second freshly rinsed kitchen trace tied to Adrian's private service.", targetRoles: ["chef", "murderer"], questionIds: ["drink", "glass", "heard", "secret"], minEvidence: 2 },
       { id: "back_door_timing", title: "The disturbed door matches the service gap", text: "The back-door disturbance occurs immediately after the unexplained pause in kitchen activity.", targetRoles: ["chef", "partner", "sister"], questionIds: ["door", "timeline", "heard", "after"], minEvidence: 2 },
-      { id: "voice_draft_service_warning", title: "Adrian planned a private confrontation with staff", text: "A private unfinished message establishes that Adrian intended to confront someone handling household accounts after dinner.", targetRoles: ["chef"], questionIds: ["motive", "money", "secret", "relationship"], minEvidence: 3 },
     ],
     branchSafetyNotes: [
       "Adrian's dislike of whiskey remains true; the whiskey glass is a red herring rather than the murder cleanup trace.",
       "The Chef's firing remains true in every branch, while the hidden household-charge accusation is variant-dependent.",
+      "The generic voice draft may shape the hidden branch but is not proof of the household-account motive.",
       "Pre-lock evidence must not reveal the kitchen service gap or account fraud.",
     ],
   },
