@@ -1,0 +1,175 @@
+.shell {
+  position: relative;
+  isolation: isolate;
+  min-height: 100%;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: #071018;
+}
+
+.glowA,
+.glowB,
+.glowC {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(42px);
+  opacity: .24;
+  will-change: transform;
+}
+
+.glowA {
+  width: 34rem;
+  height: 34rem;
+  left: -8rem;
+  top: -8rem;
+  animation: driftA 18s ease-in-out infinite alternate;
+}
+
+.glowB {
+  width: 30rem;
+  height: 30rem;
+  right: -7rem;
+  top: 25%;
+  animation: driftB 22s ease-in-out infinite alternate;
+}
+
+.glowC {
+  width: 24rem;
+  height: 24rem;
+  left: 28%;
+  bottom: -9rem;
+  animation: driftC 26s ease-in-out infinite alternate;
+}
+
+.orbit {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  width: min(78vw, 68rem);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.04);
+  box-shadow: 0 0 0 8rem rgba(255,255,255,.008), 0 0 0 18rem rgba(255,255,255,.006);
+  animation: breathe 8s ease-in-out infinite;
+}
+
+.sparkField {
+  position: absolute;
+  inset: -20%;
+  opacity: .18;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.36) 0 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(255,255,255,.18) 0 1px, transparent 1.4px);
+  background-size: 92px 92px, 137px 137px;
+  background-position: 0 0, 33px 48px;
+  animation: pan 34s linear infinite;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 38%, transparent 0 34%, rgba(2,7,11,.2) 62%, rgba(2,6,10,.72) 100%);
+}
+
+.social .backdrop {
+  background:
+    linear-gradient(180deg, rgba(4,10,16,.22), rgba(3,7,12,.55)),
+    radial-gradient(circle at 50% -12%, rgba(86,202,255,.12), transparent 36rem),
+    #071018;
+}
+.social .glowA { background: rgba(53, 190, 255, .78); }
+.social .glowB { background: rgba(150, 92, 255, .68); }
+.social .glowC { background: rgba(45, 227, 179, .56); }
+.social .orbit { border-color: rgba(112,214,255,.08); }
+.social .sparkField { opacity: .12; animation-duration: 42s; }
+
+.deduction .backdrop {
+  background:
+    linear-gradient(180deg, rgba(2,5,8,.16), rgba(2,5,8,.68)),
+    radial-gradient(circle at 50% 10%, rgba(170,41,41,.10), transparent 31rem),
+    #07090d;
+}
+.deduction .glowA { background: rgba(150, 24, 35, .80); opacity: .18; }
+.deduction .glowB { background: rgba(211, 159, 66, .60); opacity: .14; }
+.deduction .glowC { background: rgba(34, 50, 62, .82); opacity: .2; }
+.deduction .orbit { border-color: rgba(225,186,112,.07); transform: translate(-50%, -50%) scale(.92); }
+.deduction .sparkField {
+  opacity: .08;
+  background-size: 126px 126px, 181px 181px;
+  animation-duration: 58s;
+}
+
+.cards .backdrop {
+  background:
+    radial-gradient(circle at 50% 14%, rgba(21, 116, 78, .16), transparent 34rem),
+    linear-gradient(180deg, #07130f, #06100d 55%, #040907);
+}
+.cards .glowA { background: rgba(33, 151, 100, .78); opacity: .2; }
+.cards .glowB { background: rgba(199, 156, 61, .58); opacity: .14; }
+.cards .glowC { background: rgba(18, 82, 61, .78); opacity: .2; }
+.cards .orbit {
+  border-color: rgba(224,196,124,.08);
+  box-shadow: 0 0 0 6rem rgba(21,107,72,.025), 0 0 0 14rem rgba(21,107,72,.014);
+}
+.cards .sparkField { opacity: .07; animation-duration: 48s; }
+
+.trivia .backdrop {
+  background:
+    radial-gradient(circle at 50% 4%, rgba(108, 91, 255, .20), transparent 34rem),
+    linear-gradient(180deg, #081226, #07111e 60%, #050a12);
+}
+.trivia .glowA { background: rgba(59, 176, 255, .78); }
+.trivia .glowB { background: rgba(152, 87, 255, .76); }
+.trivia .glowC { background: rgba(255, 187, 65, .56); opacity: .18; }
+.trivia .orbit { border-color: rgba(122,205,255,.08); animation-duration: 6.5s; }
+.trivia .sparkField { opacity: .16; animation-duration: 28s; }
+
+@keyframes driftA {
+  from { transform: translate3d(0,0,0) scale(.9); }
+  to { transform: translate3d(12vw,10vh,0) scale(1.08); }
+}
+@keyframes driftB {
+  from { transform: translate3d(0,0,0) scale(1); }
+  to { transform: translate3d(-10vw,8vh,0) scale(.88); }
+}
+@keyframes driftC {
+  from { transform: translate3d(0,0,0) scale(.92); }
+  to { transform: translate3d(8vw,-10vh,0) scale(1.12); }
+}
+@keyframes pan {
+  from { transform: translate3d(0,0,0) rotate(0deg); }
+  to { transform: translate3d(-90px,-70px,0) rotate(.001deg); }
+}
+@keyframes breathe {
+  0%,100% { opacity: .55; transform: translate(-50%, -50%) scale(.96); }
+  50% { opacity: .9; transform: translate(-50%, -50%) scale(1.02); }
+}
+
+@media (max-width: 640px) {
+  .glowA { width: 24rem; height: 24rem; }
+  .glowB { width: 21rem; height: 21rem; }
+  .glowC { width: 18rem; height: 18rem; }
+  .sparkField { opacity: .09; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glowA,
+  .glowB,
+  .glowC,
+  .orbit,
+  .sparkField {
+    animation: none !important;
+  }
+}
