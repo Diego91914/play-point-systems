@@ -7,6 +7,7 @@ import { HoldemClient } from "./HoldemClient";
 import { HoldemHostStartControl } from "./HoldemHostStartControl";
 import { HoldemPreAction } from "./HoldemPreAction";
 import { HoldemTableMenu } from "./HoldemTableMenu";
+import { HoldemMoments } from "./HoldemMoments";
 
 export const metadata: Metadata = {
   title: "Phone Hold'em",
@@ -19,6 +20,7 @@ export default function HoldemPage() {
     <SiteShell current="games">
       <GameAtmosphere variant="cards">
         <HoldemClient />
+        <HoldemMoments />
         <HoldemHostStartControl />
         <HoldemTableMenu />
         <HoldemPreAction />
