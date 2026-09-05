@@ -3,6 +3,7 @@ import { ProductShell } from "../../../components/ProductShell";
 import { GameAtmosphere } from "../../_components/GameAtmosphere";
 import { RulesCorner } from "../../_components/RulesCorner";
 import { TriviaLiveBuilderExperience } from "../play/TriviaLiveBuilderExperience";
+import { TriviaHostMoments } from "../play/TriviaHostMoments";
 
 export const metadata: Metadata = {
   title: "Play Point Trivia Builder",
@@ -30,6 +31,7 @@ export default function TriviaBuilderPage() {
         ]}
       >
         <TriviaLiveBuilderExperience />
+        <TriviaHostMoments />
         <RulesCorner game="trivia" />
       </ProductShell>
     </GameAtmosphere>
