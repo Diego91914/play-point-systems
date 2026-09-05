@@ -1,39 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { BlackwoodPortrait } from "./blackwood-cast";
 
 type Session = { code: string; playerId: string; token: string };
 type CastMember = { id: string; name: string; seat: number; roleId: string | null; roleTitle: string | null };
 
 const KEY = "pps-mystery-session";
-const CAST_ART = "https://at.adobe.com/C33ntkl974TaUCoY";
-
-const PORTRAIT_POSITION: Record<string, { x: string; y: string }> = {
-  partner: { x: "3%", y: "16%" },
-  sister: { x: "34.5%", y: "16%" },
-  chef: { x: "65.7%", y: "16%" },
-  murderer: { x: "97.6%", y: "16%" },
-  lawyer: { x: "3%", y: "79%" },
-  assistant: { x: "34.5%", y: "79%" },
-  cousin: { x: "65.7%", y: "79%" },
-  neighbor: { x: "97.6%", y: "79%" },
-};
-
-function Portrait({ roleId, className = "" }: { roleId: string | null; className?: string }) {
-  const pos = roleId ? PORTRAIT_POSITION[roleId] : null;
-  return (
-    <div
-      aria-hidden="true"
-      className={`overflow-hidden rounded-2xl border border-amber-200/30 bg-[#0a1116] shadow-[0_16px_50px_rgba(0,0,0,.42)] ${className}`}
-      style={pos ? {
-        backgroundImage: `url(${CAST_ART})`,
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "443% 339%",
-        backgroundPosition: `${pos.x} ${pos.y}`,
-      } : undefined}
-    />
-  );
-}
 
 export function MysteryCastPortraits() {
   const [session, setSession] = useState<Session | null>(null);
@@ -95,7 +68,7 @@ export function MysteryCastPortraits() {
             <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-4">
               {readyCast.sort((a, b) => a.seat - b.seat).map(member => (
                 <article key={member.id} className="overflow-hidden rounded-[22px] border border-amber-200/20 bg-[#10151a] shadow-[0_20px_60px_rgba(0,0,0,.34)]">
-                  <Portrait roleId={member.roleId} className="aspect-[1.15/1] w-full rounded-none border-0 border-b border-amber-200/20 shadow-none" />
+                  <BlackwoodPortrait roleId={member.roleId} className="aspect-[1.15/1] w-full border-b border-amber-200/20" />
                   <div className="p-3.5">
                     <div className="truncate text-base font-black text-[#fff5df]">{member.name}</div>
                     <div className="mt-1 text-[10px] font-black uppercase tracking-[.14em] text-amber-200/75">{member.roleTitle}</div>
