@@ -8,6 +8,7 @@ import { MysteryCaseLayer } from "./MysteryCaseLayer";
 import { MysteryDormantEvidence } from "./MysteryDormantEvidence";
 import { MysteryTurnGuide } from "./MysteryTurnGuide";
 import { MysteryCastPortraits } from "./MysteryCastPortraits";
+import { MysteryPortraitChoices } from "./MysteryPortraitChoices";
 import styles from "./mystery-theme.module.css";
 
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ export default function Page() {
           <MysteryClient />
           <MysteryTurnGuide />
           <MysteryCastPortraits />
+          <MysteryPortraitChoices />
           <MysteryCaseIntelligence />
           <MysteryCaseLayer />
           <MysteryDormantEvidence />
