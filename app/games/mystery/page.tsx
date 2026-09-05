@@ -6,6 +6,7 @@ import { MysteryHostControls } from "./MysteryHostControls";
 import { MysteryCaseIntelligence } from "./MysteryCaseIntelligence";
 import { MysteryCaseLayer } from "./MysteryCaseLayer";
 import { MysteryDormantEvidence } from "./MysteryDormantEvidence";
+import { MysteryTurnGuide } from "./MysteryTurnGuide";
 
 export const metadata: Metadata = {
   title: "Last Call | Play Amplified",
@@ -18,6 +19,7 @@ export default function Page() {
     <SiteShell current="games">
       <RoomInviteSessionGuard storageKey="pps-mystery-session">
         <MysteryClient />
+        <MysteryTurnGuide />
         <MysteryCaseIntelligence />
         <MysteryCaseLayer />
         <MysteryDormantEvidence />
