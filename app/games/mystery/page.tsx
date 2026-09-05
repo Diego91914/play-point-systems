@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SiteShell } from "@/app/components/SiteShell";
 import { RoomInviteSessionGuard } from "@/app/games/_components/RoomInviteSessionGuard";
+import { BlackwoodAtmosphere } from "./BlackwoodAtmosphere";
 import { MysteryClient } from "./MysteryClient";
 import { MysteryHostControls } from "./MysteryHostControls";
 import { MysteryCaseIntelligence } from "./MysteryCaseIntelligence";
@@ -23,6 +24,7 @@ export default function Page() {
   return (
     <SiteShell current="games">
       <div className={styles.theme}>
+        <BlackwoodAtmosphere />
         <RoomInviteSessionGuard storageKey="pps-mystery-session">
           <MysteryClient />
           <MysteryTurnGuide />
