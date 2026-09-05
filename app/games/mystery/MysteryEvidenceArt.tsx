@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import styles from "./MysteryMoments.module.css";
 
 type Session = { code: string; playerId: string; token: string };
 type Evidence = { title: string } | null;
@@ -60,8 +61,8 @@ export function MysteryEvidenceArt() {
   if (!target || !evidence?.title || !src) return null;
 
   return createPortal(
-    <div className="mb-5 overflow-hidden rounded-2xl border border-amber-200/25 bg-[#090e12] shadow-[0_18px_55px_rgba(0,0,0,.38)]">
-      <img src={src} alt={`Visual exhibit for ${evidence.title}`} className="block aspect-[16/9] w-full object-cover" />
+    <div key={evidence.title} className={`${styles.evidenceDrop} mb-5 overflow-hidden rounded-2xl border border-amber-200/25 bg-[#090e12] shadow-[0_18px_55px_rgba(0,0,0,.38)]`}>
+      <img src={src} alt={`Visual exhibit for ${evidence.title}`} className={`${styles.evidenceImage} block aspect-[16/9] w-full object-cover`} />
       <div className="flex items-center justify-between gap-3 border-t border-amber-200/15 px-4 py-3">
         <div className="text-[10px] font-black uppercase tracking-[.22em] text-amber-100/70">Blackwood evidence exhibit</div>
         <div className="text-[10px] font-bold uppercase tracking-[.12em] text-white/35">Examine · discuss · connect</div>
