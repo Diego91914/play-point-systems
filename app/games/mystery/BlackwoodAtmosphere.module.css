@@ -1,0 +1,121 @@
+.scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.windowGlow {
+  position: absolute;
+  left: 50%;
+  top: -9rem;
+  width: min(74vw, 58rem);
+  height: 26rem;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(232, 191, 113, .16), rgba(168, 117, 49, .06) 42%, transparent 70%);
+  filter: blur(18px);
+  animation: houseBreath 7s ease-in-out infinite;
+}
+
+.fogA,
+.fogB {
+  position: absolute;
+  width: 68rem;
+  height: 20rem;
+  border-radius: 50%;
+  filter: blur(30px);
+  background: radial-gradient(ellipse, rgba(103, 126, 132, .11), rgba(54, 72, 78, .05) 50%, transparent 72%);
+  will-change: transform;
+}
+
+.fogA {
+  left: -24rem;
+  bottom: 6vh;
+  animation: fogDriftA 30s ease-in-out infinite alternate;
+}
+
+.fogB {
+  right: -28rem;
+  top: 32vh;
+  opacity: .72;
+  animation: fogDriftB 38s ease-in-out infinite alternate;
+}
+
+.rain {
+  position: absolute;
+  inset: -18%;
+  opacity: .085;
+  background-image: repeating-linear-gradient(104deg, transparent 0 16px, rgba(211, 225, 228, .28) 17px, transparent 18px 36px);
+  background-size: 160px 240px;
+  transform: translate3d(0,-12%,0);
+  animation: rainFall 14s linear infinite;
+}
+
+.candleA,
+.candleB {
+  position: absolute;
+  width: 8rem;
+  height: 8rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 205, 122, .18), rgba(197, 126, 43, .06) 36%, transparent 68%);
+  filter: blur(12px);
+  animation: candleFlicker 4.6s ease-in-out infinite;
+}
+
+.candleA { left: 7%; top: 27%; }
+.candleB { right: 9%; top: 58%; animation-delay: -1.9s; transform: scale(.72); }
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(2,5,8,.04), transparent 26%, transparent 72%, rgba(2,5,8,.42)),
+    radial-gradient(circle at 50% 42%, transparent 0 42%, rgba(1,4,7,.36) 82%, rgba(1,4,7,.62) 100%);
+}
+
+@keyframes houseBreath {
+  0%, 100% { opacity: .62; transform: translateX(-50%) scale(.96); }
+  50% { opacity: .95; transform: translateX(-50%) scale(1.04); }
+}
+
+@keyframes fogDriftA {
+  from { transform: translate3d(-4vw, 0, 0) scale(.94); }
+  to { transform: translate3d(38vw, -3vh, 0) scale(1.08); }
+}
+
+@keyframes fogDriftB {
+  from { transform: translate3d(8vw, 2vh, 0) scale(1.02); }
+  to { transform: translate3d(-34vw, -4vh, 0) scale(.9); }
+}
+
+@keyframes rainFall {
+  from { background-position: 0 0; }
+  to { background-position: -55px 340px; }
+}
+
+@keyframes candleFlicker {
+  0%, 100% { opacity: .42; transform: scale(.92); }
+  35% { opacity: .72; transform: scale(1.04); }
+  62% { opacity: .5; transform: scale(.97); }
+  78% { opacity: .82; transform: scale(1.08); }
+}
+
+@media (max-width: 640px) {
+  .rain { opacity: .055; }
+  .fogA, .fogB { width: 48rem; height: 15rem; }
+  .candleA { left: -1rem; }
+  .candleB { right: -1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .windowGlow,
+  .fogA,
+  .fogB,
+  .rain,
+  .candleA,
+  .candleB {
+    animation: none !important;
+  }
+}
