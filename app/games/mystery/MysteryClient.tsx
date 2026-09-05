@@ -27,6 +27,7 @@ type Game = {
   };
   questions: Question[];
   questionCount: number;
+  evidenceIndex: number;
   caseFile: CaseFile;
   evidence: null | {
     index: number;
@@ -48,17 +49,44 @@ type Game = {
     };
   };
 };
+type CaseLead = { id: string; title: string; text: string; source: "private-clue" | "personal-discovery" | "suspicious" };
+type CaseOption = { id: string; label: string };
+type CaseState = {
+  status: Game["status"];
+  players: { id: string; name: string }[];
+  isMurderer: boolean;
+  privateLeads: CaseLead[];
+  caseReadiness: { canSubmit: boolean; selectableSupportCount: number; fairConvictionPathAvailable: boolean; noteTakingRequired: boolean };
+  options: { motives: CaseOption[]; locations: CaseOption[]; windows: CaseOption[] };
+  submittedCount: number;
+  playerCount: number;
+  mySubmission: null | { locked: true; score?: number; convicted?: boolean };
+  reveal: null | {
+    murderer: { id: string; name: string; role: string };
+    winner: null | { playerId: string; name: string; score: number; convicted: boolean; supportCorrect: number };
+    murdererWins: boolean;
+    standings: { playerId: string; name: string; isMurderer: boolean; score: number; convicted: boolean; supportCorrect: number }[];
+    solution: string;
+  };
+};
 type Session = { code: string; playerId: string; token: string };
 
 const KEY = "pps-mystery-session";
+const ROUND_LABELS = ["Establish the Timeline", "Something Doesn't Fit", "Break the Alibis", "Last Chance to Build Your Case"];
 
 export function MysteryClient() {
   const [game, setGame] = useState<Game | null>(null);
+  const [caseState, setCaseState] = useState<CaseState | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
   const [targetId, setTargetId] = useState("");
   const [questionId, setQuestionId] = useState("");
+  const [suspectId, setSuspectId] = useState("");
+  const [motiveId, setMotiveId] = useState("");
+  const [locationId, setLocationId] = useState("");
+  const [windowId, setWindowId] = useState("");
+  const [supportIds, setSupportIds] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [briefingAccepted, setBriefingAccepted] = useState(false);
@@ -83,14 +111,21 @@ export function MysteryClient() {
     } catch {}
   }, []);
 
+  const refreshCase = useCallback(async (activeSession: Session) => {
+    const json = await request(`/api/games/mystery/${activeSession.code}/case?playerId=${encodeURIComponent(activeSession.playerId)}&token=${encodeURIComponent(activeSession.token)}`);
+    setCaseState(json.state);
+  }, [request]);
+
   const refresh = useCallback(async () => {
     if (!session) return;
     try {
       const targetQuery = targetId ? `&targetId=${encodeURIComponent(targetId)}` : "";
       const json = await request(`/api/games/mystery/${session.code}?playerId=${encodeURIComponent(session.playerId)}&token=${encodeURIComponent(session.token)}${targetQuery}`);
       setGame(json.state);
+      if (json.state.status === "accusation" || json.state.status === "reveal") await refreshCase(session);
+      else setCaseState(null);
     } catch {}
-  }, [request, session, targetId]);
+  }, [request, session, targetId, refreshCase]);
 
   useEffect(() => {
     if (!session) return;
@@ -108,6 +143,7 @@ export function MysteryClient() {
       localStorage.setItem(KEY, JSON.stringify(nextSession));
       setSession(nextSession);
       setGame(json.state);
+      setCaseState(null);
       setBriefingAccepted(false);
       history.replaceState(null, "", `/games/mystery?code=${json.code}`);
     } catch (e) {
@@ -131,7 +167,15 @@ export function MysteryClient() {
         setTargetId("");
         setQuestionId("");
       }
-      if (action === "start" || action === "restart") setBriefingAccepted(false);
+      if (action === "start" || action === "restart") {
+        setBriefingAccepted(false);
+        setCaseState(null);
+        setSuspectId("");
+        setMotiveId("");
+        setLocationId("");
+        setWindowId("");
+        setSupportIds([]);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Try again.");
     } finally {
@@ -139,10 +183,39 @@ export function MysteryClient() {
     }
   }
 
+  async function submitCase() {
+    if (!session || !caseState) return;
+    setBusy(true);
+    setError("");
+    try {
+      const json = await request(`/api/games/mystery/${session.code}/case`, {
+        method: "POST",
+        body: JSON.stringify({
+          playerId: session.playerId,
+          token: session.token,
+          payload: { suspectId, motiveId, locationId, windowId, supportIds },
+        }),
+      });
+      setCaseState(json.state);
+      await refresh();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Unable to lock your case.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const toggleSupport = (id: string) => {
+    setSupportIds(current => current.includes(id) ? current.filter(item => item !== id) : current.length < 4 ? [...current, id] : current);
+  };
+
   const validCode = /^[A-Z2-9]{6}$/.test(code);
   const joinUrl = game && typeof window !== "undefined" ? `${window.location.origin}/games/mystery?code=${game.code}` : "";
   const otherPlayers = useMemo(() => game?.players.filter(player => player.id !== game.me.id) ?? [], [game]);
   const showBriefing = game?.status !== "lobby" && Boolean(game?.me.role) && !briefingAccepted;
+  const roundNumber = game ? Math.min(4, Math.max(1, game.evidenceIndex + 2)) : 1;
+  const roundLabel = ROUND_LABELS[roundNumber - 1];
+  const readyToLock = Boolean(suspectId && motiveId && locationId && windowId && supportIds.length >= 2 && caseState?.caseReadiness.canSubmit);
 
   if (!game) {
     return (
@@ -175,6 +248,16 @@ export function MysteryClient() {
           <div className="text-right text-xs font-black uppercase tracking-widest text-white/40">{game.status.replace("-", " ")}</div>
         </header>
 
+        {game.status !== "lobby" && game.status !== "accusation" && game.status !== "reveal" && (
+          <div className="mt-5 rounded-2xl border border-white/10 bg-black/25 px-4 py-3">
+            <div className="flex items-center justify-between gap-3">
+              <div className="text-[10px] font-black uppercase tracking-[.2em] text-white/40">Investigation round {roundNumber} of 4</div>
+              <div className="text-xs font-black text-cyan-100">{roundLabel}</div>
+            </div>
+            <div className="mt-3 grid grid-cols-4 gap-1.5">{ROUND_LABELS.map((_, index) => <div key={index} className={`h-1.5 rounded-full ${index < roundNumber ? "bg-cyan-200" : "bg-white/10"}`} />)}</div>
+          </div>
+        )}
+
         {game.status === "lobby" && (
           <section className="mt-6 rounded-[28px] border border-white/10 bg-white/[.035] p-6">
             <h2 className="text-2xl font-black text-white">Get the suspects together</h2>
@@ -196,14 +279,14 @@ export function MysteryClient() {
               <div className="rounded-2xl border border-rose-300/20 bg-rose-300/[.06] p-4"><b className="text-rose-100">3. MAY HIDE means it is your choice.</b><p className="mt-1 text-sm leading-6 text-white/65">You may keep that information secret, dodge around it, or reveal it strategically. Do not invent facts or contradict information you are required to reveal.</p></div>
               <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><b className="text-white">4. Talk to the people, not the phones.</b><p className="mt-1 text-sm leading-6 text-white/60">Question, bluff, defend, accuse, and debate face-to-face. The phone is the brain and guide; the people are the game.</p></div>
               <div className="rounded-2xl border border-cyan-300/15 bg-cyan-300/[.04] p-4"><b className="text-cyan-100">5. Follow the evidence.</b><p className="mt-1 text-sm leading-6 text-white/60">New evidence appears as the investigation progresses. Your Case File automatically remembers evidence and spoken interview answers, so no notepad is required.</p></div>
-              <div className="rounded-2xl border border-amber-200/15 bg-amber-200/[.04] p-4"><b className="text-amber-100">6. Build your case.</b><p className="mt-1 text-sm leading-6 text-white/60">At the end, you will name a suspect, motive, crime location, murder window, and the evidence that proves your theory.</p></div>
+              <div className="rounded-2xl border border-amber-200/15 bg-amber-200/[.04] p-4"><b className="text-amber-100">6. Build your case.</b><p className="mt-1 text-sm leading-6 text-white/60">At the end, you will name a suspect, motive, crime location, murder window, and 2–4 facts from your own Case File that prove your theory.</p></div>
             </div>
             <div className="mt-5 rounded-2xl border border-white/10 bg-black/25 p-4 text-center text-sm font-black leading-6 text-white">Never announce whether your private screen says you are innocent or the murderer. Play your character and protect your secrets.</div>
             <button onClick={() => setBriefingAccepted(true)} className="mt-5 w-full rounded-2xl bg-amber-200 px-4 py-4 font-black text-slate-950">I UNDERSTAND — SHOW MY CHARACTER</button>
           </section>
         )}
 
-        {!showBriefing && game.status !== "lobby" && game.me.role && (
+        {!showBriefing && game.status !== "lobby" && game.me.role && game.status !== "reveal" && (
           <section className={`mt-5 rounded-[28px] border p-6 ${game.me.role.isMurderer ? "border-rose-300/35 bg-rose-300/[.08]" : "border-amber-200/15 bg-amber-200/[.05]"}`}>
             <div className="text-[10px] font-black uppercase tracking-[.24em] text-white/45">Your character · private</div>
             <h2 className="mt-2 text-2xl font-black text-white">{game.me.role.title}</h2>
@@ -229,7 +312,7 @@ export function MysteryClient() {
           <section className="mt-5 rounded-[28px] border border-cyan-300/20 bg-cyan-300/[.05] p-6">
             <div className="text-xs font-black uppercase tracking-[.2em] text-cyan-200">Your turn to investigate</div>
             <h3 className="mt-2 text-3xl font-black text-white">Choose a person. Choose a question.</h3>
-            <p className="mt-2 text-sm text-white/45">The game has {game.questionCount} investigation questions. Your phone surfaces up to six that make sense right now.</p>
+            <p className="mt-2 text-sm text-white/45">Your phone surfaces up to six questions that matter at this stage. Later rounds reopen timelines, contradictions, routes, and motive pressure.</p>
             <div className="mt-5 grid gap-2 sm:grid-cols-2">{otherPlayers.map(player => <button key={player.id} onClick={() => { setTargetId(player.id); setQuestionId(""); }} className={`rounded-2xl border px-4 py-4 text-left font-black ${targetId === player.id ? "border-cyan-300/50 bg-cyan-300/15 text-white" : "border-white/10 bg-black/20 text-white/70"}`}>{player.name}</button>)}</div>
             {targetId && <div className="mt-5 grid gap-2">{game.questions.map(question => <button key={question.id} onClick={() => setQuestionId(question.id)} className={`rounded-2xl border px-4 py-4 text-left text-sm font-bold ${questionId === question.id ? "border-amber-200/45 bg-amber-200/10 text-white" : "border-white/10 bg-black/20 text-white/70"}`}>{question.label}</button>)}</div>}
             {targetId && game.questions.length === 0 && <p className="mt-4 text-sm text-white/45">Loading the best available questions for this suspect…</p>}
@@ -268,6 +351,73 @@ export function MysteryClient() {
             {game.evidence.interruption && <div className="mt-4 rounded-2xl border border-rose-200/25 bg-black/25 p-4"><div className="text-[10px] font-black uppercase tracking-widest text-rose-100">{game.evidence.interruption.label}</div><div className="mt-1 text-lg font-black text-white">{game.evidence.interruption.title}</div><p className="mt-2 text-sm leading-6 text-white/65">{game.evidence.interruption.text}</p></div>}
             {game.evidence.privateText && <div className="mt-4 rounded-2xl border border-amber-200/25 bg-amber-200/[.08] p-4"><div className="text-[10px] font-black uppercase tracking-widest text-amber-100">Only your phone shows this</div><p className="mt-2 text-sm leading-6 text-white/70">{game.evidence.privateText}</p></div>}
             <button disabled={busy || game.evidence.acknowledged} onClick={() => act("ack-evidence")} className="mt-5 w-full rounded-2xl bg-rose-200 px-4 py-4 font-black text-slate-950 disabled:opacity-40">{game.evidence.acknowledged ? "WAITING FOR EVERYONE…" : "I'VE SEEN THE EVIDENCE"}</button>
+          </section>
+        )}
+
+        {!showBriefing && game.status === "accusation" && caseState && (
+          <section className="mt-5 rounded-[30px] border border-amber-200/30 bg-[linear-gradient(145deg,rgba(251,191,36,.09),rgba(255,255,255,.025))] p-6 sm:p-7">
+            <div className="text-xs font-black uppercase tracking-[.24em] text-amber-100">Finale · Build Your Case</div>
+            <h2 className="mt-2 text-4xl font-black tracking-tight text-white">Don't just name the killer. Prove it.</h2>
+            <p className="mt-3 text-sm leading-6 text-white/60">Your theory is private until everyone locks in. A correct suspect alone is not enough for a conviction.</p>
+
+            {caseState.isMurderer && <div className="mt-5 rounded-2xl border border-rose-300/25 bg-rose-300/[.08] p-4 text-sm leading-6 text-rose-100"><b>Protect the cover.</b> Build the most believable alternate case you can from facts your phone actually gives you.</div>}
+
+            {caseState.mySubmission ? (
+              <div className="mt-6 rounded-[24px] border border-emerald-300/25 bg-emerald-300/[.07] p-6 text-center">
+                <div className="text-xs font-black uppercase tracking-[.2em] text-emerald-100">Case locked</div>
+                <div className="mt-2 text-3xl font-black text-white">No changing your story now.</div>
+                <p className="mt-3 text-sm text-white/55">{caseState.submittedCount} of {caseState.playerCount} players have locked their cases.</p>
+              </div>
+            ) : <>
+              <div className="mt-6">
+                <div className="text-[10px] font-black uppercase tracking-[.2em] text-white/40">1 · Who killed Adrian?</div>
+                <div className="mt-2 grid gap-2 sm:grid-cols-2">{caseState.players.map(player => <button key={player.id} onClick={() => setSuspectId(player.id)} className={`rounded-2xl border px-4 py-4 text-left font-black ${suspectId === player.id ? "border-rose-300/50 bg-rose-300/12 text-white" : "border-white/10 bg-black/20 text-white/65"}`}>{player.name}</button>)}</div>
+              </div>
+
+              <div className="mt-6">
+                <div className="text-[10px] font-black uppercase tracking-[.2em] text-white/40">2 · Why?</div>
+                <div className="mt-2 grid gap-2">{caseState.options.motives.map(option => <button key={option.id} onClick={() => setMotiveId(option.id)} className={`rounded-2xl border px-4 py-3 text-left text-sm font-bold ${motiveId === option.id ? "border-amber-200/45 bg-amber-200/10 text-white" : "border-white/10 bg-black/20 text-white/65"}`}>{option.label}</button>)}</div>
+              </div>
+
+              <div className="mt-6 grid gap-5 sm:grid-cols-2">
+                <div><div className="text-[10px] font-black uppercase tracking-[.2em] text-white/40">3 · Where?</div><div className="mt-2 grid gap-2">{caseState.options.locations.map(option => <button key={option.id} onClick={() => setLocationId(option.id)} className={`rounded-2xl border px-4 py-3 text-left text-sm font-bold ${locationId === option.id ? "border-cyan-200/45 bg-cyan-200/10 text-white" : "border-white/10 bg-black/20 text-white/65"}`}>{option.label}</button>)}</div></div>
+                <div><div className="text-[10px] font-black uppercase tracking-[.2em] text-white/40">4 · When?</div><div className="mt-2 grid gap-2">{caseState.options.windows.map(option => <button key={option.id} onClick={() => setWindowId(option.id)} className={`rounded-2xl border px-4 py-3 text-left text-sm font-bold ${windowId === option.id ? "border-cyan-200/45 bg-cyan-200/10 text-white" : "border-white/10 bg-black/20 text-white/65"}`}>{option.label}</button>)}</div></div>
+              </div>
+
+              <div className="mt-6">
+                <div className="flex items-end justify-between gap-3"><div><div className="text-[10px] font-black uppercase tracking-[.2em] text-white/40">5 · What proves it?</div><div className="mt-1 text-sm font-black text-white">Choose 2–4 connections from your private Case File.</div></div><div className="text-xs font-black text-amber-100">{supportIds.length}/4</div></div>
+                <div className="mt-3 grid gap-2">{caseState.privateLeads.map(lead => <button key={lead.id} onClick={() => toggleSupport(lead.id)} className={`rounded-2xl border p-4 text-left ${supportIds.includes(lead.id) ? "border-amber-200/45 bg-amber-200/10" : "border-white/10 bg-black/20"}`}><div className="flex items-center justify-between gap-3"><div className="text-sm font-black text-white">{lead.title}</div><div className="text-[9px] font-black uppercase tracking-widest text-white/35">{lead.source === "personal-discovery" ? "Connection made" : lead.source === "private-clue" ? "Private clue" : "Suspicious"}</div></div><p className="mt-1 text-xs leading-5 text-white/55">{lead.text}</p></button>)}</div>
+                {!caseState.privateLeads.length && <p className="mt-3 text-sm text-white/45">Your Case File is resolving the final connections. Keep this screen open.</p>}
+              </div>
+
+              <div className="mt-6 rounded-2xl border border-white/10 bg-black/25 p-4 text-xs leading-5 text-white/45">Conviction standard: the correct suspect, a strong overall theory, and at least two supporting links that actually fit the case.</div>
+              <button disabled={busy || !readyToLock} onClick={submitCase} className="mt-4 w-full rounded-2xl bg-amber-200 px-4 py-4 font-black text-slate-950 disabled:opacity-40">LOCK MY CASE</button>
+            </>}
+          </section>
+        )}
+
+        {!showBriefing && game.status === "reveal" && caseState?.reveal && (
+          <section className="mt-5 overflow-hidden rounded-[32px] border border-rose-300/30 bg-[radial-gradient(circle_at_top,rgba(251,113,133,.16),transparent_38%),rgba(255,255,255,.025)] p-6 sm:p-8">
+            <div className="text-center">
+              <div className="text-xs font-black uppercase tracking-[.3em] text-rose-200">The truth</div>
+              <div className="mt-4 text-5xl font-black tracking-tight text-white sm:text-6xl">{caseState.reveal.murderer.name}</div>
+              <div className="mt-2 text-xl font-black text-rose-100">{caseState.reveal.murderer.role}</div>
+              <div className="mx-auto mt-5 max-w-xl rounded-2xl border border-white/10 bg-black/25 p-5 text-left text-sm leading-7 text-white/70">{caseState.reveal.solution}</div>
+            </div>
+
+            <div className={`mt-7 rounded-[24px] border p-5 text-center ${caseState.reveal.murdererWins ? "border-rose-300/25 bg-rose-300/[.08]" : "border-emerald-300/25 bg-emerald-300/[.07]"}`}>
+              {caseState.reveal.murdererWins ? <><div className="text-xs font-black uppercase tracking-widest text-rose-100">The murderer got away with it</div><div className="mt-2 text-3xl font-black text-white">Nobody built a complete conviction.</div></> : <><div className="text-xs font-black uppercase tracking-widest text-emerald-100">Case solved</div><div className="mt-2 text-3xl font-black text-white">{caseState.reveal.winner?.name} built the strongest case.</div><div className="mt-1 text-sm text-white/55">Conviction score: {caseState.reveal.winner?.score}/12</div></>}
+            </div>
+
+            <div className="mt-7">
+              <div className="text-[10px] font-black uppercase tracking-[.2em] text-white/40">How everyone did</div>
+              <div className="mt-3 space-y-2">{caseState.reveal.standings.map((row, index) => <div key={row.playerId} className={`flex items-center justify-between gap-4 rounded-2xl border p-4 ${row.isMurderer ? "border-rose-300/20 bg-rose-300/[.06]" : "border-white/10 bg-black/20"}`}><div><div className="text-sm font-black text-white">{row.isMurderer ? "☠ " : `${index + 1}. `}{row.name}</div><div className="mt-1 text-xs text-white/45">{row.isMurderer ? "The murderer" : row.convicted ? "Valid conviction" : "Case did not clear conviction"}</div></div>{!row.isMurderer && <div className="text-right"><div className="text-xl font-black text-white">{row.score}/12</div><div className="text-[10px] text-white/40">{row.supportCorrect} support links</div></div>}</div>)}</div>
+            </div>
+
+            {caseState.mySubmission && !caseState.isMurderer && <div className="mt-6 rounded-2xl border border-cyan-300/15 bg-cyan-300/[.05] p-4 text-center"><div className="text-[10px] font-black uppercase tracking-widest text-cyan-100">Your case</div><div className="mt-1 text-2xl font-black text-white">{caseState.mySubmission.score}/12</div><div className="mt-1 text-xs text-white/50">{caseState.mySubmission.convicted ? "You reached the conviction standard." : "You had pieces of it, but not enough for conviction."}</div></div>}
+            {caseState.isMurderer && <div className="mt-6 rounded-2xl border border-rose-300/20 bg-rose-300/[.06] p-4 text-center text-sm font-black text-rose-100">{caseState.reveal.murdererWins ? "YOU GOT AWAY WITH IT." : `THE CASE BROKE YOUR COVER. ${caseState.reveal.winner?.name ?? "The room"} put the pieces together.`}</div>}
+
+            {game.me.isHost && <button disabled={busy} onClick={() => act("restart")} className="mt-7 w-full rounded-2xl border border-white/15 bg-white/[.06] px-4 py-4 font-black text-white disabled:opacity-40">PLAY AGAIN</button>}
           </section>
         )}
 
