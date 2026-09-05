@@ -136,6 +136,33 @@
 .trivia .orbit { border-color: rgba(122,205,255,.08); animation-duration: 6.5s; }
 .trivia .sparkField { opacity: .16; animation-duration: 28s; }
 
+.sports .backdrop {
+  background:
+    linear-gradient(180deg, rgba(2,5,9,.10), rgba(2,5,9,.72)),
+    linear-gradient(90deg, transparent 0 49.85%, rgba(255,255,255,.026) 50%, transparent 50.15%),
+    radial-gradient(ellipse at 50% 108%, rgba(115,20,33,.22), transparent 42rem),
+    #05090f;
+}
+.sports .glowA { background: rgba(184, 30, 48, .82); opacity: .22; }
+.sports .glowB { background: rgba(232, 181, 67, .68); opacity: .15; }
+.sports .glowC { background: rgba(83, 122, 157, .62); opacity: .16; }
+.sports .orbit {
+  top: 58%;
+  width: min(96vw, 82rem);
+  aspect-ratio: 2.25;
+  border-color: rgba(255,255,255,.075);
+  box-shadow: 0 0 0 4rem rgba(255,255,255,.008), 0 0 60px rgba(222,176,76,.04);
+  animation-duration: 7s;
+}
+.sports .sparkField {
+  opacity: .10;
+  background-image:
+    linear-gradient(72deg, transparent 47%, rgba(255,255,255,.026) 48% 52%, transparent 53%),
+    radial-gradient(circle, rgba(255,232,180,.28) 0 1px, transparent 1.5px);
+  background-size: 190px 145px, 118px 118px;
+  animation-duration: 36s;
+}
+
 @keyframes driftA {
   from { transform: translate3d(0,0,0) scale(.9); }
   to { transform: translate3d(12vw,10vh,0) scale(1.08); }
