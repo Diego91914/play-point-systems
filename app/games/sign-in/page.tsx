@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SiteShell } from "@/app/components/SiteShell";
+import { GameAtmosphere } from "@/app/games/_components/GameAtmosphere";
 import { GamesSignInClient } from "./GamesSignInClient";
 
 export const metadata: Metadata = {
@@ -24,11 +25,13 @@ export default async function GamesSignInPage({
   const params = await searchParams;
   return (
     <SiteShell current="games">
-      <section className="px-5 py-10 sm:px-8 lg:px-10 lg:py-16">
-        <div className="mx-auto max-w-6xl">
-          <GamesSignInClient nextPath={safeNextPath(params.next)} />
-        </div>
-      </section>
+      <GameAtmosphere variant="social">
+        <section className="px-5 py-10 sm:px-8 lg:px-10 lg:py-16">
+          <div className="mx-auto max-w-6xl">
+            <GamesSignInClient nextPath={safeNextPath(params.next)} />
+          </div>
+        </section>
+      </GameAtmosphere>
     </SiteShell>
   );
 }
