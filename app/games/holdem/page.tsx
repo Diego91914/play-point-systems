@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SiteShell } from "../../components/SiteShell";
 import { RulesCorner } from "@/app/games/_components/RulesCorner";
 import { SocialRoomController } from "@/app/games/_components/SocialRoomController";
+import { GameAtmosphere } from "@/app/games/_components/GameAtmosphere";
 import { HoldemClient } from "./HoldemClient";
 import { HoldemHostStartControl } from "./HoldemHostStartControl";
 import { HoldemPreAction } from "./HoldemPreAction";
@@ -16,12 +17,14 @@ export const metadata: Metadata = {
 export default function HoldemPage() {
   return (
     <SiteShell current="games">
-      <HoldemClient />
-      <HoldemHostStartControl />
-      <HoldemTableMenu />
-      <HoldemPreAction />
-      <RulesCorner game="holdem" />
-      <SocialRoomController game="holdem" storageKeyPrefix="pps-holdem-" roomApiBase="/api/games/holdem" />
+      <GameAtmosphere variant="cards">
+        <HoldemClient />
+        <HoldemHostStartControl />
+        <HoldemTableMenu />
+        <HoldemPreAction />
+        <RulesCorner game="holdem" />
+        <SocialRoomController game="holdem" storageKeyPrefix="pps-holdem-" roomApiBase="/api/games/holdem" />
+      </GameAtmosphere>
     </SiteShell>
   );
 }
