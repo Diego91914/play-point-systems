@@ -4,7 +4,7 @@ import type { CSSProperties } from "react";
 
 export type BlackwoodRoleId = "partner" | "sister" | "chef" | "murderer" | "lawyer" | "assistant" | "cousin" | "neighbor";
 
-export const BLACKWOOD_CAST_ART = "/blackwood/blackwood-cast.jpg";
+export const BLACKWOOD_CAST_ART = "/blackwood/blackwood-cast.svg";
 
 const PORTRAIT_POSITION: Record<BlackwoodRoleId, { x: string; y: string }> = {
   partner: { x: "0%", y: "0%" },
