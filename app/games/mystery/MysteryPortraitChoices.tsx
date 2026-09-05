@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import "./MysteryPortraitChoices.module.css";
 
 type Session = { code: string; playerId: string; token: string };
 type CastMember = { id: string; name: string; seat: number; roleId: string | null; roleTitle: string | null };
