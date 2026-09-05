@@ -76,15 +76,11 @@
   text-shadow: 0 2px 24px rgba(215, 184, 121, .12);
 }
 
-.theme :global(section),
-.theme :global(main > div > div.rounded-[32px]) {
+.theme :global(section) {
   box-shadow:
     0 22px 60px rgba(0, 0, 0, .28),
     inset 0 1px 0 rgba(255, 255, 255, .035);
   backdrop-filter: blur(12px);
-}
-
-.theme :global(section) {
   background-image: linear-gradient(145deg, rgba(255,255,255,.025), rgba(255,255,255,0));
 }
 
@@ -243,21 +239,8 @@
   color: #c8e0cf !important;
 }
 
-.theme :global(.rounded-[28px]),
-.theme :global(.rounded-[30px]),
-.theme :global(.rounded-[32px]) {
-  border-radius: 1.35rem !important;
-}
-
 .theme :global(.rounded-2xl) {
   border-radius: .9rem !important;
-}
-
-.theme :global(.tracking-[\.2em]),
-.theme :global(.tracking-[\.22em]),
-.theme :global(.tracking-[\.24em]) {
-  font-family: ui-sans-serif, system-ui, sans-serif;
-  letter-spacing: .18em !important;
 }
 
 @media (max-width: 640px) {
