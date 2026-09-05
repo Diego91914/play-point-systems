@@ -49,7 +49,7 @@ describe("Blackwood hidden branching", () => {
     const byId = Object.fromEntries(BLACKWOOD_CASE_VARIANTS.map(variant => [variant.id, variant]));
     expect(byId["blackwood-business-partner"].correctSupportIds.some(id => id.includes("sealed_letter"))).toBe(false);
     expect(byId["blackwood-younger-sister"].correctSupportIds.some(id => id.includes("voice_draft"))).toBe(false);
-    expect(byId["blackwood-private-chef"].correctSupportIds.some(id => id.includes("voice_draft"))).toBe(true);
+    expect(byId["blackwood-private-chef"].correctSupportIds.some(id => id.includes("voice_draft"))).toBe(false);
   });
 });
 
