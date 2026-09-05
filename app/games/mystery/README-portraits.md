@@ -1,0 +1,1 @@
+Blackwood cast portraits are intentionally referenced from /public/blackwood so the production game does not depend on temporary external image URLs.
