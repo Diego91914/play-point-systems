@@ -1,0 +1,120 @@
+.evidenceDrop {
+  position: relative;
+  animation: evidenceArrive 620ms cubic-bezier(.16,.84,.32,1) both;
+}
+
+.evidenceDrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(110deg, transparent 20%, rgba(255,230,175,.16) 48%, transparent 72%);
+  transform: translateX(-120%);
+  animation: evidenceSweep 900ms ease-out 120ms both;
+}
+
+.evidenceImage {
+  animation: evidenceFocus 780ms cubic-bezier(.2,.75,.2,1) both;
+}
+
+.revealCurtain {
+  position: fixed;
+  inset: 0;
+  z-index: 72;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(126,28,35,.18), transparent 32rem),
+    rgba(3,5,8,.94);
+  backdrop-filter: blur(10px);
+  animation: curtainIn 260ms ease-out both;
+}
+
+.revealCurtain::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  opacity: .11;
+  background-image: radial-gradient(circle, rgba(255,225,170,.4) 0 1px, transparent 1.4px);
+  background-size: 74px 74px;
+  animation: dustDrift 12s linear infinite;
+}
+
+.revealMessage {
+  position: relative;
+  max-width: 30rem;
+  padding: 2rem;
+  text-align: center;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1rem, 4.4vw, 1.55rem);
+  font-weight: 700;
+  letter-spacing: .16em;
+  line-height: 1.45;
+  color: rgba(255,240,211,.94);
+  text-transform: uppercase;
+  text-shadow: 0 2px 30px rgba(218,158,91,.18);
+  animation: messageRise 700ms cubic-bezier(.2,.75,.2,1) both;
+}
+
+.revealMessage::after {
+  content: "";
+  display: block;
+  width: 4.5rem;
+  height: 1px;
+  margin: 1.25rem auto 0;
+  background: rgba(225,184,112,.5);
+  box-shadow: 0 0 18px rgba(225,184,112,.25);
+}
+
+.revealPortrait {
+  animation: portraitReveal 780ms cubic-bezier(.16,.84,.32,1) both;
+}
+
+@keyframes evidenceArrive {
+  from { opacity: 0; transform: translateY(14px) scale(.985); filter: brightness(.72); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: brightness(1); }
+}
+
+@keyframes evidenceSweep {
+  from { transform: translateX(-120%); }
+  to { transform: translateX(120%); }
+}
+
+@keyframes evidenceFocus {
+  from { filter: contrast(.88) brightness(.78) blur(1.2px); transform: scale(1.012); }
+  to { filter: contrast(1) brightness(1) blur(0); transform: scale(1); }
+}
+
+@keyframes curtainIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes messageRise {
+  from { opacity: 0; transform: translateY(12px); letter-spacing: .11em; }
+  to { opacity: 1; transform: translateY(0); letter-spacing: .16em; }
+}
+
+@keyframes dustDrift {
+  from { transform: translate3d(0,0,0); }
+  to { transform: translate3d(-74px,-74px,0); }
+}
+
+@keyframes portraitReveal {
+  from { opacity: 0; transform: translateY(-8px) scale(.92); filter: brightness(.55); }
+  62% { opacity: 1; transform: translateY(2px) scale(1.025); filter: brightness(1.08); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: brightness(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .evidenceDrop,
+  .evidenceDrop::after,
+  .evidenceImage,
+  .revealCurtain,
+  .revealCurtain::before,
+  .revealMessage,
+  .revealPortrait {
+    animation: none !important;
+  }
+}
