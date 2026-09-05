@@ -47,10 +47,10 @@ export function MysteryPortraitChoices() {
   const byName = useMemo(() => new Map(cast.filter(member => member.roleId).map(member => [member.name.trim(), member])), [cast]);
 
   useEffect(() => {
-    if (!byName.size) return;
     const decorate = () => {
       const buttons = document.querySelectorAll<HTMLButtonElement>("main button");
       buttons.forEach(button => {
+        if (button.textContent?.trim() === "ASK THE QUESTION") button.textContent = "ASK THIS QUESTION OUT LOUD";
         const member = byName.get(button.textContent?.trim() ?? "");
         if (!member?.roleId || !POSITION[member.roleId]) return;
         const pos = POSITION[member.roleId];
