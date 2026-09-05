@@ -7,6 +7,7 @@ import { MysteryCaseIntelligence } from "./MysteryCaseIntelligence";
 import { MysteryCaseLayer } from "./MysteryCaseLayer";
 import { MysteryDormantEvidence } from "./MysteryDormantEvidence";
 import { MysteryTurnGuide } from "./MysteryTurnGuide";
+import { MysteryCastPortraits } from "./MysteryCastPortraits";
 import styles from "./mystery-theme.module.css";
 
 export const metadata: Metadata = {
@@ -22,6 +23,7 @@ export default function Page() {
         <RoomInviteSessionGuard storageKey="pps-mystery-session">
           <MysteryClient />
           <MysteryTurnGuide />
+          <MysteryCastPortraits />
           <MysteryCaseIntelligence />
           <MysteryCaseLayer />
           <MysteryDormantEvidence />
