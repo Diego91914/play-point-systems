@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GameAtmosphere } from "@/app/games/_components/GameAtmosphere";
 import { HoldemPublicExitControl } from "./HoldemPublicExitControl";
 import { HoldemPublicTable } from "./HoldemPublicTable";
 
@@ -10,9 +11,9 @@ export const metadata: Metadata = {
 
 export default function HoldemTablePage() {
   return (
-    <>
+    <GameAtmosphere variant="cards">
       <HoldemPublicTable />
       <HoldemPublicExitControl />
-    </>
+    </GameAtmosphere>
   );
 }
