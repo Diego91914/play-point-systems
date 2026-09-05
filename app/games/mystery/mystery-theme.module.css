@@ -1,0 +1,272 @@
+.theme {
+  --blackwood-ink: #071017;
+  --blackwood-panel: rgba(12, 20, 26, 0.90);
+  --blackwood-panel-soft: rgba(18, 28, 34, 0.76);
+  --blackwood-gold: #d7b879;
+  --blackwood-gold-bright: #f1d59b;
+  --blackwood-ivory: #f6efdf;
+  --blackwood-muted: #b9b2a5;
+  --blackwood-wine: #6e2028;
+  --blackwood-emerald: #7ba58e;
+  --blackwood-cyan: #9ec4c6;
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  color: var(--blackwood-ivory);
+  background:
+    radial-gradient(circle at 50% -15%, rgba(183, 139, 74, 0.15), transparent 34rem),
+    radial-gradient(circle at 12% 14%, rgba(67, 104, 111, 0.10), transparent 26rem),
+    linear-gradient(180deg, #050b10 0%, var(--blackwood-ink) 42%, #05090d 100%);
+  overflow: hidden;
+}
+
+.theme::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  opacity: .52;
+  background:
+    linear-gradient(90deg, transparent 0 8%, rgba(255,255,255,.02) 8.2%, transparent 8.4% 91.5%, rgba(255,255,255,.018) 91.7%, transparent 92%),
+    radial-gradient(ellipse at 50% 2%, rgba(246, 217, 157, .10), transparent 22%),
+    radial-gradient(ellipse at 50% 100%, rgba(0, 0, 0, .62), transparent 50%);
+}
+
+.theme::after {
+  content: "BLACKWOOD HOUSE";
+  position: fixed;
+  left: 50%;
+  bottom: 2.5rem;
+  transform: translateX(-50%);
+  z-index: -1;
+  pointer-events: none;
+  white-space: nowrap;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.8rem, 11vw, 8rem);
+  letter-spacing: .12em;
+  color: rgba(222, 193, 135, .018);
+}
+
+.theme :global(main) {
+  position: relative;
+  z-index: 1;
+}
+
+.theme :global(header) {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(215, 184, 121, .18);
+}
+
+.theme :global(header) :global(.text-rose-200) {
+  color: var(--blackwood-gold-bright) !important;
+}
+
+.theme :global(h1),
+.theme :global(h2),
+.theme :global(h3) {
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: -.02em;
+  text-wrap: balance;
+}
+
+.theme :global(h1) {
+  color: var(--blackwood-ivory) !important;
+  font-weight: 700 !important;
+  text-shadow: 0 2px 24px rgba(215, 184, 121, .12);
+}
+
+.theme :global(section),
+.theme :global(main > div > div.rounded-[32px]) {
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, .28),
+    inset 0 1px 0 rgba(255, 255, 255, .035);
+  backdrop-filter: blur(12px);
+}
+
+.theme :global(section) {
+  background-image: linear-gradient(145deg, rgba(255,255,255,.025), rgba(255,255,255,0));
+}
+
+.theme :global(.border-white\/10),
+.theme :global(.border-white\/15) {
+  border-color: rgba(215, 184, 121, .16) !important;
+}
+
+.theme :global(.bg-white\/\[\.035\]),
+.theme :global(.bg-black\/20),
+.theme :global(.bg-black\/25),
+.theme :global(.bg-black\/30) {
+  background-color: rgba(7, 14, 19, .58) !important;
+}
+
+.theme :global(input),
+.theme :global(select) {
+  border-color: rgba(215, 184, 121, .24) !important;
+  background: rgba(3, 8, 12, .70) !important;
+  color: var(--blackwood-ivory) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
+}
+
+.theme :global(input:focus),
+.theme :global(select:focus) {
+  outline: none;
+  border-color: rgba(241, 213, 155, .68) !important;
+  box-shadow: 0 0 0 3px rgba(215, 184, 121, .10);
+}
+
+.theme :global(button) {
+  letter-spacing: .035em;
+  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease, background-color .14s ease;
+}
+
+.theme :global(button:not(:disabled):active) {
+  transform: translateY(1px) scale(.995);
+}
+
+.theme :global(button.bg-rose-200),
+.theme :global(button.bg-amber-200),
+.theme :global(button.bg-cyan-200) {
+  background: linear-gradient(180deg, #ead19e, #c9a965) !important;
+  color: #12110e !important;
+  border: 1px solid rgba(255, 239, 199, .48);
+  box-shadow: 0 10px 30px rgba(130, 90, 29, .18), inset 0 1px 0 rgba(255,255,255,.40);
+}
+
+.theme :global(button.bg-rose-200):not(:disabled):hover,
+.theme :global(button.bg-amber-200):not(:disabled):hover,
+.theme :global(button.bg-cyan-200):not(:disabled):hover {
+  background: linear-gradient(180deg, #f2ddb3, #d4b570) !important;
+  box-shadow: 0 14px 34px rgba(130, 90, 29, .24), inset 0 1px 0 rgba(255,255,255,.45);
+}
+
+.theme :global(.text-amber-100),
+.theme :global(.text-amber-200),
+.theme :global(.text-cyan-100),
+.theme :global(.text-cyan-200) {
+  color: var(--blackwood-gold-bright) !important;
+}
+
+.theme :global(.border-amber-200\/25),
+.theme :global(.border-amber-200\/15),
+.theme :global(.border-cyan-300\/20),
+.theme :global(.border-cyan-300\/15) {
+  border-color: rgba(215, 184, 121, .27) !important;
+}
+
+.theme :global(.bg-amber-200\/\[\.06\]),
+.theme :global(.bg-amber-200\/\[\.05\]),
+.theme :global(.bg-amber-200\/\[\.04\]),
+.theme :global(.bg-cyan-300\/\[\.05\]),
+.theme :global(.bg-cyan-300\/\[\.04\]) {
+  background-color: rgba(178, 139, 74, .065) !important;
+}
+
+.theme :global(.bg-cyan-200) {
+  background-color: var(--blackwood-gold) !important;
+}
+
+.theme :global(.bg-white\/10) {
+  background-color: rgba(215, 184, 121, .10) !important;
+}
+
+.theme :global(.text-white\/40),
+.theme :global(.text-white\/45),
+.theme :global(.text-white\/50),
+.theme :global(.text-white\/55),
+.theme :global(.text-white\/60),
+.theme :global(.text-white\/65),
+.theme :global(.text-white\/70) {
+  color: var(--blackwood-muted) !important;
+}
+
+.theme :global(details) {
+  overflow: hidden;
+}
+
+.theme :global(details > summary) {
+  list-style: none;
+  position: relative;
+  padding-right: 1.75rem;
+}
+
+.theme :global(details > summary::-webkit-details-marker) {
+  display: none;
+}
+
+.theme :global(details > summary::after) {
+  content: "+";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--blackwood-gold);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.4rem;
+  font-weight: 400;
+}
+
+.theme :global(details[open] > summary::after) {
+  content: "−";
+}
+
+.theme :global(.border-rose-300\/35),
+.theme :global(.border-rose-300\/30),
+.theme :global(.border-rose-300\/25),
+.theme :global(.border-rose-300\/20),
+.theme :global(.border-rose-300\/15) {
+  border-color: rgba(143, 54, 61, .62) !important;
+}
+
+.theme :global(.bg-rose-300\/\[\.08\]),
+.theme :global(.bg-rose-300\/\[\.07\]),
+.theme :global(.bg-rose-300\/\[\.06\]),
+.theme :global(.bg-rose-300\/\[\.05\]),
+.theme :global(.bg-rose-300\/10) {
+  background-color: rgba(110, 32, 40, .17) !important;
+}
+
+.theme :global(.text-rose-100),
+.theme :global(.text-rose-200) {
+  color: #f0b8b8 !important;
+}
+
+.theme :global(.border-emerald-300\/20) {
+  border-color: rgba(123, 165, 142, .40) !important;
+}
+
+.theme :global(.bg-emerald-300\/\[\.06\]) {
+  background-color: rgba(77, 120, 97, .12) !important;
+}
+
+.theme :global(.text-emerald-100) {
+  color: #c8e0cf !important;
+}
+
+.theme :global(.rounded-[28px]),
+.theme :global(.rounded-[30px]),
+.theme :global(.rounded-[32px]) {
+  border-radius: 1.35rem !important;
+}
+
+.theme :global(.rounded-2xl) {
+  border-radius: .9rem !important;
+}
+
+.theme :global(.tracking-[\.2em]),
+.theme :global(.tracking-[\.22em]),
+.theme :global(.tracking-[\.24em]) {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: .18em !important;
+}
+
+@media (max-width: 640px) {
+  .theme::after {
+    bottom: 1rem;
+    font-size: 3.4rem;
+  }
+
+  .theme :global(section) {
+    box-shadow: 0 14px 36px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.025);
+  }
+}
