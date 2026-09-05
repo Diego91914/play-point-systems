@@ -7,6 +7,7 @@ import { MysteryCaseIntelligence } from "./MysteryCaseIntelligence";
 import { MysteryCaseLayer } from "./MysteryCaseLayer";
 import { MysteryDormantEvidence } from "./MysteryDormantEvidence";
 import { MysteryTurnGuide } from "./MysteryTurnGuide";
+import styles from "./mystery-theme.module.css";
 
 export const metadata: Metadata = {
   title: "Last Call | Play Amplified",
@@ -17,14 +18,16 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <SiteShell current="games">
-      <RoomInviteSessionGuard storageKey="pps-mystery-session">
-        <MysteryClient />
-        <MysteryTurnGuide />
-        <MysteryCaseIntelligence />
-        <MysteryCaseLayer />
-        <MysteryDormantEvidence />
-        <MysteryHostControls />
-      </RoomInviteSessionGuard>
+      <div className={styles.theme}>
+        <RoomInviteSessionGuard storageKey="pps-mystery-session">
+          <MysteryClient />
+          <MysteryTurnGuide />
+          <MysteryCaseIntelligence />
+          <MysteryCaseLayer />
+          <MysteryDormantEvidence />
+          <MysteryHostControls />
+        </RoomInviteSessionGuard>
+      </div>
     </SiteShell>
   );
 }
