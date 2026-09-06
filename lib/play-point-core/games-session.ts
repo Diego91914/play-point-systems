@@ -1,6 +1,8 @@
 export const GAMES_SESSION_COOKIE = "pps_games_session";
-export const GAMES_SESSION_TTL_SECONDS = 60 * 60 * 24 * 30;
-export const FOUNDER_GAMES_SESSION_TTL_SECONDS = 60 * 60 * 24 * 180;
+// Account identity is deliberately durable. Temporary room/player sessions have
+// their own 24-hour guest retention policy and must not share this lifetime.
+export const GAMES_SESSION_TTL_SECONDS = 60 * 60 * 24 * 180;
+export const FOUNDER_GAMES_SESSION_TTL_SECONDS = GAMES_SESSION_TTL_SECONDS;
 
 const GAMES_SESSION_VERSION = "v1";
 
