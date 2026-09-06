@@ -4,6 +4,7 @@ import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supab
 
 const BUCKET = "all-about-you-guest-photos";
 const MAX_BYTES = 5 * 1024 * 1024;
+const ROOM_SECONDS = 24 * 60 * 60;
 const TYPES = new Map([
   ["image/jpeg", "jpg"], ["image/png", "png"], ["image/webp", "webp"], ["image/heic", "heic"], ["image/heif", "heif"],
 ]);
@@ -39,10 +40,14 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const bytes = Buffer.from(await file.arrayBuffer());
     const { error: uploadError } = await supabase.storage.from(BUCKET).upload(path, bytes, { contentType: file.type, upsert: false, cacheControl: "3600" });
     if (uploadError) throw new Error(`Photo upload failed: ${uploadError.message}`);
-    const { data: publicData } = supabase.storage.from(BUCKET).getPublicUrl(path);
+    const { data: signedData, error: signedError } = await supabase.storage.from(BUCKET).createSignedUrl(path, ROOM_SECONDS);
+    if (signedError || !signedData?.signedUrl) {
+      await supabase.storage.from(BUCKET).remove([path]);
+      throw new Error(`Photo access failed: ${signedError?.message || "Unable to sign photo URL."}`);
+    }
 
     const previousPath = typeof state.guestPhotoPath === "string" ? state.guestPhotoPath : null;
-    state.guestPhotoUrl = publicData.publicUrl;
+    state.guestPhotoUrl = signedData.signedUrl;
     state.guestPhotoPath = path;
     state.message = "Guest of Honor photo added. You can replace it before the game starts.";
     const { data: saved, error: saveError } = await supabase.from("ppl_all_about_you_rooms")
