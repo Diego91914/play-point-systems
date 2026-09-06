@@ -50,17 +50,9 @@ describe("Play Amplified social room readiness", () => {
   it("the Play Amplified return surface remembers every social title", () => {
     const pwa = read("app/play-amplified/PlayAmplifiedPwa.tsx");
     for (const marker of [
-      "pps-chain-reaction-session",
-      "pps-how-close-session",
-      "pps-inside-man-session",
-      "pps-on-my-list-session",
-      "pps-all-about-you-session",
-      "pps-holdem-",
-      "play-point-trivia-host-connection-v2",
-      "play-point-trivia-player-connection-v2",
-    ]) {
-      expect(pwa).toContain(marker);
-    }
+      "pps-chain-reaction-session", "pps-how-close-session", "pps-inside-man-session", "pps-on-my-list-session",
+      "pps-all-about-you-session", "pps-holdem-", "play-point-trivia-host-connection-v2", "play-point-trivia-player-connection-v2",
+    ]) expect(pwa).toContain(marker);
   });
 
   it("All About You preserves its one-star, five-round preview contract", () => {
@@ -68,7 +60,6 @@ describe("Play Amplified social room readiness", () => {
     const server = read("lib/play-point-core/all-about-you-server.ts");
     const prompts = read("lib/play-point-core/all-about-you-prompts.ts");
     const catalog = read("lib/play-point-core/master-game-catalog.ts");
-
     expect(client).toContain('const KEY = "pps-all-about-you-session"');
     expect(client).toContain("Choose the Guest of Honor");
     expect(client).toContain("START · 5 ROUNDS");
@@ -102,6 +93,24 @@ describe("Play Amplified social room readiness", () => {
     expect(server).toContain("chooseAllAboutYouPrompts(state.occasion)");
     expect(occasions).toContain("slice(0, 2)");
     expect(occasions).toContain('occasion === "just-because"');
+  });
+
+  it("All About You keeps Guest of Honor photos optional, host-owned, private, and disposable", () => {
+    const page = read("app/games/all-about-you/page.tsx");
+    const photo = read("app/games/all-about-you/GuestHonorPhoto.tsx");
+    const upload = read("app/api/games/all-about-you/[code]/photo/route.ts");
+    const controls = read("app/api/games/social-room-control/route.ts");
+    expect(page).toContain("GuestHonorPhoto");
+    expect(photo).toContain("Guest of Honor photo · optional");
+    expect(photo).toContain('capture="environment"');
+    expect(photo).toContain("PHOTO LIBRARY");
+    expect(upload).toContain("Only the host can add the Guest of Honor photo in the lobby.");
+    expect(upload).toContain("createSignedUrl(path, ROOM_SECONDS)");
+    expect(upload).toContain("previousPath");
+    expect(upload).toContain("remove([previousPath])");
+    expect(controls).toContain('ALL_ABOUT_YOU_PHOTO_BUCKET = "all-about-you-guest-photos"');
+    expect(controls).toContain("guestPhotoPath");
+    expect(controls).toContain("remove([photoPath])");
   });
 
   it("All About You stays birthday-first without becoming birthday-only", () => {
