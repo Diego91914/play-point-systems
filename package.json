@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "vitest run tests/blackwood-*.test.ts tests/social-room-readiness.test.ts tests/trivia-venue-presence.test.ts && next build",
+    "build": "vitest run tests/blackwood-*.test.ts tests/social-room-readiness.test.ts tests/trivia-venue-presence.test.ts tests/trivia-venue-name-moderation.test.ts && next build",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
