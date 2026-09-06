@@ -5,128 +5,71 @@ const read = (path: string) => readFileSync(path, "utf8");
 
 describe("Play Amplified social room readiness", () => {
   const roomGames = [
-    ["chain-reaction", "pps-chain-reaction-session"],
-    ["how-close", "pps-how-close-session"],
-    ["inside-man", "pps-inside-man-session"],
-    ["on-my-list", "pps-on-my-list-session"],
+    ["chain-reaction", "pps-chain-reaction-session"], ["how-close", "pps-how-close-session"],
+    ["inside-man", "pps-inside-man-session"], ["on-my-list", "pps-on-my-list-session"],
     ["all-about-you", "pps-all-about-you-session"],
   ] as const;
 
   for (const [game, storageKey] of roomGames) {
     it(`${game} mounts the shared host lifecycle controls`, () => {
       const source = read(`app/games/${game}/page.tsx`);
-      expect(source).toContain("SocialRoomController");
-      expect(source).toContain(`game=\"${game}\"`);
-      expect(source).toContain(storageKey);
+      expect(source).toContain("SocialRoomController"); expect(source).toContain(`game=\"${game}\"`); expect(source).toContain(storageKey);
     });
   }
 
   it("Phone Hold'em mounts shared lifecycle controls with its room-scoped storage key", () => {
-    const source = read("app/games/holdem/page.tsx");
-    expect(source).toContain("SocialRoomController");
-    expect(source).toContain('game="holdem"');
-    expect(source).toContain('storageKeyPrefix="pps-holdem-"');
+    const source = read("app/games/holdem/page.tsx"); expect(source).toContain("SocialRoomController"); expect(source).toContain('game="holdem"'); expect(source).toContain('storageKeyPrefix="pps-holdem-"');
   });
 
   it("shared room controls keep start-over host-only and quit room-wide", () => {
-    const controller = read("app/games/_components/SocialRoomController.tsx");
-    const route = read("app/api/games/social-room-control/route.ts");
-    expect(controller).toContain("START OVER");
-    expect(controller).toContain("QUIT GAME");
-    expect(controller).toContain("End this game for everyone?");
-    expect(route).toContain("Only the host can end the game.");
-    expect(route).toContain("Only the host can start over.");
-    expect(route).toContain('.delete().eq("code", code)');
-    expect(route).toContain('"all-about-you": "ppl_all_about_you_rooms"');
+    const controller = read("app/games/_components/SocialRoomController.tsx"); const route = read("app/api/games/social-room-control/route.ts");
+    expect(controller).toContain("START OVER"); expect(controller).toContain("QUIT GAME"); expect(controller).toContain("End this game for everyone?");
+    expect(route).toContain("Only the host can end the game."); expect(route).toContain("Only the host can start over."); expect(route).toContain('.delete().eq("code", code)'); expect(route).toContain('"all-about-you": "ppl_all_about_you_rooms"');
   });
 
   it("invite URLs cannot expose create-room controls", () => {
-    const guard = read("app/games/_components/SocialRoomController.tsx");
-    expect(guard).toContain("enforceInviteOnly");
-    expect(guard).toContain('text.startsWith("CREATE ")');
-    expect(guard).toContain('button.style.display = "none"');
+    const guard = read("app/games/_components/SocialRoomController.tsx"); expect(guard).toContain("enforceInviteOnly"); expect(guard).toContain('text.startsWith("CREATE ")'); expect(guard).toContain('button.style.display = "none"');
   });
 
   it("the Play Amplified return surface remembers every social title", () => {
     const pwa = read("app/play-amplified/PlayAmplifiedPwa.tsx");
-    for (const marker of [
-      "pps-chain-reaction-session", "pps-how-close-session", "pps-inside-man-session", "pps-on-my-list-session",
-      "pps-all-about-you-session", "pps-holdem-", "play-point-trivia-host-connection-v2", "play-point-trivia-player-connection-v2",
-    ]) expect(pwa).toContain(marker);
+    for (const marker of ["pps-chain-reaction-session", "pps-how-close-session", "pps-inside-man-session", "pps-on-my-list-session", "pps-all-about-you-session", "pps-holdem-", "play-point-trivia-host-connection-v2", "play-point-trivia-player-connection-v2"]) expect(pwa).toContain(marker);
   });
 
   it("All About You preserves its one-star, five-round preview contract", () => {
-    const client = read("app/games/all-about-you/AllAboutYouClient.tsx");
-    const server = read("lib/play-point-core/all-about-you-server.ts");
-    const prompts = read("lib/play-point-core/all-about-you-prompts.ts");
-    const catalog = read("lib/play-point-core/master-game-catalog.ts");
-    expect(client).toContain('const KEY = "pps-all-about-you-session"');
-    expect(client).toContain("Choose the Guest of Honor");
-    expect(client).toContain("START · 5 ROUNDS");
-    expect(client).toContain("At least 3 people total.");
-    expect(prompts).toContain('["pick", "finish", "rank", "who", "memory"]');
-    expect(server).toContain("ppl_all_about_you_rooms");
-    expect(server).toContain("The Guest of Honor will choose a favorite anonymously.");
-    expect(catalog).toContain('id: "all-about-you"');
-    expect(catalog).toContain('status: "playable_preview"');
+    const client = read("app/games/all-about-you/AllAboutYouClient.tsx"); const server = read("lib/play-point-core/all-about-you-server.ts"); const prompts = read("lib/play-point-core/all-about-you-prompts.ts"); const catalog = read("lib/play-point-core/master-game-catalog.ts");
+    expect(client).toContain('const KEY = "pps-all-about-you-session"'); expect(client).toContain("Choose the Guest of Honor"); expect(client).toContain("START · 5 ROUNDS"); expect(client).toContain("At least 3 people total.");
+    expect(prompts).toContain('["pick", "finish", "rank", "who", "memory"]'); expect(server).toContain("ppl_all_about_you_rooms"); expect(server).toContain("The Guest of Honor will choose a favorite anonymously."); expect(catalog).toContain('id: "all-about-you"'); expect(catalog).toContain('status: "playable_preview"');
   });
 
   it("All About You has enough prompt depth for repeat sessions", () => {
-    const prompts = read("lib/play-point-core/all-about-you-prompts.ts");
-    for (const type of ["pick", "finish", "rank", "who", "memory"]) {
-      const matches = prompts.match(new RegExp(`type: "${type}"`, "g")) ?? [];
-      expect(matches.length).toBeGreaterThanOrEqual(12);
-    }
-    expect(prompts).toContain("ALL_ABOUT_YOU_PROMPTS");
-    expect(prompts).toContain("ALL_ABOUT_YOU_ROUND_ORDER");
+    const prompts = read("lib/play-point-core/all-about-you-prompts.ts"); for (const type of ["pick", "finish", "rank", "who", "memory"]) { const matches = prompts.match(new RegExp(`type: "${type}"`, "g")) ?? []; expect(matches.length).toBeGreaterThanOrEqual(12); }
+    expect(prompts).toContain("ALL_ABOUT_YOU_PROMPTS"); expect(prompts).toContain("ALL_ABOUT_YOU_ROUND_ORDER");
   });
 
   it("All About You keeps occasion flavor controlled and host-owned", () => {
-    const client = read("app/games/all-about-you/AllAboutYouClient.tsx");
-    const server = read("lib/play-point-core/all-about-you-server.ts");
-    const occasions = read("lib/play-point-core/all-about-you-occasions.ts");
-    expect(client).toContain('value: "birthday"');
-    expect(client).toContain('value: "celebration"');
-    expect(client).toContain('value: "just-because"');
-    expect(server).toContain('action === "set-occasion"');
-    expect(server).toContain("Only the host can choose the occasion in the lobby.");
-    expect(server).toContain("chooseAllAboutYouPrompts(state.occasion)");
-    expect(occasions).toContain("slice(0, 2)");
-    expect(occasions).toContain('occasion === "just-because"');
+    const client = read("app/games/all-about-you/AllAboutYouClient.tsx"); const server = read("lib/play-point-core/all-about-you-server.ts"); const occasions = read("lib/play-point-core/all-about-you-occasions.ts");
+    expect(client).toContain('value: "birthday"'); expect(client).toContain('value: "celebration"'); expect(client).toContain('value: "just-because"'); expect(server).toContain('action === "set-occasion"'); expect(server).toContain("Only the host can choose the occasion in the lobby."); expect(server).toContain("chooseAllAboutYouPrompts(state.occasion)"); expect(occasions).toContain("slice(0, 2)"); expect(occasions).toContain('occasion === "just-because"');
   });
 
   it("All About You keeps Guest of Honor photos optional, host-owned, private, and disposable", () => {
-    const page = read("app/games/all-about-you/page.tsx");
-    const photo = read("app/games/all-about-you/GuestHonorPhoto.tsx");
-    const upload = read("app/api/games/all-about-you/[code]/photo/route.ts");
-    const controls = read("app/api/games/social-room-control/route.ts");
-    expect(page).toContain("GuestHonorPhoto");
-    expect(photo).toContain("Guest of Honor photo · optional");
-    expect(photo).toContain('capture="environment"');
-    expect(photo).toContain("PHOTO LIBRARY");
-    expect(upload).toContain("Only the host can add the Guest of Honor photo in the lobby.");
-    expect(upload).toContain("createSignedUrl(path, ROOM_SECONDS)");
-    expect(upload).toContain("previousPath");
-    expect(upload).toContain("remove([previousPath])");
-    expect(controls).toContain('ALL_ABOUT_YOU_PHOTO_BUCKET = "all-about-you-guest-photos"');
-    expect(controls).toContain("guestPhotoPath");
-    expect(controls).toContain("remove([photoPath])");
+    const page = read("app/games/all-about-you/page.tsx"); const photo = read("app/games/all-about-you/GuestHonorPhoto.tsx"); const upload = read("app/api/games/all-about-you/[code]/photo/route.ts"); const controls = read("app/api/games/social-room-control/route.ts");
+    expect(page).toContain("GuestHonorPhoto"); expect(photo).toContain("Guest of Honor photo · optional"); expect(photo).toContain('capture="environment"'); expect(photo).toContain("PHOTO LIBRARY");
+    expect(upload).toContain("Only the host can add the Guest of Honor photo in the lobby."); expect(upload).toContain("createSignedUrl(path, ROOM_SECONDS)"); expect(upload).toContain("previousPath"); expect(upload).toContain("remove([previousPath])");
+    expect(controls).toContain('ALL_ABOUT_YOU_PHOTO_BUCKET = "all-about-you-guest-photos"'); expect(controls).toContain("guestPhotoPath"); expect(controls).toContain("remove([photoPath])");
+  });
+
+  it("All About You invite links and room APIs stay guest-accessible while host creation stays account-gated", () => {
+    const proxy = read("proxy.ts"); const roomApi = read("app/api/games/all-about-you/route.ts");
+    expect(proxy).toContain('"all-about-you"'); expect(proxy).toContain("hasRoomCode && GUEST_ROOM_GAMES.some"); expect(proxy).toContain("guestRoomApi");
+    expect(roomApi).toContain("verifyGamesSessionToken"); expect(roomApi).toContain('intent === "create"'); expect(roomApi).toContain('intent === "join"');
   });
 
   it("All About You stays birthday-first without becoming birthday-only", () => {
-    const page = read("app/games/all-about-you/page.tsx");
-    const client = read("app/games/all-about-you/AllAboutYouClient.tsx");
-    expect(page).toContain("Birthday & Guest of Honor Game");
-    expect(page).toContain("birthday person—or any Guest of Honor");
-    expect(client).toContain("Perfect for birthdays, retirements, graduations, going-away nights");
+    const page = read("app/games/all-about-you/page.tsx"); const client = read("app/games/all-about-you/AllAboutYouClient.tsx"); expect(page).toContain("Birthday & Guest of Honor Game"); expect(page).toContain("birthday person—or any Guest of Honor"); expect(client).toContain("Perfect for birthdays, retirements, graduations, going-away nights");
   });
 
   it("Trivia clears completed host and player resume credentials", () => {
-    const host = read("app/games/trivia/play/TriviaLiveBuilderExperience.tsx");
-    const player = read("app/games/trivia/join/TriviaJoinExperience.tsx");
-    expect(host).toContain('snapshot?.status === "completed"');
-    expect(host).toContain("removeItem(HOST_CONNECTION_STORAGE_KEY)");
-    expect(player).toContain('snapshot?.status === "completed"');
-    expect(player).toContain("removeItem(PLAYER_CONNECTION_STORAGE_KEY)");
+    const host = read("app/games/trivia/play/TriviaLiveBuilderExperience.tsx"); const player = read("app/games/trivia/join/TriviaJoinExperience.tsx"); expect(host).toContain('snapshot?.status === "completed"'); expect(host).toContain("removeItem(HOST_CONNECTION_STORAGE_KEY)"); expect(player).toContain('snapshot?.status === "completed"'); expect(player).toContain("removeItem(PLAYER_CONNECTION_STORAGE_KEY)");
   });
 });
