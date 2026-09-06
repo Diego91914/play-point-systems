@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-type SocialGame = "on-my-list" | "chain-reaction" | "how-close" | "inside-man" | "holdem";
+type SocialGame = "on-my-list" | "chain-reaction" | "how-close" | "inside-man" | "all-about-you" | "holdem";
 type Session = { code: string; playerId: string; token: string };
 
 export function SocialRoomController({
