@@ -20,6 +20,7 @@ const SESSION_SOURCES: readonly { key: string; title: string; href: string }[] =
   { key: "pps-how-close-session", title: "How Close Are We?", href: "/games/how-close" },
   { key: "pps-inside-man-session", title: "The Inside Man", href: "/games/inside-man" },
   { key: "pps-on-my-list-session", title: "On My List", href: "/games/on-my-list" },
+  { key: "pps-all-about-you-session", title: "All About You", href: "/games/all-about-you" },
 ];
 
 function readJson(raw: string | null): Record<string, unknown> | null {
