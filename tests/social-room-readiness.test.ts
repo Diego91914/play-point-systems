@@ -66,17 +66,28 @@ describe("Play Amplified social room readiness", () => {
   it("All About You preserves its one-star, five-round preview contract", () => {
     const client = read("app/games/all-about-you/AllAboutYouClient.tsx");
     const server = read("lib/play-point-core/all-about-you-server.ts");
+    const prompts = read("lib/play-point-core/all-about-you-prompts.ts");
     const catalog = read("lib/play-point-core/master-game-catalog.ts");
 
     expect(client).toContain('const KEY = "pps-all-about-you-session"');
     expect(client).toContain("Choose the Guest of Honor");
     expect(client).toContain("START · 5 ROUNDS");
     expect(client).toContain("At least 3 people total.");
-    expect(server).toContain('["pick", "finish", "rank", "who", "memory"]');
+    expect(prompts).toContain('["pick", "finish", "rank", "who", "memory"]');
     expect(server).toContain("ppl_all_about_you_rooms");
     expect(server).toContain("The Guest of Honor will choose a favorite anonymously.");
     expect(catalog).toContain('id: "all-about-you"');
     expect(catalog).toContain('status: "playable_preview"');
+  });
+
+  it("All About You has enough prompt depth for repeat sessions", () => {
+    const prompts = read("lib/play-point-core/all-about-you-prompts.ts");
+    for (const type of ["pick", "finish", "rank", "who", "memory"]) {
+      const matches = prompts.match(new RegExp(`type: "${type}"`, "g")) ?? [];
+      expect(matches.length).toBeGreaterThanOrEqual(12);
+    }
+    expect(prompts).toContain("ALL_ABOUT_YOU_PROMPTS");
+    expect(prompts).toContain("ALL_ABOUT_YOU_ROUND_ORDER");
   });
 
   it("All About You stays birthday-first without becoming birthday-only", () => {
