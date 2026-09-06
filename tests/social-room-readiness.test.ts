@@ -52,12 +52,37 @@ describe("Play Amplified social room readiness", () => {
       "pps-how-close-session",
       "pps-inside-man-session",
       "pps-on-my-list-session",
+      "pps-all-about-you-session",
       "pps-holdem-",
       "play-point-trivia-host-connection-v2",
       "play-point-trivia-player-connection-v2",
     ]) {
       expect(pwa).toContain(marker);
     }
+  });
+
+  it("All About You preserves its one-star, five-round preview contract", () => {
+    const client = read("app/games/all-about-you/AllAboutYouClient.tsx");
+    const server = read("lib/play-point-core/all-about-you-server.ts");
+    const catalog = read("lib/play-point-core/master-game-catalog.ts");
+
+    expect(client).toContain('const KEY = "pps-all-about-you-session"');
+    expect(client).toContain("Choose the Guest of Honor");
+    expect(client).toContain("START · 5 ROUNDS");
+    expect(client).toContain("At least 3 people total.");
+    expect(server).toContain('["pick", "finish", "rank", "who", "memory"]');
+    expect(server).toContain("ppl_all_about_you_rooms");
+    expect(server).toContain("The Guest of Honor will choose a favorite anonymously.");
+    expect(catalog).toContain('id: "all-about-you"');
+    expect(catalog).toContain('status: "playable_preview"');
+  });
+
+  it("All About You stays birthday-first without becoming birthday-only", () => {
+    const page = read("app/games/all-about-you/page.tsx");
+    const client = read("app/games/all-about-you/AllAboutYouClient.tsx");
+    expect(page).toContain("Birthday & Guest of Honor Game");
+    expect(page).toContain("birthday person—or any Guest of Honor");
+    expect(client).toContain("Perfect for birthdays, retirements, graduations, going-away nights");
   });
 
   it("Trivia clears completed host and player resume credentials", () => {
