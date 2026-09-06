@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getTriviaVenueLeaderboard, loadOpenTriviaVenueSession, loadTriviaVenue, rotateTriviaVenuePresenceToken, safeTriviaVenueTokenMatch } from "@/app/games/trivia/venue/trivia-venue-server";
+import { getLatestTriviaVenueChampionship, getTriviaVenueLeaderboard, loadOpenTriviaVenueSession, loadTriviaVenue, rotateTriviaVenuePresenceToken, safeTriviaVenueTokenMatch, TRIVIA_VENUE_CHAMPIONSHIP_WINDOW_MS } from "@/app/games/trivia/venue/trivia-venue-server";
 
 export async function POST(request: Request, context: { params: Promise<{ slug: string }> }) {
   const { slug } = await context.params;
@@ -11,7 +11,14 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   const session = await loadOpenTriviaVenueSession(venue.id);
   if (!session) return NextResponse.json({ error: "No active venue session." }, { status: 404 });
   const presenceToken = await rotateTriviaVenuePresenceToken(session.id);
-  const leaderboard = await getTriviaVenueLeaderboard(session.id);
+  const [leaderboard, latestChampionship] = await Promise.all([
+    getTriviaVenueLeaderboard(session.id),
+    getLatestTriviaVenueChampionship(session.id),
+  ]);
+  const championshipStartedAtMs = Date.parse(session.championship_started_at);
+  const championshipEndsAt = Number.isFinite(championshipStartedAtMs)
+    ? new Date(championshipStartedAtMs + TRIVIA_VENUE_CHAMPIONSHIP_WINDOW_MS).toISOString()
+    : null;
   return NextResponse.json({
     venue: { slug: venue.slug, displayName: venue.display_name },
     venueSessionId: session.id,
@@ -19,5 +26,10 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     currentTriviaSessionId: session.current_trivia_session_id,
     presenceToken,
     leaderboard,
+    championship: {
+      startedAt: session.championship_started_at,
+      endsAt: championshipEndsAt,
+      latest: latestChampionship,
+    },
   }, { headers: { "Cache-Control": "no-store" } });
 }
