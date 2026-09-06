@@ -22,23 +22,63 @@ const SESSION_SOURCES: readonly { key: string; title: string; href: string }[] =
   { key: "pps-on-my-list-session", title: "On My List", href: "/games/on-my-list" },
 ];
 
+function readJson(raw: string | null): Record<string, unknown> | null {
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? parsed as Record<string, unknown> : null;
+  } catch {
+    return null;
+  }
+}
+
 function readResumeCandidates(): ResumeCandidate[] {
   const candidates: ResumeCandidate[] = [];
 
   for (const source of SESSION_SOURCES) {
-    try {
-      const raw = window.localStorage.getItem(source.key);
-      if (!raw) continue;
-      const parsed = JSON.parse(raw) as { code?: unknown };
-      const code = typeof parsed.code === "string" ? parsed.code.trim().toUpperCase() : "";
+    const parsed = readJson(window.localStorage.getItem(source.key));
+    if (!parsed) continue;
+    const code = typeof parsed.code === "string" ? parsed.code.trim().toUpperCase() : "";
+    candidates.push({
+      key: source.key,
+      title: source.title,
+      href: code ? `${source.href}?code=${encodeURIComponent(code)}` : source.href,
+      code: code || undefined,
+    });
+  }
+
+  for (let index = 0; index < window.localStorage.length; index += 1) {
+    const key = window.localStorage.key(index);
+    if (!key?.startsWith("pps-holdem-")) continue;
+    const code = key.slice("pps-holdem-".length).trim().toUpperCase();
+    const parsed = readJson(window.localStorage.getItem(key));
+    if (!parsed || !/^[A-Z2-9]{6}$/.test(code)) continue;
+    if (typeof parsed.playerId !== "string" || typeof parsed.token !== "string") continue;
+    candidates.push({
+      key,
+      title: "Phone Hold'em",
+      href: `/games/holdem?code=${encodeURIComponent(code)}`,
+      code,
+    });
+  }
+
+  const triviaHost = readJson(window.localStorage.getItem("play-point-trivia-host-connection-v2"));
+  if (triviaHost && typeof triviaHost.sessionId === "string") {
+    candidates.push({
+      key: "play-point-trivia-host-connection-v2",
+      title: "Play Point Trivia",
+      href: "/games/trivia/builder",
+    });
+  } else {
+    const triviaPlayer = readJson(window.localStorage.getItem("play-point-trivia-player-connection-v2"));
+    const roomCode = typeof triviaPlayer?.roomCode === "string" ? triviaPlayer.roomCode.trim().toUpperCase() : "";
+    if (triviaPlayer && typeof triviaPlayer.sessionId === "string") {
       candidates.push({
-        key: source.key,
-        title: source.title,
-        href: code ? `${source.href}?code=${encodeURIComponent(code)}` : source.href,
-        code: code || undefined,
+        key: "play-point-trivia-player-connection-v2",
+        title: "Play Point Trivia",
+        href: roomCode ? `/games/trivia/join?code=${encodeURIComponent(roomCode)}` : "/games/trivia/join",
+        code: roomCode || undefined,
       });
-    } catch {
-      // Ignore stale or malformed legacy session entries.
     }
   }
 
