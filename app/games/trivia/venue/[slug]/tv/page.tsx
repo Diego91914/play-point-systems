@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
-import { GameAtmosphere } from "../../../_components/GameAtmosphere";
+import { GameAtmosphere } from "../../../../_components/GameAtmosphere";
 
 type DisplayPayload = {
   venue: { slug: string; displayName: string };
