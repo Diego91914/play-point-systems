@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   createGamesSessionToken,
+  FOUNDER_GAMES_SESSION_TTL_SECONDS,
   GAMES_SESSION_COOKIE,
   GAMES_SESSION_TTL_SECONDS,
 } from "@/lib/play-point-core/games-session";
@@ -49,12 +50,18 @@ export async function POST(request: NextRequest) {
       return noStoreJson({ error: "Shot Caddy returned an incomplete account." }, 502);
     }
 
-    const sessionToken = await createGamesSessionToken({
-      sub: accountId,
-      email,
-      role: founder ? "founder" : "member",
-      entitlements: founder ? ["*"] : [],
-    });
+    const sessionTtl = founder
+      ? FOUNDER_GAMES_SESSION_TTL_SECONDS
+      : GAMES_SESSION_TTL_SECONDS;
+    const sessionToken = await createGamesSessionToken(
+      {
+        sub: accountId,
+        email,
+        role: founder ? "founder" : "member",
+        entitlements: founder ? ["*"] : [],
+      },
+      { ttlSeconds: sessionTtl },
+    );
 
     const response = noStoreJson({
       success: true,
@@ -67,7 +74,7 @@ export async function POST(request: NextRequest) {
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: GAMES_SESSION_TTL_SECONDS,
+      maxAge: sessionTtl,
     });
     return response;
   } catch (error) {
