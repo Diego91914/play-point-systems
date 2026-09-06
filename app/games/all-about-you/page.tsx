@@ -4,6 +4,7 @@ import { GameAtmosphere } from "@/app/games/_components/GameAtmosphere";
 import { RoomInviteSessionGuard } from "@/app/games/_components/RoomInviteSessionGuard";
 import { SocialRoomController } from "@/app/games/_components/SocialRoomController";
 import { AllAboutYouClient } from "./AllAboutYouClient";
+import { GuestHonorPhoto } from "./GuestHonorPhoto";
 
 export const metadata: Metadata = {
   title: "All About You | Birthday & Guest of Honor Game | Play Amplified",
@@ -17,6 +18,7 @@ export default function AllAboutYouPage() {
       <GameAtmosphere variant="social">
         <RoomInviteSessionGuard storageKey="pps-all-about-you-session" roomApiBase="/api/games/all-about-you">
           <AllAboutYouClient />
+          <GuestHonorPhoto />
           <SocialRoomController
             game="all-about-you"
             storageKey="pps-all-about-you-session"
