@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
-import { loadOpenTriviaVenueSession, loadTriviaVenue, loadVenueTriviaRuntime, safeTriviaVenueTokenMatch, syncVenueScoresFromTrivia } from "@/app/games/trivia/venue/trivia-venue-server";
+import { createTriviaLiveSession, startTriviaLiveSession } from "@/app/games/trivia/play/trivia-live-service";
+import { loadOpenTriviaVenueSession, loadTriviaVenue, loadVenueTriviaRuntime, safeTriviaVenueTokenMatch, seatVenuePlayerInTriviaSession, syncVenueScoresFromTrivia } from "@/app/games/trivia/venue/trivia-venue-server";
 
 const REVEAL_HOLD_MS = 7000;
 const WAGER_HOLD_MS = 45000;
+const COMPLETED_HOLD_MS = 12000;
 
 export async function POST(request: Request, context: { params: Promise<{ slug: string }> }) {
   const { slug } = await context.params;
@@ -22,7 +24,7 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   const runtime = await loadVenueTriviaRuntime(sessionId);
   const { data: sessionRow, error: rowError } = await supabase
     .from("ppl_trivia_sessions")
-    .select("status, phase, opened_at, updated_at")
+    .select("status, phase, opened_at, updated_at, category, difficulty_filter, pacing_mode")
     .eq("id", sessionId)
     .single();
   if (rowError) throw rowError;
@@ -77,6 +79,42 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
 
   if (sessionRow.status === "completed") {
     await syncVenueScoresFromTrivia(venueSession.id, sessionId);
+    const elapsed = Date.now() - Date.parse(sessionRow.updated_at);
+    if (elapsed >= COMPLETED_HOLD_MS) {
+      const { data: venuePlayers, error: playersError } = await supabase
+        .from("ppl_trivia_venue_players")
+        .select("id, name, trivia_session_id, trivia_player_id")
+        .eq("venue_session_id", venueSession.id)
+        .is("removed_at", null)
+        .gt("presence_expires_at", new Date().toISOString());
+      if (playersError) throw playersError;
+
+      const next = await createTriviaLiveSession(
+        sessionRow.category,
+        sessionRow.difficulty_filter,
+        sessionRow.pacing_mode,
+        "individual",
+        2,
+        [],
+      );
+
+      for (const player of venuePlayers ?? []) {
+        await seatVenuePlayerInTriviaSession(player, next.sessionId, next.roomCode);
+      }
+
+      const now = new Date().toISOString();
+      const { error: attachError } = await supabase
+        .from("ppl_trivia_venue_sessions")
+        .update({ current_trivia_session_id: next.sessionId, updated_at: now })
+        .eq("id", venueSession.id)
+        .eq("current_trivia_session_id", sessionId);
+      if (attachError) throw attachError;
+
+      if ((venuePlayers ?? []).length > 0) {
+        await startTriviaLiveSession(next.sessionId, next.hostToken);
+      }
+      return NextResponse.json({ changed: true, action: "next-match", triviaSessionId: next.sessionId, seatedPlayers: (venuePlayers ?? []).length });
+    }
   }
 
   return NextResponse.json({ changed: false, phase: sessionRow.phase, status: sessionRow.status });
