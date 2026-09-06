@@ -1,11 +1,12 @@
-import fs from "node:fs";
-import path from "node:path";
-import test from "node:test";
-import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { describe, expect, it } from "vitest";
 
-test("Inside Man room links and APIs support guests",()=>{
-  const source=fs.readFileSync(path.join(process.cwd(),"proxy.ts"),"utf8");
-  assert.match(source,/pathname === "\/games\/inside-man"/);
-  assert.match(source,/pathname === "\/api\/games\/inside-man"/);
-  assert.match(source,/pathname\.startsWith\("\/api\/games\/inside-man\/"\)/);
+describe("Inside Man guest access", () => {
+  it("keeps Inside Man in the shared guest-room page and API model", () => {
+    const source = readFileSync("proxy.ts", "utf8");
+    expect(source).toContain('"inside-man"');
+    expect(source).toContain("GUEST_ROOM_GAMES");
+    expect(source).toContain("hasRoomCode && GUEST_ROOM_GAMES.some");
+    expect(source).toContain('pathname === `/api/games/${slug}` || pathname.startsWith(`/api/games/${slug}/`)');
+  });
 });
