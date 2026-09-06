@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import { createTriviaLiveSession, startTriviaLiveSession } from "@/app/games/trivia/play/trivia-live-service";
-import { loadOpenTriviaVenueSession, loadTriviaVenue, loadVenueTriviaRuntime, safeTriviaVenueTokenMatch, seatVenuePlayerInTriviaSession, syncVenueScoresFromTrivia } from "@/app/games/trivia/venue/trivia-venue-server";
+import { finalizeTriviaVenueChampionshipIfDue, loadOpenTriviaVenueSession, loadTriviaVenue, loadVenueTriviaRuntime, safeTriviaVenueTokenMatch, seatVenuePlayerInTriviaSession, syncVenueScoresFromTrivia } from "@/app/games/trivia/venue/trivia-venue-server";
 
 const REVEAL_HOLD_MS = 7000;
 const WAGER_HOLD_MS = 45000;
@@ -15,8 +15,13 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     return NextResponse.json({ error: "Venue display access denied." }, { status: 403 });
   }
   const venueSession = await loadOpenTriviaVenueSession(venue.id);
-  if (!venueSession?.current_trivia_session_id) {
-    return NextResponse.json({ changed: false, reason: "no-match" });
+  if (!venueSession) {
+    return NextResponse.json({ changed: false, reason: "no-venue-session" });
+  }
+
+  const championship = await finalizeTriviaVenueChampionshipIfDue(venueSession);
+  if (!venueSession.current_trivia_session_id) {
+    return NextResponse.json({ changed: Boolean(championship), action: championship ? "hourly-champion" : undefined, reason: "no-match" });
   }
 
   const sessionId = venueSession.current_trivia_session_id;
@@ -32,7 +37,7 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   if (sessionRow.status === "lobby" && (runtime.bundle.players ?? []).length > 0) {
     const { error } = await supabase.rpc("ppl_trivia_start_session", { p_session_id: sessionId });
     if (error) throw error;
-    return NextResponse.json({ changed: true, action: "started" });
+    return NextResponse.json({ changed: true, action: championship ? "hourly-champion-and-started" : "started" });
   }
 
   if (sessionRow.phase === "question-open" && sessionRow.opened_at && runtime.questionTimerSeconds) {
@@ -40,7 +45,7 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     if (elapsed >= runtime.questionTimerSeconds * 1000 + 500) {
       const { error } = await supabase.rpc("ppl_trivia_resolve_session", { p_session_id: sessionId });
       if (error) throw error;
-      return NextResponse.json({ changed: true, action: "revealed" });
+      return NextResponse.json({ changed: true, action: championship ? "hourly-champion-and-revealed" : "revealed" });
     }
   }
 
@@ -50,7 +55,7 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
       await syncVenueScoresFromTrivia(venueSession.id, sessionId);
       const { error } = await supabase.rpc("ppl_trivia_advance_session", { p_session_id: sessionId });
       if (error) throw error;
-      return NextResponse.json({ changed: true, action: "advanced" });
+      return NextResponse.json({ changed: true, action: championship ? "hourly-champion-and-advanced" : "advanced" });
     }
   }
 
@@ -73,7 +78,7 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
       }
       const { error } = await supabase.rpc("ppl_trivia_advance_session", { p_session_id: sessionId });
       if (error) throw error;
-      return NextResponse.json({ changed: true, action: "final-opened" });
+      return NextResponse.json({ changed: true, action: championship ? "hourly-champion-and-final-opened" : "final-opened" });
     }
   }
 
@@ -113,9 +118,9 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
       if ((venuePlayers ?? []).length > 0) {
         await startTriviaLiveSession(next.sessionId, next.hostToken);
       }
-      return NextResponse.json({ changed: true, action: "next-match", triviaSessionId: next.sessionId, seatedPlayers: (venuePlayers ?? []).length });
+      return NextResponse.json({ changed: true, action: championship ? "hourly-champion-and-next-match" : "next-match", triviaSessionId: next.sessionId, seatedPlayers: (venuePlayers ?? []).length });
     }
   }
 
-  return NextResponse.json({ changed: false, phase: sessionRow.phase, status: sessionRow.status });
+  return NextResponse.json({ changed: Boolean(championship), action: championship ? "hourly-champion" : undefined, phase: sessionRow.phase, status: sessionRow.status });
 }
