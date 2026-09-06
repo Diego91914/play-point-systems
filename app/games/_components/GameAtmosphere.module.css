@@ -83,6 +83,28 @@
   background: radial-gradient(circle at 50% 38%, transparent 0 34%, rgba(2,7,11,.2) 62%, rgba(2,6,10,.72) 100%);
 }
 
+.library .backdrop {
+  background:
+    linear-gradient(180deg, rgba(4,9,16,.08), rgba(3,7,12,.62)),
+    radial-gradient(circle at 50% -8%, rgba(70,190,255,.16), transparent 34rem),
+    radial-gradient(circle at 82% 38%, rgba(154,92,255,.09), transparent 28rem),
+    #060d15;
+}
+.library .glowA { background: rgba(57, 194, 255, .74); opacity: .20; }
+.library .glowB { background: rgba(161, 98, 255, .66); opacity: .15; }
+.library .glowC { background: rgba(244, 185, 70, .48); opacity: .12; }
+.library .orbit {
+  width: min(86vw, 76rem);
+  border-color: rgba(130,218,255,.065);
+  box-shadow: 0 0 0 7rem rgba(77,194,255,.012), 0 0 0 16rem rgba(162,103,255,.008);
+  animation-duration: 10s;
+}
+.library .sparkField {
+  opacity: .10;
+  background-size: 118px 118px, 173px 173px;
+  animation-duration: 54s;
+}
+
 .social .backdrop {
   background:
     linear-gradient(180deg, rgba(4,10,16,.22), rgba(3,7,12,.55)),
