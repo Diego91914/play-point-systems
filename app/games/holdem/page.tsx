@@ -16,6 +16,7 @@ import { HoldemHostStartControl } from "./HoldemHostStartControl";
 import { HoldemPreAction } from "./HoldemPreAction";
 import { HoldemTableMenu } from "./HoldemTableMenu";
 import { HoldemMoments } from "./HoldemMoments";
+import { HoldemGuestSessionGuard } from "./HoldemGuestSessionGuard";
 
 const HOLDEM_SKU = "game.phone_holdem";
 
@@ -68,14 +69,16 @@ export default async function HoldemPage() {
           </div>
         )}
 
-        <HoldemClient />
-        <HoldemActionDock />
-        <HoldemMoments />
-        <HoldemHostStartControl />
-        <HoldemTableMenu />
-        <HoldemPreAction />
-        <RulesCorner game="holdem" />
-        <SocialRoomController game="holdem" storageKeyPrefix="pps-holdem-" roomApiBase="/api/games/holdem" />
+        <HoldemGuestSessionGuard>
+          <HoldemClient />
+          <HoldemActionDock />
+          <HoldemMoments />
+          <HoldemHostStartControl />
+          <HoldemTableMenu />
+          <HoldemPreAction />
+          <RulesCorner game="holdem" />
+          <SocialRoomController game="holdem" storageKeyPrefix="pps-holdem-" roomApiBase="/api/games/holdem" />
+        </HoldemGuestSessionGuard>
       </GameAtmosphere>
     </SiteShell>
   );
