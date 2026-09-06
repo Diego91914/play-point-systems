@@ -9,6 +9,7 @@ describe("Play Amplified social room readiness", () => {
     ["how-close", "pps-how-close-session"],
     ["inside-man", "pps-inside-man-session"],
     ["on-my-list", "pps-on-my-list-session"],
+    ["all-about-you", "pps-all-about-you-session"],
   ] as const;
 
   for (const [game, storageKey] of roomGames) {
@@ -36,6 +37,7 @@ describe("Play Amplified social room readiness", () => {
     expect(route).toContain("Only the host can end the game.");
     expect(route).toContain("Only the host can start over.");
     expect(route).toContain('.delete().eq("code", code)');
+    expect(route).toContain('"all-about-you": "ppl_all_about_you_rooms"');
   });
 
   it("invite URLs cannot expose create-room controls", () => {
