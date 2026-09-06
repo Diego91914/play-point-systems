@@ -19,6 +19,10 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     return NextResponse.json({ changed: false, reason: "no-venue-session" });
   }
 
+  if (venueSession.status === "paused") {
+    return NextResponse.json({ changed: false, reason: "paused" });
+  }
+
   const championship = await finalizeTriviaVenueChampionshipIfDue(venueSession);
   if (!venueSession.current_trivia_session_id) {
     return NextResponse.json({ changed: Boolean(championship), action: championship ? "hourly-champion" : undefined, reason: "no-match" });
