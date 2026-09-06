@@ -18,7 +18,9 @@ const ALL_ABOUT_YOU_PHOTO_BUCKET = "all-about-you-guest-photos";
 
 type SocialGame = keyof typeof ROOM_TABLES;
 type StoredPlayer = { id?: unknown; name?: unknown; seat?: unknown; tokenHash?: unknown };
-type StoredState = { hostPlayerId?: unknown; players?: unknown; settings?: any; tournament?: any; guestPhotoPath?: unknown };
+type StoredSettings = { startingStack?: unknown; smallBlind?: unknown; bigBlind?: unknown; maxPlayers?: unknown; mode?: unknown };
+type StoredTournament = { baseSmallBlind?: unknown; baseBigBlind?: unknown; preset?: unknown };
+type StoredState = { hostPlayerId?: unknown; players?: unknown; settings?: StoredSettings; tournament?: StoredTournament; guestPhotoPath?: unknown };
 type RoomRow = { code: string; state: StoredState };
 
 const hash = (value: string) => createHash("sha256").update(value).digest("hex");
