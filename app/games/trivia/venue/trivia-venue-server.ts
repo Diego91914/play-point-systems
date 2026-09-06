@@ -3,6 +3,8 @@ import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supab
 import { getTriviaTimerSeconds } from "../play/trivia-live-timing";
 import { extendTriviaVenuePresence, getTriviaVenuePresenceStatus, shouldShowTriviaVenuePlayerOnLeaderboard } from "./trivia-venue-presence";
 
+export const TRIVIA_VENUE_CHAMPIONSHIP_WINDOW_MS = 60 * 60 * 1000;
+
 export function hashTriviaVenueToken(value: string) {
   return createHash("sha256").update(value, "utf8").digest("hex");
 }
@@ -31,7 +33,7 @@ export async function loadTriviaVenue(slug: string) {
 export async function loadOpenTriviaVenueSession(venueId: string) {
   const { data, error } = await getSupabaseServerClient()
     .from("ppl_trivia_venue_sessions")
-    .select("id, venue_id, status, current_trivia_session_id, presence_token_hash, presence_token_rotated_at, started_at")
+    .select("id, venue_id, status, current_trivia_session_id, presence_token_hash, presence_token_rotated_at, started_at, championship_started_at")
     .eq("venue_id", venueId)
     .in("status", ["active", "paused"])
     .maybeSingle();
@@ -53,9 +55,9 @@ export async function rotateTriviaVenuePresenceToken(venueSessionId: string) {
 export async function getTriviaVenueLeaderboard(venueSessionId: string) {
   const { data, error } = await getSupabaseServerClient()
     .from("ppl_trivia_venue_players")
-    .select("id, name, rolling_score, score_total, consecutive_questions_missed, presence_expires_at, removed_at, last_active_at")
+    .select("id, name, rolling_score, score_total, championship_score, consecutive_questions_missed, presence_expires_at, removed_at, last_active_at")
     .eq("venue_session_id", venueSessionId)
-    .order("rolling_score", { ascending: false })
+    .order("championship_score", { ascending: false })
     .limit(20);
   if (error) throw error;
   const nowMs = Date.now();
@@ -67,7 +69,84 @@ export async function getTriviaVenueLeaderboard(venueSessionId: string) {
       removed: Boolean(player.removed_at),
     });
     return shouldShowTriviaVenuePlayerOnLeaderboard(status);
-  }).map((player, index) => ({ id: player.id, name: player.name, rollingScore: player.rolling_score, scoreTotal: player.score_total, rank: index + 1 }));
+  }).map((player, index) => ({
+    id: player.id,
+    name: player.name,
+    rollingScore: player.rolling_score,
+    scoreTotal: player.score_total,
+    championshipScore: player.championship_score,
+    rank: index + 1,
+  }));
+}
+
+export async function getLatestTriviaVenueChampionship(venueSessionId: string) {
+  const { data, error } = await getSupabaseServerClient()
+    .from("ppl_trivia_venue_championships")
+    .select("id, window_started_at, window_ended_at, winner_player_id, standings, created_at")
+    .eq("venue_session_id", venueSessionId)
+    .order("window_ended_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+export async function finalizeTriviaVenueChampionshipIfDue(venueSession: { id: string; championship_started_at: string }) {
+  const windowStartedAtMs = Date.parse(venueSession.championship_started_at);
+  if (!Number.isFinite(windowStartedAtMs) || Date.now() < windowStartedAtMs + TRIVIA_VENUE_CHAMPIONSHIP_WINDOW_MS) {
+    return null;
+  }
+
+  const supabase = getSupabaseServerClient();
+  const { data: players, error: playerError } = await supabase
+    .from("ppl_trivia_venue_players")
+    .select("id, name, championship_score, presence_expires_at, consecutive_questions_missed, removed_at")
+    .eq("venue_session_id", venueSession.id)
+    .order("championship_score", { ascending: false });
+  if (playerError) throw playerError;
+
+  const nowMs = Date.now();
+  const standings = (players ?? [])
+    .filter((player) => {
+      const status = getTriviaVenuePresenceStatus({
+        nowMs,
+        presenceExpiresAtMs: Date.parse(player.presence_expires_at),
+        consecutiveQuestionsMissed: player.consecutive_questions_missed,
+        removed: Boolean(player.removed_at),
+      });
+      return status !== "removed";
+    })
+    .map((player, index) => ({ rank: index + 1, playerId: player.id, name: player.name, score: player.championship_score }));
+
+  const windowEndedAt = new Date(nowMs).toISOString();
+  const winnerPlayerId = standings[0]?.playerId ?? null;
+  const { data: championship, error: insertError } = await supabase
+    .from("ppl_trivia_venue_championships")
+    .insert({
+      venue_session_id: venueSession.id,
+      window_started_at: venueSession.championship_started_at,
+      window_ended_at: windowEndedAt,
+      winner_player_id: winnerPlayerId,
+      standings,
+    })
+    .select("id, window_started_at, window_ended_at, winner_player_id, standings, created_at")
+    .single();
+  if (insertError) throw insertError;
+
+  const { error: resetPlayersError } = await supabase
+    .from("ppl_trivia_venue_players")
+    .update({ championship_score: 0, updated_at: windowEndedAt })
+    .eq("venue_session_id", venueSession.id);
+  if (resetPlayersError) throw resetPlayersError;
+
+  const { error: resetSessionError } = await supabase
+    .from("ppl_trivia_venue_sessions")
+    .update({ championship_started_at: windowEndedAt, updated_at: windowEndedAt })
+    .eq("id", venueSession.id)
+    .eq("championship_started_at", venueSession.championship_started_at);
+  if (resetSessionError) throw resetSessionError;
+
+  return championship;
 }
 
 export async function extendVenuePlayerPresence(playerId: string) {
@@ -85,7 +164,7 @@ export async function extendVenuePlayerPresence(playerId: string) {
 export async function loadVenuePlayerForDevice(venueSessionId: string, playerId: string, deviceToken: string) {
   const { data, error } = await getSupabaseServerClient()
     .from("ppl_trivia_venue_players")
-    .select("id, venue_session_id, name, device_token_hash, rolling_score, score_total, consecutive_questions_missed, presence_expires_at, removed_at, trivia_session_id, trivia_player_id")
+    .select("id, venue_session_id, name, device_token_hash, rolling_score, score_total, championship_score, consecutive_questions_missed, presence_expires_at, removed_at, trivia_session_id, trivia_player_id")
     .eq("venue_session_id", venueSessionId)
     .eq("id", playerId)
     .maybeSingle();
@@ -103,9 +182,6 @@ export async function seatVenuePlayerInTriviaSession(
     return venuePlayer.trivia_player_id;
   }
 
-  // Venue Mode intentionally permits customers to join a match already in progress.
-  // The normal room join RPC is lobby-only, so this trusted server path inserts the
-  // mirrored live player directly after Venue presence/device authorization succeeds.
   const triviaPlayerId = randomUUID();
   const throwawayCredential = generateTriviaVenueToken();
   const { error: insertError } = await getSupabaseServerClient()
@@ -121,7 +197,7 @@ export async function seatVenuePlayerInTriviaSession(
   const now = new Date().toISOString();
   const { error } = await getSupabaseServerClient()
     .from("ppl_trivia_venue_players")
-    .update({ trivia_session_id: triviaSessionId, trivia_player_id: triviaPlayerId, rolling_score: 0, updated_at: now })
+    .update({ trivia_session_id: triviaSessionId, trivia_player_id: triviaPlayerId, rolling_score: 0, current_match_score: 0, updated_at: now })
     .eq("id", venuePlayer.id);
   if (error) throw error;
   return triviaPlayerId;
@@ -159,7 +235,7 @@ export async function syncVenueScoresFromTrivia(venueSessionId: string, triviaSe
   const playerById = new Map((bundle.players ?? []).map((player: any) => [player.id, player]));
   const { data: venuePlayers, error } = await getSupabaseServerClient()
     .from("ppl_trivia_venue_players")
-    .select("id, trivia_player_id, rolling_score, score_total, consecutive_questions_missed, removed_at")
+    .select("id, trivia_player_id, rolling_score, current_match_score, score_total, championship_score, consecutive_questions_missed, removed_at")
     .eq("venue_session_id", venueSessionId)
     .eq("trivia_session_id", triviaSessionId);
   if (error) throw error;
@@ -171,11 +247,13 @@ export async function syncVenueScoresFromTrivia(venueSessionId: string, triviaSe
     const answered = answers.has(venuePlayer.trivia_player_id);
     const nextMissed = answered ? 0 : (venuePlayer.consecutive_questions_missed ?? 0) + 1;
     const liveScore = Math.max(0, livePlayer.score ?? 0);
-    const previousRolling = Math.max(0, venuePlayer.rolling_score ?? 0);
-    const scoreGain = Math.max(0, liveScore - previousRolling);
+    const previousMatchScore = Math.max(0, venuePlayer.current_match_score ?? 0);
+    const scoreGain = Math.max(0, liveScore - previousMatchScore);
     const update: Record<string, unknown> = {
       rolling_score: liveScore,
+      current_match_score: liveScore,
       score_total: Math.max(0, venuePlayer.score_total ?? 0) + scoreGain,
+      championship_score: Math.max(0, venuePlayer.championship_score ?? 0) + scoreGain,
       correct_count: Math.max(0, livePlayer.correct_count ?? 0),
       answered_count: Math.max(0, (livePlayer.correct_count ?? 0) + (livePlayer.wrong_count ?? 0) + (livePlayer.skipped_count ?? 0)),
       consecutive_questions_missed: nextMissed,
