@@ -5,7 +5,19 @@ import { useParams, useSearchParams } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
 import { GameAtmosphere } from "../../../../_components/GameAtmosphere";
 
-type Leader = { id: string; name: string; rollingScore: number; scoreTotal: number; rank: number };
+type Leader = { id: string; name: string; rollingScore: number; scoreTotal: number; championshipScore: number; rank: number };
+type Championship = {
+  startedAt: string;
+  endsAt: string | null;
+  latest: null | {
+    id: number;
+    window_started_at: string;
+    window_ended_at: string;
+    winner_player_id: string | null;
+    standings: Array<{ rank: number; playerId: string; name: string; score: number }>;
+    created_at: string;
+  };
+};
 type DisplayPayload = {
   venue: { slug: string; displayName: string };
   venueSessionId: string;
@@ -13,12 +25,14 @@ type DisplayPayload = {
   currentTriviaSessionId: string | null;
   presenceToken: string;
   leaderboard: Leader[];
+  championship: Championship;
 };
 type StatePayload = {
   venue: { slug: string; displayName: string };
   venueSessionId: string;
   status: string;
   leaderboard: Leader[];
+  championship: Championship;
   game: null | {
     status: string;
     phase: string;
@@ -112,10 +126,17 @@ export default function TriviaVenueTvPage() {
   }, [display, slug]);
 
   const leaderboard = state?.leaderboard ?? display?.leaderboard ?? [];
+  const championship = state?.championship ?? display?.championship ?? null;
   const game = state?.game ?? null;
   const secondsLeft = game?.phase === "question-open" && game.questionOpenedAt && game.questionTimerSeconds
     ? Math.max(0, Math.ceil((Date.parse(game.questionOpenedAt) + game.questionTimerSeconds * 1000 - nowMs) / 1000))
     : null;
+  const championshipSecondsLeft = championship?.endsAt
+    ? Math.max(0, Math.ceil((Date.parse(championship.endsAt) - nowMs) / 1000))
+    : null;
+  const championshipMinutesLeft = championshipSecondsLeft === null ? null : Math.max(1, Math.ceil(championshipSecondsLeft / 60));
+  const latestChampion = championship?.latest?.standings?.[0] ?? null;
+  const showChampion = Boolean(championship?.latest?.created_at && nowMs - Date.parse(championship.latest.created_at) < 45000);
 
   return (
     <GameAtmosphere variant="trivia">
@@ -130,10 +151,20 @@ export default function TriviaVenueTvPage() {
                   <div className="text-sm font-black uppercase tracking-[0.3em] text-cyan-200/70">{display.venue.displayName}</div>
                   <h1 className="mt-2 text-5xl font-black tracking-tight lg:text-7xl">LIVE TRIVIA</h1>
                 </div>
-                {game ? <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-right"><div className="text-xs font-black uppercase tracking-[0.2em] text-white/45">Question</div><div className="text-2xl font-black">{Math.min(game.cardIndex + 1, game.totalQuestions)} / {game.totalQuestions}</div></div> : null}
+                <div className="flex gap-3">
+                  {championshipMinutesLeft !== null ? <div className="rounded-2xl border border-amber-300/20 bg-amber-300/10 px-5 py-3 text-right"><div className="text-xs font-black uppercase tracking-[0.2em] text-amber-100/60">Hourly title</div><div className="text-2xl font-black text-amber-100">{championshipMinutesLeft} min</div></div> : null}
+                  {game ? <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-right"><div className="text-xs font-black uppercase tracking-[0.2em] text-white/45">Question</div><div className="text-2xl font-black">{Math.min(game.cardIndex + 1, game.totalQuestions)} / {game.totalQuestions}</div></div> : null}
+                </div>
               </div>
 
-              {!game ? (
+              {showChampion && latestChampion ? (
+                <div className="mt-8 rounded-[32px] border border-amber-300/30 bg-[linear-gradient(180deg,rgba(245,185,51,.22),rgba(0,0,0,.18))] p-8 text-center shadow-2xl">
+                  <div className="text-sm font-black uppercase tracking-[0.3em] text-amber-100/75">Hourly Champion</div>
+                  <div className="mt-3 text-6xl font-black text-amber-50 lg:text-7xl">{latestChampion.name}</div>
+                  <div className="mt-3 text-2xl font-black text-amber-100">{latestChampion.score.toLocaleString()} points</div>
+                  <p className="mt-4 text-lg text-white/65">New championship starts now. Keep playing—no rescanning required.</p>
+                </div>
+              ) : !game ? (
                 <div className="mt-9 rounded-[30px] border border-white/10 bg-white/[0.04] p-8 text-center">
                   <div className="text-4xl font-black">Next game is getting ready.</div>
                   <p className="mt-4 text-xl text-white/60">Scan now. You can join before the next question starts.</p>
@@ -141,8 +172,8 @@ export default function TriviaVenueTvPage() {
               ) : game.status === "completed" ? (
                 <div className="mt-9 rounded-[30px] border border-amber-300/25 bg-amber-300/10 p-8 text-center">
                   <div className="text-sm font-black uppercase tracking-[0.24em] text-amber-100/70">Game complete</div>
-                  <div className="mt-3 text-5xl font-black">{leaderboard[0]?.name ? `${leaderboard[0].name} leads the room` : "Great game"}</div>
-                  <p className="mt-4 text-xl text-white/65">The next venue game can start without anyone rescanning.</p>
+                  <div className="mt-3 text-5xl font-black">{leaderboard[0]?.name ? `${leaderboard[0].name} leads this hour` : "Great game"}</div>
+                  <p className="mt-4 text-xl text-white/65">The next venue game starts automatically. Nobody has to rejoin.</p>
                 </div>
               ) : game.phase === "answer-reveal" && game.resolution ? (
                 <div className="mt-8 rounded-[32px] border border-emerald-300/25 bg-[linear-gradient(180deg,rgba(28,126,91,.25),rgba(0,0,0,.15))] p-8 text-center lg:p-10">
@@ -179,12 +210,12 @@ export default function TriviaVenueTvPage() {
               )}
 
               <div className="mt-8">
-                <div className="text-xs font-black uppercase tracking-[0.24em] text-white/50">Active leaderboard</div>
+                <div className="flex items-end justify-between gap-4"><div className="text-xs font-black uppercase tracking-[0.24em] text-white/50">This hour</div><div className="text-xs font-bold text-white/40">Resets every 60 minutes</div></div>
                 <div className="mt-4 grid gap-3 md:grid-cols-2">
                   {leaderboard.length ? leaderboard.slice(0, 8).map((player) => (
                     <div key={player.id} className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/25 px-5 py-4">
                       <div className="text-xl font-black">{player.rank}. {player.name}</div>
-                      <div className="text-xl font-black text-cyan-100">{player.rollingScore.toLocaleString()}</div>
+                      <div className="text-xl font-black text-cyan-100">{player.championshipScore.toLocaleString()}</div>
                     </div>
                   )) : <div className="rounded-2xl border border-white/10 bg-black/20 p-6 text-xl text-white/55 md:col-span-2">No active players yet. Scan the QR to be first.</div>}
                 </div>
@@ -196,6 +227,7 @@ export default function TriviaVenueTvPage() {
               {joinUrl ? <div className="mx-auto mt-5 w-fit rounded-[26px] bg-white p-3"><QRCodeSVG value={joinUrl} size={245} level="M" includeMargin={false} /></div> : null}
               <div className="mt-5 text-2xl font-black">Join anytime</div>
               <p className="mt-3 text-sm leading-6 text-white/65">Your phone is your private answer pad. Venue access lasts about one hour; scan again later to keep the same name and score.</p>
+              {leaderboard[0] ? <div className="mt-6 rounded-2xl border border-amber-300/20 bg-amber-300/10 p-4"><div className="text-xs font-black uppercase tracking-[0.2em] text-amber-100/60">Current leader</div><div className="mt-2 text-2xl font-black text-amber-50">{leaderboard[0].name}</div><div className="mt-1 text-sm font-bold text-amber-100/75">{leaderboard[0].championshipScore.toLocaleString()} this hour</div></div> : null}
             </aside>
           </div>
         ) : null}
