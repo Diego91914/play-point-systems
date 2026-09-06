@@ -17,7 +17,7 @@ export default function Page() {
   return (
     <SiteShell current="games">
       <GameAtmosphere variant="social">
-        <RoomInviteSessionGuard storageKey="pps-on-my-list-session">
+        <RoomInviteSessionGuard storageKey="pps-on-my-list-session" roomApiBase="/api/games/on-my-list">
           <OnMyListClient />
           <OnMyListMoments />
           <RulesCorner game="on-my-list" />
