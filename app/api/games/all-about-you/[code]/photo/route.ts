@@ -47,13 +47,13 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     state.message = "Guest of Honor photo added. You can replace it before the game starts.";
     const { data: saved, error: saveError } = await supabase.from("ppl_all_about_you_rooms")
       .update({ state, version: row.version + 1, updated_at: new Date().toISOString(), expires_at: new Date(Date.now() + 86_400_000).toISOString() })
-      .eq("code", code).eq("version", row.version).select("state").maybeSingle();
+      .eq("code", code).eq("version", row.version).select("version").maybeSingle();
     if (saveError || !saved) {
       await supabase.storage.from(BUCKET).remove([path]);
       throw new Error(saveError?.message || "The table changed. Try the photo again.");
     }
     if (previousPath && previousPath !== path) await supabase.storage.from(BUCKET).remove([previousPath]);
-    return NextResponse.json({ state: saved.state });
+    return NextResponse.json({ ok: true });
   } catch (cause) {
     return NextResponse.json({ error: cause instanceof Error ? cause.message : "Unable to upload photo." }, { status: 400 });
   }
