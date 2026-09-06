@@ -25,7 +25,7 @@ export default function Page() {
     <SiteShell current="games">
       <div className={styles.theme}>
         <BlackwoodAtmosphere />
-        <RoomInviteSessionGuard storageKey="pps-mystery-session">
+        <RoomInviteSessionGuard storageKey="pps-mystery-session" roomApiBase="/api/games/mystery">
           <MysteryClient />
           <MysteryTurnGuide />
           <MysteryCastPortraits />
