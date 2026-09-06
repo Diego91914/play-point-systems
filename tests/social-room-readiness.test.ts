@@ -90,6 +90,20 @@ describe("Play Amplified social room readiness", () => {
     expect(prompts).toContain("ALL_ABOUT_YOU_ROUND_ORDER");
   });
 
+  it("All About You keeps occasion flavor controlled and host-owned", () => {
+    const client = read("app/games/all-about-you/AllAboutYouClient.tsx");
+    const server = read("lib/play-point-core/all-about-you-server.ts");
+    const occasions = read("lib/play-point-core/all-about-you-occasions.ts");
+    expect(client).toContain('value: "birthday"');
+    expect(client).toContain('value: "celebration"');
+    expect(client).toContain('value: "just-because"');
+    expect(server).toContain('action === "set-occasion"');
+    expect(server).toContain("Only the host can choose the occasion in the lobby.");
+    expect(server).toContain("chooseAllAboutYouPrompts(state.occasion)");
+    expect(occasions).toContain("slice(0, 2)");
+    expect(occasions).toContain('occasion === "just-because"');
+  });
+
   it("All About You stays birthday-first without becoming birthday-only", () => {
     const page = read("app/games/all-about-you/page.tsx");
     const client = read("app/games/all-about-you/AllAboutYouClient.tsx");
