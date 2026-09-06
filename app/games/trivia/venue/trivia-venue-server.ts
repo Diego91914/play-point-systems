@@ -1,6 +1,5 @@
-import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
+import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
-import { joinTriviaLiveSession } from "../play/trivia-live-service";
 import { getTriviaTimerSeconds } from "../play/trivia-live-timing";
 import { extendTriviaVenuePresence, getTriviaVenuePresenceStatus, shouldShowTriviaVenuePlayerOnLeaderboard } from "./trivia-venue-presence";
 
@@ -98,19 +97,34 @@ export async function loadVenuePlayerForDevice(venueSessionId: string, playerId:
 export async function seatVenuePlayerInTriviaSession(
   venuePlayer: { id: string; name: string; trivia_session_id?: string | null; trivia_player_id?: string | null },
   triviaSessionId: string,
-  roomCode: string,
+  _roomCode?: string,
 ) {
   if (venuePlayer.trivia_session_id === triviaSessionId && venuePlayer.trivia_player_id) {
     return venuePlayer.trivia_player_id;
   }
-  const joined = await joinTriviaLiveSession(roomCode, venuePlayer.name);
+
+  // Venue Mode intentionally permits customers to join a match already in progress.
+  // The normal room join RPC is lobby-only, so this trusted server path inserts the
+  // mirrored live player directly after Venue presence/device authorization succeeds.
+  const triviaPlayerId = randomUUID();
+  const throwawayCredential = generateTriviaVenueToken();
+  const { error: insertError } = await getSupabaseServerClient()
+    .from("ppl_trivia_players")
+    .insert({
+      id: triviaPlayerId,
+      session_id: triviaSessionId,
+      name: venuePlayer.name,
+      token_hash: hashTriviaVenueToken(throwawayCredential),
+    });
+  if (insertError) throw insertError;
+
   const now = new Date().toISOString();
   const { error } = await getSupabaseServerClient()
     .from("ppl_trivia_venue_players")
-    .update({ trivia_session_id: triviaSessionId, trivia_player_id: joined.playerId, updated_at: now })
+    .update({ trivia_session_id: triviaSessionId, trivia_player_id: triviaPlayerId, rolling_score: 0, updated_at: now })
     .eq("id", venuePlayer.id);
   if (error) throw error;
-  return joined.playerId;
+  return triviaPlayerId;
 }
 
 export async function loadVenueTriviaRuntime(triviaSessionId: string) {
@@ -145,7 +159,7 @@ export async function syncVenueScoresFromTrivia(venueSessionId: string, triviaSe
   const playerById = new Map((bundle.players ?? []).map((player: any) => [player.id, player]));
   const { data: venuePlayers, error } = await getSupabaseServerClient()
     .from("ppl_trivia_venue_players")
-    .select("id, trivia_player_id, score_total, consecutive_questions_missed, removed_at")
+    .select("id, trivia_player_id, rolling_score, score_total, consecutive_questions_missed, removed_at")
     .eq("venue_session_id", venueSessionId)
     .eq("trivia_session_id", triviaSessionId);
   if (error) throw error;
@@ -156,17 +170,21 @@ export async function syncVenueScoresFromTrivia(venueSessionId: string, triviaSe
     if (!livePlayer) return;
     const answered = answers.has(venuePlayer.trivia_player_id);
     const nextMissed = answered ? 0 : (venuePlayer.consecutive_questions_missed ?? 0) + 1;
+    const liveScore = Math.max(0, livePlayer.score ?? 0);
+    const previousRolling = Math.max(0, venuePlayer.rolling_score ?? 0);
+    const scoreGain = Math.max(0, liveScore - previousRolling);
+    const update: Record<string, unknown> = {
+      rolling_score: liveScore,
+      score_total: Math.max(0, venuePlayer.score_total ?? 0) + scoreGain,
+      correct_count: Math.max(0, livePlayer.correct_count ?? 0),
+      answered_count: Math.max(0, (livePlayer.correct_count ?? 0) + (livePlayer.wrong_count ?? 0) + (livePlayer.skipped_count ?? 0)),
+      consecutive_questions_missed: nextMissed,
+      updated_at: now,
+    };
+    if (answered) update.last_active_at = now;
     const { error: updateError } = await getSupabaseServerClient()
       .from("ppl_trivia_venue_players")
-      .update({
-        rolling_score: Math.max(0, livePlayer.score ?? 0),
-        score_total: Math.max(venuePlayer.score_total ?? 0, livePlayer.score ?? 0),
-        correct_count: Math.max(0, livePlayer.correct_count ?? 0),
-        answered_count: Math.max(0, (livePlayer.correct_count ?? 0) + (livePlayer.wrong_count ?? 0) + (livePlayer.skipped_count ?? 0)),
-        consecutive_questions_missed: nextMissed,
-        last_active_at: answered ? now : undefined,
-        updated_at: now,
-      })
+      .update(update)
       .eq("id", venuePlayer.id);
     if (updateError) throw updateError;
   }));
