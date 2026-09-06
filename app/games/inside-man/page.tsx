@@ -8,4 +8,4 @@ import { InsideManClient } from "./InsideManClient";
 import { InsideManMoments } from "./InsideManMoments";
 
 export const metadata:Metadata={title:"The Inside Man | Play Point Systems",description:"A phone-powered social deduction game where one player secretly sabotages the group's missions.",robots:{index:false,follow:false}};
-export default function Page(){return <SiteShell current="games"><GameAtmosphere variant="deduction"><RoomInviteSessionGuard storageKey="pps-inside-man-session"><InsideManClient/><InsideManMoments/><RulesCorner game="inside-man"/><SocialRoomController game="inside-man" storageKey="pps-inside-man-session" roomApiBase="/api/games/inside-man"/></RoomInviteSessionGuard></GameAtmosphere></SiteShell>}
+export default function Page(){return <SiteShell current="games"><GameAtmosphere variant="deduction"><RoomInviteSessionGuard storageKey="pps-inside-man-session" roomApiBase="/api/games/inside-man"><InsideManClient/><InsideManMoments/><RulesCorner game="inside-man"/><SocialRoomController game="inside-man" storageKey="pps-inside-man-session" roomApiBase="/api/games/inside-man"/></RoomInviteSessionGuard></GameAtmosphere></SiteShell>}
