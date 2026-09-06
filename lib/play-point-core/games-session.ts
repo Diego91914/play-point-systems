@@ -1,5 +1,6 @@
 export const GAMES_SESSION_COOKIE = "pps_games_session";
-export const GAMES_SESSION_TTL_SECONDS = 60 * 60 * 24;
+export const GAMES_SESSION_TTL_SECONDS = 60 * 60 * 24 * 30;
+export const FOUNDER_GAMES_SESSION_TTL_SECONDS = 60 * 60 * 24 * 180;
 
 const GAMES_SESSION_VERSION = "v1";
 
