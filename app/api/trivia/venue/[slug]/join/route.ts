@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import { extendTriviaVenuePresence } from "@/app/games/trivia/venue/trivia-venue-presence";
-import { generateTriviaVenueToken, hashTriviaVenueToken, loadOpenTriviaVenueSession, loadTriviaVenue, safeTriviaVenueTokenMatch } from "@/app/games/trivia/venue/trivia-venue-server";
+import { generateTriviaVenueToken, hashTriviaVenueToken, loadOpenTriviaVenueSession, loadTriviaVenue, safeTriviaVenueTokenMatch, seatVenuePlayerInTriviaSession } from "@/app/games/trivia/venue/trivia-venue-server";
 
 export async function POST(request: Request, context: { params: Promise<{ slug: string }> }) {
   const { slug } = await context.params;
@@ -28,11 +28,34 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
       last_active_at: now,
       updated_at: now,
     })
-    .select("id, name, rolling_score, score_total, presence_expires_at")
+    .select("id, name, rolling_score, score_total, presence_expires_at, trivia_session_id, trivia_player_id")
     .single();
   if (error) {
     const duplicate = String(error.message ?? "").toLowerCase().includes("unique");
     return NextResponse.json({ error: duplicate ? "That player name is already in use here." : "Unable to join venue trivia." }, { status: duplicate ? 409 : 500 });
   }
-  return NextResponse.json({ player: data, deviceToken, venueSessionId: session.id, venue: { slug: venue.slug, displayName: venue.display_name } }, { headers: { "Cache-Control": "no-store" } });
+
+  let triviaPlayerId: string | null = null;
+  if (session.current_trivia_session_id) {
+    const { data: liveSession, error: liveError } = await getSupabaseServerClient()
+      .from("ppl_trivia_sessions")
+      .select("id, room_code, status")
+      .eq("id", session.current_trivia_session_id)
+      .maybeSingle();
+    if (liveError) throw liveError;
+    if (liveSession) {
+      triviaPlayerId = await seatVenuePlayerInTriviaSession(data, liveSession.id, liveSession.room_code);
+      if (liveSession.status === "lobby") {
+        const { error: startError } = await getSupabaseServerClient().rpc("ppl_trivia_start_session", { p_session_id: liveSession.id });
+        if (startError) throw startError;
+      }
+    }
+  }
+
+  return NextResponse.json({
+    player: { ...data, trivia_player_id: triviaPlayerId ?? data.trivia_player_id },
+    deviceToken,
+    venueSessionId: session.id,
+    venue: { slug: venue.slug, displayName: venue.display_name },
+  }, { headers: { "Cache-Control": "no-store" } });
 }
