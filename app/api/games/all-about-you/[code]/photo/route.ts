@@ -14,6 +14,18 @@ function matches(expected: string, token: string) {
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
+async function readHostLobby(code: string, playerId: string, token: string) {
+  const supabase = getSupabaseServerClient();
+  const { data: row, error: readError } = await supabase.from("ppl_all_about_you_rooms").select("state,version").eq("code", code).maybeSingle();
+  if (readError) throw new Error(readError.message);
+  if (!row) throw new Error("Room not found.");
+  const state = row.state as any;
+  const player = state.players?.find((candidate: any) => candidate.id === playerId);
+  if (!player || !matches(player.tokenHash, token)) throw new Error("Invalid player session.");
+  if (state.status !== "lobby" || state.hostPlayerId !== playerId) throw new Error("Only the host can manage the Guest of Honor photo in the lobby.");
+  return { supabase, row, state };
+}
+
 export async function POST(request: NextRequest, { params }: { params: Promise<{ code: string }> }) {
   try {
     const { code: rawCode } = await params;
@@ -26,15 +38,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     if (!TYPES.has(file.type)) throw new Error("Use a JPEG, PNG, WebP, HEIC, or HEIF photo.");
     if (file.size <= 0 || file.size > MAX_BYTES) throw new Error("Keep the photo under 5 MB.");
 
-    const supabase = getSupabaseServerClient();
-    const { data: row, error: readError } = await supabase.from("ppl_all_about_you_rooms").select("state,version").eq("code", code).maybeSingle();
-    if (readError) throw new Error(readError.message);
-    if (!row) throw new Error("Room not found.");
-    const state = row.state as any;
-    const player = state.players?.find((candidate: any) => candidate.id === playerId);
-    if (!player || !matches(player.tokenHash, token)) throw new Error("Invalid player session.");
-    if (state.status !== "lobby" || state.hostPlayerId !== playerId) throw new Error("Only the host can add the Guest of Honor photo in the lobby.");
-
+    const { supabase, row, state } = await readHostLobby(code, playerId, token);
     const ext = TYPES.get(file.type)!;
     const path = `${code}/${randomUUID()}.${ext}`;
     const bytes = Buffer.from(await file.arrayBuffer());
@@ -49,7 +53,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const previousPath = typeof state.guestPhotoPath === "string" ? state.guestPhotoPath : null;
     state.guestPhotoUrl = signedData.signedUrl;
     state.guestPhotoPath = path;
-    state.message = "Guest of Honor photo added. You can replace it before the game starts.";
+    state.message = "Guest of Honor photo added. You can replace or remove it before the game starts.";
     const { data: saved, error: saveError } = await supabase.from("ppl_all_about_you_rooms")
       .update({ state, version: row.version + 1, updated_at: new Date().toISOString(), expires_at: new Date(Date.now() + 86_400_000).toISOString() })
       .eq("code", code).eq("version", row.version).select("version").maybeSingle();
@@ -61,6 +65,29 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     return NextResponse.json({ ok: true });
   } catch (cause) {
     return NextResponse.json({ error: cause instanceof Error ? cause.message : "Unable to upload photo." }, { status: 400 });
+  }
+}
+
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ code: string }> }) {
+  try {
+    const { code: rawCode } = await params;
+    const code = rawCode.trim().toUpperCase();
+    const body = await request.json().catch(() => ({}));
+    const playerId = String(body.playerId ?? "");
+    const token = String(body.token ?? "");
+    const { supabase, row, state } = await readHostLobby(code, playerId, token);
+    const photoPath = typeof state.guestPhotoPath === "string" ? state.guestPhotoPath : null;
+    delete state.guestPhotoUrl;
+    delete state.guestPhotoPath;
+    state.message = "Guest of Honor photo removed. You can add another before the game starts.";
+    const { data: saved, error: saveError } = await supabase.from("ppl_all_about_you_rooms")
+      .update({ state, version: row.version + 1, updated_at: new Date().toISOString(), expires_at: new Date(Date.now() + 86_400_000).toISOString() })
+      .eq("code", code).eq("version", row.version).select("version").maybeSingle();
+    if (saveError || !saved) throw new Error(saveError?.message || "The table changed. Try again.");
+    if (photoPath) await supabase.storage.from(BUCKET).remove([photoPath]);
+    return NextResponse.json({ ok: true });
+  } catch (cause) {
+    return NextResponse.json({ error: cause instanceof Error ? cause.message : "Unable to remove photo." }, { status: 400 });
   }
 }
 
