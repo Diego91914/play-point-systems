@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { GameAtmosphere } from "../../../_components/GameAtmosphere";
+import { GameAtmosphere } from "../../../../_components/GameAtmosphere";
 
 export default function TriviaVenueOperatorPage() {
   const params = useParams<{ slug: string }>();
