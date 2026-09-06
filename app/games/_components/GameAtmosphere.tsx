@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import styles from "./GameAtmosphere.module.css";
 
-export type GameAtmosphereVariant = "social" | "deduction" | "cards" | "trivia" | "sports";
+export type GameAtmosphereVariant = "library" | "social" | "deduction" | "cards" | "trivia" | "sports";
 
 export function GameAtmosphere({ variant, children }: { variant: GameAtmosphereVariant; children: ReactNode }) {
   return (
