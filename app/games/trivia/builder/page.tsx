@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { ProductShell } from "../../../components/ProductShell";
 import { GameAtmosphere } from "../../_components/GameAtmosphere";
 import { RulesCorner } from "../../_components/RulesCorner";
-import { TriviaLiveBuilderExperience } from "../play/TriviaLiveBuilderExperience";
+import { TriviaGameShowExperience } from "../play/TriviaGameShowExperience";
 import { TriviaHostMoments } from "../play/TriviaHostMoments";
 
 export const metadata: Metadata = {
-  title: "Play Point Trivia Builder",
-  description: "Host and run a live trivia room from published categories and topics on Play Point Systems.",
+  title: "Play Amplified Trivia",
+  description: "Host a live Play Amplified trivia game with phones for every player.",
   robots: { index: false, follow: false },
 };
 
@@ -15,22 +15,22 @@ export default function TriviaBuilderPage() {
   return (
     <GameAtmosphere variant="trivia">
       <ProductShell
-        productName="Trivia Host"
-        heading="Create a live trivia room"
-        summary="Choose a category, topics, difficulty, and pace, then share the join code with players."
+        productName="Play Amplified Trivia"
+        heading="Turn the table into a game show"
+        summary="Choose the kind of trivia you want, get everyone into the room, and let the phones handle answers and scoring."
         status="Preview"
         backHref="/games/trivia"
         backLabel="Trivia overview"
-        helpTitle="Host guide"
+        helpTitle="How it works"
         helpItems={[
-          "The host creates the room and controls the pace.",
-          "Players join on their phones with the room code or QR link.",
-          "Choose Standard 10-second pacing or Relaxed 20-second pacing before creating the room.",
-          "Scoring rises from a fixed 500-point warm-up to 3,000-point Final Word questions.",
-          "Open Projector Mode after creating the room for a full-screen presentation view.",
+          "One person hosts and controls the pace.",
+          "Everyone else joins free on their own phone with the QR code or room code.",
+          "Players answer privately while the host screen runs the question and reveal.",
+          "Later rounds are worth more, and the game ends with a private final wager.",
+          "When the winner is crowned, start another game with the same setup or choose something new.",
         ]}
       >
-        <TriviaLiveBuilderExperience />
+        <TriviaGameShowExperience />
         <TriviaHostMoments />
         <RulesCorner game="trivia" />
       </ProductShell>
