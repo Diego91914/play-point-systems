@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getTriviaVenueLeaderboard, loadOpenTriviaVenueSession, loadTriviaVenue, loadVenueTriviaRuntime, safeTriviaVenueTokenMatch } from "@/app/games/trivia/venue/trivia-venue-server";
+import { getLatestTriviaVenueChampionship, getTriviaVenueLeaderboard, loadOpenTriviaVenueSession, loadTriviaVenue, loadVenueTriviaRuntime, safeTriviaVenueTokenMatch, TRIVIA_VENUE_CHAMPIONSHIP_WINDOW_MS } from "@/app/games/trivia/venue/trivia-venue-server";
 
 export async function POST(request: Request, context: { params: Promise<{ slug: string }> }) {
   const { slug } = await context.params;
@@ -10,13 +10,25 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   }
   const venueSession = await loadOpenTriviaVenueSession(venue.id);
   if (!venueSession) return NextResponse.json({ error: "No active venue session." }, { status: 404 });
-  const leaderboard = await getTriviaVenueLeaderboard(venueSession.id);
+  const [leaderboard, latestChampionship] = await Promise.all([
+    getTriviaVenueLeaderboard(venueSession.id),
+    getLatestTriviaVenueChampionship(venueSession.id),
+  ]);
+  const championshipStartedAtMs = Date.parse(venueSession.championship_started_at);
+  const championship = {
+    startedAt: venueSession.championship_started_at,
+    endsAt: Number.isFinite(championshipStartedAtMs)
+      ? new Date(championshipStartedAtMs + TRIVIA_VENUE_CHAMPIONSHIP_WINDOW_MS).toISOString()
+      : null,
+    latest: latestChampionship,
+  };
   if (!venueSession.current_trivia_session_id) {
     return NextResponse.json({
       venue: { slug: venue.slug, displayName: venue.display_name },
       venueSessionId: venueSession.id,
       status: venueSession.status,
       leaderboard,
+      championship,
       game: null,
     }, { headers: { "Cache-Control": "no-store" } });
   }
@@ -26,6 +38,7 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     venueSessionId: venueSession.id,
     status: venueSession.status,
     leaderboard,
+    championship,
     game: {
       status: runtime.session.status,
       phase: runtime.session.phase,
