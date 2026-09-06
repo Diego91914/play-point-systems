@@ -8,9 +8,16 @@ import {
   type AllAboutYouPrompt,
   type AllAboutYouRoundType,
 } from "@/lib/play-point-core/all-about-you-prompts";
+import {
+  allAboutYouOccasionLabel,
+  chooseAllAboutYouPrompts,
+  cleanAllAboutYouOccasion,
+  type AllAboutYouOccasion,
+} from "@/lib/play-point-core/all-about-you-occasions";
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 export type { AllAboutYouRoundType } from "@/lib/play-point-core/all-about-you-prompts";
+export type { AllAboutYouOccasion } from "@/lib/play-point-core/all-about-you-occasions";
 
 type Status = "lobby" | "guest-answer" | "guessing" | "judge" | "reveal" | "memory-submit" | "memory-pick" | "finished" | "closed";
 type Player = { id: string; name: string; tokenHash: string; score: number; seat: number };
@@ -22,6 +29,7 @@ type State = {
   hostPlayerId: string;
   hostAccountId: string;
   guestId: string | null;
+  occasion: AllAboutYouOccasion;
   players: Player[];
   round: number;
   promptIds: string[];
@@ -70,15 +78,6 @@ function roomCode() {
 
 const playerToken = () => randomBytes(32).toString("base64url");
 
-function shuffle<T>(items: readonly T[]) {
-  const copy = [...items];
-  for (let index = copy.length - 1; index > 0; index--) {
-    const other = Math.floor(Math.random() * (index + 1));
-    [copy[index], copy[other]] = [copy[other], copy[index]];
-  }
-  return copy;
-}
-
 function guest(state: State) {
   return state.players.find(player => player.id === state.guestId) ?? null;
 }
@@ -90,10 +89,6 @@ function guessers(state: State) {
 function promptFor(state: State): AllAboutYouPrompt | null {
   const id = state.promptIds[state.round];
   return ALL_ABOUT_YOU_PROMPTS.find(prompt => prompt.id === id) ?? null;
-}
-
-function choosePrompts() {
-  return ALL_ABOUT_YOU_ROUND_ORDER.map(type => shuffle(ALL_ABOUT_YOU_PROMPTS.filter(prompt => prompt.type === type))[0]?.id ?? "");
 }
 
 function labelForWho(state: State, id: string) {
@@ -190,6 +185,7 @@ function auth(state: State, id: string, token: string) {
 }
 
 function project(state: State, viewer: string) {
+  if (!state.occasion) state.occasion = "birthday";
   const me = state.players.find(player => player.id === viewer);
   const star = guest(state);
   const prompt = promptFor(state);
@@ -213,6 +209,7 @@ function project(state: State, viewer: string) {
 
   return {
     ...publicState,
+    occasionLabel: allAboutYouOccasionLabel(state.occasion),
     players: state.players.map(({ tokenHash: _tokenHash, ...player }) => player),
     guestAnswer: visibleGuestAnswer,
     guesses: visibleGuesses,
@@ -240,6 +237,7 @@ export async function createAllAboutYouRoom(nameValue: unknown, hostAccountId: s
       hostPlayerId: id,
       hostAccountId,
       guestId: id,
+      occasion: "birthday",
       players: [{ id, name, tokenHash: hash(token), score: 0, seat: 0 }],
       round: 0,
       promptIds: [],
@@ -250,7 +248,7 @@ export async function createAllAboutYouRoom(nameValue: unknown, hostAccountId: s
       memoryEntries: [],
       memoryFavoriteId: null,
       recap: [],
-      message: "Invite everyone, then choose tonight's Guest of Honor.",
+      message: "Invite everyone, choose the occasion, then choose tonight's Guest of Honor.",
     };
     const supabase = getSupabaseServerClient();
     const { error } = await supabase.from("ppl_all_about_you_rooms").insert({ code, state, version: 1 });
@@ -267,6 +265,7 @@ export async function joinAllAboutYouRoom(codeValue: unknown, nameValue: unknown
   if (!row) throw new Error("Room not found.");
   if (row.state.status !== "lobby") throw new Error("That game has already started.");
   if (row.state.players.length >= 10) throw new Error("That room is full.");
+  if (!row.state.occasion) row.state.occasion = "birthday";
   const token = playerToken();
   const id = randomUUID();
   row.state.players.push({ id, name, tokenHash: hash(token), score: 0, seat: row.state.players.length });
@@ -279,6 +278,7 @@ export async function recoverAllAboutYouHost(codeValue: unknown, accountId: stri
   const row = await read(code);
   if (!row) throw new Error("Room not found.");
   if (row.state.hostAccountId !== accountId) throw new Error("This signed-in account is not the host of that room.");
+  if (!row.state.occasion) row.state.occasion = "birthday";
   const host = row.state.players.find(player => player.id === row.state.hostPlayerId);
   if (!host) throw new Error("The host seat could not be found.");
   const token = playerToken();
@@ -306,11 +306,16 @@ export async function actAllAboutYouRoom(
   const row = await read(code);
   if (!row) throw new Error("Room not found.");
   const state = row.state;
+  if (!state.occasion) state.occasion = "birthday";
   const me = auth(state, id, token);
   const star = guest(state);
   const prompt = promptFor(state);
 
-  if (action === "set-guest") {
+  if (action === "set-occasion") {
+    if (state.status !== "lobby" || me.id !== state.hostPlayerId) throw new Error("Only the host can choose the occasion in the lobby.");
+    state.occasion = cleanAllAboutYouOccasion(payload.occasion);
+    state.message = `${allAboutYouOccasionLabel(state.occasion)} mode selected. Now choose tonight's Guest of Honor.`;
+  } else if (action === "set-guest") {
     if (state.status !== "lobby" || me.id !== state.hostPlayerId) throw new Error("Only the host can choose the Guest of Honor in the lobby.");
     const guestId = typeof payload.guestId === "string" ? payload.guestId : "";
     if (!state.players.some(player => player.id === guestId)) throw new Error("Choose someone in this room.");
@@ -322,7 +327,7 @@ export async function actAllAboutYouRoom(
     if (!state.guestId) throw new Error("Choose the Guest of Honor first.");
     state.players.forEach(player => { player.score = 0; });
     state.round = 0;
-    state.promptIds = choosePrompts();
+    state.promptIds = chooseAllAboutYouPrompts(state.occasion);
     state.recap = [];
     resetRound(state);
   } else if (action === "guest-answer") {
@@ -421,7 +426,11 @@ export async function actAllAboutYouRoom(
     if (state.status !== "reveal" || me.id !== state.hostPlayerId) throw new Error("Only the host can continue after the reveal.");
     if (state.round + 1 >= ALL_ABOUT_YOU_ROUND_ORDER.length) {
       state.status = "finished";
-      state.message = `Tonight was all about ${star?.name ?? "the Guest of Honor"}.`;
+      state.message = state.occasion === "birthday"
+        ? `Happy birthday, ${star?.name ?? "Guest of Honor"}. Tonight was all about you.`
+        : state.occasion === "celebration"
+          ? `Tonight we celebrated ${star?.name ?? "the Guest of Honor"}.`
+          : `Tonight was all about ${star?.name ?? "the Guest of Honor"}.`;
     } else {
       state.round += 1;
       resetRound(state);
@@ -439,7 +448,7 @@ export async function actAllAboutYouRoom(
     state.memoryFavoriteId = null;
     state.recap = [];
     state.players.forEach(player => { player.score = 0; });
-    state.message = "Choose the Guest of Honor for the next game.";
+    state.message = "Choose the occasion and Guest of Honor for the next game.";
   } else if (action === "quit") {
     if (me.id !== state.hostPlayerId) throw new Error("Only the host can end the room.");
     state.status = "closed";
