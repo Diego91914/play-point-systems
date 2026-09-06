@@ -5,8 +5,8 @@ import { RulesCorner } from "../../_components/RulesCorner";
 import { TriviaJoinExperience } from "./TriviaJoinExperience";
 
 export const metadata: Metadata = {
-  title: "Join Play Point Trivia",
-  description: "Sign into a live Bible trivia room from your phone on Play Point Systems.",
+  title: "Join Play Amplified Trivia",
+  description: "Join a live Play Amplified trivia room from your phone.",
   robots: { index: false, follow: false },
 };
 
@@ -14,17 +14,19 @@ export default function TriviaJoinPage() {
   return (
     <GameAtmosphere variant="trivia">
       <ProductShell
-        productName="Play Point Trivia"
-        heading="Join a trivia room"
-        summary="Enter the host's room code and your player name to start."
+        productName="Play Amplified Trivia"
+        heading="You’re in the game"
+        summary="Enter the room code and your name. Your phone becomes your private answer pad."
         status="Preview"
         backHref="/games/trivia"
         backLabel="Trivia overview"
-        helpTitle="How joining works"
+        helpTitle="Player guide"
         helpItems={[
-          "Scan the host's QR code or enter the six-character room code.",
-          "Add your player name and wait for the host to begin.",
-          "Answer each question before the host-selected clock expires.",
+          "Scan the host’s QR code or enter the six-character room code.",
+          "Choose your player name and wait for the host to start.",
+          "Questions appear for everyone together, but your answer stays on your phone.",
+          "Lock an answer before time runs out, then watch the reveal and leaderboard move.",
+          "The final question uses a private wager, so the game can change right at the end.",
         ]}
       >
         <TriviaJoinExperience />
