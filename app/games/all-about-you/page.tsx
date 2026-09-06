@@ -4,6 +4,7 @@ import { GameAtmosphere } from "@/app/games/_components/GameAtmosphere";
 import { RoomInviteSessionGuard } from "@/app/games/_components/RoomInviteSessionGuard";
 import { SocialRoomController } from "@/app/games/_components/SocialRoomController";
 import { AllAboutYouClient } from "./AllAboutYouClient";
+import { AllAboutYouEntryRole } from "./AllAboutYouEntryRole";
 import { GuestHonorPhoto } from "./GuestHonorPhoto";
 
 export const metadata: Metadata = {
@@ -17,7 +18,9 @@ export default function AllAboutYouPage() {
     <SiteShell current="games">
       <GameAtmosphere variant="social">
         <RoomInviteSessionGuard storageKey="pps-all-about-you-session" roomApiBase="/api/games/all-about-you">
-          <AllAboutYouClient />
+          <AllAboutYouEntryRole>
+            <AllAboutYouClient />
+          </AllAboutYouEntryRole>
           <GuestHonorPhoto />
           <SocialRoomController
             game="all-about-you"
