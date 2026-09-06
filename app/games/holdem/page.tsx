@@ -11,6 +11,7 @@ import {
   verifyGamesSessionToken,
 } from "@/lib/play-point-core/games-session";
 import { HoldemClient } from "./HoldemClient";
+import { HoldemActionDock } from "./HoldemActionDock";
 import { HoldemHostStartControl } from "./HoldemHostStartControl";
 import { HoldemPreAction } from "./HoldemPreAction";
 import { HoldemTableMenu } from "./HoldemTableMenu";
@@ -68,6 +69,7 @@ export default async function HoldemPage() {
         )}
 
         <HoldemClient />
+        <HoldemActionDock />
         <HoldemMoments />
         <HoldemHostStartControl />
         <HoldemTableMenu />
