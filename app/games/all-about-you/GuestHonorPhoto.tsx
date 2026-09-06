@@ -40,6 +40,21 @@ export function GuestHonorPhoto() {
     finally { setBusy(false); if (camera.current) camera.current.value = ""; if (library.current) library.current.value = ""; }
   }
 
+  async function removePhoto() {
+    if (!session || !game?.guestPhotoUrl) return;
+    setBusy(true); setError("");
+    try {
+      const response = await fetch(`/api/games/all-about-you/${session.code}/photo`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ playerId: session.playerId, token: session.token }),
+      });
+      const json = await response.json(); if (!response.ok) throw new Error(json.error || "Unable to remove photo.");
+      await refresh();
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Unable to remove photo."); }
+    finally { setBusy(false); }
+  }
+
   if (!game?.guestPhotoUrl && !(game?.status === "lobby" && game.me?.isHost)) return null;
   const finale = game.status === "finished";
   return <aside className={finale ? "fixed inset-x-0 top-20 z-20 mx-auto w-fit" : "fixed bottom-5 left-5 z-20 max-w-[220px]"}>
@@ -47,14 +62,15 @@ export function GuestHonorPhoto() {
       {game.guestPhotoUrl && <div className="mx-auto overflow-hidden rounded-2xl border border-white/10"><img src={game.guestPhotoUrl} alt={game.guest?.name ? `${game.guest.name}, Guest of Honor` : "Guest of Honor"} className={`${finale ? "h-40 w-40" : "h-24 w-full"} object-cover`} /></div>}
       {game.status === "lobby" && game.me?.isHost && <div className={game.guestPhotoUrl ? "mt-3" : ""}>
         <div className="text-xs font-black uppercase tracking-widest text-fuchsia-100">Guest of Honor photo · optional</div>
-        <p className="mt-1 text-xs leading-5 text-white/50">Take one now or choose one from your photo library.</p>
+        <p className="mt-1 text-xs leading-5 text-white/50">Take one now or choose one from your photo library. It stays private to this game room.</p>
         <div className="mt-2 grid grid-cols-2 gap-2">
           <button disabled={busy} onClick={() => camera.current?.click()} className="rounded-xl bg-fuchsia-300 px-3 py-2 text-xs font-black text-slate-950 disabled:opacity-40">📷 TAKE PHOTO</button>
           <button disabled={busy} onClick={() => library.current?.click()} className="rounded-xl border border-white/15 px-3 py-2 text-xs font-black text-white disabled:opacity-40">PHOTO LIBRARY</button>
         </div>
+        {game.guestPhotoUrl && <button disabled={busy} onClick={() => void removePhoto()} className="mt-2 w-full rounded-xl border border-rose-300/20 px-3 py-2 text-xs font-black text-rose-100 disabled:opacity-40">REMOVE PHOTO</button>}
         <input ref={camera} hidden type="file" accept="image/*" capture="environment" onChange={event => void upload(event.target.files?.[0])} />
         <input ref={library} hidden type="file" accept="image/*" onChange={event => void upload(event.target.files?.[0])} />
-        {busy && <div className="mt-2 text-xs text-white/50">Adding photo…</div>}{error && <div className="mt-2 text-xs text-rose-200">{error}</div>}
+        {busy && <div className="mt-2 text-xs text-white/50">Updating photo…</div>}{error && <div className="mt-2 text-xs text-rose-200">{error}</div>}
       </div>}
     </div>
   </aside>;
