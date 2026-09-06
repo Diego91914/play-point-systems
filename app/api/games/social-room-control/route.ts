@@ -14,9 +14,11 @@ const ROOM_TABLES = {
   holdem: "ppl_holdem_tables",
 } as const;
 
+const ALL_ABOUT_YOU_PHOTO_BUCKET = "all-about-you-guest-photos";
+
 type SocialGame = keyof typeof ROOM_TABLES;
 type StoredPlayer = { id?: unknown; name?: unknown; seat?: unknown; tokenHash?: unknown };
-type StoredState = { hostPlayerId?: unknown; players?: unknown; settings?: any; tournament?: any };
+type StoredState = { hostPlayerId?: unknown; players?: unknown; settings?: any; tournament?: any; guestPhotoPath?: unknown };
 type RoomRow = { code: string; state: StoredState };
 
 const hash = (value: string) => createHash("sha256").update(value).digest("hex");
@@ -113,8 +115,13 @@ export async function POST(request: NextRequest) {
 
     if (action === "quit") {
       if (!session.isHost) return NextResponse.json({ error: "Only the host can end the game." }, { status: 403 });
+      const photoPath = game === "all-about-you" && typeof row.state.guestPhotoPath === "string" ? row.state.guestPhotoPath : null;
       const { error: deleteError } = await supabase.from(table).delete().eq("code", code);
       if (deleteError) throw new Error(deleteError.message);
+      if (photoPath) {
+        const { error: photoDeleteError } = await supabase.storage.from(ALL_ABOUT_YOU_PHOTO_BUCKET).remove([photoPath]);
+        if (photoDeleteError) console.warn("Unable to remove All About You room photo", photoDeleteError.message);
+      }
       return NextResponse.json({ success: true, ended: true, isHost: true }, { headers: { "Cache-Control": "private, no-store" } });
     }
 
