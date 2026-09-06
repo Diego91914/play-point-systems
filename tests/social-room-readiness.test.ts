@@ -52,10 +52,10 @@ describe("Play Amplified social room readiness", () => {
     expect(client).toContain('value: "birthday"'); expect(client).toContain('value: "celebration"'); expect(client).toContain('value: "just-because"'); expect(server).toContain('action === "set-occasion"'); expect(server).toContain("Only the host can choose the occasion in the lobby."); expect(server).toContain("chooseAllAboutYouPrompts(state.occasion)"); expect(occasions).toContain("slice(0, 2)"); expect(occasions).toContain('occasion === "just-because"');
   });
 
-  it("All About You keeps Guest of Honor photos optional, host-owned, private, and disposable", () => {
+  it("All About You keeps Guest of Honor photos optional, host-owned, private, removable, and disposable", () => {
     const page = read("app/games/all-about-you/page.tsx"); const photo = read("app/games/all-about-you/GuestHonorPhoto.tsx"); const upload = read("app/api/games/all-about-you/[code]/photo/route.ts"); const controls = read("app/api/games/social-room-control/route.ts");
-    expect(page).toContain("GuestHonorPhoto"); expect(photo).toContain("Guest of Honor photo · optional"); expect(photo).toContain('capture="environment"'); expect(photo).toContain("PHOTO LIBRARY");
-    expect(upload).toContain("Only the host can add the Guest of Honor photo in the lobby."); expect(upload).toContain("createSignedUrl(path, ROOM_SECONDS)"); expect(upload).toContain("previousPath"); expect(upload).toContain("remove([previousPath])");
+    expect(page).toContain("GuestHonorPhoto"); expect(photo).toContain("Guest of Honor photo · optional"); expect(photo).toContain('capture="environment"'); expect(photo).toContain("PHOTO LIBRARY"); expect(photo).toContain("REMOVE PHOTO"); expect(photo).toContain("private to this game room");
+    expect(upload).toContain("Only the host can manage the Guest of Honor photo in the lobby."); expect(upload).toContain("createSignedUrl(path, ROOM_SECONDS)"); expect(upload).toContain("previousPath"); expect(upload).toContain("remove([previousPath])"); expect(upload).toContain("export async function DELETE"); expect(upload).toContain("delete state.guestPhotoUrl");
     expect(controls).toContain('ALL_ABOUT_YOU_PHOTO_BUCKET = "all-about-you-guest-photos"'); expect(controls).toContain("guestPhotoPath"); expect(controls).toContain("remove([photoPath])");
   });
 
