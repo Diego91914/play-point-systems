@@ -27,10 +27,18 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     removed: Boolean(venuePlayer.removed_at),
   });
 
+  if (body.action && venueSession.status === "paused") {
+    return NextResponse.json({ error: "Venue Trivia is paused by the venue." }, { status: 423 });
+  }
+  if (presenceStatus === "removed") {
+    return NextResponse.json({ error: "This player has been removed from Venue Trivia." }, { status: 403 });
+  }
+
   if (!venueSession.current_trivia_session_id) {
     return NextResponse.json({
       venue: { slug: venue.slug, displayName: venue.display_name },
       presenceStatus,
+      venueStatus: venueSession.status,
       waitingForMatch: true,
       player: { id: venuePlayer.id, name: venuePlayer.name, rollingScore: venuePlayer.rolling_score, scoreTotal: venuePlayer.score_total },
     }, { headers: { "Cache-Control": "no-store" } });
@@ -84,6 +92,7 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   return NextResponse.json({
     venue: { slug: venue.slug, displayName: venue.display_name },
     presenceStatus,
+    venueStatus: venueSession.status,
     waitingForMatch: false,
     player: {
       id: venuePlayer.id,
