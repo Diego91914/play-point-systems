@@ -8,20 +8,34 @@ const ROOM_SECONDS = 24 * 60 * 60;
 const TYPES = new Map([
   ["image/jpeg", "jpg"], ["image/png", "png"], ["image/webp", "webp"], ["image/heic", "heic"], ["image/heif", "heif"],
 ]);
+
+type PhotoPlayer = { id?: unknown; tokenHash?: unknown };
+type PhotoRoomState = {
+  status?: unknown;
+  hostPlayerId?: unknown;
+  players?: PhotoPlayer[];
+  guestPhotoUrl?: string;
+  guestPhotoPath?: string;
+  message?: string;
+};
+type PhotoRoomRow = { state: PhotoRoomState; version: number };
+
 const hash = (value: string) => createHash("sha256").update(value).digest("hex");
 function matches(expected: string, token: string) {
-  const a = Buffer.from(hash(token), "hex"); const b = Buffer.from(expected, "hex");
+  const a = Buffer.from(hash(token), "hex");
+  const b = Buffer.from(expected, "hex");
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
 async function readHostLobby(code: string, playerId: string, token: string) {
   const supabase = getSupabaseServerClient();
-  const { data: row, error: readError } = await supabase.from("ppl_all_about_you_rooms").select("state,version").eq("code", code).maybeSingle();
+  const { data, error: readError } = await supabase.from("ppl_all_about_you_rooms").select("state,version").eq("code", code).maybeSingle();
   if (readError) throw new Error(readError.message);
-  if (!row) throw new Error("Room not found.");
-  const state = row.state as any;
-  const player = state.players?.find((candidate: any) => candidate.id === playerId);
-  if (!player || !matches(player.tokenHash, token)) throw new Error("Invalid player session.");
+  if (!data) throw new Error("Room not found.");
+  const row = data as PhotoRoomRow;
+  const state = row.state;
+  const player = Array.isArray(state.players) ? state.players.find(candidate => candidate.id === playerId) : undefined;
+  if (!player || typeof player.tokenHash !== "string" || !matches(player.tokenHash, token)) throw new Error("Invalid player session.");
   if (state.status !== "lobby" || state.hostPlayerId !== playerId) throw new Error("Only the host can manage the Guest of Honor photo in the lobby.");
   return { supabase, row, state };
 }
