@@ -29,7 +29,7 @@ export default async function GameExperiencePage({ params }: { params: Promise<{
   const game = getGame(gameId);
   if (!game) notFound();
   const demo = getGameExperienceDemo(game);
-  const external = game.href.startsWith("http");
+  const external = game.launchHref.startsWith("http");
   const statusLabel = game.status === "live" ? "Finished & playable" : "Playable preview";
 
   return (
@@ -102,9 +102,9 @@ export default async function GameExperiencePage({ params }: { params: Promise<{
                   <p className="mt-4 text-sm leading-7 text-white/58 sm:text-base">The demo is scripted to show the feeling quickly. The actual game is live, player-driven, and changes with the people playing it.</p>
                 </div>
                 {external ? (
-                  <a href={game.href} target="_blank" rel="noreferrer" className="inline-flex shrink-0 items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/14 px-7 py-4 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/20">PLAY {game.title.toUpperCase()} →</a>
+                  <a href={game.launchHref} target="_blank" rel="noreferrer" className="inline-flex shrink-0 items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/14 px-7 py-4 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/20">PLAY {game.title.toUpperCase()} →</a>
                 ) : (
-                  <Link href={game.href} className="inline-flex shrink-0 items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/14 px-7 py-4 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/20">PLAY {game.title.toUpperCase()} →</Link>
+                  <Link href={game.launchHref} className="inline-flex shrink-0 items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/14 px-7 py-4 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/20">PLAY {game.title.toUpperCase()} →</Link>
                 )}
               </div>
             </div>
