@@ -67,10 +67,11 @@ type ShelfEntry = MasterGameEntry & {
 };
 
 function laneLabel(lane: MasterGameEntry["lane"]): string {
-  if (lane === "phone") return "Phone & Table";
-  if (lane === "course") return "Course";
+  if (lane === "social") return "Social";
+  if (lane === "course") return "Course / Shot Caddy";
   if (lane === "backyard") return "Backyard & Putting";
-  return "Adventure";
+  if (lane === "trivia") return "Trivia";
+  return "Adventure / Quest Caddy";
 }
 
 function GameCard({ game, owned, featured = false }: { game: ShelfEntry; owned: boolean; featured?: boolean }) {
@@ -250,10 +251,11 @@ export default async function GamesPage({
                 </section>
               ) : null}
 
-              <StorefrontLane title="Phone & Table" description="Private roles, cards, answers, deduction, mystery, and group play built around everyone being together." games={discoverGames.filter((game) => game.lane === "phone" && !FEATURED_GAME_IDS.has(game.id))} />
-              <StorefrontLane title="Course" description="Disc golf and golf stay real while Shot Caddy layers on tactics, predictions, alliances, challenges, and pressure." games={discoverGames.filter((game) => game.lane === "course" && !FEATURED_GAME_IDS.has(game.id))} />
-              <StorefrontLane title="Backyard & Putting" description="One basket or practice area becomes a complete competitive game night." games={discoverGames.filter((game) => game.lane === "backyard" && !FEATURED_GAME_IDS.has(game.id))} />
-              <StorefrontLane title="Adventure" description="Quest Caddy turns either a phone or a real round into a persistent fantasy Chronicle." games={discoverGames.filter((game) => game.lane === "adventure" && !FEATURED_GAME_IDS.has(game.id))} />
+              <StorefrontLane title="Social" description="Face-to-face party, conversation, deduction, mystery, cards, and celebration games built around the people in the room." games={discoverGames.filter((game) => game.lane === "social" && !FEATURED_GAME_IDS.has(game.id))} />
+              <StorefrontLane title="Course / Shot Caddy" description="Disc golf and golf stay real while Shot Caddy layers on tactics, predictions, alliances, challenges, and pressure." games={discoverGames.filter((game) => game.lane === "course" && !FEATURED_GAME_IDS.has(game.id))} />
+              <StorefrontLane title="Backyard & Putting" description="One basket, putting area, backyard, or casual setup becomes a complete competitive game night." games={discoverGames.filter((game) => game.lane === "backyard" && !FEATURED_GAME_IDS.has(game.id))} />
+              <StorefrontLane title="Adventure / Quest Caddy" description="Quest Caddy turns either a phone or a real round into a persistent fantasy Chronicle." games={discoverGames.filter((game) => game.lane === "adventure" && !FEATURED_GAME_IDS.has(game.id))} />
+              <StorefrontLane title="Trivia" description="Hosted question-and-answer competition with room codes, teams, wagers, pacing, and live scoreboards." games={discoverGames.filter((game) => game.lane === "trivia" && !FEATURED_GAME_IDS.has(game.id))} />
             </div>
           </section>
         ) : null}
