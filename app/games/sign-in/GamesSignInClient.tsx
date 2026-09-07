@@ -46,9 +46,6 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
         return;
       }
 
-      // Builder/private-preview access is a test identity, not a customer
-      // account. If the builder cookie is active, mint a Play Amplified test
-      // session and never touch the email/Supabase account flow.
       const builderResponse = await fetch("/api/games/account/builder-session", {
         method: "POST",
         cache: "no-store",
@@ -58,10 +55,9 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
         return;
       }
 
-      // No active builder session: use the normal customer/Founder account path.
       if (!cancelled) {
-        const target = new URL("/account/play-point", window.location.origin);
-        target.searchParams.set("next", destination);
+        const target = new URL("/account", window.location.origin);
+        target.searchParams.set("returnTo", destination);
         window.location.replace(target.toString());
       }
     }
