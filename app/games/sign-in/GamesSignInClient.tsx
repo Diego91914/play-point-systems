@@ -5,7 +5,13 @@ import { useEffect, useState } from "react";
 function safeNextPath(value: string): string {
   if (value.startsWith("//")) return "/play-amplified";
   if (value.startsWith("/games/sign-in")) return "/play-amplified";
-  if (value.startsWith("/games") || value.startsWith("/play-amplified")) return value;
+  if (
+    value.startsWith("/games") ||
+    value.startsWith("/play-amplified") ||
+    value.startsWith("/shot-caddy")
+  ) {
+    return value;
+  }
   return "/play-amplified";
 }
 
@@ -35,7 +41,7 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
           throw new Error(
             typeof payload?.error === "string"
               ? payload.error
-              : "Unable to verify your Shot Caddy account.",
+              : "Unable to verify your Play Amplified account.",
           );
         }
         if (!cancelled) window.location.replace(destination);
@@ -50,7 +56,7 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
           setError(
             handoffError instanceof Error
               ? handoffError.message
-              : "Unable to verify your Shot Caddy account.",
+              : "Unable to verify your Play Amplified account.",
           );
           setBusy(false);
         }
@@ -61,10 +67,10 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
     };
   }, [destination]);
 
-  function continueWithShotCaddy() {
+  function continueWithExistingAccount() {
     setBusy(true);
     setError("");
-    const target = new URL("https://shotcaddy.net/account/play-point");
+    const target = new URL("/shot-caddy/account/play-point", window.location.origin);
     target.searchParams.set("next", destination);
     window.location.assign(target.toString());
   }
@@ -79,11 +85,11 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
           Sign in once. Keep playing here.
         </h1>
         <p className="mt-5 text-base leading-8 text-white/72">
-          Your Shot Caddy identity verifies your Play Amplified account once. After that, this device remembers your Play Amplified session and your Founder access without sending you back through Shot Caddy every visit.
+          During the pre-launch migration, your existing Founder identity can verify your Play Amplified account without leaving the Play Amplified site. After verification, this device remembers your Play Amplified session and access.
         </p>
         <div className="mt-7 grid gap-3 text-sm text-white/74">
           <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-            <span className="font-black text-white">Same identity.</span> No second password to remember.
+            <span className="font-black text-white">One public home.</span> Account verification and gameplay stay under Play Amplified.
           </div>
           <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
             <span className="font-black text-white">Founder remembered.</span> Verified Founder access stays attached to this Play Amplified session.
@@ -96,13 +102,13 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
 
       <section className="flex flex-col justify-center rounded-[32px] border border-cyan-300/15 bg-[linear-gradient(145deg,rgba(18,42,56,0.82),rgba(5,12,18,0.95))] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.32)] sm:p-8">
         <div className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-100/65">
-          One-time account verification
+          Pre-launch account verification
         </div>
         <h2 className="mt-4 text-3xl font-black tracking-tight text-white">
-          Verify with Shot Caddy
+          Verify your account
         </h2>
         <p className="mt-4 text-sm leading-7 text-white/66">
-          Play Amplified uses your existing Shot Caddy account to confirm who you are and whether you are a Founder. When verification finishes, you come straight back to Play Amplified.
+          Play Amplified can use your existing pre-launch account record to confirm who you are and whether you have Founder access. The entire verification flow now stays on the Play Amplified origin.
         </p>
 
         {error ? (
@@ -113,7 +119,7 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
 
         <button
           type="button"
-          onClick={continueWithShotCaddy}
+          onClick={continueWithExistingAccount}
           disabled={busy}
           className="mt-7 w-full rounded-2xl bg-cyan-300 px-5 py-4 text-base font-black text-slate-950 transition hover:brightness-105 disabled:opacity-50"
         >
@@ -121,7 +127,7 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
         </button>
 
         <p className="mt-5 text-xs leading-6 text-white/46">
-          Your password never leaves Shot Caddy. Play Amplified receives only a short-lived one-time account confirmation, then keeps its own signed session on this device.
+          This bridge is temporary migration infrastructure. The launch architecture is a single Play Amplified account and entitlement system.
         </p>
       </section>
     </div>

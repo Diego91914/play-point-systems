@@ -15,6 +15,10 @@ import {
   type MasterGameEntry,
 } from "@/lib/play-point-core/master-game-catalog";
 import { PLAY_POINT_GAME_CATALOG } from "@/lib/play-point-core/games-catalog";
+import {
+  getStorefrontOffer,
+  type StorefrontOffer,
+} from "@/lib/play-point-core/storefront-platform";
 import { GameAtmosphere } from "./_components/GameAtmosphere";
 import { GamesAccountBar } from "./_components/GamesAccountBar";
 
@@ -57,25 +61,27 @@ const FEATURED_GAME_IDS = new Set([
 
 type ShelfEntry = MasterGameEntry & {
   owned: boolean;
-  priceUsd: number | null;
-  purchasable: boolean;
+  offer: StorefrontOffer | null;
   ownershipAuthority: "play_point" | "shot_caddy" | null;
   productSku: string | null;
 };
 
 function laneLabel(lane: MasterGameEntry["lane"]): string {
-  if (lane === "phone") return "Phone & Table";
-  if (lane === "course") return "Course";
+  if (lane === "social") return "Social";
+  if (lane === "course") return "Course / Shot Caddy";
   if (lane === "backyard") return "Backyard & Putting";
-  return "Adventure";
+  if (lane === "trivia") return "Trivia";
+  return "Adventure / Quest Caddy";
 }
 
 function GameCard({ game, owned, featured = false }: { game: ShelfEntry; owned: boolean; featured?: boolean }) {
   const statusLabel = game.status === "live" ? "Finished" : "Preview";
-  const priceLabel = game.priceUsd !== null ? `$${game.priceUsd.toFixed(2)} one-time` : null;
+  const priceLabel = game.offer?.priceUsd !== null && game.offer?.priceUsd !== undefined
+    ? `$${game.offer.priceUsd.toFixed(2)} one-time`
+    : null;
   const actionLabel = owned
     ? "Play now"
-    : game.purchasable && priceLabel
+    : game.offer?.available && priceLabel
       ? `Explore & buy · ${priceLabel}`
       : game.ownershipAuthority === "shot_caddy"
         ? "Explore experience"
@@ -98,7 +104,7 @@ function GameCard({ game, owned, featured = false }: { game: ShelfEntry; owned: 
       <h3 className="mt-4 text-2xl font-black tracking-tight text-white">{game.title}</h3>
       <p className="mt-3 flex-1 text-sm leading-6 text-white/58">{game.description}</p>
 
-      {!owned && priceLabel ? <div className="mt-4 text-sm font-black text-amber-100">{priceLabel}</div> : null}
+      {!owned && game.offer?.available && priceLabel ? <div className="mt-4 text-sm font-black text-amber-100">{priceLabel}</div> : null}
 
       <div className="mt-5 grid gap-2 border-t border-white/8 pt-4 sm:grid-cols-2">
         <Link href={game.href} className="inline-flex items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-400/10 px-4 py-3 text-center text-sm font-black text-cyan-50 transition hover:bg-cyan-400/15">
@@ -156,8 +162,7 @@ export default async function GamesPage({
     return {
       ...game,
       owned,
-      priceUsd: product?.priceUsd ?? null,
-      purchasable: product?.purchasable === true || Boolean(product?.priceUsd),
+      offer: product ? getStorefrontOffer(product, "web") : null,
       ownershipAuthority: product?.ownershipAuthority ?? (game.family === "Shot Caddy" || game.family === "Quest Caddy" ? "shot_caddy" : null),
       productSku,
     };
@@ -246,10 +251,11 @@ export default async function GamesPage({
                 </section>
               ) : null}
 
-              <StorefrontLane title="Phone & Table" description="Private roles, cards, answers, deduction, mystery, and group play built around everyone being together." games={discoverGames.filter((game) => game.lane === "phone" && !FEATURED_GAME_IDS.has(game.id))} />
-              <StorefrontLane title="Course" description="Disc golf and golf stay real while Shot Caddy layers on tactics, predictions, alliances, challenges, and pressure." games={discoverGames.filter((game) => game.lane === "course" && !FEATURED_GAME_IDS.has(game.id))} />
-              <StorefrontLane title="Backyard & Putting" description="One basket or practice area becomes a complete competitive game night." games={discoverGames.filter((game) => game.lane === "backyard" && !FEATURED_GAME_IDS.has(game.id))} />
-              <StorefrontLane title="Adventure" description="Quest Caddy turns either a phone or a real round into a persistent fantasy Chronicle." games={discoverGames.filter((game) => game.lane === "adventure" && !FEATURED_GAME_IDS.has(game.id))} />
+              <StorefrontLane title="Social" description="Face-to-face party, conversation, deduction, mystery, cards, and celebration games built around the people in the room." games={discoverGames.filter((game) => game.lane === "social" && !FEATURED_GAME_IDS.has(game.id))} />
+              <StorefrontLane title="Course / Shot Caddy" description="Disc golf and golf stay real while Shot Caddy layers on tactics, predictions, alliances, challenges, and pressure." games={discoverGames.filter((game) => game.lane === "course" && !FEATURED_GAME_IDS.has(game.id))} />
+              <StorefrontLane title="Backyard & Putting" description="One basket, putting area, backyard, or casual setup becomes a complete competitive game night." games={discoverGames.filter((game) => game.lane === "backyard" && !FEATURED_GAME_IDS.has(game.id))} />
+              <StorefrontLane title="Adventure / Quest Caddy" description="Quest Caddy turns either a phone or a real round into a persistent fantasy Chronicle." games={discoverGames.filter((game) => game.lane === "adventure" && !FEATURED_GAME_IDS.has(game.id))} />
+              <StorefrontLane title="Trivia" description="Hosted question-and-answer competition with room codes, teams, wagers, pacing, and live scoreboards." games={discoverGames.filter((game) => game.lane === "trivia" && !FEATURED_GAME_IDS.has(game.id))} />
             </div>
           </section>
         ) : null}

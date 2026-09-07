@@ -46,10 +46,10 @@ export const PLAY_POINT_CORE_CAPABILITIES: readonly PlayPointCapability[] = [
   {
     id: "authentication",
     label: "Authentication",
-    status: "planned",
-    summary: "One identity layer for hosts, commissioners, venue staff, and players across products.",
-    currentOwner: "Split between product-specific access gates today.",
-    nextMove: "Promote into a shared Play Point Core auth and role model.",
+    status: "bridge",
+    summary: "One Play Amplified identity layer for hosts and players across products.",
+    currentOwner: "Play Amplified session layer with a temporary pre-launch Shot Caddy account bridge.",
+    nextMove: "Retire the temporary bridge once Founder and launch accounts resolve directly through Play Amplified auth.",
   },
   {
     id: "user-profiles",
@@ -57,7 +57,7 @@ export const PLAY_POINT_CORE_CAPABILITIES: readonly PlayPointCapability[] = [
     status: "planned",
     summary: "Persistent player cards, stats, achievements, and product-level identity.",
     currentOwner: "Local session-specific player records only.",
-    nextMove: "Move to Play Point Core profile records shared by Live, Trivia, and future products.",
+    nextMove: "Move to Play Point Core profile records shared by Play Amplified experiences.",
   },
   {
     id: "clubs",
@@ -79,8 +79,8 @@ export const PLAY_POINT_CORE_CAPABILITIES: readonly PlayPointCapability[] = [
     id: "events",
     label: "Events",
     status: "live",
-    summary: "Hosted live-session containers already exist in Trivia and legacy Play Point Live flows.",
-    currentOwner: "Trivia runtime in Play Point Systems and live-board runtime in Shot Caddy.",
+    summary: "Hosted live-session containers already exist in Trivia and legacy live-experience flows.",
+    currentOwner: "Trivia runtime in Play Point Systems and live-board runtime in the Shot Caddy zone.",
     nextMove: "Converge on one shared event contract under Play Point Core.",
   },
   {
@@ -103,8 +103,8 @@ export const PLAY_POINT_CORE_CAPABILITIES: readonly PlayPointCapability[] = [
     id: "achievements",
     label: "Achievements",
     status: "bridge",
-    summary: "Legacy Play Point Live contains achievement logic, but it still lives inside Shot Caddy.",
-    currentOwner: "Shot Caddy legacy helpers.",
+    summary: "Legacy live-experience code contains achievement logic that still lives in the Shot Caddy runtime zone.",
+    currentOwner: "Shot Caddy zone legacy helpers.",
     nextMove: "Rehome achievement definitions into Core and let products award them through adapters.",
   },
   {
@@ -112,7 +112,7 @@ export const PLAY_POINT_CORE_CAPABILITIES: readonly PlayPointCapability[] = [
     label: "Play Points",
     status: "bridge",
     summary: "The naming and progression concept already exists, but the currency rules are not centralized yet.",
-    currentOwner: "Legacy Play Point Live board and session helpers.",
+    currentOwner: "Legacy live-board and session helpers.",
     nextMove: "Define one progression currency model in Core with product-specific earn rules.",
   },
   {
@@ -127,16 +127,16 @@ export const PLAY_POINT_CORE_CAPABILITIES: readonly PlayPointCapability[] = [
     id: "qr-joining",
     label: "QR Joining",
     status: "live",
-    summary: "QR-based room or event entry already exists in Trivia and live-board flows.",
+    summary: "QR-based room or event entry already exists across Play Amplified experiences.",
     currentOwner: "Runtime-specific handlers.",
-    nextMove: "Keep one shared concept with per-product join destinations.",
+    nextMove: "Keep one shared concept with per-product join destinations under playamplified.com.",
   },
   {
     id: "tv-mode",
     label: "TV Mode",
     status: "bridge",
     summary: "Hosted display surfaces already exist, but each product renders them independently.",
-    currentOwner: "Trivia host board in Play Point Systems and live-board TV mode in Shot Caddy.",
+    currentOwner: "Trivia host board and legacy live-board TV mode.",
     nextMove: "Establish a reusable hosted-display shell inside Core.",
   },
 ] as const;
@@ -144,21 +144,21 @@ export const PLAY_POINT_CORE_CAPABILITIES: readonly PlayPointCapability[] = [
 export const PLAY_POINT_PRODUCT_BOUNDARIES: readonly PlayPointProductBoundary[] = [
   {
     product: "Shot Caddy",
-    domain: "shotcaddy.net",
-    focus: "Disc golf, ball golf overlays, and golf-specific organizer tools.",
-    currentRuntime: "Owns golf-specific gameplay and no longer owns Quick Score or Play Point Live.",
+    domain: "playamplified.com/shot-caddy",
+    focus: "Disc golf, ball golf overlays, and golf-specific games and organizer tools.",
+    currentRuntime: "Runs as the separately deployable Shot Caddy zone while Play Amplified owns the public origin, account journey, storefront, and canonical URLs.",
   },
   {
-    product: "Play Point Live",
-    domain: "playpointsystems.com/live",
-    focus: "Multi-sport live experiences, fast scoreboards, venues, clubs, and seasons.",
-    currentRuntime: "Quick Score is native here; only the older board MVP still bridges through Shot Caddy.",
+    product: "Play Amplified",
+    domain: "playamplified.com",
+    focus: "Consumer storefront, social games, golf games, adventures, accounts, purchases, and guest joins.",
+    currentRuntime: "Public source of truth and parent runtime; mounts the Shot Caddy zone at /shot-caddy during migration.",
   },
   {
     product: "Play Point Core",
     domain: "Internal shared platform layer",
-    focus: "Auth, identities, clubs, seasons, events, contests, progression, QR join, and TV shell.",
-    currentRuntime: "Documented and started here so new work lands in the right architecture.",
+    focus: "Auth, identities, clubs, seasons, events, contests, progression, QR join, and hosted-display primitives.",
+    currentRuntime: "Shared contracts and services that keep product-specific engines from duplicating platform concerns.",
   },
 ] as const;
 
@@ -188,20 +188,20 @@ export const PLAY_POINT_LIVE_SURFACES: readonly PlayPointSurface[] = [
 export const PLAY_POINT_MIGRATION_PHASES: readonly PlayPointMigrationPhase[] = [
   {
     phase: "Phase 1",
-    goal: "Put the product architecture in the right home without breaking the current runtime.",
+    goal: "Put every consumer experience under the Play Amplified public origin without destabilizing mature game engines.",
     actions: [
-      "Make Play Point Systems the public source of truth for Play Point Live.",
-      "Create shared platform contracts in Play Point Core.",
-      "Move Quick Score into Play Point Live and keep Shot Caddy golf-first.",
+      "Make playamplified.com the public source of truth.",
+      "Mount Shot Caddy under /shot-caddy as a separately deployable zone.",
+      "Preserve shotcaddy.net only as a permanent legacy redirect domain.",
     ],
   },
   {
     phase: "Phase 2",
-    goal: "Build new multi-sport runtime work on Play Point Systems and keep Shot Caddy in its golf-specific lane.",
+    goal: "Centralize account, entitlement, storefront, and joining behavior while keeping gameplay engines modular.",
     actions: [
-      "Rebuild live event creation on top of Play Point Core contracts.",
-      "Port reusable TV mode and QR join patterns into shared utilities.",
-      "Expose adapters for existing Trivia and future Play Point Live contest templates.",
+      "Retire cross-domain account handoffs and provider-specific game access checks.",
+      "Route all QR and shared links through playamplified.com.",
+      "Keep purchase-provider details outside individual game code.",
     ],
   },
   {
@@ -210,7 +210,7 @@ export const PLAY_POINT_MIGRATION_PHASES: readonly PlayPointMigrationPhase[] = [
     actions: [
       "Add persistent auth, profiles, clubs, and season records.",
       "Centralize Play Points, achievements, notifications, and cross-product player cards.",
-      "Retire Shot Caddy bridge routes once the new runtime is live on Play Point Systems.",
+      "Retire migration-only bridge code once the Play Amplified account model is fully authoritative.",
     ],
   },
 ] as const;

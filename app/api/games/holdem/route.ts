@@ -5,6 +5,7 @@ import {
   GAMES_SESSION_COOKIE,
   verifyGamesSessionToken,
 } from "@/lib/play-point-core/games-session";
+import { canHostDuringPrelaunch, prelaunchHostError } from "@/lib/play-point-core/prelaunch-access";
 
 const HOLDEM_SKU = "game.phone_holdem";
 
@@ -16,6 +17,9 @@ export async function POST(request: NextRequest) {
       const claims = await verifyGamesSessionToken(request.cookies.get(GAMES_SESSION_COOKIE)?.value);
       if (!claims) {
         return NextResponse.json({ error: "Sign in to host Phone Hold'em." }, { status: 401 });
+      }
+      if (!canHostDuringPrelaunch(claims, HOLDEM_SKU)) {
+        return NextResponse.json({ error: prelaunchHostError() }, { status: 403 });
       }
       if (!gamesSessionOwns(claims, HOLDEM_SKU)) {
         return NextResponse.json({ error: "Phone Hold'em is not owned by this account." }, { status: 403 });

@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "VNZQ78Z2VB.com.playamplified.app",
+        "paths": [
+          "/games/*",
+          "/play-amplified*",
+          "/shot-caddy/*"
+        ]
+      }
+    ]
+  }
+}

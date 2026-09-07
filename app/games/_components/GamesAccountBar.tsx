@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { getPlayPointBrowserSupabaseClient } from "@/lib/play-point-core/play-point-browser-supabase";
 
@@ -36,6 +37,12 @@ export function GamesAccountBar({
             Founder · All Access
           </span>
         ) : null}
+        <Link
+          href="/games/account"
+          className="rounded-full border border-white/12 bg-white/5 px-4 py-2 text-xs font-black text-white/78 transition hover:bg-white/10"
+        >
+          Account
+        </Link>
         <button
           type="button"
           onClick={() => void signOut()}

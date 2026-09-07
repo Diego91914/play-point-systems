@@ -7,6 +7,7 @@ import {
 } from "@/lib/play-point-core/all-about-you-server";
 import { GAMES_SESSION_COOKIE, verifyGamesSessionToken } from "@/lib/play-point-core/games-session";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
+import { canHostDuringPrelaunch, prelaunchHostError } from "@/lib/play-point-core/prelaunch-access";
 
 const ENTRY_ROLE_COOKIE = "pps-all-about-you-entry-role";
 
@@ -73,6 +74,7 @@ export async function POST(request: NextRequest) {
     if (body.intent === "create") {
       const claims = await verifyGamesSessionToken(request.cookies.get(GAMES_SESSION_COOKIE)?.value);
       if (!claims) return NextResponse.json({ error: "Sign in to host All About You." }, { status: 401 });
+      if (!canHostDuringPrelaunch(claims)) return NextResponse.json({ error: prelaunchHostError() }, { status: 403 });
       const created = await createAllAboutYouRoom(body.name, claims.sub);
       await applyEntryRole(created.code, created.playerId, role);
       const refreshed = await getAllAboutYouRoom(created.code, created.playerId, created.token);
@@ -82,6 +84,7 @@ export async function POST(request: NextRequest) {
     if (body.intent === "rejoin_host") {
       const claims = await verifyGamesSessionToken(request.cookies.get(GAMES_SESSION_COOKIE)?.value);
       if (!claims) return NextResponse.json({ error: "Sign in with the account that created this room." }, { status: 401 });
+      if (!canHostDuringPrelaunch(claims)) return NextResponse.json({ error: prelaunchHostError() }, { status: 403 });
       return NextResponse.json({ success: true, ...await recoverAllAboutYouHost(body.code, claims.sub) });
     }
 

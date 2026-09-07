@@ -5,14 +5,14 @@ import { SiteShell } from "../components/SiteShell";
 
 export const metadata: Metadata = {
   title: "Support",
-  description: "Get help with Play Point Live, Quick Score, Shot Caddy, trivia, purchases, or account recovery.",
+  description: "Get help with Play Amplified games, live experiences, purchases, or account recovery.",
 };
 
 const supportTopics = [
   { title: "Quick Score", body: "Scoring, live spectator links, clubs, events, saved matches, or installing the web app." },
-  { title: "Purchases", body: "Quick Score Pro checkout, purchase verification, access restoration, or refund questions." },
+  { title: "Purchases", body: "Play Amplified checkout, purchase verification, access restoration, or refund questions." },
   { title: "Trivia and live experiences", body: "Room codes, host controls, player joins, venue demos, or event questions." },
-  { title: "Shot Caddy", body: "Golf-first products, access notices, and questions about ShotCaddy.net." },
+  { title: "Shot Caddy", body: "Golf-first games, course play, access notices, and Shot Caddy experiences inside Play Amplified." },
 ] as const;
 
 export default function SupportPage() {
@@ -68,7 +68,7 @@ export default function SupportPage() {
           <div className="rounded-[28px] border border-amber-300/16 bg-amber-400/[0.06] p-6">
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-amber-100/70">Protect your information</div>
             <p className="mt-5 text-sm leading-7 text-white/76">
-              Never email a full payment-card number, Stripe login, password, or private Quick Score recovery code. We may ask for a Stripe receipt or checkout reference, but not your complete card details.
+              Never email a full payment-card number, payment-provider login, password, or private recovery code. We may ask for a receipt or checkout reference, but not your complete card details.
             </p>
           </div>
         </div>
