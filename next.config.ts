@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const SHOT_CADDY_ZONE_ORIGIN =
   process.env.SHOT_CADDY_ZONE_ORIGIN ??
-  "https://shot-caddy-web-git-play-amplified-zone-diego91914s-projects.vercel.app";
+  "https://shot-caddy-web.vercel.app";
 
 const shotCaddyApiNamespaces = [
   "account",
