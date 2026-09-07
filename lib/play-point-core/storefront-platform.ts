@@ -14,15 +14,20 @@ export type StorefrontOffer = {
 };
 
 /**
- * Canonical purchase IDs are intentionally separate from the Play Amplified SKU.
- * The SKU remains the durable ownership key across every storefront/provider.
- * Native provider product IDs can be added here without changing entitlement keys.
+ * The Play Amplified SKU is the durable ownership key across every storefront.
+ * Apple/Google product IDs are provider-specific aliases that can be configured
+ * without changing account entitlements or the web/PWA product identity.
  */
 const APPLE_PRODUCT_IDS: Readonly<Record<string, string>> = {};
 const GOOGLE_PLAY_PRODUCT_IDS: Readonly<Record<string, string>> = {};
 
 function isSaleReady(product: PlayPointGameCatalogItem): boolean {
-  return product.status === "live" && product.priceUsd !== null && product.priceUsd > 0;
+  return (
+    product.status === "live" &&
+    product.purchasable &&
+    product.priceUsd !== null &&
+    product.priceUsd > 0
+  );
 }
 
 export function getStorefrontOffer(
