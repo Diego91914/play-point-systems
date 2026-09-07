@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { PLAY_POINT_GAME_CATALOG } from "@/lib/play-point-core/games-catalog";
 import {
   FINISHED_GAME_FORMAT_COUNT,
   FINISHED_GAME_FORMATS,
@@ -8,12 +7,8 @@ import {
   getMasterGamesByLane,
   type MasterGameEntry,
 } from "@/lib/play-point-core/master-game-catalog";
-import {
-  FOUNDERS_BUNDLE_TIERS,
-  isFoundersBundleEligible,
-} from "@/lib/play-point-core/founders-bundle";
+import { FOUNDERS_BUNDLE_TIERS } from "@/lib/play-point-core/founders-bundle";
 
-const founderBundleEligibleCount = PLAY_POINT_GAME_CATALOG.filter(isFoundersBundleEligible).length;
 const socialGames = getMasterGamesByLane("social").filter((game) => game.status === "live");
 const courseGames = getMasterGamesByLane("course").filter((game) => game.status === "live");
 const backyardGames = getMasterGamesByLane("backyard").filter((game) => game.status === "live");
@@ -35,7 +30,7 @@ function GameFormatCard({ game }: { game: MasterGameEntry }) {
         </span>
       </div>
       <p className="mt-3 text-sm leading-6 text-white/58">{game.description}</p>
-      <div className="mt-5 border-t border-white/8 pt-4 text-sm font-black text-cyan-100">View / Play →</div>
+      <div className="mt-5 border-t border-white/8 pt-4 text-sm font-black text-cyan-100">View game →</div>
     </>
   );
 
@@ -106,10 +101,14 @@ export default function PlayAmplifiedPage() {
 
             <p className="mx-auto mt-4 max-w-2xl text-xs leading-5 text-white/40">Category describes the kind of experience. Release status, ownership, and purchase availability are tracked separately.</p>
 
+            <div className="mx-auto mt-7 max-w-3xl rounded-2xl border border-amber-200/20 bg-amber-300/[0.07] px-5 py-4 text-sm leading-6 text-amber-50/85">
+              <span className="font-black text-amber-50">Private preview:</span> the catalog is open to browse, but public purchasing and hosting are not open yet. Approved Founder/test access remains available during development.
+            </div>
+
             <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
               <a href="#all-games" className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">Browse all {FINISHED_GAME_FORMAT_COUNT} finished formats</a>
-              <a href="#founders-special" className="inline-flex items-center justify-center rounded-2xl border border-amber-200/25 bg-amber-300/[0.08] px-6 py-3.5 text-sm font-black text-amber-50 transition hover:-translate-y-0.5 hover:bg-amber-300/[0.13]">Founder&apos;s Bundle Special</a>
-              <Link href="/games" className="inline-flex items-center justify-center rounded-2xl border border-white/14 bg-white/[0.05] px-6 py-3.5 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-white/[0.09]">My Games</Link>
+              <a href="#founders-special" className="inline-flex items-center justify-center rounded-2xl border border-amber-200/25 bg-amber-300/[0.08] px-6 py-3.5 text-sm font-black text-amber-50 transition hover:-translate-y-0.5 hover:bg-amber-300/[0.13]">See planned Play Packs</a>
+              <Link href="/games" className="inline-flex items-center justify-center rounded-2xl border border-white/14 bg-white/[0.05] px-6 py-3.5 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-white/[0.09]">Founder / Test Sign In</Link>
             </div>
           </section>
 
@@ -133,22 +132,22 @@ export default function PlayAmplifiedPage() {
             <div className="overflow-hidden rounded-[34px] border border-amber-200/20 bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.14),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(34,211,238,0.10),transparent_35%),rgba(255,255,255,0.03)] p-7 sm:p-10">
               <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
                 <div className="max-w-3xl">
-                  <div className="inline-flex rounded-full border border-amber-200/25 bg-amber-300/[0.09] px-3.5 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-amber-100">Founder&apos;s Special</div>
-                  <h2 className="mt-5 text-4xl font-black tracking-tight text-white sm:text-5xl">Build your own Play Pack.</h2>
-                  <p className="mt-4 text-sm leading-7 text-white/65 sm:text-base">Mix eligible Play Amplified products in one purchase. The more eligible games you choose, the more you save. This commerce count is intentionally separate from the complete playable-format count above.</p>
+                  <div className="inline-flex rounded-full border border-amber-200/25 bg-amber-300/[0.09] px-3.5 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-amber-100">Planned launch offer</div>
+                  <h2 className="mt-5 text-4xl font-black tracking-tight text-white sm:text-5xl">Play Packs are planned for launch.</h2>
+                  <p className="mt-4 text-sm leading-7 text-white/65 sm:text-base">The bundle structure is defined, but checkout is intentionally disabled during private preview. These tiers show the planned launch savings—not an active purchase offer.</p>
                 </div>
-                <div className="rounded-2xl border border-white/10 bg-black/25 px-4 py-3 text-sm font-bold text-white/65">{founderBundleEligibleCount} products eligible today</div>
+                <div className="rounded-2xl border border-white/10 bg-black/25 px-4 py-3 text-sm font-bold text-white/65">Purchasing not yet open</div>
               </div>
               <div className="mt-8 grid gap-4 md:grid-cols-3">
                 {FOUNDERS_BUNDLE_TIERS.map((tier) => (
                   <div key={tier.minimumEligibleGames} className={`rounded-[26px] border p-6 ${tier.minimumEligibleGames === 8 ? "border-amber-200/35 bg-amber-300/[0.09]" : "border-white/10 bg-black/20"}`}>
-                    <div className="text-[10px] font-black uppercase tracking-[0.18em] text-white/50">{tier.minimumEligibleGames === 8 ? "Best Founder Value" : "Play Pack"}</div>
+                    <div className="text-[10px] font-black uppercase tracking-[0.18em] text-white/50">{tier.minimumEligibleGames === 8 ? "Planned best value" : "Planned Play Pack"}</div>
                     <div className="mt-5 text-4xl font-black tracking-tight text-white">{tier.minimumEligibleGames}{tier.minimumEligibleGames === 8 ? "+" : ""} games</div>
-                    <div className="mt-2 text-2xl font-black text-amber-100">Save {tier.discountPercent}%</div>
+                    <div className="mt-2 text-2xl font-black text-amber-100">Planned savings · {tier.discountPercent}%</div>
                   </div>
                 ))}
               </div>
-              <p className="mt-6 border-t border-white/10 pt-5 text-sm leading-6 text-white/55"><span className="font-black text-white">Quest Caddy remains sold separately.</span> The master game shelf is an inventory of playable formats; storefront packaging and entitlements remain independent so pricing changes cannot corrupt the public game count.</p>
+              <p className="mt-6 border-t border-white/10 pt-5 text-sm leading-6 text-white/55"><span className="font-black text-white">Quest Caddy is planned to remain sold separately.</span> Final purchase availability will open only after checkout, entitlement granting, restores/refunds, and platform storefronts are validated.</p>
             </div>
           </section>
 
