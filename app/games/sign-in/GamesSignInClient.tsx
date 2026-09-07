@@ -17,16 +17,22 @@ function safeNextPath(value: string): string {
 
 export function GamesSignInClient({ nextPath }: { nextPath: string }) {
   const destination = safeNextPath(nextPath);
-  const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const handoff = params.get("handoff")?.trim() ?? "";
-    if (!handoff) return;
-
     let cancelled = false;
-    setBusy(true);
+
+    if (!handoff) {
+      const target = new URL("/account/play-point", window.location.origin);
+      target.searchParams.set("next", destination);
+      window.location.replace(target.toString());
+      return () => {
+        cancelled = true;
+      };
+    }
+
     setError("");
 
     void fetch("/api/games/account/shot-caddy-handoff", {
@@ -58,7 +64,6 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
               ? handoffError.message
               : "Unable to verify your Play Amplified account.",
           );
-          setBusy(false);
         }
       });
 
@@ -67,8 +72,7 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
     };
   }, [destination]);
 
-  function continueWithExistingAccount() {
-    setBusy(true);
+  function retryAccountConnection() {
     setError("");
     const target = new URL("/account/play-point", window.location.origin);
     target.searchParams.set("next", destination);
@@ -76,60 +80,37 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr] lg:items-stretch">
-      <section className="rounded-[32px] border border-amber-200/15 bg-[linear-gradient(150deg,rgba(219,174,84,0.13),rgba(255,255,255,0.03))] p-6 sm:p-8">
-        <div className="text-[11px] font-bold uppercase tracking-[0.26em] text-amber-100/70">
-          Play Amplified · One account
-        </div>
-        <h1 className="marketing-headline mt-5 text-4xl sm:text-5xl">
-          Sign in once. Keep playing here.
-        </h1>
-        <p className="mt-5 text-base leading-8 text-white/72">
-          During the pre-launch migration, your existing Founder identity can verify your Play Amplified account without leaving the Play Amplified site. After verification, this device remembers your Play Amplified session and access.
-        </p>
-        <div className="mt-7 grid gap-3 text-sm text-white/74">
-          <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-            <span className="font-black text-white">One public home.</span> Account verification and gameplay stay under Play Amplified.
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-            <span className="font-black text-white">Founder remembered.</span> Verified Founder access stays attached to this Play Amplified session.
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-            <span className="font-black text-white">Return where you started.</span> After verification, Play Amplified brings you back to the game or catalog page you came from.
-          </div>
-        </div>
-      </section>
+    <div className="mx-auto max-w-2xl rounded-[32px] border border-cyan-300/15 bg-[linear-gradient(145deg,rgba(18,42,56,0.82),rgba(5,12,18,0.95))] p-7 text-center shadow-[0_24px_80px_rgba(0,0,0,0.32)] sm:p-9">
+      <div className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-100/65">
+        Play Amplified · One account
+      </div>
+      <h1 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-4xl">
+        Connecting your account…
+      </h1>
+      <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-white/66">
+        Play Amplified is checking your existing account session and will return you to the game automatically. Once your Founder access is verified on this device, you should not need to repeat this step during normal use.
+      </p>
 
-      <section className="flex flex-col justify-center rounded-[32px] border border-cyan-300/15 bg-[linear-gradient(145deg,rgba(18,42,56,0.82),rgba(5,12,18,0.95))] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.32)] sm:p-8">
-        <div className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-100/65">
-          Pre-launch account verification
-        </div>
-        <h2 className="mt-4 text-3xl font-black tracking-tight text-white">
-          Verify your account
-        </h2>
-        <p className="mt-4 text-sm leading-7 text-white/66">
-          Play Amplified can use your existing pre-launch account record to confirm who you are and whether you have Founder access. The entire verification flow stays on the Play Amplified origin.
-        </p>
-
-        {error ? (
-          <div role="alert" className="mt-5 rounded-2xl border border-red-300/20 bg-red-400/10 px-4 py-3 text-sm text-red-100">
+      {error ? (
+        <>
+          <div role="alert" className="mt-6 rounded-2xl border border-red-300/20 bg-red-400/10 px-4 py-3 text-sm text-red-100">
             {error}
           </div>
-        ) : null}
+          <button
+            type="button"
+            onClick={retryAccountConnection}
+            className="mt-5 w-full rounded-2xl bg-cyan-300 px-5 py-4 text-base font-black text-slate-950 transition hover:brightness-105"
+          >
+            Retry account connection
+          </button>
+        </>
+      ) : (
+        <div className="mx-auto mt-7 h-7 w-7 animate-spin rounded-full border-2 border-cyan-200/25 border-t-cyan-200" aria-label="Connecting" />
+      )}
 
-        <button
-          type="button"
-          onClick={continueWithExistingAccount}
-          disabled={busy}
-          className="mt-7 w-full rounded-2xl bg-cyan-300 px-5 py-4 text-base font-black text-slate-950 transition hover:brightness-105 disabled:opacity-50"
-        >
-          {busy ? "Connecting…" : "Verify account"}
-        </button>
-
-        <p className="mt-5 text-xs leading-6 text-white/46">
-          This bridge is temporary migration infrastructure. The launch architecture is a single Play Amplified account and entitlement system.
-        </p>
-      </section>
+      <p className="mt-6 text-xs leading-6 text-white/42">
+        Builder/private-preview access and your Play Amplified account are separate safeguards. Your Play Amplified account is the identity that controls Founder status and game ownership.
+      </p>
     </div>
   );
 }
