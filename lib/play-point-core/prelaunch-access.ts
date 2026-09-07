@@ -1,4 +1,7 @@
-import type { GamesSessionClaims } from "@/lib/play-point-core/games-session";
+import {
+  isPrivilegedGamesSession,
+  type GamesSessionClaims,
+} from "@/lib/play-point-core/games-session";
 
 /**
  * Public hosting is closed unless explicitly enabled. This fail-closed default
@@ -12,12 +15,12 @@ export function canHostDuringPrelaunch(
   claims: GamesSessionClaims,
   requiredSku?: string,
 ): boolean {
-  if (claims.role === "founder") return true;
+  if (isPrivilegedGamesSession(claims)) return true;
   if (!PUBLIC_PLAY_ENABLED) return false;
   if (!requiredSku) return true;
   return claims.entitlements.includes("*") || claims.entitlements.includes(requiredSku);
 }
 
 export function prelaunchHostError(): string {
-  return "Play Amplified is currently in private preview. Hosting is limited to Founder/test access until public purchasing is enabled.";
+  return "Play Amplified is currently in private preview. Hosting is limited to Founder/builder test access until public purchasing is enabled.";
 }
