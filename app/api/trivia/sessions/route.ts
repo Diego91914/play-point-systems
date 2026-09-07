@@ -1,10 +1,22 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createTriviaLiveSession } from "../../../games/trivia/play/trivia-live-service";
 import { MAX_TRIVIA_TEAM_COUNT, MIN_TRIVIA_TEAM_COUNT, RUNTIME_DIFFICULTY_FILTERS, TRIVIA_GAME_MODES, type RuntimeDifficultyFilter, type TriviaGameMode } from "../../../games/trivia/play/trivia-runtime-types";
 import { TRIVIA_PACING_MODES, type TriviaPacingMode } from "../../../games/trivia/play/trivia-live-timing";
 import { setTriviaLiveHostCookie } from "../../../games/trivia/play/trivia-live-cookie";
+import { GAMES_SESSION_COOKIE, verifyGamesSessionToken } from "@/lib/play-point-core/games-session";
+import { canHostDuringPrelaunch, prelaunchHostError } from "@/lib/play-point-core/prelaunch-access";
 
-export async function POST(request: Request) {
+const TRIVIA_SKU = "game.play_point_trivia";
+
+export async function POST(request: NextRequest) {
+  const claims = await verifyGamesSessionToken(request.cookies.get(GAMES_SESSION_COOKIE)?.value);
+  if (!claims) {
+    return NextResponse.json({ error: "Sign in to host Play Point Trivia." }, { status: 401 });
+  }
+  if (!canHostDuringPrelaunch(claims, TRIVIA_SKU)) {
+    return NextResponse.json({ error: prelaunchHostError() }, { status: 403 });
+  }
+
   const body = (await request.json()) as {
     category?: string;
     difficultyFilter?: RuntimeDifficultyFilter;
