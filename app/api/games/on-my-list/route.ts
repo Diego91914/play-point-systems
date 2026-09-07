@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createOnMyListRoom, joinOnMyListRoom, recoverOnMyListHost } from "@/lib/play-point-core/on-my-list-server";
-import { GAMES_SESSION_COOKIE, verifyGamesSessionToken } from "@/lib/play-point-core/games-session";
+import { GAMES_SESSION_COOKIE, isPrivilegedGamesSession, verifyGamesSessionToken } from "@/lib/play-point-core/games-session";
 import { canHostDuringPrelaunch, prelaunchHostError } from "@/lib/play-point-core/prelaunch-access";
 
 export async function POST(request:NextRequest){
@@ -16,7 +16,7 @@ export async function POST(request:NextRequest){
       const claims=await verifyGamesSessionToken(request.cookies.get(GAMES_SESSION_COOKIE)?.value);
       if(!claims)return NextResponse.json({error:"Sign in with the account that created this room, then try Rejoin as Host again."},{status:401});
       if(!canHostDuringPrelaunch(claims,"game.on_my_list"))return NextResponse.json({error:prelaunchHostError()},{status:403});
-      return NextResponse.json({success:true,...await recoverOnMyListHost(body.code,claims.sub,claims.role==="founder")});
+      return NextResponse.json({success:true,...await recoverOnMyListHost(body.code,claims.sub,isPrivilegedGamesSession(claims))});
     }
     if(body.intent==="join")return NextResponse.json({success:true,...await joinOnMyListRoom(body.code,body.name)});
     return NextResponse.json({error:"Unknown request."},{status:400});
