@@ -1,8 +1,10 @@
 import type { NextConfig } from "next";
 
-const SHOT_CADDY_ZONE_ORIGIN =
-  process.env.SHOT_CADDY_ZONE_ORIGIN ??
-  "https://shot-caddy-web.vercel.app";
+// The Play Amplified front door must proxy Shot Caddy to the dedicated zone
+// deployment, never back to a public custom domain. Allowing a production env
+// override here can create a self-referential rewrite loop when it points at
+// playamplified.com or shotcaddy.net.
+const SHOT_CADDY_ZONE_ORIGIN = "https://shot-caddy-web.vercel.app";
 
 const shotCaddyApiNamespaces = [
   "account",
