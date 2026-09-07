@@ -3,10 +3,11 @@ export const GAMES_SESSION_COOKIE = "pps_games_session";
 // their own 24-hour guest retention policy and must not share this lifetime.
 export const GAMES_SESSION_TTL_SECONDS = 60 * 60 * 24 * 180;
 export const FOUNDER_GAMES_SESSION_TTL_SECONDS = GAMES_SESSION_TTL_SECONDS;
+export const BUILDER_GAMES_SESSION_TTL_SECONDS = 60 * 60 * 24 * 30;
 
 const GAMES_SESSION_VERSION = "v1";
 
-export type GamesSessionRole = "founder" | "member";
+export type GamesSessionRole = "founder" | "builder" | "member";
 
 export type GamesSessionClaims = {
   sub: string;
@@ -137,7 +138,7 @@ export async function verifyGamesSessionToken(
       !claims.sub ||
       typeof claims.email !== "string" ||
       !claims.email ||
-      (claims.role !== "founder" && claims.role !== "member") ||
+      (claims.role !== "founder" && claims.role !== "builder" && claims.role !== "member") ||
       !Array.isArray(claims.entitlements) ||
       !claims.entitlements.every((sku) => typeof sku === "string") ||
       !Number.isInteger(claims.iat) ||
@@ -153,12 +154,16 @@ export async function verifyGamesSessionToken(
   }
 }
 
+export function isPrivilegedGamesSession(claims: GamesSessionClaims): boolean {
+  return claims.role === "founder" || claims.role === "builder";
+}
+
 export function gamesSessionOwns(
   claims: GamesSessionClaims,
   gameSku: string
 ): boolean {
   return (
-    claims.role === "founder" ||
+    isPrivilegedGamesSession(claims) ||
     claims.entitlements.includes("*") ||
     claims.entitlements.includes(gameSku)
   );
