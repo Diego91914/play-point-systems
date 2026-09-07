@@ -55,9 +55,13 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
         return;
       }
 
+      // Public purchasing/hosting is still closed. Any unsigned attempt to
+      // enter the game library stays on the private builder-password path.
+      // Customer email sign-in remains available from the dedicated /account
+      // screen, but it is not part of Founder/builder test access.
       if (!cancelled) {
-        const target = new URL("/account", window.location.origin);
-        target.searchParams.set("returnTo", destination);
+        const target = new URL("/builder-access", window.location.origin);
+        target.searchParams.set("next", destination);
         window.location.replace(target.toString());
       }
     }
@@ -95,7 +99,7 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
         Opening Play Amplified…
       </h1>
       <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-white/66">
-        Builder access is checked first for private testing. Customer and Founder account verification is only used when no builder test session is active.
+        Private test access is checked first. If it is not active yet, Play Amplified will ask for the builder password—not an email account.
       </p>
 
       {error ? (
@@ -116,7 +120,7 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
       )}
 
       <p className="mt-6 text-xs leading-6 text-white/42">
-        Private builder access does not require an email account and does not consume account verification attempts.
+        Builder access is separate from customer accounts, email sign-in, purchases, and Founder account ownership.
       </p>
     </div>
   );
