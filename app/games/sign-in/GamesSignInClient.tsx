@@ -24,24 +24,16 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
     const handoff = params.get("handoff")?.trim() ?? "";
     let cancelled = false;
 
-    if (!handoff) {
-      const target = new URL("/account/play-point", window.location.origin);
-      target.searchParams.set("next", destination);
-      window.location.replace(target.toString());
-      return () => {
-        cancelled = true;
-      };
-    }
+    async function connect() {
+      setError("");
 
-    setError("");
-
-    void fetch("/api/games/account/shot-caddy-handoff", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code: handoff }),
-      cache: "no-store",
-    })
-      .then(async (response) => {
+      if (handoff) {
+        const response = await fetch("/api/games/account/shot-caddy-handoff", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code: handoff }),
+          cache: "no-store",
+        });
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) {
           throw new Error(
@@ -51,44 +43,63 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
           );
         }
         if (!cancelled) window.location.replace(destination);
-      })
-      .catch((handoffError) => {
-        if (!cancelled) {
-          window.history.replaceState(
-            null,
-            "",
-            `/games/sign-in?next=${encodeURIComponent(destination)}`,
-          );
-          setError(
-            handoffError instanceof Error
-              ? handoffError.message
-              : "Unable to verify your Play Amplified account.",
-          );
-        }
+        return;
+      }
+
+      // Builder/private-preview access is a test identity, not a customer
+      // account. If the builder cookie is active, mint a Play Amplified test
+      // session and never touch the email/Supabase account flow.
+      const builderResponse = await fetch("/api/games/account/builder-session", {
+        method: "POST",
+        cache: "no-store",
       });
+      if (builderResponse.ok) {
+        if (!cancelled) window.location.replace(destination);
+        return;
+      }
+
+      // No active builder session: use the normal customer/Founder account path.
+      if (!cancelled) {
+        const target = new URL("/account/play-point", window.location.origin);
+        target.searchParams.set("next", destination);
+        window.location.replace(target.toString());
+      }
+    }
+
+    void connect().catch((connectError) => {
+      if (!cancelled) {
+        window.history.replaceState(
+          null,
+          "",
+          `/games/sign-in?next=${encodeURIComponent(destination)}`,
+        );
+        setError(
+          connectError instanceof Error
+            ? connectError.message
+            : "Unable to open Play Amplified right now.",
+        );
+      }
+    });
 
     return () => {
       cancelled = true;
     };
   }, [destination]);
 
-  function retryAccountConnection() {
-    setError("");
-    const target = new URL("/account/play-point", window.location.origin);
-    target.searchParams.set("next", destination);
-    window.location.assign(target.toString());
+  function retryConnection() {
+    window.location.reload();
   }
 
   return (
     <div className="mx-auto max-w-2xl rounded-[32px] border border-cyan-300/15 bg-[linear-gradient(145deg,rgba(18,42,56,0.82),rgba(5,12,18,0.95))] p-7 text-center shadow-[0_24px_80px_rgba(0,0,0,0.32)] sm:p-9">
       <div className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-100/65">
-        Play Amplified · One account
+        Play Amplified · Access
       </div>
       <h1 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-4xl">
-        Connecting your account…
+        Opening Play Amplified…
       </h1>
       <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-white/66">
-        Play Amplified is checking your existing account session and will return you to the game automatically. Once your Founder access is verified on this device, you should not need to repeat this step during normal use.
+        Builder access is checked first for private testing. Customer and Founder account verification is only used when no builder test session is active.
       </p>
 
       {error ? (
@@ -98,10 +109,10 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
           </div>
           <button
             type="button"
-            onClick={retryAccountConnection}
+            onClick={retryConnection}
             className="mt-5 w-full rounded-2xl bg-cyan-300 px-5 py-4 text-base font-black text-slate-950 transition hover:brightness-105"
           >
-            Retry account connection
+            Retry
           </button>
         </>
       ) : (
@@ -109,7 +120,7 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
       )}
 
       <p className="mt-6 text-xs leading-6 text-white/42">
-        Builder/private-preview access and your Play Amplified account are separate safeguards. Your Play Amplified account is the identity that controls Founder status and game ownership.
+        Private builder access does not require an email account and does not consume account verification attempts.
       </p>
     </div>
   );
