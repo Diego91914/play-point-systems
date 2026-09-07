@@ -1,6 +1,6 @@
 export type MasterGameStatus = "live" | "playable_preview";
 export type MasterGameFamily = "Play Amplified" | "Shot Caddy" | "Quest Caddy";
-export type MasterGameLane = "phone" | "course" | "backyard" | "adventure";
+export type MasterGameLane = "social" | "course" | "backyard" | "adventure" | "trivia";
 
 export type MasterGameEntry = {
   id: string;
@@ -21,16 +21,20 @@ export type MasterGameEntry = {
  * separately deployable runtime zone during migration, but every public game
  * launch stays on the playamplified.com origin under /shot-caddy.
  *
+ * Category describes what kind of experience a game is. Status describes its
+ * release readiness. A preview therefore remains visible in its real category.
+ *
  * This is intentionally separate from commerce/entitlement catalogs so a
  * complete playable-format count cannot drift when storefront packaging changes.
  */
 export const MASTER_GAME_CATALOG: readonly MasterGameEntry[] = [
-  { id: "chain-reaction", title: "Chain Reaction", family: "Play Amplified", lane: "phone", status: "live", href: "/play-amplified/games/chain-reaction", launchHref: "/games/chain-reaction", description: "Secret-target wordplay built for face-to-face groups." },
-  { id: "how-close", title: "How Close Are We?", family: "Play Amplified", lane: "phone", status: "live", href: "/play-amplified/games/how-close", launchHref: "/games/how-close", description: "Predict where the Spotlight Player lands on a 1-to-100 scale." },
-  { id: "on-my-list", title: "On My List", family: "Play Amplified", lane: "phone", status: "live", href: "/play-amplified/games/on-my-list", launchHref: "/games/on-my-list", description: "Uncover another player's private ranked list." },
-  { id: "all-about-you", title: "All About You", family: "Play Amplified", lane: "phone", status: "playable_preview", href: "/play-amplified/games/all-about-you", launchHref: "/games/all-about-you", description: "Put one Guest of Honor at center stage and find out who knows them best tonight." },
-  { id: "inside-man", title: "The Inside Man", family: "Play Amplified", lane: "phone", status: "live", href: "/play-amplified/games/inside-man", launchHref: "/games/inside-man", description: "Social deduction with a hidden player steering missions toward failure." },
-  { id: "phone-holdem", title: "Phone Hold'em", family: "Play Amplified", lane: "phone", status: "live", href: "/play-amplified/games/phone-holdem", launchHref: "/games/holdem", description: "Texas Hold'em with each phone acting as a private seat." },
+  { id: "chain-reaction", title: "Chain Reaction", family: "Play Amplified", lane: "social", status: "live", href: "/play-amplified/games/chain-reaction", launchHref: "/games/chain-reaction", description: "Secret-target wordplay built for face-to-face groups." },
+  { id: "how-close", title: "How Close Are We?", family: "Play Amplified", lane: "social", status: "live", href: "/play-amplified/games/how-close", launchHref: "/games/how-close", description: "Predict where the Spotlight Player lands on a 1-to-100 scale." },
+  { id: "on-my-list", title: "On My List", family: "Play Amplified", lane: "social", status: "live", href: "/play-amplified/games/on-my-list", launchHref: "/games/on-my-list", description: "Uncover another player's private ranked list." },
+  { id: "all-about-you", title: "All About You", family: "Play Amplified", lane: "social", status: "playable_preview", href: "/play-amplified/games/all-about-you", launchHref: "/games/all-about-you", description: "Put one Guest of Honor at center stage and find out who knows them best tonight." },
+  { id: "inside-man", title: "The Inside Man", family: "Play Amplified", lane: "social", status: "live", href: "/play-amplified/games/inside-man", launchHref: "/games/inside-man", description: "Social deduction with a hidden player steering missions toward failure." },
+  { id: "phone-holdem", title: "Phone Hold'em", family: "Play Amplified", lane: "social", status: "live", href: "/play-amplified/games/phone-holdem", launchHref: "/games/holdem", description: "Texas Hold'em with each phone acting as a private seat." },
+  { id: "last-call", title: "Last Call: Murder at Blackwood House", family: "Play Amplified", lane: "social", status: "playable_preview", href: "/play-amplified/games/last-call", launchHref: "/games/mystery", description: "A phone-powered murder mystery for 4–8 players." },
 
   { id: "shot-classic", title: "Classic", parentTitle: "Shot Caddy", family: "Shot Caddy", lane: "course", status: "live", href: "/play-amplified/games/shot-classic", launchHref: "/shot-caddy/mode/classic?variant=CLASSIC", description: "Core challenge-based disc-golf play." },
   { id: "shot-chaos", title: "Chaos", parentTitle: "Shot Caddy", family: "Shot Caddy", lane: "course", status: "live", href: "/play-amplified/games/shot-chaos", launchHref: "/shot-caddy/mode/classic?variant=CHAOS", description: "Classic play with disruptive powers and bigger swings." },
@@ -52,8 +56,7 @@ export const MASTER_GAME_CATALOG: readonly MasterGameEntry[] = [
   { id: "quest-digital", title: "Quest Caddy · Digital Adventure", family: "Quest Caddy", lane: "adventure", status: "live", href: "/play-amplified/games/quest-digital", launchHref: "/shot-caddy/mode/quest-caddy/living-rpg", description: "A persistent fantasy Chronicle with no course or discs required." },
   { id: "quest-disc-golf", title: "Quest Caddy · Disc Golf", family: "Quest Caddy", lane: "adventure", status: "live", href: "/play-amplified/games/quest-disc-golf", launchHref: "/shot-caddy/mode/quest-caddy/disc-golf", description: "Real throws shape the fantasy Chronicle and its consequences." },
 
-  { id: "last-call", title: "Last Call: Murder at Blackwood House", family: "Play Amplified", lane: "phone", status: "playable_preview", href: "/play-amplified/games/last-call", launchHref: "/games/mystery", description: "A phone-powered murder mystery for 4–8 players." },
-  { id: "play-point-trivia", title: "Play Point Trivia", family: "Play Amplified", lane: "phone", status: "playable_preview", href: "/play-amplified/games/play-point-trivia", launchHref: "/games/trivia", description: "Hosted group trivia with room codes, teams, wagers, and live scoreboards." },
+  { id: "play-point-trivia", title: "Play Point Trivia", family: "Play Amplified", lane: "trivia", status: "playable_preview", href: "/play-amplified/games/play-point-trivia", launchHref: "/games/trivia", description: "Hosted group trivia with room codes, teams, wagers, and live scoreboards." },
 ] as const;
 
 export const FINISHED_GAME_FORMATS = MASTER_GAME_CATALOG.filter((game) => game.status === "live");
