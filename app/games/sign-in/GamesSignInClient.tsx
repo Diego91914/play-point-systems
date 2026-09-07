@@ -70,7 +70,7 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
   function continueWithExistingAccount() {
     setBusy(true);
     setError("");
-    const target = new URL("/shot-caddy/account/play-point", window.location.origin);
+    const target = new URL("/account/play-point", window.location.origin);
     target.searchParams.set("next", destination);
     window.location.assign(target.toString());
   }
@@ -108,7 +108,7 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
           Verify your account
         </h2>
         <p className="mt-4 text-sm leading-7 text-white/66">
-          Play Amplified can use your existing pre-launch account record to confirm who you are and whether you have Founder access. The entire verification flow now stays on the Play Amplified origin.
+          Play Amplified can use your existing pre-launch account record to confirm who you are and whether you have Founder access. The entire verification flow stays on the Play Amplified origin.
         </p>
 
         {error ? (
