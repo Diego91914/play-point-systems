@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createMysteryRoom, joinMysteryRoom } from "@/lib/play-point-core/mystery-server-v3";
 import { GAMES_SESSION_COOKIE, verifyGamesSessionToken } from "@/lib/play-point-core/games-session";
+import { canHostDuringPrelaunch, prelaunchHostError } from "@/lib/play-point-core/prelaunch-access";
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,6 +9,7 @@ export async function POST(request: NextRequest) {
     if (body.intent === "create") {
       const claims = await verifyGamesSessionToken(request.cookies.get(GAMES_SESSION_COOKIE)?.value);
       if (!claims) return NextResponse.json({ error: "Sign in to host the mystery." }, { status: 401 });
+      if (!canHostDuringPrelaunch(claims, "game.last_call_blackwood")) return NextResponse.json({ error: prelaunchHostError() }, { status: 403 });
       return NextResponse.json({ success: true, ...(await createMysteryRoom(body.name, claims.sub)) });
     }
     if (body.intent === "join") {
