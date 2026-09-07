@@ -4,6 +4,10 @@ import {
   GAMES_SESSION_COOKIE,
   verifyGamesSessionToken,
 } from "@/lib/play-point-core/games-session";
+import {
+  canHostDuringPrelaunch,
+  prelaunchHostError,
+} from "@/lib/play-point-core/prelaunch-access";
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,6 +22,9 @@ export async function POST(request: NextRequest) {
           { error: "Sign in to host a Chain Reaction game." },
           { status: 401 }
         );
+      }
+      if (!canHostDuringPrelaunch(claims, "game.chain_reaction")) {
+        return NextResponse.json({ error: prelaunchHostError() }, { status: 403 });
       }
       return NextResponse.json({
         success: true,
