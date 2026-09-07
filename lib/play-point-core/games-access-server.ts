@@ -2,9 +2,10 @@ import "server-only";
 
 import type { User } from "@supabase/supabase-js";
 import { PLAY_POINT_GAME_CATALOG } from "@/lib/play-point-core/games-catalog";
-import type {
-  GamesSessionClaims,
-  GamesSessionRole,
+import {
+  isPrivilegedGamesSession,
+  type GamesSessionClaims,
+  type GamesSessionRole,
 } from "@/lib/play-point-core/games-session";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 
@@ -78,13 +79,13 @@ export async function buildGamesSessionInput(user: User): Promise<{
 }
 
 export async function loadGamesLibraryForClaims(claims: GamesSessionClaims) {
-  const currentEntitlements =
-    claims.role === "founder"
-      ? new Set(PLAY_POINT_GAME_CATALOG.map((game) => game.sku))
-      : new Set(await loadActiveGameEntitlements(claims.sub));
+  const privileged = isPrivilegedGamesSession(claims);
+  const currentEntitlements = privileged
+    ? new Set(PLAY_POINT_GAME_CATALOG.map((game) => game.sku))
+    : new Set(await loadActiveGameEntitlements(claims.sub));
 
   return PLAY_POINT_GAME_CATALOG.map((game) => {
-    const owned = claims.role === "founder" || currentEntitlements.has(game.sku);
+    const owned = privileged || currentEntitlements.has(game.sku);
     return {
       ...game,
       owned,
