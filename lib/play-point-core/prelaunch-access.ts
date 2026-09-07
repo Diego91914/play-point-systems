@@ -1,5 +1,10 @@
 import type { GamesSessionClaims } from "@/lib/play-point-core/games-session";
 
+/**
+ * Public hosting is closed unless explicitly enabled. This fail-closed default
+ * lets the Play Amplified production storefront be deployed before commerce is
+ * available without exposing paid gameplay to ordinary accounts.
+ */
 export const PUBLIC_PLAY_ENABLED =
   process.env.PLAY_AMPLIFIED_PUBLIC_PLAY === "true";
 
