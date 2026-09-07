@@ -56,6 +56,19 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
+        // Keep the public account experience on Play Amplified while the
+        // pre-launch Shot Caddy identity bridge remains the backing runtime.
+        // The browser stays on playamplified.com/account/...; this can be
+        // replaced later by native Play Amplified account pages without
+        // changing the public URL contract.
+        {
+          source: "/account",
+          destination: `${SHOT_CADDY_ZONE_ORIGIN}/shot-caddy/account`,
+        },
+        {
+          source: "/account/:path*",
+          destination: `${SHOT_CADDY_ZONE_ORIGIN}/shot-caddy/account/:path*`,
+        },
         {
           source: "/shot-caddy/:path*",
           destination: `${SHOT_CADDY_ZONE_ORIGIN}/shot-caddy/:path*`,
