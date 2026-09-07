@@ -15,6 +15,10 @@ import {
   type MasterGameEntry,
 } from "@/lib/play-point-core/master-game-catalog";
 import { PLAY_POINT_GAME_CATALOG } from "@/lib/play-point-core/games-catalog";
+import {
+  getStorefrontOffer,
+  type StorefrontOffer,
+} from "@/lib/play-point-core/storefront-platform";
 import { GameAtmosphere } from "./_components/GameAtmosphere";
 import { GamesAccountBar } from "./_components/GamesAccountBar";
 
@@ -57,8 +61,7 @@ const FEATURED_GAME_IDS = new Set([
 
 type ShelfEntry = MasterGameEntry & {
   owned: boolean;
-  priceUsd: number | null;
-  purchasable: boolean;
+  offer: StorefrontOffer | null;
   ownershipAuthority: "play_point" | "shot_caddy" | null;
   productSku: string | null;
 };
@@ -72,10 +75,12 @@ function laneLabel(lane: MasterGameEntry["lane"]): string {
 
 function GameCard({ game, owned, featured = false }: { game: ShelfEntry; owned: boolean; featured?: boolean }) {
   const statusLabel = game.status === "live" ? "Finished" : "Preview";
-  const priceLabel = game.priceUsd !== null ? `$${game.priceUsd.toFixed(2)} one-time` : null;
+  const priceLabel = game.offer?.priceUsd !== null && game.offer?.priceUsd !== undefined
+    ? `$${game.offer.priceUsd.toFixed(2)} one-time`
+    : null;
   const actionLabel = owned
     ? "Play now"
-    : game.purchasable && priceLabel
+    : game.offer?.available && priceLabel
       ? `Explore & buy · ${priceLabel}`
       : game.ownershipAuthority === "shot_caddy"
         ? "Explore experience"
@@ -98,7 +103,7 @@ function GameCard({ game, owned, featured = false }: { game: ShelfEntry; owned: 
       <h3 className="mt-4 text-2xl font-black tracking-tight text-white">{game.title}</h3>
       <p className="mt-3 flex-1 text-sm leading-6 text-white/58">{game.description}</p>
 
-      {!owned && priceLabel ? <div className="mt-4 text-sm font-black text-amber-100">{priceLabel}</div> : null}
+      {!owned && game.offer?.available && priceLabel ? <div className="mt-4 text-sm font-black text-amber-100">{priceLabel}</div> : null}
 
       <div className="mt-5 grid gap-2 border-t border-white/8 pt-4 sm:grid-cols-2">
         <Link href={game.href} className="inline-flex items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-400/10 px-4 py-3 text-center text-sm font-black text-cyan-50 transition hover:bg-cyan-400/15">
@@ -156,8 +161,7 @@ export default async function GamesPage({
     return {
       ...game,
       owned,
-      priceUsd: product?.priceUsd ?? null,
-      purchasable: product?.purchasable === true || Boolean(product?.priceUsd),
+      offer: product ? getStorefrontOffer(product, "web") : null,
       ownershipAuthority: product?.ownershipAuthority ?? (game.family === "Shot Caddy" || game.family === "Quest Caddy" ? "shot_caddy" : null),
       productSku,
     };
