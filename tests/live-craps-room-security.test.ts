@@ -13,7 +13,13 @@ const CODE="CRAP01";
 
 function createStartedRoom(){
   createStoredLiveCrapsRoom({code:CODE,hostPlayerId:HOST,hostName:"Host",diceMode:"virtual"});
-  applyLiveCrapsRoomCommand(CODE,"start-1",{type:"start",actorPlayerId:HOST,nowMs:1_000});
+  applyLiveCrapsRoomCommand(CODE,"start-1",{type:"start",actorPlayerId:HOST,nowMs:Date.now()});
+}
+
+function actionDeadline(){
+  const deadline=getStoredLiveCrapsRoom(CODE).room.actionClock.deadlineAtMs;
+  if(typeof deadline!=="number")throw new Error("Expected an active action deadline.");
+  return deadline;
 }
 
 function chips(){return projectStoredLiveCrapsRoom(CODE,HOST).me.chips;}
@@ -52,7 +58,7 @@ describe("Live Craps server-owned betting window",()=>{
   it("clears the undo ledger at dice out and rejects betting while dice are out",()=>{
     createStartedRoom();
     applyLiveCrapsRoomCommand(CODE,"bet-1",{type:"place-bet",actorPlayerId:HOST,kind:"pass-line",amount:10});
-    applyLiveCrapsRoomCommand(CODE,"dice-out",{type:"tick",nowMs:16_000});
+    applyLiveCrapsRoomCommand(CODE,"dice-out",{type:"tick",nowMs:actionDeadline()});
     expect(getStoredLiveCrapsRoom(CODE).room.actionClock.phase).toBe("dice-out");
     expect(projectStoredLiveCrapsRoom(CODE,HOST).myNewBetCount).toBe(0);
     expect(()=>applyLiveCrapsRoomCommand(CODE,"late-bet",{type:"place-bet",actorPlayerId:HOST,kind:"field",amount:10})).toThrow(/Betting is closed/);
@@ -60,7 +66,7 @@ describe("Live Craps server-owned betting window",()=>{
 
   it("keeps virtual dice private until reveal and settles the committed roll exactly once",()=>{
     createStartedRoom();
-    applyLiveCrapsRoomCommand(CODE,"dice-out",{type:"tick",nowMs:16_000});
+    applyLiveCrapsRoomCommand(CODE,"dice-out",{type:"tick",nowMs:actionDeadline()});
     expect(projectStoredLiveCrapsRoom(CODE,HOST).virtualReveal).toBeNull();
 
     applyLiveCrapsRoomCommand(CODE,"roll",{type:"begin-roll",actorPlayerId:HOST});
