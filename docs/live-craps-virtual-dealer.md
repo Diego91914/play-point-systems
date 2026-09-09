@@ -41,6 +41,14 @@ The UI must never require the player to remember dealer bookkeeping that the ser
 
 PRESS must identify the wager being pressed. If several wagers are eligible, ask which number/wager, e.g. `6 — $30`, `8 — $30`, `Inside — $44`, or `PRESS ALL`. Recommended press amounts should respect payout-friendly betting units.
 
+A press is an instruction to the virtual dealer, not a manual chip calculation. The dealer uses the player's payout/returned chips first. If the legal target press requires more chips than the current payout provides, the engine automatically takes the exact additional amount from that player's fictional bankroll/chip rack when sufficient funds are available.
+
+Example: a player has $14 available from the roll and selects a legal press that requires $18. The dealer applies the $14 and automatically takes the remaining $4 from that player's bankroll. The player does not calculate or manually transfer the difference.
+
+If the bankroll cannot cover the required difference, the engine must not create an invalid or partially funded wager. It should offer the largest legal affordable press and/or alternatives such as SAME BET or COLLECT.
+
+No real-money language or settlement is used. The source of supplemental chips is the player's in-game bankroll/chip rack.
+
 ### Money that comes down
 
 When a wager or returned amount becomes available for player direction, do not silently force the player to rebuild the bet. The virtual dealer should state the available amount and offer only legal destinations for the current table state, including Collect when appropriate.
