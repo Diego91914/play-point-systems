@@ -34,6 +34,17 @@ export function beginLiveCrapsRoomRoll(runtime: LiveCrapsRoomRuntime, actorPlaye
   return { ...runtime, actionClock: beginLiveCrapsDiceEntry(runtime.actionClock, shooter.id) };
 }
 
+function settleEntry(runtime: LiveCrapsRoomRuntime, entry: ReturnType<typeof confirmLiveCrapsDiceEntry>, rollId: string, nowMs = Date.now()): LiveCrapsRoomRuntime {
+  const shooter = getLiveCrapsShooter(runtime.game.table);
+  if (!shooter || shooter.id !== entry.shooterId) throw new Error("Confirmed dice do not belong to the current shooter.");
+  const entryWithRollId = { ...entry, rollId };
+  const actionClock = markLiveCrapsDiceEntered(runtime.actionClock, shooter.id);
+  const result = settleConfirmedLiveCrapsPhysicalRoll(runtime.game, entryWithRollId);
+  const nextShooter = getLiveCrapsShooter(result.table);
+  if (!nextShooter) throw new Error("Next shooter is missing after settlement.");
+  return { ...runtime, game: result, actionClock: completeLiveCrapsSettlement(actionClock, { rollId: result.roll.id, nextShooterId: nextShooter.id, nowMs }), committedRoll: null };
+}
+
 export function settleLiveCrapsRoomPhysicalRoll(runtime: LiveCrapsRoomRuntime, input: { actorPlayerId: string; die1: number; die2: number; nowMs?: number }): LiveCrapsRoomRuntime {
   if (runtime.diceMode !== "physical") throw new Error("Physical dice entry is unavailable in virtual mode.");
   const shooter = getLiveCrapsShooter(runtime.game.table);
@@ -41,13 +52,8 @@ export function settleLiveCrapsRoomPhysicalRoll(runtime: LiveCrapsRoomRuntime, i
   let entry = createLiveCrapsDiceEntry(shooter.id);
   entry = selectLiveCrapsDie(entry, 1, input.die1);
   entry = selectLiveCrapsDie(entry, 2, input.die2);
-  entry = confirmLiveCrapsDiceEntry(entry);
-  const expectedRollId = `roll-${runtime.game.table.nextRollSequence}`;
-  const actionClock = markLiveCrapsDiceEntered(runtime.actionClock, shooter.id);
-  const result = settleConfirmedLiveCrapsPhysicalRoll(runtime.game, entry, expectedRollId);
-  const nextShooter = getLiveCrapsShooter(result.table);
-  if (!nextShooter) throw new Error("Next shooter is missing after settlement.");
-  return { ...runtime, game: result, actionClock: completeLiveCrapsSettlement(actionClock, { rollId: result.roll.id, nextShooterId: nextShooter.id, nowMs: input.nowMs }), committedRoll: null };
+  entry = confirmLiveCrapsDiceEntry(entry, input.actorPlayerId);
+  return settleEntry(runtime, entry, `roll-${runtime.game.table.nextRollSequence}`, input.nowMs);
 }
 
 export function settleLiveCrapsRoomVirtualRoll(runtime: LiveCrapsRoomRuntime, actorPlayerId: string, nowMs = Date.now()): LiveCrapsRoomRuntime {
@@ -59,12 +65,8 @@ export function settleLiveCrapsRoomVirtualRoll(runtime: LiveCrapsRoomRuntime, ac
   let entry = createLiveCrapsDiceEntry(shooter.id);
   entry = selectLiveCrapsDie(entry, 1, committed.die1);
   entry = selectLiveCrapsDie(entry, 2, committed.die2);
-  entry = confirmLiveCrapsDiceEntry(entry);
-  const actionClock = markLiveCrapsDiceEntered(runtime.actionClock, shooter.id);
-  const result = settleConfirmedLiveCrapsPhysicalRoll(runtime.game, entry, committed.rollId);
-  const nextShooter = getLiveCrapsShooter(result.table);
-  if (!nextShooter) throw new Error("Next shooter is missing after settlement.");
-  return { ...runtime, game: result, actionClock: completeLiveCrapsSettlement(actionClock, { rollId: result.roll.id, nextShooterId: nextShooter.id, nowMs }), committedRoll: null };
+  entry = confirmLiveCrapsDiceEntry(entry, actorPlayerId);
+  return settleEntry(runtime, entry, committed.rollId, nowMs);
 }
 
 export function createLiveCrapsActionId(prefix = "action") { return `${prefix}-${randomUUID()}`; }
