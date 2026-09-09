@@ -3,15 +3,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { createLiveCrapsServerRoom, joinLiveCrapsServerRoom } from "@/lib/play-point-core/live-craps-room-server";
 import type { LiveCrapsDiceMode } from "@/lib/play-point-core/live-craps-dice-mode";
 
-function playerId(value: unknown) {
-  const id = typeof value === "string" ? value.trim() : "";
-  return id || `player-${randomUUID()}`;
+/** Initial table entry always receives a fresh opaque server-owned identity. Rejoin uses the issued playerId + token on the room endpoint. */
+function newPlayerId() {
+  return `player-${randomUUID()}`;
 }
 
 function diceMode(value: unknown): LiveCrapsDiceMode | undefined {
   if (value === undefined || value === null || value === "") return undefined;
   if (value !== "physical" && value !== "virtual") throw new Error("diceMode must be physical or virtual.");
   return value;
+}
+
+function requiredName(value: unknown, fallback: string) {
+  const name = typeof value === "string" ? value.trim() : "";
+  return name || fallback;
 }
 
 export async function POST(request: NextRequest) {
@@ -21,16 +26,16 @@ export async function POST(request: NextRequest) {
     if (action === "create") {
       const result = createLiveCrapsServerRoom({
         code: String(body.code ?? ""),
-        hostPlayerId: playerId(body.playerId),
-        hostName: String(body.name ?? "Host"),
+        hostPlayerId: newPlayerId(),
+        hostName: requiredName(body.name, "Host"),
         diceMode: diceMode(body.diceMode),
       });
       return NextResponse.json({ success: true, ...result }, { status: 201 });
     }
     if (action === "join") {
       const result = joinLiveCrapsServerRoom(String(body.code ?? ""), {
-        playerId: playerId(body.playerId),
-        name: String(body.name ?? "Player"),
+        playerId: newPlayerId(),
+        name: requiredName(body.name, "Player"),
       });
       return NextResponse.json({ success: true, ...result });
     }
