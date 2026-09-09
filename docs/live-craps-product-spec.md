@@ -10,6 +10,20 @@ Live Craps is a Play Amplified social table game built around physical dice. Pla
 
 The phones should remove the bookkeeping without replacing the physical moment of rolling dice together.
 
+## Standard table configuration — LOCKED
+
+The default Live Craps experience is a **$10 Standard Table**, expressed entirely in fictional game chips.
+
+- Table minimum: 10 chips.
+- Starting rack: 1,000 fictional chips per player.
+- Standard between-roll betting/action clock: 15 seconds.
+- Beginner assistance: ON by default.
+- The 10-chip table minimum does not mean every individual wager must be exactly 10 chips. The virtual dealer understands legal and payout-friendly units for each wager (for example, Place 6/8 sizing) and guides or adjusts the player's requested action accordingly.
+- The table is the brain: players choose intent; the server handles legal amounts, payout units, press funding, and dealer bookkeeping.
+- Future optional presets may provide different fictional-chip pacing, but $10 Standard is the canonical default.
+
+No table setting represents real-money wagering. Chips cannot be purchased during a session, cashed out, transferred for value, or settled through Play Amplified.
+
 ## Core table loop
 
 1. Host creates a private Live Craps room.
