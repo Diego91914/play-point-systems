@@ -10,6 +10,8 @@ type Game = {
   round: number;
   answers: Answer[];
   players: Player[];
+  pendingHitBy: { id: string; name: string } | null;
+  me: { id: string; isHost: boolean; isSurveyed: boolean };
 };
 type Moment = {
   eyebrow: string;
@@ -19,6 +21,34 @@ type Moment = {
 } | null;
 
 const KEY = "pps-on-my-list-session";
+const REVEAL_HIGHLIGHT_CLASSES = [
+  "ring-4",
+  "ring-amber-300",
+  "ring-offset-2",
+  "ring-offset-slate-950",
+] as const;
+
+function clearRevealHighlight() {
+  document.querySelectorAll<HTMLButtonElement>("button").forEach((button) => {
+    REVEAL_HIGHLIGHT_CLASSES.forEach((className) => button.classList.remove(className));
+  });
+}
+
+function focusRevealControls() {
+  window.setTimeout(() => {
+    const revealButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("button")).filter((button) =>
+      /^#\d+\s·\s/.test(button.textContent?.trim() ?? ""),
+    );
+    const firstRevealButton = revealButtons[0];
+    if (!firstRevealButton) return;
+
+    clearRevealHighlight();
+    revealButtons.forEach((button) => {
+      REVEAL_HIGHLIGHT_CLASSES.forEach((className) => button.classList.add(className));
+    });
+    firstRevealButton.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, 80);
+}
 
 export function OnMyListMoments() {
   const [session, setSession] = useState<Session | null>(null);
@@ -57,6 +87,25 @@ export function OnMyListMoments() {
 
         const json = await response.json();
         const game = json.state as Game;
+
+        if (game.status === "guessing" && game.pendingHitBy && game.me.isSurveyed) {
+          const promptKey = `reveal:${game.round}:${game.pendingHitBy.id}`;
+          if (!seen.current.has(promptKey)) {
+            show(
+              promptKey,
+              {
+                eyebrow: `${game.pendingHitBy.name} got one`,
+                title: "YOUR TURN",
+                detail: "Tap the matching answer to reveal it and award the points.",
+                tone: "amber",
+              },
+              1650,
+            );
+            focusRevealControls();
+          }
+        } else {
+          clearRevealHighlight();
+        }
 
         if (!initialized.current) {
           game.answers.forEach((answer, index) => {
@@ -120,6 +169,7 @@ export function OnMyListMoments() {
 
     return () => {
       cancelled = true;
+      clearRevealHighlight();
       window.clearInterval(pollTimer);
       window.clearTimeout(hideTimer);
     };
