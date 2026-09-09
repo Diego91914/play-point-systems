@@ -50,11 +50,13 @@ export function setLiveCrapsOddsWorkingOverride(input: { odds: LiveCrapsOddsBet[
 export function placeLiveCrapsOdds(input: { odds: LiveCrapsOddsBet[]; bankrolls: LiveCrapsBankroll[]; id: string; playerId: string; parentBetId: string; parentKind: LiveCrapsOddsParentKind; side: LiveCrapsOddsSide; point: LiveCrapsPoint; lineAmount: number; amount: number; workingOverride?: LiveCrapsOddsWorkingOverride }) {
   if (!input.id || !input.parentBetId) throw new Error("Odds and parent wager IDs are required.");
   if (input.odds.some((item) => item.id === input.id)) throw new Error("Odds wager id must be unique.");
-  if (input.odds.some((item) => item.parentBetId === input.parentBetId)) throw new Error("That parent wager already has odds attached.");
   if (expectedSide(input.parentKind) !== input.side) throw new Error("Odds side does not match the parent wager.");
   if (!Number.isInteger(input.amount) || input.amount <= 0) throw new Error("Odds amount must be a positive whole number of chips.");
+  const existing = input.odds.filter((item) => item.parentBetId === input.parentBetId);
+  if (existing.some((item) => item.playerId !== input.playerId || item.parentKind !== input.parentKind || item.side !== input.side || item.point !== input.point)) throw new Error("Existing odds do not match the parent wager.");
   const max = input.side === "pass" ? maxLiveCrapsPassOdds(input.lineAmount, input.point) : maxLiveCrapsDontOdds(input.lineAmount);
-  if (input.amount > max) throw new Error(`Odds exceed the Standard Table maximum of ${max} chips.`);
+  const currentAmount = existing.reduce((sum, item) => sum + item.amount, 0);
+  if (currentAmount + input.amount > max) throw new Error(`Odds exceed the Standard Table maximum of ${max} chips.`);
   const bankroll = input.bankrolls.find((item) => item.playerId === input.playerId);
   if (!bankroll || bankroll.chips < input.amount) throw new Error("Not enough chips for those odds.");
   return { odds: [...input.odds, { id: input.id, playerId: input.playerId, parentBetId: input.parentBetId, parentKind: input.parentKind, side: input.side, point: input.point, amount: input.amount, workingOverride: input.workingOverride ?? "table-default" }], bankrolls: input.bankrolls.map((item) => item.playerId === input.playerId ? { ...item, chips: item.chips - input.amount } : item) };
