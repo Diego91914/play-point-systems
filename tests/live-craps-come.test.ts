@@ -7,17 +7,22 @@ describe("Live Craps Come / Don't Come", () => {
     expect(() => placeLiveCrapsComeBet({ bets: [], bankrolls: createLiveCrapsBankrolls(["a"]), playerId: "a", kind: "come", amount: 10, tablePoint: null, id: "c1" })).toThrow(/established table point/i);
   });
 
+  it("requires a unique stable wager id", () => {
+    const existing = [{ id: "c1", playerId: "a", kind: "come" as const, amount: 10, point: 6 as const }];
+    expect(() => placeLiveCrapsComeBet({ bets: existing, bankrolls: createLiveCrapsBankrolls(["a"]), playerId: "a", kind: "come", amount: 10, tablePoint: 8, id: "c1" })).toThrow(/unique/i);
+  });
+
   it("wins a fresh Come bet on 7 or 11 and loses on craps", () => {
     const placed = placeLiveCrapsComeBet({ bets: [], bankrolls: createLiveCrapsBankrolls(["a"]), playerId: "a", kind: "come", amount: 10, tablePoint: 6, id: "c1" });
     expect(settleLiveCrapsComeBets({ ...placed, total: 11 }).bankrolls[0].chips).toBe(1010);
     expect(settleLiveCrapsComeBets({ ...placed, total: 3 }).settlements[0].status).toBe("lost");
   });
 
-  it("moves a Come bet to its own point independently of the table point", () => {
+  it("moves a Come bet to its own point independently of the table point and reports that point", () => {
     const placed = placeLiveCrapsComeBet({ bets: [], bankrolls: createLiveCrapsBankrolls(["a"]), playerId: "a", kind: "come", amount: 10, tablePoint: 6, id: "c1" });
     const moved = settleLiveCrapsComeBets({ ...placed, total: 9 });
     expect(moved.bets[0].point).toBe(9);
-    expect(moved.settlements[0].status).toBe("point-established");
+    expect(moved.settlements[0]).toMatchObject({ status: "point-established", point: 9, betId: "c1", remainsWorking: true });
     const win = settleLiveCrapsComeBets({ bets: moved.bets, bankrolls: moved.bankrolls, total: 9 });
     expect(win.bankrolls[0].chips).toBe(1010);
     expect(win.bets).toHaveLength(0);
