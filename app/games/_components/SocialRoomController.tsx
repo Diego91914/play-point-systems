@@ -174,7 +174,7 @@ export function SocialRoomController({
             <div className="mt-5 text-[10px] font-black uppercase tracking-[.26em] text-amber-100/55">Play Amplified · Room closed</div>
             <h2 className="mt-3 text-3xl font-black tracking-tight text-white">The host ended this game.</h2>
             <p className="mt-3 text-sm leading-6 text-white/58">Your room session has been cleared. You can return to Play Amplified and join or start another game anytime.</p>
-            <button onClick={() => { window.location.href = "/games"; }} className="mt-7 min-h-14 w-full rounded-2xl bg-[linear-gradient(135deg,#f5d58a,#d5ae5f)] px-4 py-4 font-black text-slate-950 shadow-[0_14px_38px_rgba(213,174,95,.18)] transition hover:brightness-105 active:scale-[.99]">BACK TO MY GAMES</button>
+            <button onClick={() => { window.location.href = "/play-amplified"; }} className="mt-7 min-h-14 w-full rounded-2xl bg-[linear-gradient(135deg,#f5d58a,#d5ae5f)] px-4 py-4 font-black text-slate-950 shadow-[0_14px_38px_rgba(213,174,95,.18)] transition hover:brightness-105 active:scale-[.99]">BACK TO PLAY AMPLIFIED</button>
           </div>
         </div>
       </div>
