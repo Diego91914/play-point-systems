@@ -10,6 +10,8 @@ function isPoint(total: number): total is LiveCrapsPoint { return (POINTS as rea
 
 export function placeLiveCrapsComeBet(input: { bets: LiveCrapsComeBet[]; bankrolls: LiveCrapsBankroll[]; playerId: string; kind: LiveCrapsComeKind; amount: number; tablePoint: LiveCrapsPoint | null; id: string }) {
   if (input.tablePoint === null) throw new Error("Come and Don't Come bets require an established table point.");
+  if (!input.id.trim()) throw new Error("Come wager id is required.");
+  if (input.bets.some((bet) => bet.id === input.id)) throw new Error("Come wager id must be unique.");
   if (!Number.isInteger(input.amount) || input.amount <= 0) throw new Error("Bet amount must be a positive whole number of chips.");
   const rack = input.bankrolls.find((b) => b.playerId === input.playerId);
   if (!rack || rack.chips < input.amount) throw new Error("Not enough chips for that bet.");
@@ -21,19 +23,19 @@ export function settleLiveCrapsComeBets(input: { bets: LiveCrapsComeBet[]; bankr
   const settlements: LiveCrapsComeSettlement[] = [];
   const credits = new Map<string, number>();
   const credit = (playerId: string, amount: number) => credits.set(playerId, (credits.get(playerId) ?? 0) + amount);
-  const receipt = (bet: LiveCrapsComeBet, status: LiveCrapsComeSettlement["status"], amount: number, profit: number, remainsWorking: boolean) => settlements.push({ betId: bet.id, playerId: bet.playerId, kind: bet.kind, point: bet.point, status, credit: amount, profit, remainsWorking });
+  const receipt = (bet: LiveCrapsComeBet, status: LiveCrapsComeSettlement["status"], amount: number, profit: number, remainsWorking: boolean, point: LiveCrapsPoint | null = bet.point) => settlements.push({ betId: bet.id, playerId: bet.playerId, kind: bet.kind, point, status, credit: amount, profit, remainsWorking });
 
   for (const bet of input.bets) {
     if (bet.point === null) {
       if (bet.kind === "come") {
         if (input.total === 7 || input.total === 11) { credit(bet.playerId, bet.amount * 2); receipt(bet, "won", bet.amount * 2, bet.amount, false); }
         else if ([2, 3, 12].includes(input.total)) receipt(bet, "lost", 0, -bet.amount, false);
-        else if (isPoint(input.total)) { keep.push({ ...bet, point: input.total }); receipt(bet, "point-established", 0, 0, true); }
+        else if (isPoint(input.total)) { const moved = { ...bet, point: input.total }; keep.push(moved); receipt(bet, "point-established", 0, 0, true, input.total); }
       } else {
         if (input.total === 2 || input.total === 3) { credit(bet.playerId, bet.amount * 2); receipt(bet, "won", bet.amount * 2, bet.amount, false); }
         else if (input.total === 12) { credit(bet.playerId, bet.amount); receipt(bet, "push", bet.amount, 0, false); }
         else if (input.total === 7 || input.total === 11) receipt(bet, "lost", 0, -bet.amount, false);
-        else if (isPoint(input.total)) { keep.push({ ...bet, point: input.total }); receipt(bet, "point-established", 0, 0, true); }
+        else if (isPoint(input.total)) { const moved = { ...bet, point: input.total }; keep.push(moved); receipt(bet, "point-established", 0, 0, true, input.total); }
       }
       continue;
     }
