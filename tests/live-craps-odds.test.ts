@@ -18,11 +18,13 @@ describe("Live Craps 3-4-5x odds", () => {
     expect(liveCrapsDontOddsProfit(60, 5)).toBe(40);
     expect(liveCrapsDontOddsProfit(60, 6)).toBe(50);
   });
-  it("binds odds to one stable parent wager and enforces the correct side", () => {
+  it("allows repeated odds additions on one parent while enforcing the aggregate maximum", () => {
     const bankrolls = [{ playerId: "a", chips: 1000 }];
-    const placed = placeLiveCrapsOdds({ odds: [], bankrolls, id: "o1", playerId: "a", parentBetId: "c9", parentKind: "come", side: "pass", point: 9, lineAmount: 10, amount: 20 });
-    expect(placed.odds[0]).toMatchObject({ parentBetId: "c9", parentKind: "come", point: 9 });
-    expect(() => placeLiveCrapsOdds({ odds: placed.odds, bankrolls: placed.bankrolls, id: "o2", playerId: "a", parentBetId: "c9", parentKind: "come", side: "pass", point: 9, lineAmount: 10, amount: 10 })).toThrow(/already has odds/i);
+    const first = placeLiveCrapsOdds({ odds: [], bankrolls, id: "o1", playerId: "a", parentBetId: "c9", parentKind: "come", side: "pass", point: 9, lineAmount: 10, amount: 20 });
+    const second = placeLiveCrapsOdds({ odds: first.odds, bankrolls: first.bankrolls, id: "o2", playerId: "a", parentBetId: "c9", parentKind: "come", side: "pass", point: 9, lineAmount: 10, amount: 20 });
+    expect(second.odds.filter((bet) => bet.parentBetId === "c9").reduce((sum, bet) => sum + bet.amount, 0)).toBe(40);
+    expect(second.bankrolls[0].chips).toBe(960);
+    expect(() => placeLiveCrapsOdds({ odds: second.odds, bankrolls: second.bankrolls, id: "o3", playerId: "a", parentBetId: "c9", parentKind: "come", side: "pass", point: 9, lineAmount: 10, amount: 5 })).toThrow(/maximum/i);
     expect(() => placeLiveCrapsOdds({ odds: [], bankrolls, id: "bad", playerId: "a", parentBetId: "dc5", parentKind: "dont-come", side: "pass", point: 5, lineAmount: 10, amount: 10 })).toThrow(/does not match/i);
   });
   it("keeps Come odds off by default on a table come-out and allows the owner to call them on", () => {
