@@ -74,7 +74,7 @@ export function GuestHonorPhoto() {
   return <aside className="relative z-20 mx-auto mt-4 w-full max-w-xl px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:px-8">
     <div className="rounded-[24px] border border-fuchsia-300/25 bg-slate-950/95 p-4 shadow-xl backdrop-blur">
       <div className="text-xs font-black uppercase tracking-widest text-fuchsia-100">Guest of Honor photo · optional</div>
-      <p className="mt-1 text-xs leading-5 text-white/50">Add the private finale photo here. Only you see this setup preview; it stays hidden from everyone else until the end.</p>
+      <p className="mt-1 text-xs leading-5 text-white/50">Add the private finale photo here. Only you see this setup preview; it stays private to this game room and hidden from everyone else until the end.</p>
       {game?.guestPhotoUrl && <div className="mt-3 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[.03] p-2">
         <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-white/10"><img src={game.guestPhotoUrl} alt="Private Guest of Honor preview" className="h-full w-full object-cover" /></div>
         <div className="min-w-0 text-xs leading-5 text-white/55"><strong className="block text-white/80">Private preview saved</strong>Hidden from guests until the finale.</div>
