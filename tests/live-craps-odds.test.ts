@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { liveCrapsDontOddsProfit, liveCrapsPassOddsProfit, maxLiveCrapsDontOdds, maxLiveCrapsPassOdds, placeLiveCrapsOdds, settleLiveCrapsOdds } from "../lib/play-point-core/live-craps-odds";
+import { liveCrapsDontOddsProfit, liveCrapsPassOddsProfit, maxLiveCrapsDontOdds, maxLiveCrapsPassOdds, placeLiveCrapsOdds, setLiveCrapsOddsWorkingOverride, settleLiveCrapsOdds } from "../lib/play-point-core/live-craps-odds";
 
 describe("Live Craps 3-4-5x odds", () => {
   it("uses 3x/4x/5x Pass and Come maximums", () => {
@@ -18,11 +18,33 @@ describe("Live Craps 3-4-5x odds", () => {
     expect(liveCrapsDontOddsProfit(60, 5)).toBe(40);
     expect(liveCrapsDontOddsProfit(60, 6)).toBe(50);
   });
+  it("binds odds to one stable parent wager and enforces the correct side", () => {
+    const bankrolls = [{ playerId: "a", chips: 1000 }];
+    const placed = placeLiveCrapsOdds({ odds: [], bankrolls, id: "o1", playerId: "a", parentBetId: "c9", parentKind: "come", side: "pass", point: 9, lineAmount: 10, amount: 20 });
+    expect(placed.odds[0]).toMatchObject({ parentBetId: "c9", parentKind: "come", point: 9 });
+    expect(() => placeLiveCrapsOdds({ odds: placed.odds, bankrolls: placed.bankrolls, id: "o2", playerId: "a", parentBetId: "c9", parentKind: "come", side: "pass", point: 9, lineAmount: 10, amount: 10 })).toThrow(/already has odds/i);
+    expect(() => placeLiveCrapsOdds({ odds: [], bankrolls, id: "bad", playerId: "a", parentBetId: "dc5", parentKind: "dont-come", side: "pass", point: 5, lineAmount: 10, amount: 10 })).toThrow(/does not match/i);
+  });
+  it("keeps Come odds off by default on a table come-out and allows the owner to call them on", () => {
+    const bankrolls = [{ playerId: "a", chips: 1000 }];
+    const placed = placeLiveCrapsOdds({ odds: [], bankrolls, id: "o1", playerId: "a", parentBetId: "c9", parentKind: "come", side: "pass", point: 9, lineAmount: 10, amount: 20 });
+    const off = settleLiveCrapsOdds({ ...placed, total: 7, tablePointBefore: null });
+    expect(off.settlements[0].status).toBe("off");
+    expect(off.odds).toHaveLength(1);
+    const calledOn = setLiveCrapsOddsWorkingOverride({ odds: placed.odds, playerId: "a", betId: "o1", workingOverride: "on" });
+    const lost = settleLiveCrapsOdds({ odds: calledOn, bankrolls: placed.bankrolls, total: 7, tablePointBefore: null });
+    expect(lost.settlements[0].status).toBe("lost");
+  });
+  it("keeps Don't Come odds on by default during a table come-out", () => {
+    const placed = placeLiveCrapsOdds({ odds: [], bankrolls: [{ playerId: "a", chips: 1000 }], id: "o1", playerId: "a", parentBetId: "dc5", parentKind: "dont-come", side: "dont-pass", point: 5, lineAmount: 10, amount: 60 });
+    const won = settleLiveCrapsOdds({ ...placed, total: 7, tablePointBefore: null });
+    expect(won.settlements[0]).toMatchObject({ status: "won", profit: 40 });
+  });
   it("rejects odds above table maximum and settles a winning Pass odds bet", () => {
     const bankrolls = [{ playerId: "a", chips: 1000 }];
-    expect(() => placeLiveCrapsOdds({ odds: [], bankrolls, id: "o1", playerId: "a", parentBetId: "p1", side: "pass", point: 6, lineAmount: 10, amount: 60 })).toThrow(/maximum/i);
-    const placed = placeLiveCrapsOdds({ odds: [], bankrolls, id: "o1", playerId: "a", parentBetId: "p1", side: "pass", point: 6, lineAmount: 10, amount: 50 });
-    const settled = settleLiveCrapsOdds({ ...placed, total: 6 });
+    expect(() => placeLiveCrapsOdds({ odds: [], bankrolls, id: "o1", playerId: "a", parentBetId: "p1", parentKind: "pass-line", side: "pass", point: 6, lineAmount: 10, amount: 60 })).toThrow(/maximum/i);
+    const placed = placeLiveCrapsOdds({ odds: [], bankrolls, id: "o1", playerId: "a", parentBetId: "p1", parentKind: "pass-line", side: "pass", point: 6, lineAmount: 10, amount: 50 });
+    const settled = settleLiveCrapsOdds({ ...placed, total: 6, tablePointBefore: 6 });
     expect(settled.bankrolls[0].chips).toBe(1060);
     expect(settled.settlements[0]).toMatchObject({ status: "won", stake: 50, credit: 110, profit: 60 });
   });
