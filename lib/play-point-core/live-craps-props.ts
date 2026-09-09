@@ -5,6 +5,8 @@ export type LiveCrapsPropKind = "any-seven" | "any-craps" | "two" | "three" | "e
 export type LiveCrapsPropBet = { id: string; playerId: string; kind: LiveCrapsPropKind; amount: number };
 export type LiveCrapsPropSettlement = { betId: string; playerId: string; kind: LiveCrapsPropKind; stake: number; credit: number; profit: number; status: "won" | "lost" };
 
+const STANDARD_PROP_KINDS = new Set<LiveCrapsPropKind>(["any-seven", "any-craps", "two", "three", "eleven", "twelve", "horn", "ce"]);
+
 function assertAmount(amount: number, divisor = 1) {
   if (!Number.isInteger(amount) || amount <= 0) throw new Error("Prop wager must be a positive whole number of chips.");
   if (amount % divisor !== 0) throw new Error(`This combination wager must be made in ${divisor}-chip units.`);
@@ -12,6 +14,7 @@ function assertAmount(amount: number, divisor = 1) {
 
 export function validateLiveCrapsPropBet(bet: LiveCrapsPropBet) {
   if (!bet.id.trim() || !bet.playerId.trim()) throw new Error("Prop wager identity is required.");
+  if (!STANDARD_PROP_KINDS.has(bet.kind)) throw new Error("That proposition is not available on the Standard Table.");
   if (bet.kind === "horn") assertAmount(bet.amount, 4);
   else if (bet.kind === "ce") assertAmount(bet.amount, 2);
   else assertAmount(bet.amount);
