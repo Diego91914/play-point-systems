@@ -6,14 +6,15 @@ import { confirmLiveCrapsDiceEntry, createLiveCrapsDiceEntry, selectLiveCrapsDie
 import { projectLiveCrapsSettlementForPlayer, settleConfirmedLiveCrapsPhysicalRoll, type LiveCrapsSettlementState } from "../lib/play-point-core/live-craps-settlement";
 
 const table = () => createLiveCrapsTable({ players: [{ id: "a", name: "A", seat: 0 }, { id: "b", name: "B", seat: 1 }] });
+let rollSequence = 0;
 const confirmed = (die1: number, die2: number) => {
   let entry = createLiveCrapsDiceEntry("a");
   entry = selectLiveCrapsDie(entry, 1, die1);
   entry = selectLiveCrapsDie(entry, 2, die2);
-  return confirmLiveCrapsDiceEntry(entry, "a");
+  return { ...confirmLiveCrapsDiceEntry(entry, "a"), rollId: `test-roll-${++rollSequence}` };
 };
 const state = (overrides: Partial<LiveCrapsSettlementState> = {}): LiveCrapsSettlementState => ({
-  table: table(), bets: [], comeBets: [], odds: [], bankrolls: createLiveCrapsBankrolls(["a", "b"]), ats: createLiveCrapsAtsState("a"), ...overrides,
+  table: table(), bets: [], comeBets: [], odds: [], buyLayBets: [], hardwayBets: [], propBets: [], bankrolls: createLiveCrapsBankrolls(["a", "b"]), ats: createLiveCrapsAtsState("a"), processedRollIds: [], ...overrides,
 });
 
 describe("Live Craps unified settlement", () => {
@@ -46,7 +47,7 @@ describe("Live Craps unified settlement", () => {
     expect(seven.ats.covered).toEqual([]);
   });
 
-  it("loses an established Come flat bet on a come-out 7 while default-off Come odds survive", () => {
+  it("loses an established Come flat bet on a come-out 7 while default-off Come odds are returned", () => {
     const t = { ...table(), point: null as null };
     const result = settleConfirmedLiveCrapsPhysicalRoll(state({
       table: t,
@@ -55,8 +56,8 @@ describe("Live Craps unified settlement", () => {
       odds: [{ id: "odds-9", playerId: "a", parentBetId: "come-9", parentKind: "come", side: "pass", point: 9, amount: 20, workingOverride: null }],
     }), confirmed(3, 4));
     expect(result.comeSettlements[0]).toMatchObject({ betId: "come-9", status: "lost", profit: -10 });
-    expect(result.oddsSettlements[0]).toMatchObject({ betId: "odds-9", status: "working", credit: 0, profit: 0 });
-    expect(result.odds).toHaveLength(0); // parent flat contract resolved, so the detached odds contract cannot remain on table
+    expect(result.oddsSettlements[0]).toMatchObject({ betId: "odds-9", status: "returned", credit: 20, profit: 0 });
+    expect(result.odds).toHaveLength(0);
   });
 
   it("settles Come flat and working odds together when the Come number hits", () => {
