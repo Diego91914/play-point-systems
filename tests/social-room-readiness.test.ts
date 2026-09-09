@@ -27,6 +27,14 @@ describe("Play Amplified social room readiness", () => {
     expect(route).toContain("Only the host can end the game."); expect(route).toContain("Only the host can start over."); expect(route).toContain('.delete().eq("code", code)'); expect(route).toContain('"all-about-you": "ppl_all_about_you_rooms"');
   });
 
+  it("closed social rooms return every player to the public Play Amplified home", () => {
+    const controller = read("app/games/_components/SocialRoomController.tsx");
+    expect(controller).toContain("Play Amplified · Room closed");
+    expect(controller).toContain('window.location.href = "/play-amplified"');
+    expect(controller).toContain("BACK TO PLAY AMPLIFIED");
+    expect(controller).not.toContain('window.location.href = "/play"');
+  });
+
   it("invite URLs cannot expose create-room controls", () => {
     const guard = read("app/games/_components/SocialRoomController.tsx"); expect(guard).toContain("enforceInviteOnly"); expect(guard).toContain('text.startsWith("CREATE ")'); expect(guard).toContain('button.style.display = "none"');
   });
@@ -34,6 +42,15 @@ describe("Play Amplified social room readiness", () => {
   it("the Play Amplified return surface remembers every social title", () => {
     const pwa = read("app/play-amplified/PlayAmplifiedPwa.tsx");
     for (const marker of ["pps-chain-reaction-session", "pps-how-close-session", "pps-inside-man-session", "pps-on-my-list-session", "pps-all-about-you-session", "pps-holdem-", "play-point-trivia-host-connection-v2", "play-point-trivia-player-connection-v2"]) expect(pwa).toContain(marker);
+  });
+
+  it("On My List guides the Surveyed Player directly to reveal controls after Got It", () => {
+    const moments = read("app/games/on-my-list/OnMyListMoments.tsx");
+    const client = read("app/games/on-my-list/OnMyListClient.tsx");
+    expect(moments).toContain("REVEAL_HIGHLIGHT_CLASSES");
+    expect(moments).toContain("revealButtons");
+    expect(moments).toContain("scrollIntoView");
+    expect(client).toContain("Tap the answer they guessed to reveal it and award its points.");
   });
 
   it("All About You preserves its one-star, five-round preview contract", () => {
