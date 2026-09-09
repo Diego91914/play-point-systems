@@ -16,7 +16,7 @@ function createStartedRoom(diceMode: "physical" | "virtual" = "physical") {
 }
 
 function actionDeadline(code: string) {
-  const deadline = getStoredLiveCrapsRoom(code).room.actionClock.deadlineAtMs;
+  const deadline = getStoredLiveCrapsRoom(code).room.actionClock.deadlineMs;
   if (typeof deadline !== "number") throw new Error("Expected an active action deadline.");
   return deadline;
 }
