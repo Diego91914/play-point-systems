@@ -11,8 +11,14 @@ const HOST = "host-test";
 
 function createStartedRoom(diceMode: "physical" | "virtual" = "physical") {
   const stored = createStoredLiveCrapsRoom({ code: "TEST", hostPlayerId: HOST, hostName: "Host", diceMode });
-  applyLiveCrapsRoomCommand(stored.room.code, "start", { type: "start", actorPlayerId: HOST, nowMs: 1_000 });
+  applyLiveCrapsRoomCommand(stored.room.code, "start", { type: "start", actorPlayerId: HOST, nowMs: Date.now() });
   return stored.room.code;
+}
+
+function actionDeadline(code: string) {
+  const deadline = getStoredLiveCrapsRoom(code).room.actionClock.deadlineAtMs;
+  if (typeof deadline !== "number") throw new Error("Expected an active action deadline.");
+  return deadline;
 }
 
 beforeEach(() => clearLiveCrapsRoomStoreForTests());
@@ -58,9 +64,9 @@ describe("Live Craps authoritative room boundaries", () => {
   it("clears the undo ledger at dice out so prior working wagers cannot be refunded", () => {
     const code = createStartedRoom();
     applyLiveCrapsRoomCommand(code, "pass", { type: "place-bet", actorPlayerId: HOST, kind: "pass-line", amount: 10 });
-    applyLiveCrapsRoomCommand(code, "to-dice-out", { type: "tick", nowMs: 16_000 });
+    applyLiveCrapsRoomCommand(code, "to-dice-out", { type: "tick", nowMs: actionDeadline(code) });
     expect(projectStoredLiveCrapsRoom(code, HOST).actionClock.phase).toBe("dice-out");
-    expect(projectStoredLiveCrapsRoom(code, HOST).myNewBetCount).toBe(1);
+    expect(projectStoredLiveCrapsRoom(code, HOST).myNewBetCount).toBe(0);
 
     applyLiveCrapsRoomCommand(code, "begin", { type: "begin-roll", actorPlayerId: HOST });
     expect(projectStoredLiveCrapsRoom(code, HOST).myNewBetCount).toBe(0);
@@ -69,7 +75,7 @@ describe("Live Craps authoritative room boundaries", () => {
 
   it("never projects a committed virtual result before reveal begins", () => {
     const code = createStartedRoom("virtual");
-    applyLiveCrapsRoomCommand(code, "to-dice-out", { type: "tick", nowMs: 16_000 });
+    applyLiveCrapsRoomCommand(code, "to-dice-out", { type: "tick", nowMs: actionDeadline(code) });
     expect(projectStoredLiveCrapsRoom(code, HOST).virtualReveal).toBeNull();
 
     applyLiveCrapsRoomCommand(code, "begin", { type: "begin-roll", actorPlayerId: HOST });
@@ -82,7 +88,7 @@ describe("Live Craps authoritative room boundaries", () => {
 
   it("settles an authoritative virtual roll once the reveal deadline is reached", () => {
     const code = createStartedRoom("virtual");
-    applyLiveCrapsRoomCommand(code, "to-dice-out", { type: "tick", nowMs: 16_000 });
+    applyLiveCrapsRoomCommand(code, "to-dice-out", { type: "tick", nowMs: actionDeadline(code) });
     applyLiveCrapsRoomCommand(code, "begin", { type: "begin-roll", actorPlayerId: HOST });
     const runtime = getStoredLiveCrapsRoom(code).runtime;
     expect(runtime?.settleAtMs).toBeTypeOf("number");
