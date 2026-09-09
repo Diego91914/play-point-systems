@@ -17,7 +17,7 @@ function createStartedRoom(){
 }
 
 function actionDeadline(){
-  const deadline=getStoredLiveCrapsRoom(CODE).room.actionClock.deadlineAtMs;
+  const deadline=getStoredLiveCrapsRoom(CODE).room.actionClock.deadlineMs;
   if(typeof deadline!=="number")throw new Error("Expected an active action deadline.");
   return deadline;
 }
