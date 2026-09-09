@@ -32,15 +32,12 @@ describe("Live Craps center propositions", () => {
     expect(settleLiveCrapsPropBet(bet("ce", 2), 3, 4).profit).toBe(-2);
   });
 
-  it("models World/Whirl as Horn plus Any Seven", () => {
-    expect(settleLiveCrapsPropBet(bet("world", 5), 3, 4).profit).toBe(0);
-    expect(settleLiveCrapsPropBet(bet("world", 5), 6, 6).profit).toBe(26);
-    expect(settleLiveCrapsPropBet(bet("world", 5), 2, 3).profit).toBe(-5);
-  });
-
-  it("requires combination-friendly units", () => {
+  it("requires combination-friendly Standard Table units", () => {
     expect(() => validateLiveCrapsPropBet(bet("horn", 5))).toThrow(/4-chip/i);
     expect(() => validateLiveCrapsPropBet(bet("ce", 3))).toThrow(/2-chip/i);
-    expect(() => validateLiveCrapsPropBet(bet("world", 6))).toThrow(/5-chip/i);
+  });
+
+  it("rejects World/Whirl because it is outside the Standard Table", () => {
+    expect(() => validateLiveCrapsPropBet(bet("world", 5))).toThrow();
   });
 });
