@@ -19,7 +19,7 @@ The default Live Craps experience is a **$10 Standard Table**, expressed entirel
 - Standard between-roll betting/action clock: 15 seconds.
 - Beginner assistance: ON by default.
 - Dice mode: host chooses **Physical Dice** or **Virtual Dice** when creating the table.
-- The 10-chip table minimum does not mean every individual wager must be exactly 10 chips. The virtual dealer understands legal and payout-friendly units for each wager (for example, Place 6/8 sizing) and guides or adjusts the player's requested action accordingly.
+- The 10-chip table minimum does not mean every individual wager must be exactly 10 chips. The virtual dealer understands legal and payout-friendly units for each wager and guides or adjusts the player's requested action accordingly.
 - The table is the brain: players choose intent; the server handles legal amounts, payout units, press funding, and dealer bookkeeping.
 - Future optional presets may provide different fictional-chip pacing, but $10 Standard is the canonical default.
 
@@ -28,27 +28,20 @@ No table setting represents real-money wagering. Chips cannot be purchased durin
 ## Dice modes — LOCKED
 
 ### Physical Dice
-
 - The shooter physically rolls two ordinary dice.
 - The shooter enters both individual die faces on their phone.
 - The physical dice are the real-world source of truth; the server remains authoritative for digital state.
 - Both die faces must be retained because exact composition matters for hardways and other bets.
 
 ### Virtual Dice
-
 - The server generates and permanently records both die faces before any reveal animation starts.
 - The animation is a presentation of an already-authoritative result; animation/physics never determines the wager result.
 - The current shooter receives the full cinematic roll experience.
 - Other players receive a synchronized table-view reveal of the same authoritative roll.
-- The roll should feel physical: release, tumble, contact/bounce, settle, then reveal.
-- Once generated for a roll ID, the result is immutable and repeated taps/reconnects must reveal the same result rather than generate another roll.
-- Settlement cannot occur until the authoritative virtual roll exists, and it may occur only once.
-- The existing excitement engine may trigger personalized haptics/celebrations after the roll settles according to what the result meant to each player.
+- Once generated for a roll ID, the result is immutable and repeated taps/reconnects reveal the same result.
+- Settlement may occur only once.
 
 ### Mode switching
-
-A table must never be ambiguous about which dice source owns the next roll.
-
 - The host may choose the mode at table creation.
 - A mode change is permitted only between shooter hands when the point is OFF, no roll is pending, and no betting window has locked for the next roll.
 - A mode cannot change during a shooter's active point cycle.
@@ -62,44 +55,32 @@ A table must never be ambiguous about which dice source owns the next roll.
 4. The app identifies the current shooter.
 5. Players place legal bets on their own phones.
 6. Betting/actions lock at DICE OUT.
-7. Roll according to table mode:
-   - Physical: shooter rolls two real dice and enters both faces.
-   - Virtual: server commits both faces and clients cinematically reveal them.
+7. Roll according to table mode.
 8. Play Amplified settles the authoritative roll exactly once.
 9. The table shows public payouts and each player's personal dealer actions.
-10. The 15-second default betting/action countdown begins immediately while Collect / Same Bet / Press / Move and other legal actions are available.
+10. The 15-second default betting/action countdown begins immediately.
 11. At zero, DICE OUT locks the next roll.
 12. The shooter continues until a seven-out, then the app tells the table who receives the dice next.
 
 ## Shooter and point lifecycle
 
-- Come-out roll:
-  - 7 or 11: natural; point remains off.
-  - 2, 3, or 12: craps; point remains off.
-  - 4, 5, 6, 8, 9, or 10: that number becomes the point.
-- With a point on:
-  - Rolling the point makes the point; point returns off and the same shooter begins another come-out roll.
-  - Rolling 7 is a seven-out; the point returns off and the dice pass to the next active player.
-  - Other totals leave the point unchanged and the shooter continues.
-
-Shooter order must remain deterministic through refresh/reconnect.
+- Come-out roll: 7 or 11 is a natural; 2, 3, or 12 is craps; 4, 5, 6, 8, 9, or 10 establishes the point.
+- With a point on: making the point turns it off and the same shooter continues; 7 is a seven-out and rotates the shooter; other totals leave the point unchanged.
+- Shooter order must remain deterministic through refresh/reconnect.
 
 ## Roll trust model
-
-The server remains authoritative for all digital state.
 
 - Only the current shooter may initiate/submit the roll action.
 - Each die must be an integer from 1 through 6.
 - Physical rolls use a pending confirmation/correction state before settlement.
 - Virtual rolls are server-generated, bound to a unique roll ID, immutable, and replay-safe.
-- Once settled, a roll becomes immutable history except through an explicit host/admin recovery flow that is not part of normal play.
 - Duplicate initiate/submit/confirm/settle taps must be rejected safely or resolve idempotently.
 
-## Betting direction
+## Betting scope — STANDARD TABLE FIRST
 
-The first playable build should start small and trustworthy, but the production engine is intended to grow into a complete craps table rather than a permanently simplified ruleset.
+Live Craps should feel like walking up to a familiar mainstream casino craps table. **Completeness does not mean enabling every wager that exists somewhere.** Optional, regional, legacy, electronic-table, or casino-specific wagers should not be squeezed into the launch layout merely because an engine can support them.
 
-### Core bets
+### Standard launch table
 - Pass Line
 - Don't Pass
 - Come
@@ -108,39 +89,50 @@ The first playable build should start small and trustworthy, but the production 
 - Don't Pass/Don't Come Lay Odds
 - Field
 - Place 4 / 5 / 6 / 8 / 9 / 10
-
-### Expanded table
-- Buy bets
-- Lay bets
-- Hardways
+- Buy 4 / 10, with broader Buy support available only where the table rules call for it
+- Lay 4 / 5 / 6 / 8 / 9 / 10
+- Hardways 4 / 6 / 8 / 10
 - Any 7
 - Any Craps
 - individual 2 / 3 / 11 / 12 propositions
-- Horn / Horn High
+- Horn
 - C&E
-- World / Whirl where supported
-- Hop bets
-- Small / Tall / All bonus bets
-- common combination bets such as Inside / Across as dealer shortcuts
+- common Hop bets through an advanced/center-bet surface rather than crowding the beginner layout
+- Small / Tall / All when the selected table layout includes ATS
+- Inside / Across as virtual-dealer shortcuts that expand into ordinary Place bets, not separate wager mathematics
 
-The complete offered-bet list and each payout must be verified against authoritative craps rules before release. Beginner mode may hide complexity, but it must not force the underlying table engine to be incomplete.
+### Not part of the standard launch layout
+These may remain engine experiments or future table variants, but they are **not** required for launch and should not occupy standard-table UI:
+- Big 6 / Big 8
+- Put bets
+- Over 7 / Under 7
+- Six-Seven-Eight
+- Horn High
+- World / Whirl
+- uncommon or casino-specific proposition combinations
+- any wager added solely because a jurisdiction permits it
 
-The engine should represent bets as server-owned contracts with a stake, owner, lifecycle, legal placement window, settlement rule, and payout. Clients never calculate final payouts independently.
+A future named table variant may deliberately enable an optional wager set, but the canonical `$10 Standard Table` stays focused and recognizable.
+
+### Working / off behavior
+The engine must preserve normal craps working/off behavior rather than simplify it away. On a come-out roll, Come odds, Place bets, and Buy bets are OFF by default unless the player explicitly calls them working. Don't Come odds and Lay bets remain ON. Hardway come-out behavior is table-dependent, so the standard Play Amplified table must choose and display one explicit rule rather than silently changing by venue convention.
+
+The offered-bet list and each payout must be verified against authoritative craps rules before release. Beginner mode may hide complexity without changing the underlying settlement rules for bets actually offered.
+
+Bets are server-owned contracts with a stake, owner, lifecycle, legal placement window, settlement rule, and payout. Clients never calculate final payouts independently.
 
 ## Fictional chips only
 
-Live Craps is a social game using fictional game chips. Play Amplified does not sell, cash out, transfer, or settle real money through the game. There is no real-money wagering or casino payout system.
+Live Craps is a social game using fictional game chips. Play Amplified does not sell, cash out, transfer, or settle real money through the game.
 
 ## Beginner experience
 
-Craps is intimidating to new players, so the app should explain the table progressively.
-
-- Default beginner view highlights a few understandable bets.
+- Default beginner view highlights understandable bets.
 - Tapping a bet explains what has to happen for it to win or lose.
-- Illegal bets should not be selectable.
+- Illegal bets are not selectable.
 - The virtual dealer proactively offers context such as adding odds behind a Pass/Come bet when legal.
-- Advanced players may switch to a full table view.
-- After every roll, each player should see exactly what happened to their own bets and why.
+- Advanced players may switch to the standard full-table view.
+- After every roll, each player sees exactly what happened to their own bets and why.
 
 ## Physical-table UI
 
@@ -156,50 +148,22 @@ Examples:
 
 `PASS THE DICE TO GARY`
 
-In Physical mode, the shooter roll-entry screen should use six large die faces for Die 1 and six for Die 2. The combined total should appear immediately before confirmation.
-
-In Virtual mode, the shooter sees the cinematic roll while every device ultimately reveals the identical server-authoritative dice result.
+In Physical mode, the shooter roll-entry screen uses six large die faces for Die 1 and six for Die 2. In Virtual mode, every device ultimately reveals the identical server-authoritative dice result.
 
 ## Engine phases
 
 ### Phase 1 — roll foundation
-- room/table state
-- player seats and shooter rotation
-- point lifecycle
-- physical two-die entry
-- virtual server-authoritative dice generation
-- pending-roll correction/settlement
-- immutable roll history with roll source
-- reconnect-safe state
+room/table state; player seats/shooter rotation; point lifecycle; physical two-die entry; virtual server-authoritative generation; immutable history; reconnect-safe state.
 
 ### Phase 2 — betting foundation
-- fictional chip ledger
-- Pass / Don't Pass
-- Come / Don't Come
-- Odds / Lay Odds
-- Field
-- Place bets
-- server-authoritative settlement
-- legal betting windows
+fictional chip ledger; Pass/Don't Pass; Come/Don't Come; Odds/Lay Odds; Field; Place; server-authoritative settlement; legal betting windows.
 
-### Phase 3 — expanded table
-- Buy / Lay
-- Hardways
-- proposition and Hop bets
-- Small / Tall / All
-- beginner/full table modes
+### Phase 3 — standard full table
+Buy/Lay; Hardways; standard propositions; Horn/C&E; optional ATS table feature; working/off controls; beginner/full-table modes. Exotic wager variants are not a launch requirement.
 
 ### Phase 4 — polish
-- cinematic virtual dice
-- synchronized reveal
-- personalized haptics/excitement
-- QR join
-- mobile certification
-- stale/duplicate action protection
-- host recovery tools
-- roll-history presentation
-- table stats and end-of-night summary
+cinematic virtual dice; synchronized reveal; personalized haptics/excitement; QR join; mobile certification; stale/duplicate action protection; host recovery; history/stats/end-of-night summary.
 
 ## Release gate
 
-Live Craps must not be marked live or purchasable until both offered dice modes, shooter rotation, point transitions, chip conservation, payout rules, reconnects, duplicate-action handling, mode switching protections, and every offered bet pass automated and multi-device certification.
+Live Craps must not be marked live or purchasable until both offered dice modes, shooter rotation, point transitions, chip conservation, payout rules, reconnects, duplicate-action handling, mode switching protections, working/off behavior, and every wager actually exposed on the standard table pass automated and multi-device certification.
