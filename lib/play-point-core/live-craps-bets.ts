@@ -37,7 +37,7 @@ export function placeLiveCrapsBet(input: {
   if (!bankroll) throw new Error("Player bankroll not found.");
   if (bankroll.chips < input.amount) throw new Error("Not enough chips for that bet.");
   if ((input.kind === "pass-line" || input.kind === "dont-pass") && input.point !== null) throw new Error("Line bets can only be placed on the come-out roll in v1.");
-  if (input.kind === "place" && (!input.number || input.number === 7)) throw new Error("Place bet requires 4, 5, 6, 8, 9, or 10.");
+  if (input.kind === "place" && input.number === undefined) throw new Error("Place bet requires 4, 5, 6, 8, 9, or 10.");
 
   return {
     bets: [...input.bets, { id: input.id, playerId: input.playerId, kind: input.kind, amount: input.amount, number: input.number }],
