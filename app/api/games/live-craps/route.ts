@@ -2,6 +2,8 @@ import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { createLiveCrapsServerRoom, joinLiveCrapsServerRoom } from "@/lib/play-point-core/live-craps-room-server";
 import type { LiveCrapsDiceMode } from "@/lib/play-point-core/live-craps-dice-mode";
+import { GAMES_SESSION_COOKIE, verifyGamesSessionToken } from "@/lib/play-point-core/games-session";
+import { canHostDuringPrelaunch, prelaunchHostError } from "@/lib/play-point-core/prelaunch-access";
 
 /** Initial table entry always receives a fresh opaque server-owned identity. Rejoin uses the issued playerId + token on the room endpoint. */
 function newPlayerId() {
@@ -24,6 +26,10 @@ export async function POST(request: NextRequest) {
     const body = await request.json().catch(() => ({}));
     const action = typeof body.action === "string" ? body.action : "";
     if (action === "create") {
+      const claims = await verifyGamesSessionToken(request.cookies.get(GAMES_SESSION_COOKIE)?.value);
+      if (!claims) return NextResponse.json({ error: "Sign in to host Live Craps." }, { status: 401 });
+      // Live Craps is founder/builder playtest-only until it receives a public catalog entitlement.
+      if (!canHostDuringPrelaunch(claims)) return NextResponse.json({ error: prelaunchHostError() }, { status: 403 });
       const result = createLiveCrapsServerRoom({
         code: String(body.code ?? ""),
         hostPlayerId: newPlayerId(),
