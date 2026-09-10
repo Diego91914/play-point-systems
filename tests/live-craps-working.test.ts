@@ -18,9 +18,9 @@ describe("Live Craps working/off controls", () => {
     expect(defaultLiveCrapsComeOutWorking("come-odds")).toBe(false);
     expect(defaultLiveCrapsComeOutWorking("place")).toBe(false);
     expect(defaultLiveCrapsComeOutWorking("buy")).toBe(false);
+    expect(defaultLiveCrapsComeOutWorking("hardway")).toBe(false);
     expect(defaultLiveCrapsComeOutWorking("dont-come-odds")).toBe(true);
     expect(defaultLiveCrapsComeOutWorking("lay")).toBe(true);
-    expect(defaultLiveCrapsComeOutWorking("hardway")).toBe(true);
   });
 
   it("works supported contracts normally while a table point is on", () => {
@@ -31,6 +31,12 @@ describe("Live Craps working/off controls", () => {
 
   it("lets the owner call an otherwise-off wager working", () => {
     const original = contract("come-odds");
+    const changed = setLiveCrapsWorkingOverride({ contracts: [original], playerId: "a", betId: original.betId, working: true });
+    expect(decideLiveCrapsWorking({ contract: changed[0], tablePoint: null })).toMatchObject({ working: true, reason: "player-called-on" });
+  });
+
+  it("lets the owner call hardways working on the come-out", () => {
+    const original = contract("hardway");
     const changed = setLiveCrapsWorkingOverride({ contracts: [original], playerId: "a", betId: original.betId, working: true });
     expect(decideLiveCrapsWorking({ contract: changed[0], tablePoint: null })).toMatchObject({ working: true, reason: "player-called-on" });
   });
