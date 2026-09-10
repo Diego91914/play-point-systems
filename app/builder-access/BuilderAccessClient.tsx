@@ -32,23 +32,13 @@ export function BuilderAccessClient({ nextPath }: { nextPath: string }) {
     setMessage("Opening builder access…");
 
     try {
-      const unlockResponse = await fetch("/api/private-access", {
+      // Create the Play Amplified builder session in one request. The server
+      // verifies the password against the private-access service and then mints
+      // the all-games session cookie on this origin.
+      const sessionResponse = await fetch("/api/games/account/builder-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: normalizedCode }),
-        cache: "no-store",
-      });
-      const unlockPayload = await unlockResponse.json().catch(() => ({}));
-      if (!unlockResponse.ok) {
-        throw new Error(
-          typeof unlockPayload?.error === "string"
-            ? unlockPayload.error
-            : "Builder access could not be verified.",
-        );
-      }
-
-      const sessionResponse = await fetch("/api/games/account/builder-session", {
-        method: "POST",
         cache: "no-store",
       });
       const sessionPayload = await sessionResponse.json().catch(() => ({}));
