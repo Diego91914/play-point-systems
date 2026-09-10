@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       if (!claims) return NextResponse.json({ error: "Sign in to host Live Craps." }, { status: 401 });
       // Live Craps is founder/builder playtest-only until it receives a public catalog entitlement.
       if (!canHostDuringPrelaunch(claims)) return NextResponse.json({ error: prelaunchHostError() }, { status: 403 });
-      const result = createLiveCrapsServerRoom({
+      const result = await createLiveCrapsServerRoom({
         code: String(body.code ?? ""),
         hostPlayerId: newPlayerId(),
         hostName: requiredName(body.name, "Host"),
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true, ...result }, { status: 201 });
     }
     if (action === "join") {
-      const result = joinLiveCrapsServerRoom(String(body.code ?? ""), {
+      const result = await joinLiveCrapsServerRoom(String(body.code ?? ""), {
         playerId: newPlayerId(),
         name: requiredName(body.name, "Player"),
       });
