@@ -25,17 +25,18 @@ export type LiveCrapsWorkingDecision = {
 
 /**
  * Canonical Play Amplified $10 Standard Table convention.
- * Hardways use the Las Vegas convention: ON on the come-out unless called off.
+ * Place, Buy, Come odds, and Hardways are OFF on the come-out by default.
+ * Don't Come odds and Lay wagers remain working unless the owner calls them off.
  */
 export function defaultLiveCrapsComeOutWorking(kind: LiveCrapsWorkingKind): boolean {
   switch (kind) {
     case "come-odds":
     case "place":
     case "buy":
+    case "hardway":
       return false;
     case "dont-come-odds":
     case "lay":
-    case "hardway":
       return true;
   }
 }
