@@ -100,4 +100,43 @@ describe("Live Craps authoritative room boundaries", () => {
     expect(projected.recentRolls.length).toBe(1);
     expect(projected.actionClock.phase).toBe("post-roll-betting");
   });
+
+  it("advances an expired betting window on read and clears its undo ledger", () => {
+    const code = createStartedRoom();
+    applyLiveCrapsRoomCommand(code, "pass", { type: "place-bet", actorPlayerId: HOST, kind: "pass-line", amount: 10 });
+    const beforeVersion = getStoredLiveCrapsRoom(code).version;
+    const deadline = actionDeadline(code);
+
+    const projected = projectStoredLiveCrapsRoom(code, HOST, deadline);
+    expect(projected.actionClock.phase).toBe("dice-out");
+    expect(projected.myNewBetCount).toBe(0);
+    expect(projected.version).toBe(beforeVersion + 1);
+    expect(getStoredLiveCrapsRoom(code).newWagersByPlayer).toEqual({});
+  });
+
+  it("settles an expired virtual reveal on read and hides the committed result", () => {
+    const code = createStartedRoom("virtual");
+    applyLiveCrapsRoomCommand(code, "to-dice-out", { type: "tick", nowMs: actionDeadline(code) });
+    applyLiveCrapsRoomCommand(code, "begin", { type: "begin-roll", actorPlayerId: HOST });
+    const settleAt = getStoredLiveCrapsRoom(code).runtime?.settleAtMs;
+    if (typeof settleAt !== "number") throw new Error("Expected virtual reveal settlement deadline.");
+    const beforeVersion = getStoredLiveCrapsRoom(code).version;
+
+    const projected = projectStoredLiveCrapsRoom(code, HOST, settleAt);
+    expect(projected.virtualReveal).toBeNull();
+    expect(projected.recentRolls).toHaveLength(1);
+    expect(projected.actionClock.phase).toBe("post-roll-betting");
+    expect(projected.version).toBe(beforeVersion + 1);
+  });
+
+  it("does not bump room version when a read causes no timed transition", () => {
+    const code = createStartedRoom();
+    const beforeVersion = getStoredLiveCrapsRoom(code).version;
+    const deadline = actionDeadline(code);
+    const projected = projectStoredLiveCrapsRoom(code, HOST, deadline - 1);
+
+    expect(projected.actionClock.phase).toBe("post-roll-betting");
+    expect(projected.version).toBe(beforeVersion);
+    expect(getStoredLiveCrapsRoom(code).version).toBe(beforeVersion);
+  });
 });
