@@ -75,6 +75,25 @@ describe("Live Craps betting", () => {
     ]);
   });
 
+  it("returns a Place bet to the rack when that number becomes the new point", () => {
+    const bets = [
+      { id: "six", playerId: "a", kind: "place" as const, amount: 60, number: 6 as const },
+      { id: "eight", playerId: "a", kind: "place" as const, amount: 60, number: 8 as const },
+      { id: "line", playerId: "a", kind: "pass-line" as const, amount: 10 },
+    ];
+    const settled = settleLiveCrapsBets({ bets, bankrolls: [{ playerId: "a", chips: 870 }], total: 6, pointBefore: null });
+    expect(settled.bankrolls[0].chips).toBe(930);
+    expect(settled.bets.map((bet) => bet.id)).toEqual(["eight", "line"]);
+    expect(settled.settlements.find((item) => item.betId === "six")).toMatchObject({
+      status: "returned",
+      credit: 60,
+      profit: 0,
+      remainsWorking: false,
+    });
+    expect(settled.settlements.find((item) => item.betId === "eight")).toMatchObject({ status: "off", remainsWorking: true });
+    expect(settled.settlements.find((item) => item.betId === "line")).toMatchObject({ status: "working", remainsWorking: true });
+  });
+
   it("can represent simultaneous win, loss, and working wagers independently", () => {
     const bets = [
       { id: "field", playerId: "a", kind: "field" as const, amount: 10 },
