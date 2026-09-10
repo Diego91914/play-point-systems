@@ -88,6 +88,38 @@ export async function commitDurableLiveCrapsCommand(input: {
   };
 }
 
+export async function commitDurableLiveCrapsJoin(input: {
+  roomCode: string;
+  expectedVersion: number;
+  commandId: string;
+  state: LiveCrapsStoredRoom;
+  playerId: string;
+  token: string;
+}): Promise<{ applied: boolean; version: number; state: LiveCrapsStoredRoom }> {
+  const supabase = getSupabaseServerClient();
+  const { data, error } = await supabase.rpc("ppl_live_craps_commit_join", {
+    p_room_code: normalizeCode(input.roomCode),
+    p_expected_version: input.expectedVersion,
+    p_command_id: input.commandId,
+    p_state: input.state,
+    p_player_id: input.playerId,
+    p_token_hash: hashToken(input.token),
+  });
+  if (error) {
+    if (error.message?.includes("LIVE_CRAPS_VERSION_CONFLICT")) {
+      throw new Error("LIVE_CRAPS_VERSION_CONFLICT");
+    }
+    throw persistenceError("Failed to atomically join durable Live Craps room", error);
+  }
+  const row = Array.isArray(data) ? data[0] : data;
+  if (!row) throw new Error("Live Craps persistence returned no join result.");
+  return {
+    applied: Boolean(row.applied),
+    version: Number(row.version),
+    state: row.state as LiveCrapsStoredRoom,
+  };
+}
+
 export async function addDurableLiveCrapsPlayerSession(roomCode: string, playerId: string, token: string) {
   const supabase = getSupabaseServerClient();
   const { error } = await supabase.rpc("ppl_live_craps_add_player_session", {
