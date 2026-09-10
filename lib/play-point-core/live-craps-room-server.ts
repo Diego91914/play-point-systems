@@ -205,6 +205,12 @@ function point(value: unknown): LiveCrapsPoint | undefined {
   return [4, 5, 6, 8, 9, 10].includes(n) ? (n as LiveCrapsPoint) : undefined;
 }
 
+function requiredPoint(value: unknown): LiveCrapsPoint {
+  const parsed = point(value);
+  if (parsed === undefined) throw new Error("Place number must be 4, 5, 6, 8, 9, or 10.");
+  return parsed;
+}
+
 function betKind(value: unknown): LiveCrapsBetKind {
   if (value === "pass-line" || value === "dont-pass" || value === "field" || value === "place") return value;
   throw new Error("Unsupported Standard Table bet.");
@@ -241,6 +247,7 @@ function commandFromAction(
       parentBetId: requiredString(payload.parentBetId, "parentBetId"),
       amount: Number(payload.amount),
     };
+  if (action === "pull-place") return { type: "pull-place", actorPlayerId: playerId, number: requiredPoint(payload.number) };
   if (action === "undo-bet") return { type: "undo-bet", actorPlayerId: playerId };
   if (action === "clear-new-bets") return { type: "clear-new-bets", actorPlayerId: playerId };
   if (action === "begin-roll") return { type: "begin-roll", actorPlayerId: playerId };
