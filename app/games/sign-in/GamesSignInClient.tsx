@@ -116,7 +116,11 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
           </button>
         </>
       ) : (
-        <div className="mx-auto mt-7 h-7 w-7 animate-spin rounded-full border-2 border-cyan-200/25 border-t-cyan-200" aria-label="Connecting" />
+        <div
+          role="status"
+          aria-label="Connecting"
+          className="mx-auto mt-7 h-7 w-7 animate-spin rounded-full border-2 border-cyan-200/25 border-t-cyan-200"
+        />
       )}
 
       <p className="mt-6 text-xs leading-6 text-white/42">

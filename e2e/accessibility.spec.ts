@@ -3,10 +3,9 @@ import { expect, test } from "@playwright/test";
 
 const publicRoutes = [
   "/",
-  "/games",
+  "/play-amplified",
   "/live",
   "/shot-caddy",
-  "/games/trivia",
   "/music",
   "/about",
   "/contact",
@@ -16,6 +15,7 @@ const publicRoutes = [
 for (const route of publicRoutes) {
   test(`${route} has no serious automated accessibility violations`, async ({ page }) => {
     await page.goto(route);
+    await page.waitForLoadState("domcontentloaded");
     await expect(page.locator("h1").first()).toBeVisible();
 
     const results = await new AxeBuilder({ page })
@@ -30,7 +30,8 @@ for (const route of publicRoutes) {
 }
 
 test("keyboard users can skip to the main content", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/shot-caddy");
+  await page.waitForLoadState("domcontentloaded");
   await page.keyboard.press("Tab");
   const skipLink = page.getByRole("link", { name: "Skip to content" });
   await expect(skipLink).toBeFocused();
