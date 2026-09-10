@@ -55,6 +55,20 @@ describe("Live Craps server-owned betting window",()=>{
     expect(chips()).toBe(initial);
   });
 
+  it("does not lock the table to Dice Out until the shooter has Pass Line or Don't Pass money",()=>{
+    createStartedRoom();
+    const firstDeadline=actionDeadline();
+    applyLiveCrapsRoomCommand(CODE,"wait-for-line",{type:"tick",nowMs:firstDeadline});
+    const held=getStoredLiveCrapsRoom(CODE).room.actionClock;
+    expect(held.phase).toBe("post-roll-betting");
+    expect(held.deadlineMs).toBeGreaterThan(firstDeadline);
+    expect(()=>applyLiveCrapsRoomCommand(CODE,"roll-without-line",{type:"begin-roll",actorPlayerId:HOST})).toThrow(/Pass Line or Don't Pass/i);
+
+    applyLiveCrapsRoomCommand(CODE,"line-bet",{type:"place-bet",actorPlayerId:HOST,kind:"pass-line",amount:10});
+    applyLiveCrapsRoomCommand(CODE,"dice-out-after-line",{type:"tick",nowMs:actionDeadline()});
+    expect(getStoredLiveCrapsRoom(CODE).room.actionClock.phase).toBe("dice-out");
+  });
+
   it("clears the undo ledger at dice out and rejects betting while dice are out",()=>{
     createStartedRoom();
     applyLiveCrapsRoomCommand(CODE,"bet-1",{type:"place-bet",actorPlayerId:HOST,kind:"pass-line",amount:10});
@@ -66,6 +80,7 @@ describe("Live Craps server-owned betting window",()=>{
 
   it("keeps virtual dice private until reveal and settles the committed roll exactly once",()=>{
     createStartedRoom();
+    applyLiveCrapsRoomCommand(CODE,"line-bet",{type:"place-bet",actorPlayerId:HOST,kind:"pass-line",amount:10});
     applyLiveCrapsRoomCommand(CODE,"dice-out",{type:"tick",nowMs:actionDeadline()});
     expect(projectStoredLiveCrapsRoom(CODE,HOST).virtualReveal).toBeNull();
 
