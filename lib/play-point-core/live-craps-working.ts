@@ -47,14 +47,13 @@ export function setLiveCrapsWorkingOverride(input: {
   working: boolean | "default";
 }): LiveCrapsWorkingContract[] {
   let found = false;
-  const contracts = input.contracts.map((contract) => {
+  const contracts: LiveCrapsWorkingContract[] = input.contracts.map((contract): LiveCrapsWorkingContract => {
     if (contract.betId !== input.betId) return contract;
     if (contract.playerId !== input.playerId) throw new Error("Only the wager owner may change working status.");
     found = true;
-    return {
-      ...contract,
-      playerOverride: input.working === "default" ? "default" : input.working ? "on" : "off",
-    };
+    const playerOverride: LiveCrapsWorkingContract["playerOverride"] =
+      input.working === "default" ? "default" : input.working ? "on" : "off";
+    return { ...contract, playerOverride };
   });
   if (!found) throw new Error("Working wager not found.");
   return contracts;
