@@ -61,6 +61,20 @@ describe("Live Craps betting", () => {
     expect(seven.settlements[0].status).toBe("lost");
   });
 
+  it("keeps existing Place bets off through a come-out 7", () => {
+    const bets = [
+      { id: "six", playerId: "a", kind: "place" as const, amount: 60, number: 6 as const },
+      { id: "eight", playerId: "a", kind: "place" as const, amount: 60, number: 8 as const },
+    ];
+    const settled = settleLiveCrapsBets({ bets, bankrolls: [{ playerId: "a", chips: 880 }], total: 7, pointBefore: null });
+    expect(settled.bankrolls[0].chips).toBe(880);
+    expect(settled.bets.map((bet) => bet.id)).toEqual(["six", "eight"]);
+    expect(settled.settlements.map((item) => [item.betId, item.status, item.profit])).toEqual([
+      ["six", "off", 0],
+      ["eight", "off", 0],
+    ]);
+  });
+
   it("can represent simultaneous win, loss, and working wagers independently", () => {
     const bets = [
       { id: "field", playerId: "a", kind: "field" as const, amount: 10 },
