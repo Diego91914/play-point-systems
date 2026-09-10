@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { GET as getHostSnapshot } from "../app/api/trivia/sessions/[sessionId]/route";
 import { GET as getPlayerSnapshot } from "../app/api/trivia/sessions/[sessionId]/players/[playerId]/route";
 import { POST as createRoom } from "../app/api/trivia/sessions/route";
@@ -16,6 +16,10 @@ import {
   createTriviaLiveSession,
   joinTriviaLiveSession,
 } from "../app/games/trivia/play/trivia-live-session";
+import {
+  createGamesSessionToken,
+  GAMES_SESSION_COOKIE,
+} from "../lib/play-point-core/games-session";
 
 afterEach(() => vi.unstubAllEnvs());
 
@@ -59,9 +63,19 @@ describe("trivia live recovery credentials", () => {
   });
 
   it("keeps newly issued host and player tokens out of response bodies", async () => {
-    const createResponse = await createRoom(new Request("https://example.com/api/trivia/sessions", {
+    vi.stubEnv("PLAY_POINT_GAMES_SESSION_SECRET", "trivia-recovery-test-secret");
+    const gamesToken = await createGamesSessionToken({
+      sub: "builder-test",
+      email: "builder@example.com",
+      role: "builder",
+      entitlements: [],
+    });
+    const createResponse = await createRoom(new NextRequest("https://example.com/api/trivia/sessions", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `${GAMES_SESSION_COOKIE}=${gamesToken}`,
+      },
       body: JSON.stringify({
         category: "bible",
         difficultyFilter: "mixed",
