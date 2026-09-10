@@ -8,8 +8,8 @@ import {
   type LiveCrapsStoredRoom,
 } from "./live-craps-room-store";
 import {
-  addDurableLiveCrapsPlayerSession,
   commitDurableLiveCrapsCommand,
+  commitDurableLiveCrapsJoin,
   createDurableLiveCrapsRoom,
   loadDurableLiveCrapsRoom,
   verifyDurableLiveCrapsPlayerSession,
@@ -82,6 +82,47 @@ async function applyDurableCommand(
   throw new Error("Live Craps table changed too quickly. Try that action again.");
 }
 
+async function applyDurableJoin(
+  roomCode: string,
+  commandId: string,
+  playerId: string,
+  name: string,
+  token: string,
+  maxAttempts = 4,
+) {
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    const durable = await loadAndHydrate(roomCode);
+    const next = applyLiveCrapsRoomCommand(durable.roomCode, commandId, {
+      type: "join",
+      playerId,
+      name,
+    });
+    try {
+      const committed = await commitDurableLiveCrapsJoin({
+        roomCode: durable.roomCode,
+        expectedVersion: durable.version,
+        commandId,
+        state: next,
+        playerId,
+        token,
+      });
+      const committedDurable: DurableLiveCrapsRoom = {
+        roomCode: durable.roomCode,
+        version: committed.version,
+        state: committed.state,
+      };
+      hydrateLocal(committedDurable);
+      return committedDurable;
+    } catch (error) {
+      if (error instanceof Error && error.message === "LIVE_CRAPS_VERSION_CONFLICT") {
+        continue;
+      }
+      throw error;
+    }
+  }
+  throw new Error("Live Craps table changed too quickly. Try joining again.");
+}
+
 async function projectDurableRoom(code: string, playerId: string) {
   for (let attempt = 0; attempt < 4; attempt += 1) {
     const durable = await loadAndHydrate(code);
@@ -138,12 +179,13 @@ export async function createLiveCrapsServerRoom(input: {
 export async function joinLiveCrapsServerRoom(code: string, input: { playerId: string; name: string }) {
   const roomCode = normalizeCode(code);
   const token = randomUUID();
-  const committed = await applyDurableCommand(roomCode, `join-${input.playerId}`, {
-    type: "join",
-    playerId: input.playerId,
-    name: input.name,
-  });
-  await addDurableLiveCrapsPlayerSession(roomCode, input.playerId, token);
+  const committed = await applyDurableJoin(
+    roomCode,
+    `join-${input.playerId}`,
+    input.playerId,
+    input.name,
+    token,
+  );
   hydrateLocal(committed);
   return {
     code: roomCode,
