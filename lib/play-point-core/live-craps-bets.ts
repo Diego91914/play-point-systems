@@ -4,7 +4,7 @@ export const LIVE_CRAPS_STARTING_BANKROLL = 1_000;
 export type LiveCrapsBetKind = "pass-line" | "dont-pass" | "field" | "place";
 export type LiveCrapsBet = { id: string; playerId: string; kind: LiveCrapsBetKind; amount: number; number?: LiveCrapsPoint };
 export type LiveCrapsBankroll = { playerId: string; chips: number };
-export type LiveCrapsBetSettlementStatus = "won" | "lost" | "push" | "working" | "off";
+export type LiveCrapsBetSettlementStatus = "won" | "lost" | "push" | "working" | "off" | "returned";
 export type LiveCrapsBetSettlement = {
   betId: string;
   playerId: string;
@@ -74,11 +74,17 @@ export function settleLiveCrapsBets(input: {
     }
 
     if (bet.kind === "place") {
-      // Standard-table convention: existing Place bets are OFF on the come-out roll unless
-      // a future explicit working override says otherwise. A come-out 7 must not wipe them.
+      // Standard Play Amplified behavior: Place bets are OFF on the come-out.
+      // If a come-out roll establishes the same number as a Place bet, pull that
+      // Place bet down to the rack by default because the Pass Line now covers it.
       if (input.pointBefore === null) {
-        keep.push(bet);
-        receipt(bet, "off", 0, 0, true);
+        if (input.total === bet.number) {
+          credit(bet.playerId, bet.amount);
+          receipt(bet, "returned", bet.amount, 0, false);
+        } else {
+          keep.push(bet);
+          receipt(bet, "off", 0, 0, true);
+        }
         continue;
       }
       if (input.total === 7) { receipt(bet, "lost", 0, -bet.amount, false); continue; }
