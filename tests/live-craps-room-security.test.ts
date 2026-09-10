@@ -55,6 +55,20 @@ describe("Live Craps server-owned betting window",()=>{
     expect(chips()).toBe(initial);
   });
 
+  it("pulls an existing Place bet back to the rack instead of adding to it",()=>{
+    createStartedRoom();
+    const initial=chips();
+    applyLiveCrapsRoomCommand(CODE,"place-six",{type:"place-bet",actorPlayerId:HOST,kind:"place",number:6,amount:60});
+    expect(chips()).toBe(initial-60);
+    expect(projectStoredLiveCrapsRoom(CODE,HOST).myBets.filter(b=>b.kind==="place"&&b.number===6)).toHaveLength(1);
+
+    applyLiveCrapsRoomCommand(CODE,"pull-six",{type:"pull-place",actorPlayerId:HOST,number:6});
+    const projected=projectStoredLiveCrapsRoom(CODE,HOST);
+    expect(projected.myBets.filter(b=>b.kind==="place"&&b.number===6)).toHaveLength(0);
+    expect(projected.myNewBetCount).toBe(0);
+    expect(chips()).toBe(initial);
+  });
+
   it("does not lock the table to Dice Out until the shooter has Pass Line or Don't Pass money",()=>{
     createStartedRoom();
     const firstDeadline=actionDeadline();
