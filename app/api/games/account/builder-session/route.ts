@@ -17,19 +17,37 @@ function noStoreJson(body: unknown, status = 200) {
 
 export async function POST(request: NextRequest) {
   try {
-    const privateAccessCookie = request.cookies.get("sc_private_access")?.value ?? "";
-    if (!privateAccessCookie) {
-      return noStoreJson({ builderActive: false }, 401);
+    // Prefer verifying the submitted builder password directly. This avoids relying
+    // on a legacy Shot Caddy cookie surviving the Play Amplified reverse proxy.
+    const body = await request.json().catch(() => ({}));
+    const code = typeof body?.code === "string" ? body.code.trim() : "";
+
+    let builderActive = false;
+    if (code) {
+      const verification = await fetch(SHOT_CADDY_PRIVATE_ACCESS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+        cache: "no-store",
+      });
+      const payload = await verification.json().catch(() => ({}));
+      builderActive = verification.ok && payload?.builderActive === true;
+    } else {
+      // Keep the cookie path for existing sessions/backward compatibility.
+      const privateAccessCookie = request.cookies.get("sc_private_access")?.value ?? "";
+      if (privateAccessCookie) {
+        const verification = await fetch(SHOT_CADDY_PRIVATE_ACCESS_URL, {
+          method: "GET",
+          headers: { Cookie: `sc_private_access=${privateAccessCookie}` },
+          cache: "no-store",
+        });
+        const payload = await verification.json().catch(() => ({}));
+        builderActive = verification.ok && payload?.builderActive === true;
+      }
     }
 
-    const verification = await fetch(SHOT_CADDY_PRIVATE_ACCESS_URL, {
-      method: "GET",
-      headers: { Cookie: `sc_private_access=${privateAccessCookie}` },
-      cache: "no-store",
-    });
-    const payload = await verification.json().catch(() => ({}));
-    if (!verification.ok || payload?.builderActive !== true) {
-      return noStoreJson({ builderActive: false }, 401);
+    if (!builderActive) {
+      return noStoreJson({ builderActive: false, error: "Invalid builder access password." }, 401);
     }
 
     const sessionToken = await createGamesSessionToken(
