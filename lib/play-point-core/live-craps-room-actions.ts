@@ -25,6 +25,26 @@ function settlementEntry(shooterId: string, die1: number, die2: number, rollId: 
   return Object.assign(entry, { rollId });
 }
 
+function shooterHasLineWager(runtime: LiveCrapsRoomRuntime, shooterId: string) {
+  return runtime.game.bets.some((bet) => bet.playerId === shooterId && (bet.kind === "pass-line" || bet.kind === "dont-pass"));
+}
+
+function keepBettingOpenForShooterLine(runtime: LiveCrapsRoomRuntime, shooterId: string, nowMs: number) {
+  if (shooterHasLineWager(runtime, shooterId)) return runtime;
+  if (runtime.actionClock.phase !== "post-roll-betting" && runtime.actionClock.phase !== "dice-out") return runtime;
+  const durationMs = runtime.actionClock.durationSeconds * 1000;
+  return {
+    ...runtime,
+    actionClock: {
+      ...runtime.actionClock,
+      phase: "post-roll-betting" as const,
+      startedAtMs: nowMs,
+      deadlineMs: nowMs + durationMs,
+      shooterId,
+    },
+  };
+}
+
 function settleEntry(runtime: LiveCrapsRoomRuntime, entry: LiveCrapsDiceEntry, actionClock: LiveCrapsRoomRuntime["actionClock"], nowMs = Date.now()): LiveCrapsRoomRuntime {
   const result = settleConfirmedLiveCrapsPhysicalRoll(runtime.game, entry);
   const nextShooter = getLiveCrapsShooter(result.table);
@@ -39,6 +59,11 @@ export function tickLiveCrapsRoom(runtime: LiveCrapsRoomRuntime, nowMs = Date.no
     const clock = completeLiveCrapsVirtualReveal(runtime.actionClock, committed.shooterId);
     return settleEntry(runtime, settlementEntry(committed.shooterId, committed.die1, committed.die2, committed.rollId), clock, nowMs);
   }
+  const shooter = getLiveCrapsShooter(runtime.game.table);
+  if (shooter && !shooterHasLineWager(runtime, shooter.id)) {
+    const bettingHeld = keepBettingOpenForShooterLine(runtime, shooter.id, nowMs);
+    if (bettingHeld !== runtime) return bettingHeld;
+  }
   return { ...runtime, actionClock: advanceLiveCrapsDiceOutClock(runtime.actionClock, nowMs) };
 }
 
@@ -46,6 +71,7 @@ export function beginLiveCrapsRoomRoll(runtime: LiveCrapsRoomRuntime, actorPlaye
   if (runtime.phase !== "playing") throw new Error("Live Craps room is not playing.");
   const shooter = getLiveCrapsShooter(runtime.game.table);
   if (!shooter || shooter.id !== actorPlayerId) throw new Error("Only the current shooter may roll.");
+  if (!shooterHasLineWager(runtime, shooter.id)) throw new Error("Shooter must have a Pass Line or Don't Pass wager before rolling.");
   if (runtime.actionClock.phase !== "dice-out") throw new Error("Dice are not out yet.");
   if (runtime.committedRoll) throw new Error("A Live Craps roll is already committed.");
   const rollId = `roll-${runtime.game.table.nextRollSequence}`;
