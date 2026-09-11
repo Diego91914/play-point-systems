@@ -44,6 +44,14 @@ The engine should be composable rather than ten unrelated hard-coded games. Init
 
 Custom house games are a planned later feature, but the engine should be designed around reusable primitives from the beginning: deal face-up/down, betting round, draw/discard, pass, reveal, wild-card rule, high/low evaluation, split pot, special-card event, and game completion.
 
+## Possible later call: Texas Hold'em
+
+Texas Hold'em can fit Dealer's Choice, but it should not be an unlimited run that takes over the whole night. If added, its natural endpoint should be **one full blind orbit**: the small blind and big blind advance normally until every active seat has occupied the blind positions for the called mini-session, then Hold'em ends cleanly and the outer Dealer's Choice dealer button advances to the next caller.
+
+The called-game engine should therefore distinguish the **inner game button/blinds** from the **outer Dealer's Choice dealer/caller**. Pots are settled after every Hold'em hand; the table is then cleared for the next hand inside that one-orbit mini-session. When the orbit finishes, control returns to Dealer's Choice.
+
+This is a design note, not a v1 requirement.
+
 ## Dealer Blackjack
 
 Dealer Blackjack is intentionally different from the poker variants.
