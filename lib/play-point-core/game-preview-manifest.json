@@ -1,0 +1,1039 @@
+{
+  "schemaVersion": 1,
+  "captures": [
+    {
+      "id": "chain-reaction",
+      "gameIds": [
+        "chain-reaction"
+      ],
+      "launchHref": "/games/chain-reaction",
+      "captureRoute": "/games/chain-reaction",
+      "sourceUrl": "http://127.0.0.1:3003/games/chain-reaction",
+      "resolvedUrl": "http://127.0.0.1:3003/games/chain-reaction",
+      "sourceRepository": "Diego91914/play-point-systems",
+      "sourceRevision": "75f1aeede89dba5e0e26fff271646b76c5c13dc4",
+      "capturedAt": "2026-09-16T13:12:37.519Z",
+      "width": 1280,
+      "height": 960,
+      "label": "Chain Reaction · launch / setup screenshot",
+      "alt": "Chain Reaction · launch / setup screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/chain-reaction-e751ec6c45a8-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 7100,
+          "sha256": "3a51289aa34e7e32e725903b97d01754f4115054101f54ddff2362fbac5ff4bf"
+        },
+        {
+          "src": "/images/game-previews/chain-reaction-e751ec6c45a8-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 14650,
+          "sha256": "723a5ca1af684a9db510ecfab26bf0e105379a4d79b3eb2ed27b128473f87f11"
+        },
+        {
+          "src": "/images/game-previews/chain-reaction-e751ec6c45a8-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 26232,
+          "sha256": "38c4d389cd961e917830b0a2290f8d8394832544bd97ba351321302909157837"
+        }
+      ],
+      "rawSha256": "e751ec6c45a8be9d5661b70cc7c955877d829b677a3ae28d1f7a93c89b503894",
+      "environment": "Disposable local source checkout; account proxy replaced with loopback read-only gate; production rewrites removed; dev indicator disabled; anonymous; no backend credentials; service workers blocked; unchanged game components",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "how-close",
+      "gameIds": [
+        "how-close"
+      ],
+      "launchHref": "/games/how-close",
+      "captureRoute": "/games/how-close",
+      "sourceUrl": "http://127.0.0.1:3003/games/how-close",
+      "resolvedUrl": "http://127.0.0.1:3003/games/how-close",
+      "sourceRepository": "Diego91914/play-point-systems",
+      "sourceRevision": "75f1aeede89dba5e0e26fff271646b76c5c13dc4",
+      "capturedAt": "2026-09-16T13:12:39.705Z",
+      "width": 1280,
+      "height": 960,
+      "label": "How Close Are We? · launch / setup screenshot",
+      "alt": "How Close Are We? · launch / setup screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/how-close-8998cd59e140-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 8536,
+          "sha256": "d9f15d6e076f6d156792c59a634ab81a0140c06979894d8f18bd4fef74d27453"
+        },
+        {
+          "src": "/images/game-previews/how-close-8998cd59e140-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 18020,
+          "sha256": "baa97a2b004c960bb7c556a6242ecc9b1eb837e6eecb82be2f7c656980440e85"
+        },
+        {
+          "src": "/images/game-previews/how-close-8998cd59e140-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 31968,
+          "sha256": "dd45d96e240e021257dfae519326141dc57a39d3494b934061bfaae49d66899c"
+        }
+      ],
+      "rawSha256": "8998cd59e140e41947a16eb0ada0e95bf379906b7d965095503138910b4983ce",
+      "environment": "Disposable local source checkout; account proxy replaced with loopback read-only gate; production rewrites removed; dev indicator disabled; anonymous; no backend credentials; service workers blocked; unchanged game components",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "on-my-list",
+      "gameIds": [
+        "on-my-list"
+      ],
+      "launchHref": "/games/on-my-list",
+      "captureRoute": "/games/on-my-list",
+      "sourceUrl": "http://127.0.0.1:3003/games/on-my-list",
+      "resolvedUrl": "http://127.0.0.1:3003/games/on-my-list",
+      "sourceRepository": "Diego91914/play-point-systems",
+      "sourceRevision": "75f1aeede89dba5e0e26fff271646b76c5c13dc4",
+      "capturedAt": "2026-09-16T13:12:41.862Z",
+      "width": 1280,
+      "height": 960,
+      "label": "On My List · launch / setup screenshot",
+      "alt": "On My List · launch / setup screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/on-my-list-fbc70fcc3980-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 7582,
+          "sha256": "f7d79b0c6cbd102d2a0287e883e9987215fbe769c277a7c9152e315a1ebfc1dc"
+        },
+        {
+          "src": "/images/game-previews/on-my-list-fbc70fcc3980-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 15780,
+          "sha256": "99eb19c33a4db3a07c5685d5bba272bb7f19e6b1f27a8c1c3c9b2ff6d32a93f5"
+        },
+        {
+          "src": "/images/game-previews/on-my-list-fbc70fcc3980-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 28694,
+          "sha256": "d7c64a56eeccdf01ab7e5cb0b40cd09729a2c33fea305ea8b29aad24a8518d60"
+        }
+      ],
+      "rawSha256": "fbc70fcc3980823a577322b133a4f311bf1fca0057927c066e685e793cc800f4",
+      "environment": "Disposable local source checkout; account proxy replaced with loopback read-only gate; production rewrites removed; dev indicator disabled; anonymous; no backend credentials; service workers blocked; unchanged game components",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "all-about-you",
+      "gameIds": [
+        "all-about-you"
+      ],
+      "launchHref": "/games/all-about-you",
+      "captureRoute": "/games/all-about-you",
+      "sourceUrl": "http://127.0.0.1:3003/games/all-about-you",
+      "resolvedUrl": "http://127.0.0.1:3003/games/all-about-you",
+      "sourceRepository": "Diego91914/play-point-systems",
+      "sourceRevision": "75f1aeede89dba5e0e26fff271646b76c5c13dc4",
+      "capturedAt": "2026-09-16T13:12:44.038Z",
+      "width": 1280,
+      "height": 960,
+      "label": "All About You · launch / setup screenshot",
+      "alt": "All About You · launch / setup screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/all-about-you-0b2591499d92-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 8616,
+          "sha256": "24e58e07438519af26062ca4c1145e7a25e29b48c14dfabd801eb45b7e21afd7"
+        },
+        {
+          "src": "/images/game-previews/all-about-you-0b2591499d92-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 18530,
+          "sha256": "29f47c598ea91b2a7028b83b0714ff3841ab99100844d24c44b3a62309c4363d"
+        },
+        {
+          "src": "/images/game-previews/all-about-you-0b2591499d92-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 34628,
+          "sha256": "f4a3b64a74d89b18fa50f61cd83a25c79f3234a32faba7549680d91325ea1dcc"
+        }
+      ],
+      "rawSha256": "0b2591499d928a8ead36c0122f1d4845c149fed34f153bc46d492545c4ada4b1",
+      "environment": "Disposable local source checkout; account proxy replaced with loopback read-only gate; production rewrites removed; dev indicator disabled; anonymous; no backend credentials; service workers blocked; unchanged game components",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "inside-man",
+      "gameIds": [
+        "inside-man"
+      ],
+      "launchHref": "/games/inside-man",
+      "captureRoute": "/games/inside-man",
+      "sourceUrl": "http://127.0.0.1:3003/games/inside-man",
+      "resolvedUrl": "http://127.0.0.1:3003/games/inside-man",
+      "sourceRepository": "Diego91914/play-point-systems",
+      "sourceRevision": "75f1aeede89dba5e0e26fff271646b76c5c13dc4",
+      "capturedAt": "2026-09-16T13:12:46.189Z",
+      "width": 1280,
+      "height": 960,
+      "label": "The Inside Man · launch / setup screenshot",
+      "alt": "The Inside Man · launch / setup screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/inside-man-582f1469bf29-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 6788,
+          "sha256": "eec520329afc8804aecb21ef18849612ffdbe6d15a20fbae2da48c5b3d7c9fd3"
+        },
+        {
+          "src": "/images/game-previews/inside-man-582f1469bf29-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 13542,
+          "sha256": "c73e1302498ba80b25217fba8f96feab534c27de73d5f68a3a8005c42ff77add"
+        },
+        {
+          "src": "/images/game-previews/inside-man-582f1469bf29-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 24640,
+          "sha256": "d398af868797edc08b31d822b72c8c716d6e32a355c9ea5e2752c26e81c764b0"
+        }
+      ],
+      "rawSha256": "582f1469bf294a9765cf794332e409d5f7d8b2809259b04e3e8ba99896a69e6a",
+      "environment": "Disposable local source checkout; account proxy replaced with loopback read-only gate; production rewrites removed; dev indicator disabled; anonymous; no backend credentials; service workers blocked; unchanged game components",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "phone-holdem",
+      "gameIds": [
+        "phone-holdem"
+      ],
+      "launchHref": "/games/holdem",
+      "captureRoute": "/games/holdem",
+      "sourceUrl": "http://127.0.0.1:3003/games/holdem",
+      "resolvedUrl": "http://127.0.0.1:3003/games/holdem",
+      "sourceRepository": "Diego91914/play-point-systems",
+      "sourceRevision": "75f1aeede89dba5e0e26fff271646b76c5c13dc4",
+      "capturedAt": "2026-09-16T13:12:48.411Z",
+      "width": 1280,
+      "height": 960,
+      "label": "Phone Hold'em · launch / setup screenshot",
+      "alt": "Phone Hold'em · launch / setup screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/phone-holdem-49f670dd9f28-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 15738,
+          "sha256": "131d4144e7953a00656f39f5e997698a373c4119a7582f764dfbb05f188aa637"
+        },
+        {
+          "src": "/images/game-previews/phone-holdem-49f670dd9f28-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 31366,
+          "sha256": "275c2a5d94056e33a124342874121326c4f425783e2abe8777fd179c5a3e9dc1"
+        },
+        {
+          "src": "/images/game-previews/phone-holdem-49f670dd9f28-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 53470,
+          "sha256": "6aeb6c1385dd7a0d43d3940e6c6b1cd9836da152c9e381c1140147c21c353127"
+        }
+      ],
+      "rawSha256": "49f670dd9f2842ee739a531e0832f6267ab6b4f9334090c3eda003ccb0f8a588",
+      "environment": "Disposable local source checkout; account proxy replaced with loopback read-only gate; production rewrites removed; dev indicator disabled; anonymous; no backend credentials; service workers blocked; unchanged game components",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "live-craps",
+      "gameIds": [
+        "live-craps"
+      ],
+      "launchHref": "/games/live-craps",
+      "captureRoute": "/games/live-craps",
+      "sourceUrl": "http://127.0.0.1:3003/games/live-craps",
+      "resolvedUrl": "http://127.0.0.1:3003/games/live-craps",
+      "sourceRepository": "Diego91914/play-point-systems",
+      "sourceRevision": "75f1aeede89dba5e0e26fff271646b76c5c13dc4",
+      "capturedAt": "2026-09-16T13:12:50.434Z",
+      "width": 1280,
+      "height": 960,
+      "label": "Live Craps · launch / setup screenshot",
+      "alt": "Live Craps · launch / setup screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/live-craps-e7e560c3297b-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 3620,
+          "sha256": "a676e93a8906b6b39339f274c062edc39932292013161e07de4aba6ce9302e30"
+        },
+        {
+          "src": "/images/game-previews/live-craps-e7e560c3297b-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 7720,
+          "sha256": "54640e8d71e95f9db8c3cc9e8aaf0f4f7a25ec4e43f5de91cf82837bf7f9f214"
+        },
+        {
+          "src": "/images/game-previews/live-craps-e7e560c3297b-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 14538,
+          "sha256": "9b352596ff1f3fe84d28313ea66204fb0a252af08b7dfed9aa5b0caa00af87e1"
+        }
+      ],
+      "rawSha256": "e7e560c3297b54d6aa3ad71b50591160ecd633d6558b108450cbc5e4b28f070a",
+      "environment": "Disposable local source checkout; account proxy replaced with loopback read-only gate; production rewrites removed; dev indicator disabled; anonymous; no backend credentials; service workers blocked; unchanged game components",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "last-call",
+      "gameIds": [
+        "last-call"
+      ],
+      "launchHref": "/games/mystery",
+      "captureRoute": "/games/mystery",
+      "sourceUrl": "http://127.0.0.1:3003/games/mystery",
+      "resolvedUrl": "http://127.0.0.1:3003/games/mystery",
+      "sourceRepository": "Diego91914/play-point-systems",
+      "sourceRevision": "75f1aeede89dba5e0e26fff271646b76c5c13dc4",
+      "capturedAt": "2026-09-16T13:12:52.715Z",
+      "width": 1280,
+      "height": 960,
+      "label": "Last Call: Murder at Blackwood House · launch / setup screenshot",
+      "alt": "Last Call: Murder at Blackwood House · launch / setup screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/last-call-ae7ffa396b6c-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 7820,
+          "sha256": "6ab71479297898513b5db245b4df28d6d8c5fe02b0b3b163d6e2bcc65bac7a76"
+        },
+        {
+          "src": "/images/game-previews/last-call-ae7ffa396b6c-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 16562,
+          "sha256": "ced0443d56fd286209a63362738172b57e00cb4af81f9f4b19cc8ca9e1343e52"
+        },
+        {
+          "src": "/images/game-previews/last-call-ae7ffa396b6c-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 30412,
+          "sha256": "9ed687463f91ebdb4a5455ab3f951225f703c30a7f93116e9249423861813686"
+        }
+      ],
+      "rawSha256": "ae7ffa396b6c12357bb49caa529aa7f98b6c096c38362db1d361e9693611778b",
+      "environment": "Disposable local source checkout; account proxy replaced with loopback read-only gate; production rewrites removed; dev indicator disabled; anonymous; no backend credentials; service workers blocked; unchanged game components",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "shot-classic",
+      "gameIds": [
+        "shot-classic"
+      ],
+      "launchHref": "/shot-caddy/mode/classic?variant=CLASSIC",
+      "captureRoute": "/shot-caddy/mode/classic?variant=CLASSIC",
+      "sourceUrl": "http://127.0.0.1:3002/shot-caddy/mode/classic?variant=CLASSIC",
+      "resolvedUrl": "http://127.0.0.1:3002/shot-caddy/mode/classic?variant=CLASSIC",
+      "sourceRepository": "Diego91914/shot-caddy-web",
+      "sourceRevision": "cae824c48b6f5bd36762df2ced70474e13f1c221",
+      "capturedAt": "2026-09-16T13:12:55.103Z",
+      "width": 1280,
+      "height": 960,
+      "label": "Classic · launch / setup screenshot",
+      "alt": "Classic · launch / setup screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/shot-classic-bdd4991169e3-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 9526,
+          "sha256": "3b7c3ca6823cd13667527ec74daff53cfa56ebc746fe3570b26e559f17235104"
+        },
+        {
+          "src": "/images/game-previews/shot-classic-bdd4991169e3-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 20670,
+          "sha256": "026e41a23b830deffac110d8610351640609bed72ff403f9417f19cb7f0ec56d"
+        },
+        {
+          "src": "/images/game-previews/shot-classic-bdd4991169e3-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 38824,
+          "sha256": "d5ce0b2e7e71432163aa48602afedd48b9aa0761fb6459f166d34ff338af216f"
+        }
+      ],
+      "rawSha256": "bdd4991169e3beea00e0a2326781189e1d7948e10fdc7075fc4397f51f901ce1",
+      "environment": "Local development; anonymous; unreachable backend; service workers blocked; no UI alterations",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "shot-chaos",
+      "gameIds": [
+        "shot-chaos"
+      ],
+      "launchHref": "/shot-caddy/mode/classic?variant=CHAOS",
+      "captureRoute": "/shot-caddy/mode/classic?variant=CHAOS",
+      "sourceUrl": "http://127.0.0.1:3002/shot-caddy/mode/classic?variant=CHAOS",
+      "resolvedUrl": "http://127.0.0.1:3002/shot-caddy/mode/classic?variant=CHAOS",
+      "sourceRepository": "Diego91914/shot-caddy-web",
+      "sourceRevision": "cae824c48b6f5bd36762df2ced70474e13f1c221",
+      "capturedAt": "2026-09-16T13:12:57.124Z",
+      "width": 1280,
+      "height": 960,
+      "label": "Chaos · launch / setup screenshot",
+      "alt": "Chaos · launch / setup screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/shot-chaos-e3cdc062eb74-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 10390,
+          "sha256": "0694ea391b24a942bd0ae72446b7d406fda03b22c37d72c811ace1542c89a98b"
+        },
+        {
+          "src": "/images/game-previews/shot-chaos-e3cdc062eb74-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 23878,
+          "sha256": "95900a35d695a247324c0c7594425e861f83718e5ef1ee13c2a36c59178a6e6d"
+        },
+        {
+          "src": "/images/game-previews/shot-chaos-e3cdc062eb74-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 44700,
+          "sha256": "6a3c52baa66e294508c5355902d52926c3b16a0ad0c93fc50e67601e47d4b1c6"
+        }
+      ],
+      "rawSha256": "e3cdc062eb74d9008313db46db525f8121f354fb3b5d84371fbfa730097ff922",
+      "environment": "Local development; anonymous; unreachable backend; service workers blocked; no UI alterations",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "battle-mode",
+      "gameIds": [
+        "battle-mode"
+      ],
+      "launchHref": "/shot-caddy/mode/battle",
+      "captureRoute": "/shot-caddy/mode/battle",
+      "sourceUrl": "http://127.0.0.1:3002/shot-caddy/mode/battle",
+      "resolvedUrl": "http://127.0.0.1:3002/shot-caddy/mode/battle",
+      "sourceRepository": "Diego91914/shot-caddy-web",
+      "sourceRevision": "cae824c48b6f5bd36762df2ced70474e13f1c221",
+      "capturedAt": "2026-09-16T13:12:59.156Z",
+      "width": 1280,
+      "height": 960,
+      "label": "Battle Mode · launch / setup screenshot",
+      "alt": "Battle Mode · launch / setup screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/battle-mode-650199e105d2-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 10976,
+          "sha256": "84329a65e424e7343772852e7caeac3ec994fffe450c5dd96dc3c887d2ee8b32"
+        },
+        {
+          "src": "/images/game-previews/battle-mode-650199e105d2-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 25240,
+          "sha256": "5b8806dc6d517cea8084263f99c579b759d829fb342b37e0fa3cf987308c2caa"
+        },
+        {
+          "src": "/images/game-previews/battle-mode-650199e105d2-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 46394,
+          "sha256": "0420e5135aecf3ffa53adf0a87313c87dd2ceee70347e31b248033143a06c54f"
+        }
+      ],
+      "rawSha256": "650199e105d2453f7d3293742df9f8c1c1e4b1d3a813f6f8b1c5fe58c6da2d78",
+      "environment": "Local development; anonymous; unreachable backend; service workers blocked; no UI alterations",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "call-your-score",
+      "gameIds": [
+        "call-your-score"
+      ],
+      "launchHref": "/shot-caddy/mode/cys",
+      "captureRoute": "/shot-caddy/mode/cys",
+      "sourceUrl": "http://127.0.0.1:3002/shot-caddy/mode/cys",
+      "resolvedUrl": "http://127.0.0.1:3002/shot-caddy/cys",
+      "sourceRepository": "Diego91914/shot-caddy-web",
+      "sourceRevision": "cae824c48b6f5bd36762df2ced70474e13f1c221",
+      "capturedAt": "2026-09-16T13:13:01.212Z",
+      "width": 1280,
+      "height": 960,
+      "label": "Call Your Score · launch / setup screenshot",
+      "alt": "Call Your Score · launch / setup screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/call-your-score-ad6c7b7c1b1a-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 8684,
+          "sha256": "6a9bd9bf36945bd1a0dbb08bb99c7c87c2ef243034a2a5b5b35feb2f130a27c3"
+        },
+        {
+          "src": "/images/game-previews/call-your-score-ad6c7b7c1b1a-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 18304,
+          "sha256": "d03c551559b9bf6ee51a40a84f521a884b055909d6eec875088db469b8075a3a"
+        },
+        {
+          "src": "/images/game-previews/call-your-score-ad6c7b7c1b1a-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 34390,
+          "sha256": "1c5b305f072fc1bd5c095ccbb3bace740fde8ec016ee4af672aff5290aa87f2f"
+        }
+      ],
+      "rawSha256": "ad6c7b7c1b1a9c6e967c8d32b836b6793f0b03dcc870efadb12aa3783dc5fdbf",
+      "environment": "Local development; anonymous; unreachable backend; service workers blocked; no UI alterations",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "challenge-skins-pro",
+      "gameIds": [
+        "challenge-skins-pro"
+      ],
+      "launchHref": "/shot-caddy/mode/csp",
+      "captureRoute": "/shot-caddy/mode/csp",
+      "sourceUrl": "http://127.0.0.1:3002/shot-caddy/mode/csp",
+      "resolvedUrl": "http://127.0.0.1:3002/shot-caddy/mode/csp",
+      "sourceRepository": "Diego91914/shot-caddy-web",
+      "sourceRevision": "cae824c48b6f5bd36762df2ced70474e13f1c221",
+      "capturedAt": "2026-09-16T13:13:03.219Z",
+      "width": 1280,
+      "height": 960,
+      "label": "Challenge Skins Pro · launch / setup screenshot",
+      "alt": "Challenge Skins Pro · launch / setup screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/challenge-skins-pro-bc73f2cf4f9b-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 10842,
+          "sha256": "a5dd25c929404afb758a5e36ea50e9e6e7bbbe7bb65422c294609266a0fa8a27"
+        },
+        {
+          "src": "/images/game-previews/challenge-skins-pro-bc73f2cf4f9b-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 24352,
+          "sha256": "3ce288384af324013c95207e71781179acce8d6f425e9ecd708d4dca116b4518"
+        },
+        {
+          "src": "/images/game-previews/challenge-skins-pro-bc73f2cf4f9b-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 45076,
+          "sha256": "f2938d8a3049f330b28b85d9c24950865dffa289f530288de1342a1ca7fb3bd7"
+        }
+      ],
+      "rawSha256": "bc73f2cf4f9b6353e52879a89015c9a4c0b6c4fb523c149bd3078c2183609c55",
+      "environment": "Local development; anonymous; unreachable backend; service workers blocked; no UI alterations",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "wolf",
+      "gameIds": [
+        "wolf"
+      ],
+      "launchHref": "/shot-caddy/mode/wolf",
+      "captureRoute": "/shot-caddy/mode/wolf",
+      "sourceUrl": "http://127.0.0.1:3002/shot-caddy/mode/wolf",
+      "resolvedUrl": "http://127.0.0.1:3002/shot-caddy/mode/wolf",
+      "sourceRepository": "Diego91914/shot-caddy-web",
+      "sourceRevision": "cae824c48b6f5bd36762df2ced70474e13f1c221",
+      "capturedAt": "2026-09-16T13:13:05.237Z",
+      "width": 1280,
+      "height": 960,
+      "label": "Wolf · launch / setup screenshot",
+      "alt": "Wolf · launch / setup screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/wolf-4f43a91a6dba-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 10916,
+          "sha256": "64f8ca5b32d0190be298ce6c77c0d49c10547ce067a55d10c10808caa11f0a02"
+        },
+        {
+          "src": "/images/game-previews/wolf-4f43a91a6dba-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 25072,
+          "sha256": "e1144e220163c3ec5ee8a7c0cc086c6df2563f9063f35af0f3137e2eb2abec2a"
+        },
+        {
+          "src": "/images/game-previews/wolf-4f43a91a6dba-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 45362,
+          "sha256": "b9b522624ce99122569b2a9b4b73bdb96ccf7d391f18a2d4cc7ed9201c2a3576"
+        }
+      ],
+      "rawSha256": "4f43a91a6dba62553d96111f161397fc1239e2cc2394a6389af454c1c977b42b",
+      "environment": "Local development; anonymous; unreachable backend; service workers blocked; no UI alterations",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "redemption-wolf",
+      "gameIds": [
+        "redemption-wolf"
+      ],
+      "launchHref": "/shot-caddy/mode/redemption-wolf",
+      "captureRoute": "/shot-caddy/mode/redemption-wolf",
+      "sourceUrl": "http://127.0.0.1:3002/shot-caddy/mode/redemption-wolf",
+      "resolvedUrl": "http://127.0.0.1:3002/shot-caddy/mode/redemption-wolf",
+      "sourceRepository": "Diego91914/shot-caddy-web",
+      "sourceRevision": "cae824c48b6f5bd36762df2ced70474e13f1c221",
+      "capturedAt": "2026-09-16T13:13:07.228Z",
+      "width": 1280,
+      "height": 960,
+      "label": "Redemption Wolf · launch / setup screenshot",
+      "alt": "Redemption Wolf · launch / setup screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/redemption-wolf-c0aea73782ed-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 9480,
+          "sha256": "5a5bee3805628282e2ad901d4757c7b2d10886280a632ce6d836676ab1233e90"
+        },
+        {
+          "src": "/images/game-previews/redemption-wolf-c0aea73782ed-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 21184,
+          "sha256": "1c69abf5333d8dad7205b3e48781482aeed6c21748d9112688559bbd6d623e66"
+        },
+        {
+          "src": "/images/game-previews/redemption-wolf-c0aea73782ed-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 40396,
+          "sha256": "bd5e22f8d099f2ca2003994bb2300122c1280475e55a6ec038836294379413a7"
+        }
+      ],
+      "rawSha256": "c0aea73782ed95963e22eebed45a321109228c1d734ddc7634a09d34dffe4069",
+      "environment": "Local development; anonymous; unreachable backend; service workers blocked; no UI alterations",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "wolf-pack",
+      "gameIds": [
+        "wolf-pack"
+      ],
+      "launchHref": "/shot-caddy/mode/wolf-pack",
+      "captureRoute": "/shot-caddy/mode/wolf-pack",
+      "sourceUrl": "http://127.0.0.1:3002/shot-caddy/mode/wolf-pack",
+      "resolvedUrl": "http://127.0.0.1:3002/shot-caddy/mode/wolf-pack",
+      "sourceRepository": "Diego91914/shot-caddy-web",
+      "sourceRevision": "cae824c48b6f5bd36762df2ced70474e13f1c221",
+      "capturedAt": "2026-09-16T13:13:09.217Z",
+      "width": 1280,
+      "height": 960,
+      "label": "Wolf Pack · launch / setup screenshot",
+      "alt": "Wolf Pack · launch / setup screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/wolf-pack-c1501b99c99b-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 10300,
+          "sha256": "d061ebcb91a4c7a12051332a1e56f0c9f9908c054de6121d9d8c4552585b8a29"
+        },
+        {
+          "src": "/images/game-previews/wolf-pack-c1501b99c99b-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 24640,
+          "sha256": "2eac72329e367472f88b2277246b3e22644a92d70d05644b8befddbf6229e8bb"
+        },
+        {
+          "src": "/images/game-previews/wolf-pack-c1501b99c99b-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 46032,
+          "sha256": "c33c09e89a173afb208616e32ec580d39924f62391feb70cc7436573903dd758"
+        }
+      ],
+      "rawSha256": "c1501b99c99bdcda7870f06ca77a7d1b3a2c54524b5942283203e210cb3f409d",
+      "environment": "Local development; anonymous; unreachable backend; service workers blocked; no UI alterations",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "card-shark-classic",
+      "gameIds": [
+        "card-shark-classic",
+        "card-shark-stud",
+        "card-shark-draw"
+      ],
+      "launchHref": "/shot-caddy/mode/card-shark",
+      "captureRoute": "/shot-caddy/mode/card-shark",
+      "sourceUrl": "http://127.0.0.1:3002/shot-caddy/mode/card-shark",
+      "resolvedUrl": "http://127.0.0.1:3002/shot-caddy/mode/card-shark",
+      "sourceRepository": "Diego91914/shot-caddy-web",
+      "sourceRevision": "cae824c48b6f5bd36762df2ced70474e13f1c221",
+      "capturedAt": "2026-09-16T13:13:11.338Z",
+      "width": 1280,
+      "height": 960,
+      "label": "Card Shark shared format selector · Classic / Stud / Draw · screenshot",
+      "alt": "Card Shark shared format selector · Classic / Stud / Draw · screenshot",
+      "sharedSelector": true,
+      "files": [
+        {
+          "src": "/images/game-previews/card-shark-classic-6119be411b25-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 8860,
+          "sha256": "840dfc4499dc6e0e0587d186883727053b9f5c13ee8b208c5001c7dcb9032fd5"
+        },
+        {
+          "src": "/images/game-previews/card-shark-classic-6119be411b25-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 18484,
+          "sha256": "b9a160c1a7f0cbb155b01089f0a90ef5b3838d539dfaa7e4f5391add84a3cec9"
+        },
+        {
+          "src": "/images/game-previews/card-shark-classic-6119be411b25-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 31184,
+          "sha256": "f53db5aee624c8a4fcb28fe8c7a36b74cb79066181636a01a3d0a6e91a1472a0"
+        }
+      ],
+      "rawSha256": "6119be411b2551ce2e9097b9b92e83e1cd353bca7d49c211a2a5e2a20615d116",
+      "environment": "Local development; anonymous; unreachable backend; service workers blocked; no UI alterations",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "atw-ladder",
+      "gameIds": [
+        "atw-ladder",
+        "atw-sprint",
+        "atw-survival"
+      ],
+      "launchHref": "/shot-caddy/mode/around-the-world",
+      "captureRoute": "/shot-caddy/mode/around-the-world",
+      "sourceUrl": "http://127.0.0.1:3002/shot-caddy/mode/around-the-world",
+      "resolvedUrl": "http://127.0.0.1:3002/shot-caddy/mode/around-the-world",
+      "sourceRepository": "Diego91914/shot-caddy-web",
+      "sourceRevision": "cae824c48b6f5bd36762df2ced70474e13f1c221",
+      "capturedAt": "2026-09-16T13:13:13.440Z",
+      "width": 1280,
+      "height": 960,
+      "label": "Around The World shared format selector · Ladder / Sprint / Survival · screenshot",
+      "alt": "Around The World shared format selector · Ladder / Sprint / Survival · screenshot",
+      "sharedSelector": true,
+      "files": [
+        {
+          "src": "/images/game-previews/atw-ladder-81381dcb5672-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 10040,
+          "sha256": "f23a4641e2151cb4fd5f253d80429393072561048729d823689152664fc57838"
+        },
+        {
+          "src": "/images/game-previews/atw-ladder-81381dcb5672-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 19716,
+          "sha256": "d733cae4f50c1e125c0bb4a896dab2678b7650fb44f5b720406b1e925843d144"
+        },
+        {
+          "src": "/images/game-previews/atw-ladder-81381dcb5672-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 35766,
+          "sha256": "8e5236afeb37864750bf95aadc99d568b8a1c12bfd77f4c7ce7c5cd0662a7bc5"
+        }
+      ],
+      "rawSha256": "81381dcb5672c4da7d2a173ae54c4015e577bd6622f00b02c232ffc54fbe479b",
+      "environment": "Local development; anonymous; unreachable backend; service workers blocked; no UI alterations",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "disc-warrior",
+      "gameIds": [
+        "disc-warrior"
+      ],
+      "launchHref": "/shot-caddy/mode/disc-warrior",
+      "captureRoute": "/shot-caddy/mode/disc-warrior",
+      "sourceUrl": "http://127.0.0.1:3002/shot-caddy/mode/disc-warrior",
+      "resolvedUrl": "http://127.0.0.1:3002/shot-caddy/mode/disc-warrior",
+      "sourceRepository": "Diego91914/shot-caddy-web",
+      "sourceRevision": "cae824c48b6f5bd36762df2ced70474e13f1c221",
+      "capturedAt": "2026-09-16T13:13:15.532Z",
+      "width": 1280,
+      "height": 960,
+      "label": "Disc Warrior · launch / setup screenshot",
+      "alt": "Disc Warrior · launch / setup screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/disc-warrior-ce9a04e6c642-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 9642,
+          "sha256": "b796ba91907d0a39a419dd30e5f85d28fecc6196c11bc96a862ae9f1318e7e3e"
+        },
+        {
+          "src": "/images/game-previews/disc-warrior-ce9a04e6c642-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 20196,
+          "sha256": "d3b83b5002abfeccbbf4aba0b6ed66b83d8045d09cbc98940ea3dd3a85f8f666"
+        },
+        {
+          "src": "/images/game-previews/disc-warrior-ce9a04e6c642-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 34832,
+          "sha256": "87ee2d99d61fc9798a365264d5b2e6c263c326766df7cd95531cc8700a358a07"
+        }
+      ],
+      "rawSha256": "ce9a04e6c642783aa2a74cecfa6c8603fc8d5f0f17d9737254904beddda0bf09",
+      "environment": "Local development; anonymous; unreachable backend; service workers blocked; no UI alterations",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "quest-digital",
+      "gameIds": [
+        "quest-digital"
+      ],
+      "launchHref": "/shot-caddy/mode/quest-caddy/living-rpg",
+      "captureRoute": "/shot-caddy/mode/quest-caddy/living-rpg",
+      "sourceUrl": "http://127.0.0.1:3002/shot-caddy/mode/quest-caddy/living-rpg",
+      "resolvedUrl": "http://127.0.0.1:3002/shot-caddy/mode/quest-caddy/living-rpg",
+      "sourceRepository": "Diego91914/shot-caddy-web",
+      "sourceRevision": "cae824c48b6f5bd36762df2ced70474e13f1c221",
+      "capturedAt": "2026-09-16T13:13:17.499Z",
+      "width": 1280,
+      "height": 960,
+      "label": "Digital Adventure · signed-out launch screenshot",
+      "alt": "Digital Adventure · signed-out launch screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/quest-digital-acad536f38fd-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 2812,
+          "sha256": "3811297cdf3bbeeb82dab357f8e9fe9583ee05ea4952a4126d5172f1732a8cf2"
+        },
+        {
+          "src": "/images/game-previews/quest-digital-acad536f38fd-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 5724,
+          "sha256": "d6e5653896917f0685c2268856ada8d16d655cc10abf2b4351c4ef7e11cd1653"
+        },
+        {
+          "src": "/images/game-previews/quest-digital-acad536f38fd-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 10654,
+          "sha256": "88d3ab578d210eac63c156e1351b925769718dff347a1b978e955e4d6c42c4d6"
+        }
+      ],
+      "rawSha256": "acad536f38fdcbcb4a580522af677037ef0775e35db59b299afe0d3a8012daab",
+      "environment": "Local development; anonymous; unreachable backend; service workers blocked; no UI alterations",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "quest-disc-golf",
+      "gameIds": [
+        "quest-disc-golf"
+      ],
+      "launchHref": "/shot-caddy/mode/quest-caddy/disc-golf",
+      "captureRoute": "/shot-caddy/mode/quest-caddy/disc-golf",
+      "sourceUrl": "http://127.0.0.1:3002/shot-caddy/mode/quest-caddy/disc-golf",
+      "resolvedUrl": "http://127.0.0.1:3002/shot-caddy/mode/quest-caddy/disc-golf",
+      "sourceRepository": "Diego91914/shot-caddy-web",
+      "sourceRevision": "cae824c48b6f5bd36762df2ced70474e13f1c221",
+      "capturedAt": "2026-09-16T13:13:19.537Z",
+      "width": 1280,
+      "height": 720,
+      "crop": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      },
+      "label": "Disc Golf · launch instructions screenshot (portrait section outside capture)",
+      "alt": "Disc Golf · launch instructions screenshot (portrait section outside capture)",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/quest-disc-golf-340bb7f7b865-480.webp",
+          "width": 480,
+          "height": 270,
+          "bytes": 11756,
+          "sha256": "53f67be299089ef57ea51635f6a530a1021839f2d508917708c663a529a2d797"
+        },
+        {
+          "src": "/images/game-previews/quest-disc-golf-340bb7f7b865-800.webp",
+          "width": 800,
+          "height": 450,
+          "bytes": 27416,
+          "sha256": "251fc7a9409e0705fd87822ceb672ebc2624463f4dcee72444ed8ebf7a634d01"
+        },
+        {
+          "src": "/images/game-previews/quest-disc-golf-340bb7f7b865-1280.webp",
+          "width": 1280,
+          "height": 720,
+          "bytes": 55348,
+          "sha256": "9d209db423cb7627bdac1938a3fc59b905b7c22f58417d22a2f8d26840aef5d9"
+        }
+      ],
+      "rawSha256": "340bb7f7b8653f85a934cd89397e4b644b6a141df1dee22f9b91779fcb164e1d",
+      "environment": "Local development; anonymous; unreachable backend; service workers blocked; no UI alterations",
+      "blockedRequests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:3002/api/quest/wayfinder-portrait?heroClass=WILDSHOT&v=3-no-chess&attempt=0",
+          "resourceType": "image"
+        }
+      ],
+      "allowedApiRequests": [],
+      "pageErrors": []
+    },
+    {
+      "id": "play-point-trivia",
+      "gameIds": [
+        "play-point-trivia"
+      ],
+      "launchHref": "/games/trivia",
+      "captureRoute": "/games/trivia/builder",
+      "sourceUrl": "http://127.0.0.1:3003/games/trivia/builder",
+      "resolvedUrl": "http://127.0.0.1:3003/games/trivia/builder",
+      "sourceRepository": "Diego91914/play-point-systems",
+      "sourceRevision": "75f1aeede89dba5e0e26fff271646b76c5c13dc4",
+      "capturedAt": "2026-09-16T13:13:21.813Z",
+      "width": 1280,
+      "height": 960,
+      "label": "Trivia host builder · anonymous setup screenshot",
+      "alt": "Trivia host builder · anonymous setup screenshot",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/play-point-trivia-b61f876c570d-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 11784,
+          "sha256": "f3b526d4441bfc4dedc447d8578506f062b00a08ad320af08ad23954023e5d67"
+        },
+        {
+          "src": "/images/game-previews/play-point-trivia-b61f876c570d-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 25522,
+          "sha256": "34f2f68357d591930aaf656e60942bf2e49cbbb5cb79bee426418e9a3eab16b3"
+        },
+        {
+          "src": "/images/game-previews/play-point-trivia-b61f876c570d-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 47316,
+          "sha256": "6aa95dcc8b7f31c57828a5eb3425d21e249992c3ace7911679216c7de8174795"
+        }
+      ],
+      "rawSha256": "b61f876c570df9c5d72b76d31000f0634e7bdfb27529fb026bee88c4c33bdb8a",
+      "environment": "Disposable local source checkout; account proxy replaced with loopback read-only gate; production rewrites removed; dev indicator disabled; anonymous; no backend credentials; service workers blocked; unchanged game components",
+      "blockedRequests": [],
+      "allowedApiRequests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:3003/api/trivia/catalog",
+          "resourceType": "fetch"
+        }
+      ],
+      "pageErrors": []
+    }
+  ]
+}

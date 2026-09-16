@@ -1,8 +1,6 @@
-const CACHE_NAME = "play-amplified-shell-v1";
+const CACHE_NAME = "play-amplified-shell-v2";
 const APP_SHELL = [
-  "/",
-  "/games",
-  "/play",
+  "/play-amplified",
   "/offline",
   "/images/brand/play-point-systems-icon-192.png",
   "/images/brand/play-point-systems-icon-512.png",
@@ -40,7 +38,7 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => response)
-        .catch(async () => (await caches.match(request)) || (await caches.match("/offline")) || (await caches.match("/"))),
+        .catch(async () => (await caches.match(request)) || (await caches.match("/offline")) || (await caches.match("/play-amplified"))),
     );
     return;
   }
