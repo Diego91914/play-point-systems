@@ -17,9 +17,23 @@ const triviaGames = getMasterGamesByLane("trivia").filter((game) => game.status 
 
 function GameFormatCard({ game }: { game: MasterGameEntry }) {
   const external = game.href.startsWith("http");
+  const previewExternal = game.launchHref.startsWith("http");
   const content = (
     <>
-      <div className="flex items-start justify-between gap-4">
+      <div className="relative aspect-[16/10] overflow-hidden rounded-[18px] border border-white/10 bg-[#05070b]">
+        {previewExternal ? (
+          <div className="flex h-full items-center justify-center bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.12),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.12),transparent_42%),#05070b] px-6 text-center">
+            <div><div className="text-[9px] font-black uppercase tracking-[0.2em] text-cyan-100/50">Authentic game experience</div><div className="mt-2 text-lg font-black text-white">Open the real {game.title} interface</div></div>
+          </div>
+        ) : (
+          <iframe title={`${game.title} live interface preview`} src={game.launchHref} loading="lazy" tabIndex={-1} aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full border-0 bg-[#05070b]" />
+        )}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-black via-black/60 to-transparent px-3 pb-3 pt-10">
+          <span className="rounded-full border border-cyan-100/15 bg-black/70 px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.16em] text-cyan-50/75 backdrop-blur">Actual game UI</span>
+          <span className="text-[9px] font-black uppercase tracking-[0.12em] text-white/65">Open preview →</span>
+        </div>
+      </div>
+      <div className="mt-5 flex items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-100/55">{game.family}</div>
           <h3 className="mt-2 text-xl font-black tracking-tight text-white">{game.title}</h3>
@@ -34,7 +48,7 @@ function GameFormatCard({ game }: { game: MasterGameEntry }) {
     </>
   );
 
-  const className = "group block h-full rounded-[24px] border border-white/10 bg-white/[0.035] p-5 transition duration-300 hover:-translate-y-1 hover:border-cyan-200/25 hover:bg-white/[0.055]";
+  const className = "group block h-full overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.035] p-3 transition duration-300 hover:-translate-y-1 hover:border-cyan-200/25 hover:bg-white/[0.055] sm:p-4";
 
   return external ? (
     <a href={game.href} target="_blank" rel="noreferrer" className={className}>{content}</a>
