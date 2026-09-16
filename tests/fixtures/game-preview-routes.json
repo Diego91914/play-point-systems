@@ -1,0 +1,132 @@
+[
+  {
+    "id": "chain-reaction",
+    "href": "/play-amplified/games/chain-reaction",
+    "launchHref": "/games/chain-reaction"
+  },
+  {
+    "id": "how-close",
+    "href": "/play-amplified/games/how-close",
+    "launchHref": "/games/how-close"
+  },
+  {
+    "id": "on-my-list",
+    "href": "/play-amplified/games/on-my-list",
+    "launchHref": "/games/on-my-list"
+  },
+  {
+    "id": "all-about-you",
+    "href": "/play-amplified/games/all-about-you",
+    "launchHref": "/games/all-about-you"
+  },
+  {
+    "id": "inside-man",
+    "href": "/play-amplified/games/inside-man",
+    "launchHref": "/games/inside-man"
+  },
+  {
+    "id": "phone-holdem",
+    "href": "/play-amplified/games/phone-holdem",
+    "launchHref": "/games/holdem"
+  },
+  {
+    "id": "live-craps",
+    "href": "/play-amplified/games/live-craps",
+    "launchHref": "/games/live-craps"
+  },
+  {
+    "id": "last-call",
+    "href": "/play-amplified/games/last-call",
+    "launchHref": "/games/mystery"
+  },
+  {
+    "id": "shot-classic",
+    "href": "/play-amplified/games/shot-classic",
+    "launchHref": "/shot-caddy/mode/classic?variant=CLASSIC"
+  },
+  {
+    "id": "shot-chaos",
+    "href": "/play-amplified/games/shot-chaos",
+    "launchHref": "/shot-caddy/mode/classic?variant=CHAOS"
+  },
+  {
+    "id": "battle-mode",
+    "href": "/play-amplified/games/battle-mode",
+    "launchHref": "/shot-caddy/mode/battle"
+  },
+  {
+    "id": "call-your-score",
+    "href": "/play-amplified/games/call-your-score",
+    "launchHref": "/shot-caddy/mode/cys"
+  },
+  {
+    "id": "challenge-skins-pro",
+    "href": "/play-amplified/games/challenge-skins-pro",
+    "launchHref": "/shot-caddy/mode/csp"
+  },
+  {
+    "id": "wolf",
+    "href": "/play-amplified/games/wolf",
+    "launchHref": "/shot-caddy/mode/wolf"
+  },
+  {
+    "id": "redemption-wolf",
+    "href": "/play-amplified/games/redemption-wolf",
+    "launchHref": "/shot-caddy/mode/redemption-wolf"
+  },
+  {
+    "id": "wolf-pack",
+    "href": "/play-amplified/games/wolf-pack",
+    "launchHref": "/shot-caddy/mode/wolf-pack"
+  },
+  {
+    "id": "card-shark-classic",
+    "href": "/play-amplified/games/card-shark-classic",
+    "launchHref": "/shot-caddy/mode/card-shark"
+  },
+  {
+    "id": "card-shark-stud",
+    "href": "/play-amplified/games/card-shark-stud",
+    "launchHref": "/shot-caddy/mode/card-shark"
+  },
+  {
+    "id": "card-shark-draw",
+    "href": "/play-amplified/games/card-shark-draw",
+    "launchHref": "/shot-caddy/mode/card-shark"
+  },
+  {
+    "id": "atw-ladder",
+    "href": "/play-amplified/games/atw-ladder",
+    "launchHref": "/shot-caddy/mode/around-the-world"
+  },
+  {
+    "id": "atw-sprint",
+    "href": "/play-amplified/games/atw-sprint",
+    "launchHref": "/shot-caddy/mode/around-the-world"
+  },
+  {
+    "id": "atw-survival",
+    "href": "/play-amplified/games/atw-survival",
+    "launchHref": "/shot-caddy/mode/around-the-world"
+  },
+  {
+    "id": "disc-warrior",
+    "href": "/play-amplified/games/disc-warrior",
+    "launchHref": "/shot-caddy/mode/disc-warrior"
+  },
+  {
+    "id": "quest-digital",
+    "href": "/play-amplified/games/quest-digital",
+    "launchHref": "/shot-caddy/mode/quest-caddy/living-rpg"
+  },
+  {
+    "id": "quest-disc-golf",
+    "href": "/play-amplified/games/quest-disc-golf",
+    "launchHref": "/shot-caddy/mode/quest-caddy/disc-golf"
+  },
+  {
+    "id": "play-point-trivia",
+    "href": "/play-amplified/games/play-point-trivia",
+    "launchHref": "/games/trivia"
+  }
+]

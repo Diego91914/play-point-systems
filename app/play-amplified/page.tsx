@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { GameScreenshot } from "./GameScreenshot";
 import {
   FINISHED_GAME_FORMAT_COUNT,
   FINISHED_GAME_FORMATS,
@@ -17,22 +18,9 @@ const triviaGames = getMasterGamesByLane("trivia").filter((game) => game.status 
 
 function GameFormatCard({ game }: { game: MasterGameEntry }) {
   const external = game.href.startsWith("http");
-  const previewExternal = game.launchHref.startsWith("http");
   const content = (
     <>
-      <div className="relative aspect-[16/10] overflow-hidden rounded-[18px] border border-white/10 bg-[#05070b]">
-        {previewExternal ? (
-          <div className="flex h-full items-center justify-center bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.12),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.12),transparent_42%),#05070b] px-6 text-center">
-            <div><div className="text-[9px] font-black uppercase tracking-[0.2em] text-cyan-100/50">Authentic game experience</div><div className="mt-2 text-lg font-black text-white">Open the real {game.title} interface</div></div>
-          </div>
-        ) : (
-          <iframe title={`${game.title} live interface preview`} src={game.launchHref} loading="lazy" tabIndex={-1} aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full border-0 bg-[#05070b]" />
-        )}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-black via-black/60 to-transparent px-3 pb-3 pt-10">
-          <span className="rounded-full border border-cyan-100/15 bg-black/70 px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.16em] text-cyan-50/75 backdrop-blur">Actual game UI</span>
-          <span className="text-[9px] font-black uppercase tracking-[0.12em] text-white/65">Open preview →</span>
-        </div>
-      </div>
+      <GameScreenshot gameId={game.id} />
       <div className="mt-5 flex items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-100/55">{game.family}</div>
@@ -53,7 +41,7 @@ function GameFormatCard({ game }: { game: MasterGameEntry }) {
   return external ? (
     <a href={game.href} target="_blank" rel="noreferrer" className={className}>{content}</a>
   ) : (
-    <Link href={game.href} className={className}>{content}</Link>
+    <Link prefetch={false} href={game.href} className={className}>{content}</Link>
   );
 }
 
@@ -87,14 +75,14 @@ export default function PlayAmplifiedPage() {
 
       <div className="relative mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
         <header className="flex items-center justify-between gap-4 rounded-[24px] border border-white/10 bg-black/35 px-4 py-3 backdrop-blur-xl sm:px-6">
-          <Link href="/" className="min-w-0" aria-label="Play Amplified home">
+          <Link prefetch={false} href="/" className="min-w-0" aria-label="Play Amplified home">
             <div className="text-[10px] font-black uppercase tracking-[0.28em] text-cyan-200/55">Play Point Systems presents</div>
             <div className="mt-1 text-xl font-black tracking-[-0.03em] text-white sm:text-2xl">PLAY AMPLIFIED</div>
           </Link>
           <nav className="hidden items-center gap-2 text-sm font-bold text-white/72 md:flex" aria-label="Play Amplified navigation">
             <a href="#all-games" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">All Games</a>
-            <Link href="/games" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">My Games</Link>
-            <Link href="/live/quick-score" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">Score</Link>
+            <Link prefetch={false} href="/games" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">My Games</Link>
+            <Link prefetch={false} href="/live/quick-score" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">Score</Link>
           </nav>
         </header>
 
@@ -122,7 +110,7 @@ export default function PlayAmplifiedPage() {
             <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
               <a href="#all-games" className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">Browse all {FINISHED_GAME_FORMAT_COUNT} finished formats</a>
               <a href="#founders-special" className="inline-flex items-center justify-center rounded-2xl border border-amber-200/25 bg-amber-300/[0.08] px-6 py-3.5 text-sm font-black text-amber-50 transition hover:-translate-y-0.5 hover:bg-amber-300/[0.13]">See planned Play Packs</a>
-              <Link href="/builder-access?next=%2Fgames" className="inline-flex items-center justify-center rounded-2xl border border-white/14 bg-white/[0.05] px-6 py-3.5 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-white/[0.09]">Founder / Test Sign In</Link>
+              <Link prefetch={false} href="/builder-access?next=%2Fgames" className="inline-flex items-center justify-center rounded-2xl border border-white/14 bg-white/[0.05] px-6 py-3.5 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-white/[0.09]">Founder / Test Sign In</Link>
             </div>
           </section>
 
