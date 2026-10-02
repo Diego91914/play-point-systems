@@ -1,0 +1,27 @@
+{
+  "name": "Play Amplified",
+  "short_name": "Play Amplified",
+  "description": "Social, course, backyard, adventure, and trivia games built to bring people together.",
+  "id": "/play-amplified",
+  "start_url": "/play-amplified",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#05070b",
+  "theme_color": "#05070b",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    {
+      "src": "/images/brand/play-point-systems-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/brand/play-point-systems-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
