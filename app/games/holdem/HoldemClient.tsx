@@ -103,6 +103,8 @@ export function HoldemClient() {
   const [bigBlind, setBigBlind] = useState(100);
   const [mode, setMode] = useState<Mode>("cash");
   const [tournamentPreset, setTournamentPreset] = useState<TournamentPreset>("standard");
+  const [showGameSettings, setShowGameSettings] = useState(false);
+  const [joinedFromInvite, setJoinedFromInvite] = useState(false);
   const [raiseTo, setRaiseTo] = useState(200);
   const [busy, setBusy] = useState(false);
   const [pendingAction, setPendingAction] = useState<string | null>(null);
@@ -120,6 +122,7 @@ export function HoldemClient() {
     const code = new URLSearchParams(window.location.search).get("code")?.toUpperCase() ?? "";
     if (code) {
       setRoomCode(code);
+      setJoinedFromInvite(true);
       const saved = localStorage.getItem(storageKey(code));
       if (saved) {
         try {
@@ -323,12 +326,20 @@ export function HoldemClient() {
               <div className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-100/70">Host a table</div>
               <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Your name" maxLength={24} className="mt-5 w-full rounded-2xl border border-white/15 bg-black/25 px-4 py-3 text-white outline-none focus:border-emerald-300/60" />
 
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                <button onClick={() => setMode("cash")} className={`rounded-2xl border px-4 py-3 text-left transition ${mode === "cash" ? "border-cyan-300/40 bg-cyan-300/12" : "border-white/10 bg-black/20"}`}>
-                  <div className="font-black text-white">Cash-style</div><div className="mt-1 text-xs text-white/50">Fixed blinds · flexible stacks</div>
-                </button>
-                <button onClick={() => setMode("tournament")} className={`rounded-2xl border px-4 py-3 text-left transition ${mode === "tournament" ? "border-amber-300/40 bg-amber-300/12" : "border-white/10 bg-black/20"}`}>
-                  <div className="font-black text-white">Tournament</div><div className="mt-1 text-xs text-white/50">Rising blinds · eliminations</div>
+              <div className="mt-4 flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-sm font-black text-white">{mode === "cash" ? "Cash game" : "Tournament"}</div>
+                  <div className="mt-1 text-xs text-white/45">{mode === "cash" ? "Quick start · fixed blinds" : "Rising blinds · eliminations"}</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode(mode === "cash" ? "tournament" : "cash");
+                    setShowGameSettings(false);
+                  }}
+                  className="rounded-xl border border-white/12 bg-black/20 px-3 py-2 text-xs font-black text-white/70 transition hover:bg-white/8 hover:text-white"
+                >
+                  {mode === "cash" ? "Tournament setup" : "Use cash game"}
                 </button>
               </div>
 
@@ -342,17 +353,40 @@ export function HoldemClient() {
                 </div>
               )}
 
-              <div className="mt-4 grid grid-cols-3 gap-3">
-                <label className="text-xs text-white/60">Starting stack<input type="number" value={startingStack} onChange={(event) => setStartingStack(Number(event.target.value))} className="mt-2 w-full rounded-xl border border-white/10 bg-black/25 px-3 py-2 text-white" /></label>
-                <label className="text-xs text-white/60">Small blind<input type="number" value={smallBlind} onChange={(event) => setSmallBlind(Number(event.target.value))} className="mt-2 w-full rounded-xl border border-white/10 bg-black/25 px-3 py-2 text-white" /></label>
-                <label className="text-xs text-white/60">Big blind<input type="number" value={bigBlind} onChange={(event) => setBigBlind(Number(event.target.value))} className="mt-2 w-full rounded-xl border border-white/10 bg-black/25 px-3 py-2 text-white" /></label>
-              </div>
-              <button disabled={busy} onClick={() => void openTable("create")} className="mt-5 w-full rounded-2xl bg-emerald-400 px-5 py-3.5 font-black text-emerald-950 transition hover:brightness-105 disabled:opacity-50">Create private table</button>
+              {mode === "cash" && (
+                <button
+                  type="button"
+                  onClick={() => setShowGameSettings((value) => !value)}
+                  className="mt-4 w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-left text-xs font-semibold text-white/55 transition hover:bg-white/5"
+                >
+                  <span className="font-black text-white/75">Game settings</span>
+                  <span className="ml-2">{startingStack.toLocaleString()} chips · {smallBlind}/{bigBlind} blinds</span>
+                  <span className="float-right">{showGameSettings ? "Hide" : "Edit"}</span>
+                </button>
+              )}
+
+              {(mode === "tournament" || showGameSettings) && (
+                <div className="mt-4 grid grid-cols-3 gap-3">
+                  <label className="text-xs text-white/60">Starting stack<input type="number" value={startingStack} onChange={(event) => setStartingStack(Number(event.target.value))} className="mt-2 w-full rounded-xl border border-white/10 bg-black/25 px-3 py-2 text-white" /></label>
+                  <label className="text-xs text-white/60">Small blind<input type="number" value={smallBlind} onChange={(event) => setSmallBlind(Number(event.target.value))} className="mt-2 w-full rounded-xl border border-white/10 bg-black/25 px-3 py-2 text-white" /></label>
+                  <label className="text-xs text-white/60">Big blind<input type="number" value={bigBlind} onChange={(event) => setBigBlind(Number(event.target.value))} className="mt-2 w-full rounded-xl border border-white/10 bg-black/25 px-3 py-2 text-white" /></label>
+                </div>
+              )}
+              <button disabled={busy} onClick={() => void openTable("create")} className="mt-5 w-full rounded-2xl bg-emerald-400 px-5 py-3.5 font-black text-emerald-950 transition hover:brightness-105 disabled:opacity-50">
+                {busy ? "Creating…" : mode === "cash" ? "Create Cash Table" : "Create Tournament"}
+              </button>
             </div>
 
             <div className="rounded-[30px] border border-cyan-300/15 bg-cyan-300/[0.05] p-6">
               <div className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-100/70">Join a table</div>
-              <input value={roomCode} onChange={(event) => setRoomCode(event.target.value.toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 6))} placeholder="ROOM CODE" maxLength={6} className="mt-5 w-full rounded-2xl border border-white/15 bg-black/25 px-4 py-4 text-center text-2xl font-black tracking-[0.35em] text-white uppercase outline-none focus:border-cyan-300/60" />
+              {joinedFromInvite ? (
+                <div className="mt-5 flex items-center justify-between rounded-2xl border border-cyan-300/15 bg-black/20 px-4 py-3">
+                  <div><div className="text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-100/45">Joining room</div><div className="mt-1 text-xl font-black tracking-[0.2em] text-white">{roomCode}</div></div>
+                  <button type="button" onClick={() => setJoinedFromInvite(false)} className="rounded-xl border border-white/10 px-3 py-2 text-xs font-black text-white/60">Change</button>
+                </div>
+              ) : (
+                <input value={roomCode} onChange={(event) => setRoomCode(event.target.value.toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 6))} placeholder="ROOM CODE" maxLength={6} className="mt-5 w-full rounded-2xl border border-white/15 bg-black/25 px-4 py-4 text-center text-2xl font-black tracking-[0.35em] text-white uppercase outline-none focus:border-cyan-300/60" />
+              )}
               <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Your name" maxLength={24} className="mt-3 w-full rounded-2xl border border-white/15 bg-black/25 px-4 py-3 text-white outline-none focus:border-cyan-300/60" />
               <button disabled={busy} onClick={() => void openTable("join")} className="mt-5 w-full rounded-2xl bg-cyan-300 px-5 py-3.5 font-black text-slate-950 transition hover:brightness-105 disabled:opacity-50">Take a seat</button>
             </div>
