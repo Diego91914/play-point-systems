@@ -4,13 +4,12 @@ import { PlayAmplifiedPwa } from "./PlayAmplifiedPwa";
 export const metadata: Metadata = {
   metadataBase: new URL("https://playamplified.com"),
   applicationName: "Play Amplified",
-  manifest: "/play-amplified-manifest.webmanifest",
+  manifest: "/play-amplified.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "Play Amplified",
   },
-  themeColor: "#05070b",
   title: {
     absolute: "Play Amplified | Phones in the game. People in the moment.",
   },
