@@ -7,6 +7,7 @@ import type { PlayPointGameCatalogItem } from "@/lib/play-point-core/games-catal
 type GameFacts = { players: string; time: string; bestFor: string; howItWorks: string };
 
 const GAME_FACTS: Record<string, GameFacts> = {
+  "game.clear_the_stack": { players: "1–8 players", time: "5–15 min", bestFor: "Solo putting practice · Backyard competition", howItWorks: "Choose a putting distance and stack size. Makes are worth 2 points in Round 1, 1 in Round 2, and 0.5 in Round 3. Every disc still left after three rounds costs 2 points." },
   "game.chain_reaction": { players: "3–8 players", time: "10–20 min", bestFor: "Friends · Family · Restaurants", howItWorks: "One player knows a secret target word and tries to steer the conversation toward it without making the target obvious. The table listens, connects clues, and tries to uncover where the chain is heading." },
   "game.how_close": { players: "2–8 players", time: "10–20 min", bestFor: "People who know each other", howItWorks: "A Spotlight Player secretly answers a 1-to-100 question. Everyone else predicts where that person landed, turning personality, opinions, and relationships into the game." },
   "game.on_my_list": { players: "2–8 players", time: "15–30 min", bestFor: "Friends · Family · Reunions", howItWorks: "One person privately ranks 5–10 answers to a question. Everyone else takes turns guessing what made the list before three misses knock them out for that board." },
