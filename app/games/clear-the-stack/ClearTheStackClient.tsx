@@ -47,14 +47,16 @@ export function ClearTheStackClient() {
     } : p);
     setPlayers(next);
 
-    if (turn < next.length - 1) {
-      setTurn(turn + 1);
+    const nextActiveTurn = next.findIndex((p, i) => i > turn && p.remaining > 0);
+    if (nextActiveTurn >= 0) {
+      setTurn(nextActiveTurn);
       return;
     }
 
     if (round < 2 && next.some(p => p.remaining > 0)) {
       setRound(round + 1);
-      setTurn(0);
+      const firstActive = next.findIndex(p => p.remaining > 0);
+      setTurn(firstActive >= 0 ? firstActive : 0);
       return;
     }
 
