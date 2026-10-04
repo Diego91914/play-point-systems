@@ -49,6 +49,23 @@ export type PlayPointGameCatalogItem = {
 
 export const PLAY_POINT_GAME_CATALOG: readonly PlayPointGameCatalogItem[] = [
   {
+    sku: "game.clear_the_stack",
+    title: "Clear the Stack",
+    family: "Play Point Games",
+    brand: "Play Point",
+    productType: "standalone_game",
+    playCategories: ["disc_golf", "backyard"],
+    status: "live",
+    purchasable: false,
+    priceUsd: null,
+    includedIn: [],
+    description: "Pick a putting distance and stack size, then clear every disc in three rounds. Early makes score more and every disc left costs two points.",
+    href: "/games/clear-the-stack",
+    external: false,
+    badge: "Ready to play",
+    ownershipAuthority: "play_point",
+  },
+  {
     sku: "game.chain_reaction",
     title: "Chain Reaction",
     family: "Play Point Games",
