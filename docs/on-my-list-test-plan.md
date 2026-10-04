@@ -8,9 +8,9 @@
 - Only current guesser can tap GOT IT or MISS.
 - GOT IT does not award points until Surveyed Player selects an unrevealed answer.
 - Answer value equals descending rank value.
-- MISS increments only current guesser; second miss marks them out for the board.
+- MISS increments only current guesser; third miss marks them out for the board.
 - Turn skips eliminated guessers.
-- Board ends when all answers are found or all guessers reach two misses.
+- Board ends when all answers are found or all guessers reach three misses.
 - Unfound answers reveal at round end.
 - Surveyed Player rotates evenly; each player receives two boards.
 - Restart resets scores and returns room to lobby.
