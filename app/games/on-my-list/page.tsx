@@ -9,7 +9,7 @@ import { OnMyListMoments } from "./OnMyListMoments";
 
 export const metadata: Metadata = {
   title: "On My List | Play Point Systems",
-  description: "A family table game where one person builds a private ranked answer board and everyone else tries to uncover it before two misses knock them out.",
+  description: "A family table game where one person builds a private ranked answer board and everyone else tries to uncover it before three misses knock them out.",
   robots: { index: false, follow: false },
 };
 
