@@ -75,7 +75,7 @@ function currentGuesser(state: State) {
   if (state.status !== "guessing" || state.pendingHitBy) return null;
   for (let n = 0; n < state.guessOrder.length; n++) {
     const idx = (state.turnIndex + n) % state.guessOrder.length, id = state.guessOrder[idx];
-    if ((state.misses[id] ?? 0) < 2) {
+    if ((state.misses[id] ?? 0) < 3) {
       state.turnIndex = idx;
       return state.players.find(p => p.id === id) ?? null;
     }
@@ -91,7 +91,7 @@ function boardDone(state: State) {
   return state.answers.length > 0 && state.answers.every(a => a.revealed);
 }
 function allOut(state: State) {
-  return state.guessOrder.length > 0 && state.guessOrder.every(id => (state.misses[id] ?? 0) >= 2);
+  return state.guessOrder.length > 0 && state.guessOrder.every(id => (state.misses[id] ?? 0) >= 3);
 }
 function refillFutureQuestions(state: State, startIndex: number) {
   const bank = activePack();
@@ -293,7 +293,7 @@ export async function actOnMyListRoom(codeValue: unknown, id: string, token: str
     if (allOut(state)) endRound(state);
     else {
       advance(state);
-      state.message = state.misses[id] >= 2 ? `${g.name} is out for this board.` : `${g.name} has ${state.misses[id]} miss.`;
+      state.message = state.misses[id] >= 3 ? `${g.name} is out for this board.` : `${g.name} has ${state.misses[id]} miss.`;
     }
   }
   else if (action === "reveal-answer") {
