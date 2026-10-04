@@ -10,9 +10,9 @@ A phone-powered family table game where one player creates the survey board.
 5. Everyone else is randomized into a guessing order.
 6. On their turn a guesser says one answer aloud.
 7. The Surveyed Player responds verbally.
-8. If wrong, the guesser taps MISS. Two misses eliminates that guesser for this board only.
+8. If wrong, the guesser taps MISS. Three misses eliminates that guesser for this board only.
 9. If correct, the guesser taps GOT IT. The Surveyed Player then selects the matching answer on their private phone. That answer reveals for everyone and its rank points go to the guesser.
-10. Play continues until all answers are found or every guesser has two misses.
+10. Play continues until all answers are found or every guesser has three misses.
 11. Any unrevealed answers are shown, then the Surveyed Player rotates.
 
 Each player is Surveyed Player twice. Highest individual score wins.
