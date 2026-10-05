@@ -56,10 +56,12 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
-        // Play Amplified now owns /account itself. Shot Caddy remains mounted
-        // only under /shot-caddy and through its legacy API namespaces.
+        // The Play Amplified app owns /shot-caddy itself. Do not proxy the
+        // landing route to the Shot Caddy zone; proxying it can cause the
+        // zone's canonical-host redirect to loop back through this frontend.
+        // Gameplay subroutes are proxied explicitly below.
         {
-          source: "/shot-caddy/:path*",
+          source: "/shot-caddy/:path+",
           destination: `${SHOT_CADDY_ZONE_ORIGIN}/shot-caddy/:path*`,
         },
         ...shotCaddyApiNamespaces.map((namespace) => ({
