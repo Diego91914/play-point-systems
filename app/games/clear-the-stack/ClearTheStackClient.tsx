@@ -1,27 +1,50 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Phase = "setup" | "playing" | "finished";
-type Player = { name: string; score: number; remaining: number; rounds: number[] };
+type Player = { name: string; score: number; remaining: number; rounds: number[] };\ntype RecordRow = { id: number; score: number; played_at: string; details: { rounds?: number[]; remaining?: number } };
 
 const DISTANCES = [10, 15, 20, 25, 30];
 const STACKS = [5, 10, 15, 20];
 const ROUND_VALUES = [2, 1, 0.5] as const;
 
-export function ClearTheStackClient() {
+export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled?: boolean }) {
   const [phase, setPhase] = useState<Phase>("setup");
   const [distance, setDistance] = useState(20);
   const [stackSize, setStackSize] = useState(10);
   const [playerCount, setPlayerCount] = useState(1);
   const [players, setPlayers] = useState<Player[]>([]);
   const [round, setRound] = useState(0);
-  const [turn, setTurn] = useState(0);
+  const [turn, setTurn] = useState(0);\n  const [records, setRecords] = useState<RecordRow[]>([]);\n  const [recordStatus, setRecordStatus] = useState<"idle" | "loading" | "saving" | "saved" | "error">("idle");
 
   const current = players[turn];
   const roundValue = ROUND_VALUES[round] ?? 0;
   const maxScore = stackSize * 2;
   const leader = useMemo(() => [...players].sort((a,b) => b.score-a.score)[0], [players]);
+
+  useEffect(() => {
+    if (!recordsEnabled) return;
+    let cancelled = false;
+    setRecordStatus("loading");
+    fetch(`/api/games/clear-the-stack/records?distance=${distance}&stackSize=${stackSize}`, { cache: "no-store" })
+      .then(async r => { if (!r.ok) throw new Error("records"); return r.json(); })
+      .then(data => { if (!cancelled) { setRecords(data.records ?? []); setRecordStatus("idle"); } })
+      .catch(() => { if (!cancelled) setRecordStatus("error"); });
+    return () => { cancelled = true; };
+  }, [distance, stackSize, recordsEnabled]);
+
+  async function saveSoloRecord(player: Player) {
+    if (!recordsEnabled) return;
+    setRecordStatus("saving");
+    try {
+      const response = await fetch("/api/games/clear-the-stack/records", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ distance, stackSize, score: player.score, rounds: player.rounds, remaining: player.remaining }) });
+      if (!response.ok) throw new Error("save");
+      const data = await response.json();
+      setRecords(data.records ?? []);
+      setRecordStatus("saved");
+    } catch { setRecordStatus("error"); }
+  }
 
   function start() {
     const count = Math.max(1, Math.min(8, playerCount));
@@ -99,6 +122,7 @@ export function ClearTheStackClient() {
             <div className="rounded-xl bg-rose-300/10 p-3 text-rose-100">LEFT<br/>−2</div>
           </div>
           <button type="button" onClick={start} className="mt-7 min-h-14 w-full rounded-2xl bg-cyan-300 px-5 text-base font-black text-slate-950">START STACK</button>
+          {recordsEnabled ? <div className="mt-7 border-t border-white/10 pt-5"><div className="text-xs font-black uppercase tracking-[0.18em] text-cyan-100/55">Your Best 3 · {distance} FT · {stackSize} DISCS</div><div className="mt-3 grid gap-2">{records.length ? records.map((r,i) => <div key={r.id} className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/20 px-4 py-3"><div><span className="font-black text-white">#{i+1} · {Number(r.score)} pts</span><div className="mt-1 text-xs text-white/40">{new Date(r.played_at).toLocaleDateString()}</div></div><div className="text-right text-xs text-white/45">R1 {r.details?.rounds?.[0] ?? 0} · R2 {r.details?.rounds?.[1] ?? 0} · R3 {r.details?.rounds?.[2] ?? 0}<br/>{r.details?.remaining ?? 0} left</div></div>) : <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4 text-sm text-white/40">{recordStatus === "loading" ? "Loading records…" : "Finish a solo stack to set your first record."}</div>}</div></div> : <div className="mt-5 text-center text-xs text-white/35">Sign in with an account that owns Clear the Stack to save your Best 3.</div>}
         </section>
       ) : null}
 
@@ -131,6 +155,7 @@ export function ClearTheStackClient() {
               </div>
             ))}
           </div>
+          {players.length === 1 && recordsEnabled ? <div className="mt-5 rounded-2xl border border-cyan-200/15 bg-cyan-300/[0.06] p-4 text-center text-sm text-white/65">{recordStatus === "saving" ? "Saving this round…" : recordStatus === "saved" ? "Saved to your account · Best 3 updated" : recordStatus === "error" ? "Record could not be saved. Your game result is still shown above." : "Your Best 3 are saved to your Play Amplified account."}</div> : null}
           <button type="button" onClick={reset} className="mt-7 min-h-14 w-full rounded-2xl bg-cyan-300 px-5 font-black text-slate-950">PLAY AGAIN</button>
         </section>
       ) : null}
