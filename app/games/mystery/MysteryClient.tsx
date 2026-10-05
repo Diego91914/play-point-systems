@@ -262,9 +262,8 @@ export function MysteryClient() {
           <section className="mt-6 rounded-[28px] border border-white/10 bg-white/[.035] p-6">
             <h2 className="text-2xl font-black text-white">Get the suspects together</h2>
             <p className="mt-2 text-sm leading-6 text-white/55">This mystery needs at least 4 players and supports up to 8. Four players get a complete solvable story; added players deepen the web of suspects and secrets.</p>
-            <RoomJoinPanel code={game.code} joinUrl={joinUrl} gameName="Last Call" />
-            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">{game.players.map(player => <div key={player.id} className="rounded-xl border border-white/10 bg-black/20 px-3 py-3 text-center text-sm font-bold text-white">{player.name}</div>)}</div>
-            {game.me.isHost ? <button disabled={busy || game.players.length < 4} onClick={() => act("start")} className="mt-5 w-full rounded-2xl bg-rose-200 px-4 py-4 font-black text-slate-950 disabled:opacity-40">{game.players.length < 4 ? `NEED ${4 - game.players.length} MORE PLAYER${4 - game.players.length === 1 ? "" : "S"}` : "BEGIN THE MYSTERY"}</button> : <p className="mt-5 text-center text-sm text-white/50">Waiting for the host to begin…</p>}
+            <RoomJoinPanel code={game.code} joinUrl={joinUrl} gameName="Last Call" players={game.players} currentPlayerId={session?.playerId} isHost={game.me.isHost} minPlayers={4} startLabel="BEGIN THE MYSTERY" busy={busy} onStart={() => act("start")} />
+
           </section>
         )}
 
