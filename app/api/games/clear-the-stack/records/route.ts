@@ -21,7 +21,7 @@ export async function GET(request: Request) {
   const stackSize = Math.max(1, Math.min(100, Number(url.searchParams.get("stackSize")) || 10));
   const setupKey = `${distance}ft:${stackSize}discs`;
   const supabase = getSupabaseServerClient();
-  const { data, error } = await supabase.from(TABLE).select("id,score,played_at,details").eq("user_id", claims.sub).eq("game_sku", SKU).eq("setup_key", setupKey).order("score", { ascending: false }).order("played_at", { ascending: true }).limit(3);
+  const { data, error } = await supabase.from(TABLE).select("id,score,played_at,details").eq("user_id", claims.sub).eq("game_sku", SKU).eq("setup_key", setupKey).order("score", { ascending: false }).order("played_at", { ascending: true }).limit(10);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ records: data ?? [] });
 }
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
   const supabase = getSupabaseServerClient();
   const { error } = await supabase.from(TABLE).insert({ user_id: claims.sub, game_sku: SKU, setup_key: setupKey, score, details: { distance, stackSize, rounds, remaining } });
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  const { data, error: loadError } = await supabase.from(TABLE).select("id,score,played_at,details").eq("user_id", claims.sub).eq("game_sku", SKU).eq("setup_key", setupKey).order("score", { ascending: false }).order("played_at", { ascending: true }).limit(3);
+  const { data, error: loadError } = await supabase.from(TABLE).select("id,score,played_at,details").eq("user_id", claims.sub).eq("game_sku", SKU).eq("setup_key", setupKey).order("score", { ascending: false }).order("played_at", { ascending: true }).limit(10);
   if (loadError) return NextResponse.json({ error: loadError.message }, { status: 500 });
   return NextResponse.json({ records: data ?? [] });
 }
