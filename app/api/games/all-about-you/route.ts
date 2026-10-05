@@ -8,6 +8,7 @@ import {
 import { GAMES_SESSION_COOKIE, verifyGamesSessionToken } from "@/lib/play-point-core/games-session";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import { canHostDuringPrelaunch, prelaunchHostError } from "@/lib/play-point-core/prelaunch-access";
+import { registerPlayAmplifiedRoom } from "@/lib/play-point-core/room-registry";
 
 const ENTRY_ROLE_COOKIE = "pps-all-about-you-entry-role";
 
@@ -78,6 +79,7 @@ export async function POST(request: NextRequest) {
       const created = await createAllAboutYouRoom(body.name, claims.sub);
       await applyEntryRole(created.code, created.playerId, role);
       const refreshed = await getAllAboutYouRoom(created.code, created.playerId, created.token);
+      await registerPlayAmplifiedRoom({ code: created.code, gameSku: "game.all_about_you", joinHref: `/games/all-about-you?code=${encodeURIComponent(created.code)}` });
       return NextResponse.json({ success: true, code: created.code, playerId: created.playerId, token: created.token, state: refreshed.state });
     }
 
