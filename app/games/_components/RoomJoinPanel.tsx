@@ -3,9 +3,33 @@
 import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 
-type Props = { code: string; joinUrl: string; gameName: string };
+type LobbyPlayer = { id: string; name: string };
 
-export function RoomJoinPanel({ code, joinUrl, gameName }: Props) {
+type Props = {
+  code: string;
+  joinUrl: string;
+  gameName: string;
+  players?: readonly LobbyPlayer[];
+  currentPlayerId?: string;
+  isHost?: boolean;
+  minPlayers?: number;
+  startLabel?: string;
+  busy?: boolean;
+  onStart?: () => void;
+};
+
+export function RoomJoinPanel({
+  code,
+  joinUrl,
+  gameName,
+  players,
+  currentPlayerId,
+  isHost = false,
+  minPlayers,
+  startLabel = "START GAME",
+  busy = false,
+  onStart,
+}: Props) {
   const [copied, setCopied] = useState(false);
 
   async function copyJoinLink() {
@@ -39,6 +63,28 @@ export function RoomJoinPanel({ code, joinUrl, gameName }: Props) {
           >
             {copied ? "✓ LINK COPIED" : "COPY JOIN LINK"}
           </button>
+          {players ? (
+            <div className="mt-4 rounded-[24px] border border-white/10 bg-black/20 p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-[10px] font-black uppercase tracking-[.2em] text-white/45">Players joined</div>
+                <div className="text-xs font-black text-white/65">{players.length}{minPlayers ? ` / ${minPlayers} minimum` : ""}</div>
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {players.map((player, index) => (
+                  <span key={player.id} className="rounded-full border border-white/10 bg-white/[.055] px-3 py-2 text-xs font-bold text-white/78">
+                    {player.name}{player.id === currentPlayerId ? " · You" : ""}{isHost && index === 0 ? " · Host" : ""}
+                  </span>
+                ))}
+              </div>
+              {isHost && onStart ? (
+                <button type="button" disabled={busy || Boolean(minPlayers && players.length < minPlayers)} onClick={onStart} className="mt-4 min-h-12 w-full rounded-2xl bg-cyan-300 px-4 py-3 text-sm font-black text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-35">
+                  {busy ? "STARTING…" : startLabel}
+                </button>
+              ) : onStart ? (
+                <div className="mt-4 text-center text-xs font-bold text-white/45">Waiting for the host to start…</div>
+              ) : null}
+            </div>
+          ) : null}
         </div>
 
         <div className="mx-auto w-fit rounded-[26px] border border-white/15 bg-white p-3 text-center shadow-[0_18px_55px_rgba(0,0,0,.32)]">
