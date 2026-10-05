@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { RoomJoinPanel } from "@/app/games/_components/RoomJoinPanel";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
