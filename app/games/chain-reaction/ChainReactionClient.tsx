@@ -268,7 +268,7 @@ export function ChainReactionClient() {
             <p className="mt-2 text-sm leading-6 text-white/60">
               Everyone gets one turn holding the Secret Target. A round can last up to 20 links.
             </p>
-            <RoomJoinPanel code={game.code} joinUrl={joinUrl} gameName="Chain Reaction" />
+            <RoomJoinPanel code={game.code} joinUrl={joinUrl} gameName="Chain Reaction" players={game.players} currentPlayerId={session?.playerId} isHost={game.me.isHost} minPlayers={2} startLabel="START CHAIN REACTION" busy={busy} onStart={() => void act("start")} />
 
             <div className="mt-4 grid gap-2 sm:grid-cols-3">
               <div className="rounded-2xl border border-white/10 bg-black/20 p-3 text-sm text-white/65">
@@ -282,24 +282,7 @@ export function ChainReactionClient() {
               </div>
             </div>
 
-            {game.me.isHost ? (
-              <>
-                {game.players.length < 2 && (
-                  <div className="mt-4 rounded-2xl border border-amber-300/20 bg-amber-300/10 px-4 py-3 text-center text-sm font-bold text-amber-100">
-                    1 more player needs to join room {game.code} before the game can start.
-                  </div>
-                )}
-                <button
-                  disabled={busy || game.players.length < 2}
-                  onClick={() => void act("start")}
-                  className="mt-4 w-full rounded-2xl bg-cyan-300 px-4 py-4 font-black text-slate-950 disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  {game.players.length < 2 ? "WAITING FOR 1 MORE PLAYER" : "START CHAIN REACTION"}
-                </button>
-              </>
-            ) : (
-              <p className="mt-4 text-center text-sm text-white/50">Waiting for the host to start…</p>
-            )}
+
           </section>
         )}
 
