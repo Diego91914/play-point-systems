@@ -7,16 +7,15 @@ import { useEffect, useState } from "react";
 
 type SiteShellProps = {
   children: ReactNode;
-  current?: "home" | "play" | "games" | "live" | "score-caddy" | "shot-caddy" | "music" | "about" | "contact";
+  current?: "home" | "play" | "games" | "account" | "live" | "score-caddy" | "shot-caddy" | "music" | "about" | "contact";
   showAccessNotice?: boolean;
 };
 
 const navItems = [
+  { label: "Home", href: "/", key: "home" },
   { label: "Play", href: "/play", key: "play" },
-  { label: "Score Caddy", href: "/live/quick-score", key: "score-caddy" },
-  { label: "Shot Caddy", href: "/shot-caddy", key: "shot-caddy" },
-  { label: "Quest Caddy", href: "/play#adventure", key: "quest-caddy" },
-  { label: "My Games", href: "/games", key: "games" },
+  { label: "Library", href: "/games", key: "games" },
+  { label: "Profile", href: "/account", key: "account" },
 ] as const;
 
 export function SiteShell({ children, current, showAccessNotice = false }: SiteShellProps) {
@@ -90,10 +89,7 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
                   <div className="hidden items-center gap-2 lg:flex">
                     <nav aria-label="Primary navigation" className="flex flex-wrap gap-1.5 text-sm font-semibold text-white/84">
                       {navItems.map((item) => {
-                        const active =
-                          current === item.key ||
-                          (item.key === "score-caddy" && current === "live") ||
-                          (item.key === "play" && current === "home");
+                        const active = current === item.key;
                         const className = active
                           ? "rounded-full border border-amber-200/35 bg-amber-300/12 px-4 py-2 text-amber-50"
                           : "rounded-full border border-white/12 bg-black/20 px-4 py-2 transition hover:border-white/25 hover:bg-white/8 hover:text-white";
@@ -116,10 +112,7 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
                   <div id="mobile-navigation" className="mt-4 rounded-[24px] border border-white/10 bg-black/25 p-3 lg:hidden">
                     <nav aria-label="Mobile navigation" className="grid gap-2 text-sm font-semibold text-white/80">
                       {navItems.map((item) => {
-                        const active =
-                          current === item.key ||
-                          (item.key === "score-caddy" && current === "live") ||
-                          (item.key === "play" && current === "home");
+                        const active = current === item.key;
                         return (
                           <Link key={item.label} href={item.href} className={active ? "rounded-2xl border border-amber-200/30 bg-amber-300/10 px-4 py-3 text-amber-50" : "rounded-2xl border border-white/10 px-4 py-3 transition hover:bg-white/5"} aria-current={active ? "page" : undefined} onClick={() => setMobileOpen(false)}>
                             {item.label}
