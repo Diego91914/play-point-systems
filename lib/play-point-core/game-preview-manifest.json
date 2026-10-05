@@ -1034,6 +1034,38 @@
         }
       ],
       "pageErrors": []
+    },
+    {
+      "id": "clear-the-stack",
+      "gameIds": [
+        "clear-the-stack"
+      ],
+      "launchHref": "/games/clear-the-stack",
+      "captureRoute": "/games/clear-the-stack",
+      "sourceUrl": "User-provided Play Amplified gameplay screen recording",
+      "resolvedUrl": "https://www.playamplified.com/games/clear-the-stack",
+      "sourceRepository": "Diego91914/play-point-systems",
+      "sourceRevision": "90f0294b88e0f0d6044e35c2c4ec4c8afb186e0b",
+      "capturedAt": "2026-10-04T20:50:16-05:00",
+      "width": 1280,
+      "height": 960,
+      "label": "Clear the Stack · authentic gameplay screenshot",
+      "alt": "Clear the Stack gameplay showing discs remaining and make-count controls",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/clear-the-stack-user-gameplay-1280.jpg",
+          "width": 1280,
+          "height": 960,
+          "bytes": 2274,
+          "sha256": "58df2a74936d3709a1d773dfc36e2a14673d3cbd590524d649f26d18518e6a8a"
+        }
+      ],
+      "rawSha256": "58df2a74936d3709a1d773dfc36e2a14673d3cbd590524d649f26d18518e6a8a",
+      "environment": "Authentic user-provided iPhone screen recording of the live Play Amplified Clear the Stack game.",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
     }
   ]
 }
