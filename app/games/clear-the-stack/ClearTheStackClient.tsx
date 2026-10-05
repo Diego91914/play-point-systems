@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
 
 type Phase = "setup" | "playing" | "finished";
 type Player = { name: string; score: number; remaining: number; rounds: number[] };
@@ -20,11 +21,24 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
   const [turn, setTurn] = useState(0);
   const [records, setRecords] = useState<RecordRow[]>([]);
   const [recordStatus, setRecordStatus] = useState<"idle" | "loading" | "saving" | "saved" | "error">("idle");
+  const [showJoin, setShowJoin] = useState(false);
+  const [room, setRoom] = useState<{id:string;code:string}|null>(null);
+  const [joinedNames, setJoinedNames] = useState<string[]>([]);
+  const [joinStatus, setJoinStatus] = useState("");
+  const [origin, setOrigin] = useState("");
 
   const current = players[turn];
   const roundValue = ROUND_VALUES[round] ?? 0;
   const maxScore = stackSize * 2;
   const leader = useMemo(() => [...players].sort((a,b) => b.score-a.score)[0], [players]);
+  const joinUrl = room && origin ? `${origin}/games/clear-the-stack/join/${room.code}` : "";
+  useEffect(() => { setOrigin(window.location.origin); }, []);
+  useEffect(() => {
+    if (!room || !showJoin || phase !== "setup") return;
+    let stopped=false;
+    const load=async()=>{try{const r=await fetch("/api/games/clear-the-stack/room?id="+room.id,{cache:"no-store"});if(!r.ok)return;const d=await r.json();if(!stopped){const names=(d.players??[]).map((p:{display_name:string})=>p.display_name);setJoinedNames(names);if(names.length)setPlayerCount(names.length);}}catch{}};
+    void load(); const timer=setInterval(load,2000); return()=>{stopped=true;clearInterval(timer)};
+  }, [room,showJoin,phase]);
 
   useEffect(() => {
     if (!recordsEnabled) return;
@@ -50,9 +64,10 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
   }
 
   function start() {
-    const count = Math.max(1, Math.min(8, playerCount));
+    const count = Math.max(1, Math.min(100, joinedNames.length || playerCount));
+    const names = joinedNames.length ? joinedNames.slice(0,100) : [];
     setPlayers(Array.from({ length: count }, (_, i) => ({
-      name: count === 1 ? "You" : `Player ${i + 1}`,
+      name: names[i] ?? (count === 1 ? "You" : `Player ${i + 1}`),
       score: 0,
       remaining: stackSize,
       rounds: [],
@@ -60,6 +75,16 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
     setRound(0);
     setTurn(0);
     setPhase("playing");
+    if (room) void fetch("/api/games/clear-the-stack/room",{method:"PATCH",headers:{"content-type":"application/json"},body:JSON.stringify({id:room.id,status:"playing"})});
+  }
+
+  async function toggleJoin() {
+    if (showJoin) { setShowJoin(false); return; }
+    setShowJoin(true);
+    if (room) return;
+    setJoinStatus("Creating QR…");
+    try { const r=await fetch("/api/games/clear-the-stack/room",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({distance,stackSize})}); const d=await r.json(); if(!r.ok) throw new Error(); setRoom(d.room); setJoinStatus(""); }
+    catch { setJoinStatus("Could not create the join QR. Try again."); }
   }
 
   function recordMakes(makes: number) {
@@ -115,7 +140,9 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
               <div className="mt-3 grid grid-cols-4 gap-2">
                 {[1,2,3,4].map(n => <button key={n} type="button" onClick={() => setPlayerCount(n)} className={`min-h-12 rounded-2xl border text-sm font-black ${playerCount === n ? "border-cyan-200/40 bg-cyan-300/15 text-cyan-50" : "border-white/10 bg-black/20 text-white/65"}`}>{n === 1 ? "SOLO" : n}</button>)}
               </div>
-              <input id="cts-players" aria-label="Custom player count" type="number" min={1} max={8} value={playerCount} onChange={e => setPlayerCount(Math.max(1, Math.min(8, Number(e.target.value) || 1)))} className="mt-3 w-full rounded-2xl border border-white/10 bg-black/25 px-4 py-3 text-base font-bold text-white outline-none focus:border-cyan-200/50" />
+              <label className="mt-3 block text-[10px] font-black uppercase tracking-[0.16em] text-white/35">Custom<input id="cts-players" aria-label="Custom player count" type="number" min={1} max={100} value={playerCount} onChange={e => {setJoinedNames([]);setPlayerCount(Math.max(1, Math.min(100, Number(e.target.value) || 1)))}} className="mt-2 w-full rounded-2xl border border-white/10 bg-black/25 px-4 py-3 text-base font-bold text-white outline-none focus:border-cyan-200/50" /></label>
+              <button type="button" onClick={toggleJoin} className="mt-3 min-h-11 w-full rounded-2xl border border-cyan-200/20 bg-cyan-300/[.07] text-xs font-black uppercase tracking-[.14em] text-cyan-50">{showJoin ? "HIDE JOIN QR" : "SCAN TO JOIN"}</button>
+              {showJoin ? <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-center">{joinUrl ? <><div className="mx-auto w-fit rounded-2xl bg-white p-2"><QRCodeSVG value={joinUrl} size={176} level="M" includeMargin={false}/></div><div className="mt-2 text-xs font-black text-white/45">CODE {room?.code}</div></> : <div className="text-sm text-white/45">{joinStatus || "Creating QR…"}</div>}{joinedNames.length ? <div className="mt-4 border-t border-white/10 pt-3"><div className="text-xs font-black uppercase tracking-[.14em] text-emerald-100/60">{joinedNames.length} joined</div><div className="mt-2 flex flex-wrap justify-center gap-2">{joinedNames.map(n=><span key={n} className="rounded-full bg-white/[.07] px-3 py-1 text-xs font-bold text-white/70">{n}</span>)}</div></div> : null}</div> : null}
             </div>
           </div>
           <div className="mt-7 grid grid-cols-4 gap-2 text-center text-xs font-black">
