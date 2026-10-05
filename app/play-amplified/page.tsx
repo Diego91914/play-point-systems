@@ -122,7 +122,7 @@ export default function PlayAmplifiedPage() {
               ["Adventure / Quest Caddy", "Persistent fantasy Chronicle play digitally or tied to real throws.", "#adventure-games"],
               ["Trivia", "Hosted question-and-answer competition with teams, wagers, and live scoreboards.", "#trivia-games"],
             ].map(([title, body, href]) => (
-              <a key={title} href={href} className="group block rounded-[28px] border border-white/10 bg-white/[0.035] p-5 transition hover:-translate-y-0.5 hover:border-cyan-200/25 hover:bg-white/[0.055] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200/70">
+              <a key={title} href={href} className="group block select-none touch-manipulation rounded-[28px] border border-white/10 bg-white/[0.035] p-5 transition hover:-translate-y-0.5 hover:border-cyan-200/25 hover:bg-white/[0.055] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200/70">
                 <div className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-100/55">Play Amplified</div>
                 <div className="mt-3 flex items-center justify-between gap-3 text-xl font-black"><span>{title}</span><span aria-hidden="true" className="text-cyan-100/55 transition group-hover:translate-y-0.5">↓</span></div>
                 <p className="mt-3 text-sm leading-6 text-white/55">{body}</p>
