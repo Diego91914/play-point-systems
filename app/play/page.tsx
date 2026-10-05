@@ -116,6 +116,21 @@ export default function PlayPage() {
             </div>
           </div>
 
+          <section className="mt-9 grid gap-3 sm:grid-cols-2" aria-label="Start playing">
+            <Link href="/play/host" className="group rounded-[28px] border border-cyan-200/25 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.14),transparent_55%),rgba(34,211,238,0.07)] p-6 transition hover:-translate-y-0.5 hover:border-cyan-200/40">
+              <div className="text-[10px] font-black uppercase tracking-[0.22em] text-cyan-100/60">I&apos;m setting it up</div>
+              <div className="mt-3 text-3xl font-black tracking-tight text-white">HOST A GAME</div>
+              <p className="mt-2 text-sm leading-6 text-white/60">Choose the game, create the room, then let everyone scan or enter the code.</p>
+              <div className="mt-5 text-sm font-black text-cyan-100">Choose a game →</div>
+            </Link>
+            <Link href="/play/join" className="group rounded-[28px] border border-fuchsia-200/20 bg-[radial-gradient(circle_at_top_right,rgba(217,70,239,0.12),transparent_55%),rgba(217,70,239,0.055)] p-6 transition hover:-translate-y-0.5 hover:border-fuchsia-200/35">
+              <div className="text-[10px] font-black uppercase tracking-[0.22em] text-fuchsia-100/60">Someone already has a room</div>
+              <div className="mt-3 text-3xl font-black tracking-tight text-white">JOIN A GAME</div>
+              <p className="mt-2 text-sm leading-6 text-white/60">Scan the host&apos;s QR code or enter the room code. Guests do not need an account.</p>
+              <div className="mt-5 text-sm font-black text-fuchsia-100">Enter room code →</div>
+            </Link>
+          </section>
+
           <nav aria-label="Play categories" className="mt-8 flex flex-wrap gap-2">
             {sections.map((section) => (
               <a key={section.id} href={`#${section.id}`} className={`rounded-full border px-4 py-2 text-sm font-bold transition ${section.id === "phone-room-games" ? "border-fuchsia-300/30 bg-fuchsia-400/10 text-fuchsia-50 hover:bg-fuchsia-400/16" : "border-white/12 bg-white/[0.035] text-white/72 hover:border-white/25 hover:text-white"}`}>
