@@ -8,6 +8,7 @@ import {
   canHostDuringPrelaunch,
   prelaunchHostError,
 } from "@/lib/play-point-core/prelaunch-access";
+import { registerPlayAmplifiedRoom } from "@/lib/play-point-core/room-registry";
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,10 +27,9 @@ export async function POST(request: NextRequest) {
       if (!canHostDuringPrelaunch(claims, "game.chain_reaction")) {
         return NextResponse.json({ error: prelaunchHostError() }, { status: 403 });
       }
-      return NextResponse.json({
-        success: true,
-        ...(await createChainRoom(body.name)),
-      });
+      const room = await createChainRoom(body.name);
+      await registerPlayAmplifiedRoom({ code: room.code, gameSku: "game.chain_reaction", joinHref: `/games/chain-reaction?code=${encodeURIComponent(room.code)}` });
+      return NextResponse.json({ success: true, ...room });
     }
 
     if (body.intent === "join") {
