@@ -5,6 +5,7 @@ import { TRIVIA_PACING_MODES, type TriviaPacingMode } from "../../../games/trivi
 import { setTriviaLiveHostCookie } from "../../../games/trivia/play/trivia-live-cookie";
 import { GAMES_SESSION_COOKIE, verifyGamesSessionToken } from "@/lib/play-point-core/games-session";
 import { canHostDuringPrelaunch, prelaunchHostError } from "@/lib/play-point-core/prelaunch-access";
+import { registerPlayAmplifiedRoom } from "@/lib/play-point-core/room-registry";
 
 const TRIVIA_SKU = "game.play_point_trivia";
 
@@ -73,6 +74,7 @@ export async function POST(request: NextRequest) {
       teamCount,
       topicIds,
     );
+    await registerPlayAmplifiedRoom({ code: room.roomCode, gameSku: TRIVIA_SKU, joinHref: `/games/trivia/join?code=${encodeURIComponent(room.roomCode)}` });
     const response = NextResponse.json({ sessionId: room.sessionId, roomCode: room.roomCode }, {
       headers: { "Cache-Control": "no-store" },
     });
