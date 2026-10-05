@@ -1,0 +1,13 @@
+create table if not exists public.ppl_room_registry (
+  code text primary key check (code ~ '^[A-Z2-9]{6}$'),
+  game_sku text not null,
+  join_href text not null,
+  created_at timestamptz not null default now(),
+  expires_at timestamptz null
+);
+
+create index if not exists ppl_room_registry_expires_at_idx on public.ppl_room_registry (expires_at);
+
+alter table public.ppl_room_registry enable row level security;
+
+comment on table public.ppl_room_registry is 'Play Amplified platform room directory. Game engines register rooms here so one universal room code can resolve to the correct experience.';
