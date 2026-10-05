@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 
 type Phase = "setup" | "playing" | "finished";
-type Player = { name: string; score: number; remaining: number; rounds: number[] };\ntype RecordRow = { id: number; score: number; played_at: string; details: { rounds?: number[]; remaining?: number } };
+type Player = { name: string; score: number; remaining: number; rounds: number[] };
+type RecordRow = { id: number; score: number; played_at: string; details: { rounds?: number[]; remaining?: number } };
 
 const DISTANCES = [10, 15, 20, 25, 30];
 const STACKS = [5, 10, 15, 20];
@@ -16,7 +17,9 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
   const [playerCount, setPlayerCount] = useState(1);
   const [players, setPlayers] = useState<Player[]>([]);
   const [round, setRound] = useState(0);
-  const [turn, setTurn] = useState(0);\n  const [records, setRecords] = useState<RecordRow[]>([]);\n  const [recordStatus, setRecordStatus] = useState<"idle" | "loading" | "saving" | "saved" | "error">("idle");
+  const [turn, setTurn] = useState(0);
+  const [records, setRecords] = useState<RecordRow[]>([]);
+  const [recordStatus, setRecordStatus] = useState<"idle" | "loading" | "saving" | "saved" | "error">("idle");
 
   const current = players[turn];
   const roundValue = ROUND_VALUES[round] ?? 0;
