@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { RoomJoinPanel } from "@/app/games/_components/RoomJoinPanel";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -303,12 +304,8 @@ export function TriviaGameShowExperience() {
       <section className="mx-auto max-w-5xl px-4 py-6 sm:px-6">
         <div className="rounded-[32px] border border-white/10 bg-black/30 p-6 sm:p-8">
           <div className="text-xs font-black uppercase tracking-[.24em] text-cyan-200/55">Get everybody in</div>
-          <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
-            <div><div className="text-sm font-bold text-white/55">ROOM CODE</div><div className="mt-2 text-5xl font-black tracking-[.16em] text-white">{snapshot.roomCode}</div><div className="mt-5 text-sm text-white/60">{snapshot.players.length} player{snapshot.players.length === 1 ? "" : "s"} joined</div><div className="mt-3 flex flex-wrap gap-2">{snapshot.players.map((player) => <span key={player.id} className="rounded-full border border-white/10 bg-white/[.05] px-3 py-2 text-sm font-bold text-white">{player.name}</span>)}</div></div>
-            <Image src={snapshot.qrUrl} alt={`Join room ${snapshot.roomCode}`} width={210} height={210} unoptimized className="rounded-3xl bg-white p-3" />
-          </div>
+          <RoomJoinPanel code={snapshot.roomCode} joinUrl={snapshot.joinUrl} gameName="Play Point Trivia" players={snapshot.players} isHost minPlayers={snapshot.canStart ? undefined : Math.max(1, snapshot.players.length + 1)} startLabel="START THE GAME" busy={busy} onStart={snapshot.canStart ? () => hostAction("start") : undefined} />
           {error ? <div className="mt-5 text-sm font-bold text-amber-200">{error}</div> : null}
-          <button disabled={!snapshot.canStart || busy} onClick={() => hostAction("start")} className="mt-7 min-h-16 w-full rounded-2xl bg-cyan-300 px-5 text-lg font-black text-slate-950 disabled:opacity-35">{snapshot.canStart ? "START THE GAME" : "WAITING FOR PLAYERS…"}</button>
         </div>
       </section>
     );
