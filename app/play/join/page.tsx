@@ -10,14 +10,21 @@ export default function JoinGamePage() {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
 
-  function findRoom() {
+  async function findRoom() {
     const normalized = code.trim().toUpperCase();
     if (!CODE_PATTERN.test(normalized)) {
       setError("Enter the 6-character room code shown on the host's screen.");
       return;
     }
     setError("");
-    window.location.href = `/play/join/${encodeURIComponent(normalized)}`;
+    try {
+      const response = await fetch(`/api/play/rooms/resolve?code=${encodeURIComponent(normalized)}`, { cache: "no-store" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error ?? "Room not found.");
+      window.location.href = data.room.joinHref;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to find that room.");
+    }
   }
 
   return (
