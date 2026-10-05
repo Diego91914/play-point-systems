@@ -45,10 +45,10 @@ function GameFormatCard({ game }: { game: MasterGameEntry }) {
   );
 }
 
-function CatalogSection({ eyebrow, title, description, games }: { eyebrow: string; title: string; description: string; games: readonly MasterGameEntry[] }) {
+function CatalogSection({ id, eyebrow, title, description, games }: { id: string; eyebrow: string; title: string; description: string; games: readonly MasterGameEntry[] }) {
   if (!games.length) return null;
   return (
-    <section className="border-t border-white/10 py-14 sm:py-18">
+    <section id={id} className="scroll-mt-6 border-t border-white/10 py-14 sm:py-18">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <div className="text-[11px] font-black uppercase tracking-[0.22em] text-cyan-100/55">{eyebrow}</div>
@@ -116,17 +116,17 @@ export default function PlayAmplifiedPage() {
 
           <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {[
-              ["Social", "Party, conversation, deduction, mystery, cards, and celebration games."],
-              ["Course / Shot Caddy", "Disc golf and golf with tactics, challenges, alliances, predictions, and pressure."],
-              ["Backyard & Putting", "Basket, yard, putting, station, and casual competitive formats."],
-              ["Adventure / Quest Caddy", "Persistent fantasy Chronicle play digitally or tied to real throws."],
-              ["Trivia", "Hosted question-and-answer competition with teams, wagers, and live scoreboards."],
-            ].map(([title, body]) => (
-              <div key={title} className="rounded-[28px] border border-white/10 bg-white/[0.035] p-5">
+              ["Social", "Party, conversation, deduction, mystery, cards, and celebration games.", "#social-games"],
+              ["Course / Shot Caddy", "Disc golf and golf with tactics, challenges, alliances, predictions, and pressure.", "#course-games"],
+              ["Backyard & Putting", "Basket, yard, putting, station, and casual competitive formats.", "#backyard-games"],
+              ["Adventure / Quest Caddy", "Persistent fantasy Chronicle play digitally or tied to real throws.", "#adventure-games"],
+              ["Trivia", "Hosted question-and-answer competition with teams, wagers, and live scoreboards.", "#trivia-games"],
+            ].map(([title, body, href]) => (
+              <a key={title} href={href} className="group block rounded-[28px] border border-white/10 bg-white/[0.035] p-5 transition hover:-translate-y-0.5 hover:border-cyan-200/25 hover:bg-white/[0.055] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200/70">
                 <div className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-100/55">Play Amplified</div>
-                <div className="mt-3 text-xl font-black">{title}</div>
+                <div className="mt-3 flex items-center justify-between gap-3 text-xl font-black"><span>{title}</span><span aria-hidden="true" className="text-cyan-100/55 transition group-hover:translate-y-0.5">↓</span></div>
                 <p className="mt-3 text-sm leading-6 text-white/55">{body}</p>
-              </div>
+              </a>
             ))}
           </section>
 
@@ -154,11 +154,11 @@ export default function PlayAmplifiedPage() {
           </section>
 
           <div id="all-games" className="scroll-mt-6">
-            <CatalogSection eyebrow="People around the table" title="Social games" description="Face-to-face games where phones become private controllers, hands, roles, answer sheets, or seats while the group stays together." games={socialGames} />
-            <CatalogSection eyebrow="Real play amplified" title="Course / Shot Caddy" description="Disc golf and golf stay real while Shot Caddy adds competition, challenges, predictions, alliances, and tactical layers." games={courseGames} />
-            <CatalogSection eyebrow="One setup. A whole game night." title="Backyard & putting" description="Distinct playable formats built for a basket, yard, putting area, practice space, or improvised target setup." games={backyardGames} />
-            <CatalogSection eyebrow="Your Chronicle" title="Adventure / Quest Caddy" description="Persistent fantasy play either fully digital or driven by real throws on the course." games={adventureGames} />
-            <CatalogSection eyebrow="Questions become competition" title="Trivia" description="Hosted question-and-answer games with teams, wagers, pacing controls, room codes, and live scoreboards." games={triviaGames} />
+            <CatalogSection id="social-games" eyebrow="People around the table" title="Social games" description="Face-to-face games where phones become private controllers, hands, roles, answer sheets, or seats while the group stays together." games={socialGames} />
+            <CatalogSection id="course-games" eyebrow="Real play amplified" title="Course / Shot Caddy" description="Disc golf and golf stay real while Shot Caddy adds competition, challenges, predictions, alliances, and tactical layers." games={courseGames} />
+            <CatalogSection id="backyard-games" eyebrow="One setup. A whole game night." title="Backyard & putting" description="Distinct playable formats built for a basket, yard, putting area, practice space, or improvised target setup." games={backyardGames} />
+            <CatalogSection id="adventure-games" eyebrow="Your Chronicle" title="Adventure / Quest Caddy" description="Persistent fantasy play either fully digital or driven by real throws on the course." games={adventureGames} />
+            <CatalogSection id="trivia-games" eyebrow="Questions become competition" title="Trivia" description="Hosted question-and-answer games with teams, wagers, pacing controls, room codes, and live scoreboards." games={triviaGames} />
           </div>
 
           <section className="border-t border-white/10 py-14 sm:py-18">
