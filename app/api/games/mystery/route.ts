@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createMysteryRoom, joinMysteryRoom } from "@/lib/play-point-core/mystery-server-v3";
 import { GAMES_SESSION_COOKIE, verifyGamesSessionToken } from "@/lib/play-point-core/games-session";
 import { canHostDuringPrelaunch, prelaunchHostError } from "@/lib/play-point-core/prelaunch-access";
+import { registerPlayAmplifiedRoom } from "@/lib/play-point-core/room-registry";
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,7 +11,7 @@ export async function POST(request: NextRequest) {
       const claims = await verifyGamesSessionToken(request.cookies.get(GAMES_SESSION_COOKIE)?.value);
       if (!claims) return NextResponse.json({ error: "Sign in to host the mystery." }, { status: 401 });
       if (!canHostDuringPrelaunch(claims, "game.last_call_blackwood")) return NextResponse.json({ error: prelaunchHostError() }, { status: 403 });
-      return NextResponse.json({ success: true, ...(await createMysteryRoom(body.name, claims.sub)) });
+      const room = await createMysteryRoom(body.name, claims.sub); await registerPlayAmplifiedRoom({ code: room.code, gameSku: "game.last_call_blackwood", joinHref: `/games/mystery?code=${encodeURIComponent(room.code)}` }); return NextResponse.json({ success: true, ...room });
     }
     if (body.intent === "join") {
       return NextResponse.json({ success: true, ...(await joinMysteryRoom(body.code, body.name)) });
