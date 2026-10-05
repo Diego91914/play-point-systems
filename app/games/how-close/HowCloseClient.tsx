@@ -169,15 +169,11 @@ export function HowCloseClient() {
           <section className="mt-6 rounded-[28px] border border-white/10 bg-white/[.04] p-6">
             <h2 className="text-2xl font-black text-white">Get everyone in</h2>
             <p className="mt-2 text-sm leading-6 text-white/60">Each person joins with a first name. The game will put those names directly into the questions.</p>
-            <RoomJoinPanel code={game.code} joinUrl={joinUrl} gameName="How Close Are We?" />
+            <RoomJoinPanel code={game.code} joinUrl={joinUrl} gameName="How Close Are We?" players={game.players} currentPlayerId={session?.playerId} isHost={game.me.isHost} minPlayers={2} busy={busy} onStart={() => act("start")} />
             <div className="mt-4 rounded-2xl bg-black/20 p-4 text-sm leading-6 text-white/60">
               Everyone gets two turns in the Spotlight. On each turn, the Spotlight Player sets the real 1–100 answer. Everybody else tries to get within 10.
             </div>
-            {game.me.isHost ? (
-              <button disabled={busy || game.players.length < 2} onClick={() => act("start")} className="mt-4 w-full rounded-2xl bg-violet-300 px-4 py-4 font-black text-slate-950 disabled:opacity-40">START GAME</button>
-            ) : (
-              <p className="mt-4 text-center text-sm text-white/50">Waiting for the host to start…</p>
-            )}
+
           </section>
         )}
 
