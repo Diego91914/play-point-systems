@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { QRCodeSVG } from "qrcode.react";
+import { RoomJoinPanel } from "@/app/games/_components/RoomJoinPanel";
 import {
   HoldemTableSurface,
   PlayingCard,
@@ -483,29 +483,22 @@ export function HoldemClient() {
         )}
 
         {table.status === "lobby" ? (
-          <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_360px]">
-            <div className="rounded-[32px] border border-emerald-300/15 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.18),rgba(0,0,0,0.28)_68%)] p-6 sm:p-8">
-              <div className="text-center"><div className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-100/65">Players seated</div><div className="mt-2 text-5xl font-black text-white">{table.players.length}<span className="text-2xl text-white/35">/{table.settings.maxPlayers}</span></div></div>
-              <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                {table.players.map((player) => (
-                  <div key={player.id} className={`flex items-center justify-between rounded-2xl border px-4 py-4 ${player.sittingOut ? "border-white/8 bg-black/15 opacity-55" : "border-white/10 bg-black/25"}`}>
-                    <div><div className="font-black text-white">{player.name}{player.id === table.me.id ? " · You" : ""}</div><div className="mt-1 text-xs text-white/45">Seat {player.seat + 1}{player.sittingOut ? " · Sitting out" : ""}</div></div>
-                    <div className="font-black text-amber-200">{formatChips(player.stack)}</div>
-                  </div>
-                ))}
-              </div>
-              {table.me.isHost
-                ? <button disabled={busy || !canDeal} onClick={() => void act({ type: "start_hand" })} className="mt-8 w-full touch-manipulation rounded-2xl bg-emerald-400 px-5 py-4 text-lg font-black text-emerald-950 transition hover:brightness-105 disabled:opacity-40">{pendingAction === "start_hand" ? "Dealing…" : tableMode === "tournament" ? "Start tournament" : "Deal the cards"}</button>
-                : <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-center font-semibold text-white/65">Waiting for the host to deal…</div>}
+          <div className="mt-5">
+            {inviteUrl ? <RoomJoinPanel
+              code={table.code}
+              joinUrl={inviteUrl}
+              gameName="Phone Hold'em"
+              players={table.players}
+              currentPlayerId={table.me.id}
+              isHost={table.me.isHost}
+              minPlayers={2}
+              startLabel={tableMode === "tournament" ? "START TOURNAMENT" : "DEAL THE CARDS"}
+              busy={busy || pendingAction === "start_hand"}
+              onStart={() => void act({ type: "start_hand" })}
+            /> : null}
+            <div className="mt-4 flex justify-center">
+              <a href={publicTableUrl} target="_blank" rel="noreferrer" className="inline-flex rounded-xl border border-emerald-300/20 bg-emerald-300/8 px-4 py-2.5 text-xs font-black text-emerald-50 transition hover:bg-emerald-300/14">Put table on TV / iPad</a>
             </div>
-
-            <aside className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 text-center">
-              <div className="text-xs font-bold uppercase tracking-[0.2em] text-white/55">Scan to join</div>
-              {inviteUrl && <div className="mx-auto mt-5 w-fit rounded-2xl bg-white p-4"><QRCodeSVG value={inviteUrl} size={220} /></div>}
-              <div className="mt-5 text-3xl font-black tracking-[0.25em] text-white">{table.code}</div>
-              <p className="mt-3 text-sm leading-6 text-white/55">Each player scans this code on their own phone. Their hole cards stay private on their screen.</p>
-              <a href={publicTableUrl} target="_blank" rel="noreferrer" className="mt-5 inline-flex rounded-xl border border-emerald-300/20 bg-emerald-300/8 px-4 py-2.5 text-xs font-black text-emerald-50 transition hover:bg-emerald-300/14">Put table on TV / iPad</a>
-            </aside>
           </div>
         ) : (
           <>
