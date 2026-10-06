@@ -8,7 +8,7 @@ import {
 import { GAMES_SESSION_COOKIE, verifyGamesSessionToken } from "@/lib/play-point-core/games-session";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import { canHostDuringPrelaunch, prelaunchHostError } from "@/lib/play-point-core/prelaunch-access";
-import { registerPlayAmplifiedRoom } from "@/lib/play-point-core/room-registry";
+import { releasePlayAmplifiedSession, reservePlayAmplifiedSession } from "@/lib/play-point-core/room-registry";
 
 const ENTRY_ROLE_COOKIE = "pps-all-about-you-entry-role";
 
@@ -76,10 +76,16 @@ export async function POST(request: NextRequest) {
       const claims = await verifyGamesSessionToken(request.cookies.get(GAMES_SESSION_COOKIE)?.value);
       if (!claims) return NextResponse.json({ error: "Sign in to host All About You." }, { status: 401 });
       if (!canHostDuringPrelaunch(claims)) return NextResponse.json({ error: prelaunchHostError() }, { status: 403 });
-      const created = await createAllAboutYouRoom(body.name, claims.sub);
+      const session = await reservePlayAmplifiedSession({ gameSku: "game.all_about_you", joinHref: "/games/all-about-you?code={code}", participationModel: "OPEN_LOBBY" });
+      let created;
+      try {
+        created = await createAllAboutYouRoom(body.name, claims.sub, session.code);
+      } catch (error) {
+        await releasePlayAmplifiedSession(session.code).catch(() => undefined);
+        throw error;
+      }
       await applyEntryRole(created.code, created.playerId, role);
       const refreshed = await getAllAboutYouRoom(created.code, created.playerId, created.token);
-      await registerPlayAmplifiedRoom({ code: created.code, gameSku: "game.all_about_you", joinHref: `/games/all-about-you?code=${encodeURIComponent(created.code)}` });
       return NextResponse.json({ success: true, code: created.code, playerId: created.playerId, token: created.token, state: refreshed.state });
     }
 
