@@ -164,7 +164,7 @@ function endRound(state: State) {
   state.message = "Board complete. See what was left, then rotate the Surveyed Player.";
 }
 
-export async function createOnMyListRoom(nameValue: unknown, hostAccountId: string) {
+export async function createOnMyListRoom(nameValue: unknown, hostAccountId: string, reservedCode?: string) {
   const name = cleanName(nameValue);
   if (!hostAccountId) throw new Error("A signed-in host account is required.");
   for (let i = 0; i < 8; i++) {
