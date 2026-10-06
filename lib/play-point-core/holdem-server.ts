@@ -219,6 +219,7 @@ export async function createTable(input: {
   maxPlayers?: unknown;
   mode?: unknown;
   tournamentPreset?: unknown;
+  reservedCode?: unknown;
 }) {
   const name = cleanName(input.name);
   const startingStack = cleanInteger(input.startingStack, DEFAULT_SETTINGS.startingStack, 1000, 1000000);
@@ -231,8 +232,9 @@ export async function createTable(input: {
   if (startingStack < bigBlind * 10) throw new Error("Starting stack must be at least 10 big blinds.");
 
   const supabase = getSupabaseServerClient();
-  for (let attempt = 0; attempt < 10; attempt += 1) {
-    const code = createRoomCode();
+  const reservedCode = input.reservedCode ? cleanRoomCode(input.reservedCode) : null;
+  for (let attempt = 0; attempt < (reservedCode ? 1 : 10); attempt += 1) {
+    const code = reservedCode ?? createRoomCode();
     const token = createPlayerToken();
     const playerId = randomUUID();
     const base = createInitialState({ code, hostPlayerId: playerId, hostName: name, hostTokenHash: hashToken(token), startingStack, smallBlind, bigBlind, maxPlayers });
