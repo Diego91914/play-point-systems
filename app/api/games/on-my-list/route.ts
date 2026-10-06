@@ -4,24 +4,53 @@ import { GAMES_SESSION_COOKIE, isPrivilegedGamesSession, verifyGamesSessionToken
 import { canHostDuringPrelaunch, prelaunchHostError } from "@/lib/play-point-core/prelaunch-access";
 import { releasePlayAmplifiedSession, reservePlayAmplifiedSession } from "@/lib/play-point-core/room-registry";
 
-export async function POST(request:NextRequest){
-  try{
-    const body=await request.json().catch(()=>({}));
-    if(body.intent==="create"){
-      const claims=await verifyGamesSessionToken(request.cookies.get(GAMES_SESSION_COOKIE)?.value);
-      if(!claims)return NextResponse.json({error:"Sign in to host On My List."},{status:401});
-      if(!canHostDuringPrelaunch(claims,"game.on_my_list"))return NextResponse.json({error:prelaunchHostError()},{status:403});
-      const room=await createOnMyListRoom(body.name,claims.sub);return NextResponse.json({success:true,...room}) } catch (error) { await releasePlayAmplifiedSession(session.code).catch(() => undefined); throw error; };
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json().catch(() => ({}));
+
+    if (body.intent === "create") {
+      const claims = await verifyGamesSessionToken(request.cookies.get(GAMES_SESSION_COOKIE)?.value);
+      if (!claims) return NextResponse.json({ error: "Sign in to host On My List." }, { status: 401 });
+      if (!canHostDuringPrelaunch(claims, "game.on_my_list")) {
+        return NextResponse.json({ error: prelaunchHostError() }, { status: 403 });
+      }
+
+      const session = await reservePlayAmplifiedSession({
+        gameSku: "game.on_my_list",
+        joinHref: "/games/on-my-list?code={code}",
+        participationModel: "OPEN_LOBBY",
+      });
+      try {
+        const room = await createOnMyListRoom(body.name, claims.sub, session.code);
+        return NextResponse.json({ success: true, ...room });
+      } catch (error) {
+        await releasePlayAmplifiedSession(session.code).catch(() => undefined);
+        throw error;
+      }
     }
-    if(body.intent==="rejoin_host"){
-      const claims=await verifyGamesSessionToken(request.cookies.get(GAMES_SESSION_COOKIE)?.value);
-      if(!claims)return NextResponse.json({error:"Sign in with the account that created this room, then try Rejoin as Host again."},{status:401});
-      if(!canHostDuringPrelaunch(claims,"game.on_my_list"))return NextResponse.json({error:prelaunchHostError()},{status:403});
-      return NextResponse.json({success:true,...await recoverOnMyListHost(body.code,claims.sub,isPrivilegedGamesSession(claims))});
+
+    if (body.intent === "rejoin_host") {
+      const claims = await verifyGamesSessionToken(request.cookies.get(GAMES_SESSION_COOKIE)?.value);
+      if (!claims) {
+        return NextResponse.json(
+          { error: "Sign in with the account that created this room, then try Rejoin as Host again." },
+          { status: 401 },
+        );
+      }
+      if (!canHostDuringPrelaunch(claims, "game.on_my_list")) {
+        return NextResponse.json({ error: prelaunchHostError() }, { status: 403 });
+      }
+      return NextResponse.json({
+        success: true,
+        ...(await recoverOnMyListHost(body.code, claims.sub, isPrivilegedGamesSession(claims))),
+      });
     }
-    if(body.intent==="join")return NextResponse.json({success:true,...await joinOnMyListRoom(body.code,body.name)});
-    return NextResponse.json({error:"Unknown request."},{status:400});
-  }catch(error){
-    return NextResponse.json({error:error instanceof Error?error.message:"Unable to open game."},{status:400});
+
+    if (body.intent === "join") {
+      return NextResponse.json({ success: true, ...(await joinOnMyListRoom(body.code, body.name)) });
+    }
+    return NextResponse.json({ error: "Unknown request." }, { status: 400 });
+  } catch (error) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to open game." }, { status: 400 });
   }
 }
