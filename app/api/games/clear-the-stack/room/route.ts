@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   const distance=Math.max(1,Math.min(100,Number(body.distance)||20));
   const stackSize=Math.max(1,Math.min(100,Number(body.stackSize)||10));
   const supabase=getSupabaseServerClient();
-  const {data,error}=await supabase.from("ppl_clear_stack_rooms").insert({host_user_id:await hostId(),distance,stack_size:stackSize}).select("id,code,distance,stack_size,status").single();
+  const {data,error}=await supabase.from("ppl_clear_stack_rooms").insert({host_session_id:await hostId(),distance,stack_size:stackSize}).select("id,code,distance,stack_size,status").single();
   if(error) return NextResponse.json({error:"Could not create join room."},{status:500});
   return NextResponse.json({room:data});
 }
@@ -32,7 +32,7 @@ export async function PATCH(request: Request) {
   const host=await hostId();
   if(!id||!host) return NextResponse.json({error:"Not authorized."},{status:401});
   const supabase=getSupabaseServerClient();
-  const {data,error}=await supabase.from("ppl_clear_stack_rooms").update({status:body.status==="closed"?"closed":"playing"}).eq("id",id).eq("host_user_id",host).select("id").maybeSingle();
+  const {data,error}=await supabase.from("ppl_clear_stack_rooms").update({status:body.status==="closed"?"closed":"playing"}).eq("id",id).eq("host_session_id",host).select("id").maybeSingle();
   if(error||!data) return NextResponse.json({error:"Could not update room."},{status:403});
   return NextResponse.json({ok:true});
 }
