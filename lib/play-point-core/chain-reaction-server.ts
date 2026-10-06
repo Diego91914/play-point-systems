@@ -332,10 +332,10 @@ function finishRound(
   state.status = "round_end";
 }
 
-export async function createChainRoom(nameValue: unknown) {
+export async function createChainRoom(nameValue: unknown, reservedCode?: string) {
   const name = cleanName(nameValue);
-  for (let attempt = 0; attempt < 8; attempt += 1) {
-    const code = roomCode();
+  for (let attempt = 0; attempt < (reservedCode ? 1 : 8); attempt += 1) {
+    const code = reservedCode ? cleanCode(reservedCode) : roomCode();
     const token = playerToken();
     const id = randomUUID();
     const state: State = {
