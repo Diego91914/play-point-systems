@@ -6,7 +6,7 @@ import {
   verifyGamesSessionToken,
 } from "@/lib/play-point-core/games-session";
 import { canHostDuringPrelaunch, prelaunchHostError } from "@/lib/play-point-core/prelaunch-access";
-import { reservePlayAmplifiedSession } from "@/lib/play-point-core/room-registry";
+import { releasePlayAmplifiedSession, reservePlayAmplifiedSession } from "@/lib/play-point-core/room-registry";
 
 const HOLDEM_SKU = "game.phone_holdem";
 
@@ -26,8 +26,13 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Phone Hold'em is not owned by this account." }, { status: 403 });
       }
       const session = await reservePlayAmplifiedSession({ gameSku: HOLDEM_SKU, joinHref: "/games/holdem?code={code}", participationModel: "OPEN_LOBBY" });
-      const room = await createTable({ ...body, reservedCode: session.code });
-      return NextResponse.json({ success: true, ...room });
+      try {
+        const room = await createTable({ ...body, reservedCode: session.code });
+        return NextResponse.json({ success: true, ...room });
+      } catch (error) {
+        await releasePlayAmplifiedSession(session.code).catch(() => undefined);
+        throw error;
+      }
     }
 
     if (body?.intent === "join") {
