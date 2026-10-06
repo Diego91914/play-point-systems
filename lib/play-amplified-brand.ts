@@ -16,7 +16,7 @@ export const playAmplifiedBrand = {
   },
   platformLabels: {
     host: "Host a Game",
-    join: "Join a Game",
+    join: "Quick Join",
     library: "My Games",
     lobby: "The Lobby",
     chooseAnother: "Choose Another Game",
