@@ -46,6 +46,14 @@ export async function reservePlayAmplifiedSession(input: Omit<PlayAmplifiedSessi
   throw new Error("Unable to generate a unique Play Amplified session code. Try again.");
 }
 
+export async function releasePlayAmplifiedSession(codeInput: string) {
+  const code = normalizeCode(codeInput);
+  if (!/^[A-Z2-9]{6}$/.test(code)) return;
+  const supabase = getSupabaseServerClient();
+  const { error } = await supabase.from("ppl_room_registry").delete().eq("code", code);
+  if (error) throw new Error("Unable to release Play Amplified session: " + error.message);
+}
+
 export async function registerPlayAmplifiedSession(session: PlayAmplifiedSession) {
   const code = normalizeCode(session.code);
   if (!/^[A-Z2-9]{6}$/.test(code)) throw new Error("Invalid Play Amplified session code.");
