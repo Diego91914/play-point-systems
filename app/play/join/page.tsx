@@ -1,17 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { SiteShell } from "@/app/components/SiteShell";
 
 const CODE_PATTERN = /^[A-Z2-9]{6}$/;
 
 export default function JoinGamePage() {
-  const [code, setCode] = useState("");
+  const searchParams = useSearchParams();
+  const initialCode = (searchParams.get("code") ?? "").trim().toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 6);
+  const [code, setCode] = useState(initialCode);
   const [error, setError] = useState("");
+  const autoLookupStarted = useRef(false);
 
-  async function findRoom() {
-    const normalized = code.trim().toUpperCase();
+  async function findRoom(codeOverride?: string) {
+    const candidate = codeOverride ?? code;
+    const normalized = candidate.trim().toUpperCase();
     if (!CODE_PATTERN.test(normalized)) {
       setError("Enter the 6-character room code shown on the host's screen.");
       return;
@@ -27,18 +32,25 @@ export default function JoinGamePage() {
     }
   }
 
+  useEffect(() => {
+    if (autoLookupStarted.current) return;
+    if (searchParams.get("lookup") !== "1" || !CODE_PATTERN.test(initialCode)) return;
+    autoLookupStarted.current = true;
+    void findRoom(initialCode);
+  }, [initialCode, searchParams]);
+
   return (
     <SiteShell current="play">
       <section className="px-5 py-10 sm:px-8 lg:px-10 lg:py-16">
         <div className="mx-auto max-w-xl">
           <Link href="/play" className="text-sm font-bold text-white/50 hover:text-white">← Back to Play</Link>
           <div className="mt-7 rounded-[32px] border border-fuchsia-200/20 bg-fuchsia-300/[0.055] p-6 sm:p-8">
-            <div className="text-[11px] font-black uppercase tracking-[0.24em] text-fuchsia-100/60">Join a game</div>
+            <div className="text-[11px] font-black uppercase tracking-[0.24em] text-fuchsia-100/60">Quick Join</div>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-white sm:text-5xl">Enter the room code.</h1>
             <p className="mt-3 text-sm leading-6 text-white/58">If the host has a QR code, scanning it is even faster. Guests do not need a Play Amplified account.</p>
             <label htmlFor="room-code" className="mt-7 block text-xs font-black uppercase tracking-[0.18em] text-white/45">Room code</label>
-            <input id="room-code" autoCapitalize="characters" autoCorrect="off" maxLength={6} value={code} onChange={(event) => setCode(event.target.value.toUpperCase().replace(/[^A-Z2-9]/g, ""))} onKeyDown={(event) => { if (event.key === "Enter") findRoom(); }} placeholder="ABC234" className="mt-2 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-5 text-center text-3xl font-black uppercase tracking-[0.28em] text-white outline-none focus:border-fuchsia-200/55" />
-            <button type="button" onClick={findRoom} disabled={code.length !== 6} className="mt-3 w-full rounded-2xl bg-fuchsia-200 px-5 py-4 font-black text-slate-950 disabled:opacity-35">JOIN GAME</button>
+            <input id="room-code" autoCapitalize="characters" autoCorrect="off" maxLength={6} value={code} onChange={(event) => setCode(event.target.value.toUpperCase().replace(/[^A-Z2-9]/g, ""))} onKeyDown={(event) => { if (event.key === "Enter") void findRoom(); }} placeholder="ABC234" className="mt-2 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-5 text-center text-3xl font-black uppercase tracking-[0.28em] text-white outline-none focus:border-fuchsia-200/55" />
+            <button type="button" onClick={() => void findRoom()} disabled={code.length !== 6} className="mt-3 w-full rounded-2xl bg-fuchsia-200 px-5 py-4 font-black text-slate-950 disabled:opacity-35">JOIN GAME</button>
             {error ? <p className="mt-3 text-sm text-rose-200">{error}</p> : null}
           </div>
         </div>
