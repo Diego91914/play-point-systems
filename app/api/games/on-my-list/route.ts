@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createOnMyListRoom, joinOnMyListRoom, recoverOnMyListHost } from "@/lib/play-point-core/on-my-list-server";
 import { GAMES_SESSION_COOKIE, isPrivilegedGamesSession, verifyGamesSessionToken } from "@/lib/play-point-core/games-session";
 import { canHostDuringPrelaunch, prelaunchHostError } from "@/lib/play-point-core/prelaunch-access";
-import { registerPlayAmplifiedRoom } from "@/lib/play-point-core/room-registry";
+import { releasePlayAmplifiedSession, reservePlayAmplifiedSession } from "@/lib/play-point-core/room-registry";
 
 export async function POST(request:NextRequest){
   try{
@@ -11,7 +11,7 @@ export async function POST(request:NextRequest){
       const claims=await verifyGamesSessionToken(request.cookies.get(GAMES_SESSION_COOKIE)?.value);
       if(!claims)return NextResponse.json({error:"Sign in to host On My List."},{status:401});
       if(!canHostDuringPrelaunch(claims,"game.on_my_list"))return NextResponse.json({error:prelaunchHostError()},{status:403});
-      const room=await createOnMyListRoom(body.name,claims.sub);await registerPlayAmplifiedRoom({code:room.code,gameSku:"game.on_my_list",joinHref:`/games/on-my-list?code=${encodeURIComponent(room.code)}`});return NextResponse.json({success:true,...room});
+      const room=await createOnMyListRoom(body.name,claims.sub);return NextResponse.json({success:true,...room}) } catch (error) { await releasePlayAmplifiedSession(session.code).catch(() => undefined); throw error; };
     }
     if(body.intent==="rejoin_host"){
       const claims=await verifyGamesSessionToken(request.cookies.get(GAMES_SESSION_COOKIE)?.value);
