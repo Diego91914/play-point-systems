@@ -22,7 +22,7 @@ export default function HostGamePage() {
               <Link key={game.sku} href={game.href} className="rounded-[24px] border border-white/10 bg-white/[0.035] p-5 transition hover:-translate-y-0.5 hover:border-cyan-200/25 hover:bg-white/[0.055]">
                 <div className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-100/50">{game.family}</div>
                 <div className="mt-2 text-xl font-black text-white">{game.title}</div>
-                <p className="mt-2 text-sm leading-6 text-white/52">{game.shortDescription}</p>
+                <p className="mt-2 text-sm leading-6 text-white/52">{game.description}</p>
                 <div className="mt-4 text-sm font-black text-cyan-100">Host →</div>
               </Link>
             ))}
