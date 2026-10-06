@@ -4,7 +4,6 @@ import { SiteShell } from "@/app/components/SiteShell";
 import { GameLibraryCard } from "@/app/play/GameLibraryCard";
 import {
   PLAY_POINT_GAME_CATALOG,
-  getSalesReadyCatalog,
   type PlayPointCategory,
   type PlayPointGameCatalogItem,
 } from "@/lib/play-point-core/games-catalog";
@@ -100,16 +99,13 @@ function matchesSection(product: PlayPointGameCatalogItem, section: PlaySection)
 }
 
 export default function PlayPage() {
-  const readyToSellCount = getSalesReadyCatalog().length;
-
   return (
     <SiteShell current="play">
       <section className="px-5 pb-10 pt-12 sm:px-8 sm:pb-14 sm:pt-16 lg:px-10 lg:pt-20">
         <div className="mx-auto max-w-6xl">
           <div className="max-w-4xl">
-            <div className="inline-flex rounded-full border border-amber-200/20 bg-amber-300/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-amber-100">{readyToSellCount} finished games</div>
             <h1 className="marketing-headline mt-6 leading-[1] lg:text-7xl">What are we playing?</h1>
-            <p className="mt-5 max-w-3xl text-lg leading-8 text-white/68">Explore every finished Play Point game, see the one-time price, and choose the experience that fits your group.</p>
+            <p className="mt-5 max-w-3xl text-lg leading-8 text-white/68">Host a game or join one that someone else has already started.</p>
             <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-amber-300/15 bg-amber-300/[0.055] px-4 py-2 text-xs font-bold text-amber-50/80">
               <span className="flex h-5 w-5 items-center justify-center rounded-full border border-amber-200/30 text-[11px]">i</span>
               Tap About on any game for a quick explanation.
