@@ -18,7 +18,7 @@ export async function registerPlayAmplifiedRoom(room: PlayAmplifiedRoom) {
   const code = room.code.trim().toUpperCase();
   if (!/^[A-Z2-9]{6}$/.test(code)) throw new Error("Invalid Play Amplified room code.");
   const supabase = getSupabaseServerClient();
-  const { error } = await supabase.from("ppl_room_registry").upsert({
+  const { error } = await supabase.from("ppl_room_registry").insert({
     code,
     game_sku: room.gameSku,
     join_href: room.joinHref,
@@ -26,7 +26,8 @@ export async function registerPlayAmplifiedRoom(room: PlayAmplifiedRoom) {
     external_session_id: room.externalSessionId ?? null,
     created_at: room.createdAt ?? new Date().toISOString(),
     expires_at: room.expiresAt ?? null,
-  }, { onConflict: "code" });
+  });
+  if (error?.code === "23505") throw new Error("Play Amplified session code collision.");
   if (error) throw new Error(`Unable to register Play Amplified room: ${error.message}`);
 }
 
