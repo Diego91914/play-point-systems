@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createInsideManRoom, joinInsideManRoom } from "@/lib/play-point-core/inside-man-server";
 import { GAMES_SESSION_COOKIE, verifyGamesSessionToken } from "@/lib/play-point-core/games-session";
 import { canHostDuringPrelaunch, prelaunchHostError } from "@/lib/play-point-core/prelaunch-access";
-import { reservePlayAmplifiedSession } from "@/lib/play-point-core/room-registry";
+import { releasePlayAmplifiedSession, reservePlayAmplifiedSession } from "@/lib/play-point-core/room-registry";
 
 export async function POST(request:NextRequest){
   try{
@@ -12,8 +12,13 @@ export async function POST(request:NextRequest){
       if(!claims)return NextResponse.json({error:"Sign in to host The Inside Man."},{status:401});
       if(!canHostDuringPrelaunch(claims,"game.inside_man"))return NextResponse.json({error:prelaunchHostError()},{status:403});
       const session = await reservePlayAmplifiedSession({ gameSku: "game.inside_man", joinHref: "/games/inside-man?code={code}", participationModel: "OPEN_LOBBY" });
-      const room = await createInsideManRoom(body.name, session.code);
-      return NextResponse.json({success:true,...room});
+      try {
+        const room = await createInsideManRoom(body.name, session.code);
+        return NextResponse.json({success:true,...room});
+      } catch (error) {
+        await releasePlayAmplifiedSession(session.code).catch(() => undefined);
+        throw error;
+      }
     }
     if(body.intent==="join")return NextResponse.json({success:true,...await joinInsideManRoom(body.code,body.name)});
     return NextResponse.json({error:"Unknown request."},{status:400});
