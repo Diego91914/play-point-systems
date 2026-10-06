@@ -100,7 +100,7 @@ function project(state: State, viewer: string) {
   };
 }
 
-export async function createHowCloseRoom(nameValue: unknown) {
+export async function createHowCloseRoom(nameValue: unknown, reservedCode?: string) {
   const name = cleanName(nameValue);
   for (let attempt = 0; attempt < 8; attempt++) {
     const code = roomCode(); const token = playerToken(); const id = randomUUID();
