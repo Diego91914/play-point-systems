@@ -121,8 +121,8 @@ export default function PlayPage() {
             </Link>
             <Link href="/play/join" className="group rounded-[28px] border border-fuchsia-200/20 bg-[radial-gradient(circle_at_top_right,rgba(217,70,239,0.12),transparent_55%),rgba(217,70,239,0.055)] p-6 transition hover:-translate-y-0.5 hover:border-fuchsia-200/35">
               <div className="text-[10px] font-black uppercase tracking-[0.22em] text-fuchsia-100/60">Someone already has a room</div>
-              <div className="mt-3 text-3xl font-black tracking-tight text-white">JOIN A GAME</div>
-              <p className="mt-2 text-sm leading-6 text-white/60">Scan the host&apos;s QR code or enter the room code. Guests do not need an account.</p>
+              <div className="mt-3 text-3xl font-black tracking-tight text-white">QUICK JOIN</div>
+              <p className="mt-2 text-sm leading-6 text-white/60">Already have a room code? Enter it here. If you&apos;re with the host, just scan their QR code with your phone camera.</p>
               <div className="mt-5 text-sm font-black text-fuchsia-100">Enter room code →</div>
             </Link>
           </section>
