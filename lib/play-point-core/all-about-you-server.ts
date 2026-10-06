@@ -223,7 +223,7 @@ function project(state: State, viewer: string) {
   };
 }
 
-export async function createAllAboutYouRoom(nameValue: unknown, hostAccountId: string) {
+export async function createAllAboutYouRoom(nameValue: unknown, hostAccountId: string, reservedCode?: string) {
   const name = cleanName(nameValue);
   if (!hostAccountId) throw new Error("A signed-in host account is required.");
 
