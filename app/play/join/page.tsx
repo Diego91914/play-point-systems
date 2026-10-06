@@ -2,15 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { SiteShell } from "@/app/components/SiteShell";
 
 const CODE_PATTERN = /^[A-Z2-9]{6}$/;
 
 export default function JoinGamePage() {
-  const searchParams = useSearchParams();
-  const initialCode = (searchParams.get("code") ?? "").trim().toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 6);
-  const [code, setCode] = useState(initialCode);
+  const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const autoLookupStarted = useRef(false);
 
@@ -34,10 +31,13 @@ export default function JoinGamePage() {
 
   useEffect(() => {
     if (autoLookupStarted.current) return;
-    if (searchParams.get("lookup") !== "1" || !CODE_PATTERN.test(initialCode)) return;
+    const params = new URLSearchParams(window.location.search);
+    const initialCode = (params.get("code") ?? "").trim().toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 6);
+    if (initialCode) setCode(initialCode);
+    if (params.get("lookup") !== "1" || !CODE_PATTERN.test(initialCode)) return;
     autoLookupStarted.current = true;
     void findRoom(initialCode);
-  }, [initialCode, searchParams]);
+  }, []);
 
   return (
     <SiteShell current="play">
