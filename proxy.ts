@@ -70,7 +70,7 @@ export async function proxy(request: NextRequest) {
   const guestRoomApi = isGuestRoomApi(pathname);
   const clearStackGuestJoin = pathname.startsWith(CLEAR_STACK_JOIN_PREFIX) || pathname === CLEAR_STACK_JOIN_API;
   const triviaGuestJoin = pathname === TRIVIA_GUEST_JOIN_PAGE || pathname === TRIVIA_GUEST_JOIN_API;
-  const triviaVenueGuestJoin = TRIVIA_VENUE_JOIN_PREFIX && /^\/games\/trivia\/venue\/[^/]+\/join$/.test(pathname);
+  const triviaVenueGuestJoin = pathname.startsWith(TRIVIA_VENUE_JOIN_PREFIX) && /^\/games\/trivia\/venue\/[^/]+\/join$/.test(pathname);
 
   if (pathname === "/games/sign-in" || pathname.startsWith("/games/sign-in/") || pathname === ACCOUNT_SESSION_PATH || pathname === BUILDER_SESSION_PATH || pathname === SHOT_CADDY_HANDOFF_PATH || pathname === SOCIAL_ROOM_CONTROL_PATH || pathname.endsWith("/opengraph-image") || guestJoinPage || guestRoomApi || clearStackGuestJoin || triviaGuestJoin || triviaVenueGuestJoin) {
     const response=NextResponse.next();response.headers.set("Cache-Control","private, no-store");return response;
