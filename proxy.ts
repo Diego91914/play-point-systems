@@ -11,6 +11,8 @@ const SHOT_CADDY_HANDOFF_PATH = "/api/games/account/shot-caddy-handoff";
 const SOCIAL_ROOM_CONTROL_PATH = "/api/games/social-room-control";
 const CLEAR_STACK_JOIN_PREFIX = "/games/clear-the-stack/join/";
 const CLEAR_STACK_JOIN_API = "/api/games/clear-the-stack/join";
+const TRIVIA_GUEST_JOIN_PAGE = "/games/trivia/join";
+const TRIVIA_GUEST_JOIN_API = "/api/trivia/rooms/join";
 const PLAY_AMPLIFIED_HOSTS = new Set(["playamplified.com", "www.playamplified.com"]);
 
 // Multiplayer phone games use one access model: the host must own/access the game,
@@ -66,8 +68,9 @@ export async function proxy(request: NextRequest) {
   const guestJoinPage = isGuestRoomPage(pathname, hasRoomCode);
   const guestRoomApi = isGuestRoomApi(pathname);
   const clearStackGuestJoin = pathname.startsWith(CLEAR_STACK_JOIN_PREFIX) || pathname === CLEAR_STACK_JOIN_API;
+  const triviaGuestJoin = pathname === TRIVIA_GUEST_JOIN_PAGE || pathname === TRIVIA_GUEST_JOIN_API;
 
-  if (pathname === "/games/sign-in" || pathname.startsWith("/games/sign-in/") || pathname === ACCOUNT_SESSION_PATH || pathname === BUILDER_SESSION_PATH || pathname === SHOT_CADDY_HANDOFF_PATH || pathname === SOCIAL_ROOM_CONTROL_PATH || pathname.endsWith("/opengraph-image") || guestJoinPage || guestRoomApi || clearStackGuestJoin) {
+  if (pathname === "/games/sign-in" || pathname.startsWith("/games/sign-in/") || pathname === ACCOUNT_SESSION_PATH || pathname === BUILDER_SESSION_PATH || pathname === SHOT_CADDY_HANDOFF_PATH || pathname === SOCIAL_ROOM_CONTROL_PATH || pathname.endsWith("/opengraph-image") || guestJoinPage || guestRoomApi || clearStackGuestJoin || triviaGuestJoin) {
     const response=NextResponse.next();response.headers.set("Cache-Control","private, no-store");return response;
   }
 
