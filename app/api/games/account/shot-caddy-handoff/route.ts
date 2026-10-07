@@ -5,6 +5,7 @@ import {
   GAMES_SESSION_COOKIE,
   GAMES_SESSION_TTL_SECONDS,
 } from "@/lib/play-point-core/games-session";
+import { loadActiveGameEntitlements } from "@/lib/play-point-core/games-access-server";
 
 const SHOT_CADDY_ZONE_ORIGIN =
   process.env.SHOT_CADDY_ZONE_ORIGIN ?? "https://shot-caddy-web.vercel.app";
@@ -54,12 +55,16 @@ export async function POST(request: NextRequest) {
     const sessionTtl = founder
       ? FOUNDER_GAMES_SESSION_TTL_SECONDS
       : GAMES_SESSION_TTL_SECONDS;
+    // Shot Caddy verifies the identity, but Play Amplified remains the
+    // authority for Play Amplified ownership. Always refresh entitlements here
+    // so arriving through Shot Caddy cannot create a second ownership state.
+    const entitlements = founder ? ["*"] : await loadActiveGameEntitlements(accountId);
     const sessionToken = await createGamesSessionToken(
       {
         sub: accountId,
         email,
         role: founder ? "founder" : "member",
-        entitlements: founder ? ["*"] : [],
+        entitlements,
       },
       { ttlSeconds: sessionTtl },
     );
@@ -67,6 +72,7 @@ export async function POST(request: NextRequest) {
     const response = noStoreJson({
       success: true,
       account: { email, role: founder ? "founder" : "member", founder },
+      entitlements,
     });
     response.cookies.set({
       name: GAMES_SESSION_COOKIE,
