@@ -1,3 +1,5 @@
+import { reservePlayAmplifiedSession, releasePlayAmplifiedSession } from "@/lib/play-point-core/room-registry";
+import { canHostDuringPrelaunch, prelaunchHostError } from "@/lib/play-point-core/prelaunch-access";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { GAMES_SESSION_COOKIE, verifyGamesSessionToken } from "@/lib/play-point-core/games-session";
@@ -8,12 +10,16 @@ async function hostId() {
   return (await verifyGamesSessionToken(token))?.sub ?? null;
 }
 export async function POST(request: Request) {
+  const claims = await verifyGamesSessionToken((await cookies()).get(GAMES_SESSION_COOKIE)?.value);
+  if (!claims) return NextResponse.json({ error: "Sign in to host." }, { status: 401 });
+  if (!canHostDuringPrelaunch(claims, "game.clear_the_stack")) return NextResponse.json({ error: prelaunchHostError() }, { status: 403 });
   const body=await request.json().catch(()=>({}));
   const distance=Math.max(1,Math.min(100,Number(body.distance)||20));
   const stackSize=Math.max(1,Math.min(100,Number(body.stackSize)||10));
   const supabase=getSupabaseServerClient();
-  const {data,error}=await supabase.from("ppl_clear_stack_rooms").insert({host_session_id:await hostId(),distance,stack_size:stackSize}).select("id,code,distance,stack_size,status").single();
-  if(error) return NextResponse.json({error:"Could not create join room."},{status:500});
+  const session = await reservePlayAmplifiedSession({ gameSku: "game.clear_the_stack", participationModel: "HOSTED_ROSTER", joinHref: "/games/clear-the-stack/join/{code}", expiresAt: new Date(Date.now() + 86400000).toISOString() });
+  const {data,error}=await supabase.from("ppl_clear_stack_rooms").insert({code:session.code,host_session_id:claims.sub,distance,stack_size:stackSize}).select("id,code,distance,stack_size,status").single();
+  if(error || !data) { await releasePlayAmplifiedSession(session.code); return NextResponse.json({error:"Could not create join room."},{status:500}); }
   return NextResponse.json({room:data});
 }
 export async function GET(request: Request) {

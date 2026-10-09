@@ -18,7 +18,7 @@ const PLAY_AMPLIFIED_HOSTS = new Set(["playamplified.com", "www.playamplified.co
 
 // Multiplayer phone games use one access model: the host must own/access the game,
 // while invited guests may enter an existing room with a room code and first name.
-const GUEST_ROOM_GAMES = ["chain-reaction", "how-close", "inside-man", "on-my-list", "all-about-you", "holdem", "live-craps"] as const;
+const GUEST_ROOM_GAMES = ["chain-reaction", "how-close", "inside-man", "on-my-list", "all-about-you", "holdem", "live-craps", "mystery"] as const;
 
 function isGuestRoomPage(pathname: string, hasRoomCode: boolean) {
   // Hold'em and Live Craps support manual desktop joining. Guests can open the landing
@@ -70,9 +70,10 @@ export async function proxy(request: NextRequest) {
   const guestRoomApi = isGuestRoomApi(pathname);
   const clearStackGuestJoin = pathname.startsWith(CLEAR_STACK_JOIN_PREFIX) || pathname === CLEAR_STACK_JOIN_API;
   const triviaGuestJoin = pathname === TRIVIA_GUEST_JOIN_PAGE || pathname === TRIVIA_GUEST_JOIN_API;
+  const triviaVenueGuestApi = request.method === "POST" && /^\/api\/trivia\/venue\/[^/]+\/(join|player|refresh)$/.test(pathname);
   const triviaVenueGuestJoin = pathname.startsWith(TRIVIA_VENUE_JOIN_PREFIX) && /^\/games\/trivia\/venue\/[^/]+\/join$/.test(pathname);
 
-  if (pathname === "/games/sign-in" || pathname.startsWith("/games/sign-in/") || pathname === ACCOUNT_SESSION_PATH || pathname === BUILDER_SESSION_PATH || pathname === SHOT_CADDY_HANDOFF_PATH || pathname === SOCIAL_ROOM_CONTROL_PATH || pathname.endsWith("/opengraph-image") || guestJoinPage || guestRoomApi || clearStackGuestJoin || triviaGuestJoin || triviaVenueGuestJoin) {
+  if (pathname === "/games/sign-in" || pathname.startsWith("/games/sign-in/") || pathname === ACCOUNT_SESSION_PATH || pathname === BUILDER_SESSION_PATH || pathname === SHOT_CADDY_HANDOFF_PATH || pathname === SOCIAL_ROOM_CONTROL_PATH || pathname.endsWith("/opengraph-image") || guestJoinPage || guestRoomApi || clearStackGuestJoin || triviaGuestJoin || triviaVenueGuestJoin || triviaVenueGuestApi) {
     const response=NextResponse.next();response.headers.set("Cache-Control","private, no-store");return response;
   }
 
