@@ -1,6 +1,6 @@
 # Play Amplified platform audit — October 8, 2026
 ## Scope and evidence
-Reviewed the 27 formats in the consumer master catalog, plus Venue Trivia, League Night, Score Caddy and the retired Get There database path. Play Point Systems main: bb3bb9365fe3f7aa4a38640220dee0bbbca3b12c. Shot Caddy Web main: 7ec91dd47152ddb071f388168862ca509576118b.
+Reviewed the 27 formats in the consumer master catalog, plus Venue Trivia, League Night and Score Caddy. Play Point Systems main: bb3bb9365fe3f7aa4a38640220dee0bbbca3b12c. Shot Caddy Web main: 7ec91dd47152ddb071f388168862ca509576118b.
 Evidence combines repository reads, live database table/permission/RPC checks, unauthenticated production HTTP checks, and local Play Point Systems tests. This is an architecture/database/access audit, not a certification of every gameplay flow. No Founder cookie or credentials were available to execute authenticated host creation/start and complete real-device guest rounds. Shot Caddy was inspected through GitHub; its automated tests were not run locally.
 ## Repair applied
 Applied the existing room-registry migration to the active Play Point Systems project, with explicit server-only grants. RLS is enabled, service_role has SELECT/INSERT/UPDATE/DELETE, and anon/authenticated have no direct table privileges. Schema cache reload requested. All seven registry columns verified.
@@ -48,7 +48,7 @@ A transaction using service_role inserted and read registry entries for How Clos
 6. Clear the Stack, Live Craps, League Night and legacy Shot Caddy sessions do not enter the central registry through the inspected helper calls. Quick Join cannot resolve their codes using the current resolver alone. Add adapters, not another room/player/score system.
 7. Trivia and Mystery create game state before registry insertion. A collision/registration failure can leave an orphaned room; use compensation or coordinated reservation.
 8. Registry release currently appears only on failed creation for five games. No common successful-completion release or expiry policy is implemented there; entries default to no expiry. Lifecycle work remains.
-9. Shot Caddy's private public-lock middleware can block guest APIs whenever enabled unless the guest also has private-access cookie. Existing player-seat joining does not inherently require an account, but the launch lock can intercept it. Verify deployed lock state before altering legacy policy.
+9. Shot Caddy's private public-lock middleware can block guest APIs whenever enabled unless the guest also has private-access cookie. Existing player-seat joining does not inherently require an account, but the launch lock can intercept it. Production GET /shot-caddy/api/sessions/ZZZZZ2 returns 403 Shot Caddy gameplay is temporarily unavailable without a private-access cookie. Repair needs a narrow existing-session guest allowance, not a public host bypass.
 10. Shot Caddy gameplay/session ownership remains game-authoritative, which is appropriate. Identity/entitlement adapters and universal resolution still need end-to-end checks; do not copy its player database or treat it as authority for Play Amplified entitlements.
 ## Tests and remaining verification
 Local suite: 67 passing files, 3 failing files; 369 passing tests, 4 failing tests, and one suite import failure. Failures: Trivia recovery cannot import server-only through registry; two Live Craps fixtures roll without required line wagers; preview manifest omits Clear the Stack and lacks expected image sizes. This audit did not alter those files.
@@ -56,3 +56,5 @@ Unauthenticated production GET checks reached QR entry pages for Chain Reaction,
 Finish with authenticated Founder -> create -> QR/code -> guest name/seat -> start -> complete -> cleanup for each game family, including two-player Clear the Stack and remote Quick Join. Keep PR #24 Founder restoration separate; it remains unmerged at audit time.
 ## Priority
 Repair guest interception and League Night server permissions; add missing private-role enforcement. Then finish Founder restoration verification and room-registry adapters, compensation and cleanup. Only then close identity/join readiness and proceed to broader lifecycle standardization.
+
+Production API confirmation: Mystery POST and Venue Trivia join POST return 401 account required; League Night join GET returns 500 permission denied for ppl_league_events. These were invalid-code/no-account probes, not valid-room joins.
