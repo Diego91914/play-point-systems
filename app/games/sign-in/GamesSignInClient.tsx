@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getPlayPointBrowserSupabaseClient } from "@/lib/play-point-core/play-point-browser-supabase";
+import { restoreGamesAccount } from "@/lib/play-point-core/restore-games-account";
 
 function safeNextPath(value: string): string {
   if (value.startsWith("//")) return "/play-amplified";
@@ -18,6 +20,7 @@ function safeNextPath(value: string): string {
 export function GamesSignInClient({ nextPath }: { nextPath: string }) {
   const destination = safeNextPath(nextPath);
   const [error, setError] = useState("");
+  const [needsSignIn, setNeedsSignIn] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -26,6 +29,7 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
 
     async function connect() {
       setError("");
+      setNeedsSignIn(false);
 
       if (handoff) {
         const response = await fetch("/api/games/account/shot-caddy-handoff", {
@@ -46,6 +50,14 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
         return;
       }
 
+      const { data, error: sessionError } = await getPlayPointBrowserSupabaseClient().auth.getSession();
+      if (sessionError) throw new Error("Unable to check your saved account. Please retry.");
+      if (cancelled) return;
+      if (data.session && await restoreGamesAccount(data.session.access_token)) {
+        if (!cancelled) window.location.replace(destination);
+        return;
+      }
+
       const builderResponse = await fetch("/api/games/account/builder-session", {
         method: "POST",
         cache: "no-store",
@@ -55,15 +67,8 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
         return;
       }
 
-      // Public purchasing/hosting is still closed. Any unsigned attempt to
-      // enter the game library stays on the private builder-password path.
-      // Customer email sign-in remains available from the dedicated /account
-      // screen, but it is not part of Founder/builder test access.
-      if (!cancelled) {
-        const target = new URL("/builder-access", window.location.origin);
-        target.searchParams.set("next", destination);
-        window.location.replace(target.toString());
-      }
+      if (builderResponse.status !== 401) throw new Error("Unable to check private access. Please retry.");
+      if (!cancelled) setNeedsSignIn(true);
     }
 
     void connect().catch((connectError) => {
@@ -96,10 +101,10 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
         Play Amplified · Access
       </div>
       <h1 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-4xl">
-        Opening Play Amplified…
+        {needsSignIn ? "Private Play Amplified access" : "Opening Play Amplified…"}
       </h1>
       <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-white/66">
-        Private test access is checked first. If it is not active yet, Play Amplified will ask for the builder password—not an email account.
+        Restore your existing Founder account or use your private Builder access.
       </p>
 
       {error ? (
@@ -115,6 +120,15 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
             Retry
           </button>
         </>
+      ) : needsSignIn ? (
+        <div className="mt-7 grid gap-3">
+          <a href={`/shot-caddy/account/play-point?next=${encodeURIComponent(destination)}`} className="rounded-2xl bg-cyan-300 px-5 py-4 font-black text-slate-950">
+            Sign in with Founder account
+          </a>
+          <a href={`/builder-access?next=${encodeURIComponent(destination)}`} className="rounded-2xl border border-white/20 px-5 py-4 font-bold text-white">
+            Use Builder password
+          </a>
+        </div>
       ) : (
         <div
           role="status"
