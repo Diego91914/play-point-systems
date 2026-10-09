@@ -22,3 +22,7 @@ alter table public.ppl_room_registry
   add column if not exists external_session_id text null;
 
 comment on table public.ppl_room_registry is 'Play Amplified session directory. Resolves one universal session code to the correct game experience without requiring every game to use the same participation model.';
+
+revoke all on public.ppl_room_registry from anon, authenticated;
+grant select, insert, update, delete on public.ppl_room_registry to service_role;
+notify pgrst, 'reload schema';
