@@ -3,6 +3,8 @@ import "server-only";
 import { randomBytes } from "node:crypto";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 
+import { authoritativeSessionExpiry } from "./session-lifecycle";
+
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
 export type PlayAmplifiedParticipationModel = "OPEN_LOBBY" | "HOSTED_ROSTER";
@@ -21,7 +23,7 @@ function normalizeCode(value: string) {
   return value.trim().toUpperCase();
 }
 
-function randomSessionCode() {
+export function createPlayAmplifiedSessionCode() {
   const bytes = randomBytes(6);
   return Array.from(bytes, (value) => ALPHABET[value % ALPHABET.length]).join("");
 }
@@ -29,7 +31,7 @@ function randomSessionCode() {
 export async function reservePlayAmplifiedSession(input: Omit<PlayAmplifiedSession, "code">): Promise<PlayAmplifiedSession> {
   const supabase = getSupabaseServerClient();
   for (let attempt = 0; attempt < 12; attempt += 1) {
-    const code = randomSessionCode();
+    const code = createPlayAmplifiedSessionCode();
     const session: PlayAmplifiedSession = { ...input, code };
     const { error } = await supabase.from("ppl_room_registry").insert({
       code,
@@ -48,7 +50,7 @@ export async function reservePlayAmplifiedSession(input: Omit<PlayAmplifiedSessi
 
 export async function releasePlayAmplifiedSession(codeInput: string) {
   const code = normalizeCode(codeInput);
-  if (!/^[A-Z2-9]{6}$/.test(code)) return;
+  if (!/^[A-Z0-9]{6}$/.test(code)) return;
   const supabase = getSupabaseServerClient();
   const { error } = await supabase.from("ppl_room_registry").delete().eq("code", code);
   if (error) throw new Error("Unable to release Play Amplified session: " + error.message);
@@ -56,7 +58,7 @@ export async function releasePlayAmplifiedSession(codeInput: string) {
 
 export async function registerPlayAmplifiedSession(session: PlayAmplifiedSession) {
   const code = normalizeCode(session.code);
-  if (!/^[A-Z2-9]{6}$/.test(code)) throw new Error("Invalid Play Amplified session code.");
+  if (!/^[A-Z0-9]{6}$/.test(code)) throw new Error("Invalid Play Amplified session code.");
   const supabase = getSupabaseServerClient();
   const { error } = await supabase.from("ppl_room_registry").insert({
     code,
@@ -75,9 +77,9 @@ export async function registerPlayAmplifiedRoom(room: Omit<PlayAmplifiedSession,
   return registerPlayAmplifiedSession({ ...room, participationModel: room.participationModel ?? "OPEN_LOBBY" });
 }
 
-export async function resolvePlayAmplifiedSession(codeInput: string): Promise<PlayAmplifiedSession | null> {
+export async function lookupPlayAmplifiedSession(codeInput: string): Promise<PlayAmplifiedSession | null> {
   const code = normalizeCode(codeInput);
-  if (!/^[A-Z2-9]{6}$/.test(code)) return null;
+  if (!/^[A-Z0-9]{6}$/.test(code)) return null;
   const supabase = getSupabaseServerClient();
   const { data, error } = await supabase.from("ppl_room_registry")
     .select("code, game_sku, join_href, participation_model, external_session_id, created_at, expires_at")
@@ -85,7 +87,6 @@ export async function resolvePlayAmplifiedSession(codeInput: string): Promise<Pl
     .maybeSingle();
   if (error) throw new Error("Unable to find Play Amplified session: " + error.message);
   if (!data) return null;
-  if (data.expires_at && Date.parse(data.expires_at) <= Date.now()) return null;
   return {
     code: data.code,
     gameSku: data.game_sku,
@@ -95,6 +96,13 @@ export async function resolvePlayAmplifiedSession(codeInput: string): Promise<Pl
     createdAt: data.created_at,
     expiresAt: data.expires_at,
   };
+}
+
+export async function resolvePlayAmplifiedSession(codeInput: string): Promise<PlayAmplifiedSession | null> {
+  const session = await lookupPlayAmplifiedSession(codeInput);
+  if (!session) return null;
+  const expiresAt = await authoritativeSessionExpiry(session);
+  return expiresAt ? { ...session, expiresAt } : null;
 }
 
 export const resolvePlayAmplifiedRoom = resolvePlayAmplifiedSession;

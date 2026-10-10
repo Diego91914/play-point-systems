@@ -1,3 +1,4 @@
+import { reservePlayAmplifiedSession, releasePlayAmplifiedSession } from "@/lib/play-point-core/room-registry";
 import { NextRequest, NextResponse } from "next/server";
 import { createOnMyListRoom, joinOnMyListRoom, recoverOnMyListHost } from "@/lib/play-point-core/on-my-list-server";
 import { GAMES_SESSION_COOKIE, isPrivilegedGamesSession, verifyGamesSessionToken } from "@/lib/play-point-core/games-session";
@@ -13,10 +14,13 @@ export async function POST(request: NextRequest) {
       if (!canHostDuringPrelaunch(claims, "game.on_my_list")) {
         return NextResponse.json({ error: prelaunchHostError() }, { status: 403 });
       }
-      return NextResponse.json({
-        success: true,
-        ...(await createOnMyListRoom(body.name, claims.sub)),
-      });
+      const session = await reservePlayAmplifiedSession({ gameSku: "game.on_my_list", participationModel: "OPEN_LOBBY", joinHref: "/games/on-my-list?code={code}", expiresAt: new Date(Date.now() + 86400000).toISOString() });
+      try {
+        return NextResponse.json({ success: true, ...(await createOnMyListRoom(body.name, claims.sub, session.code)) });
+      } catch (error) {
+        await releasePlayAmplifiedSession(session.code);
+        throw error;
+      }
     }
 
     if (body.intent === "rejoin_host") {

@@ -1,0 +1,146 @@
+[
+  {
+    "cmd": "DELETE",
+    "qual": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_activities.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))",
+    "roles": [
+      "authenticated"
+    ],
+    "tablename": "ppl_league_activities",
+    "permissive": "PERMISSIVE",
+    "policyname": "league activities owner delete",
+    "schemaname": "public",
+    "with_check": null
+  },
+  {
+    "cmd": "INSERT",
+    "qual": null,
+    "roles": [
+      "authenticated"
+    ],
+    "tablename": "ppl_league_activities",
+    "permissive": "PERMISSIVE",
+    "policyname": "league activities owner insert",
+    "schemaname": "public",
+    "with_check": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_activities.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+    "cmd": "SELECT",
+    "qual": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_activities.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))",
+    "roles": [
+      "authenticated"
+    ],
+    "tablename": "ppl_league_activities",
+    "permissive": "PERMISSIVE",
+    "policyname": "league activities owner select",
+    "schemaname": "public",
+    "with_check": null
+  },
+  {
+    "cmd": "UPDATE",
+    "qual": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_activities.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))",
+    "roles": [
+      "authenticated"
+    ],
+    "tablename": "ppl_league_activities",
+    "permissive": "PERMISSIVE",
+    "policyname": "league activities owner update",
+    "schemaname": "public",
+    "with_check": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_activities.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+    "cmd": "DELETE",
+    "qual": "(( SELECT auth.uid() AS uid) = owner_user_id)",
+    "roles": [
+      "authenticated"
+    ],
+    "tablename": "ppl_league_events",
+    "permissive": "PERMISSIVE",
+    "policyname": "league event owner delete",
+    "schemaname": "public",
+    "with_check": null
+  },
+  {
+    "cmd": "INSERT",
+    "qual": null,
+    "roles": [
+      "authenticated"
+    ],
+    "tablename": "ppl_league_events",
+    "permissive": "PERMISSIVE",
+    "policyname": "league event owner insert",
+    "schemaname": "public",
+    "with_check": "(( SELECT auth.uid() AS uid) = owner_user_id)"
+  },
+  {
+    "cmd": "SELECT",
+    "qual": "(( SELECT auth.uid() AS uid) = owner_user_id)",
+    "roles": [
+      "authenticated"
+    ],
+    "tablename": "ppl_league_events",
+    "permissive": "PERMISSIVE",
+    "policyname": "league event owner select",
+    "schemaname": "public",
+    "with_check": null
+  },
+  {
+    "cmd": "UPDATE",
+    "qual": "(( SELECT auth.uid() AS uid) = owner_user_id)",
+    "roles": [
+      "authenticated"
+    ],
+    "tablename": "ppl_league_events",
+    "permissive": "PERMISSIVE",
+    "policyname": "league event owner update",
+    "schemaname": "public",
+    "with_check": "(( SELECT auth.uid() AS uid) = owner_user_id)"
+  },
+  {
+    "cmd": "DELETE",
+    "qual": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_roster.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))",
+    "roles": [
+      "authenticated"
+    ],
+    "tablename": "ppl_league_roster",
+    "permissive": "PERMISSIVE",
+    "policyname": "league roster owner delete",
+    "schemaname": "public",
+    "with_check": null
+  },
+  {
+    "cmd": "INSERT",
+    "qual": null,
+    "roles": [
+      "authenticated"
+    ],
+    "tablename": "ppl_league_roster",
+    "permissive": "PERMISSIVE",
+    "policyname": "league roster owner insert",
+    "schemaname": "public",
+    "with_check": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_roster.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+    "cmd": "SELECT",
+    "qual": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_roster.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))",
+    "roles": [
+      "authenticated"
+    ],
+    "tablename": "ppl_league_roster",
+    "permissive": "PERMISSIVE",
+    "policyname": "league roster owner select",
+    "schemaname": "public",
+    "with_check": null
+  },
+  {
+    "cmd": "UPDATE",
+    "qual": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_roster.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))",
+    "roles": [
+      "authenticated"
+    ],
+    "tablename": "ppl_league_roster",
+    "permissive": "PERMISSIVE",
+    "policyname": "league roster owner update",
+    "schemaname": "public",
+    "with_check": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_roster.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))"
+  }
+]

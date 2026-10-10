@@ -1,0 +1,1016 @@
+{
+  "project": "qdsyxcjmrsxetjxeuojk",
+  "verifiedAt": "2026-10-10T00:22:26Z",
+  "columns": [
+    {
+      "data_type": "uuid",
+      "table_name": "ppl_clear_stack_rooms",
+      "column_name": "id",
+      "is_nullable": "NO",
+      "column_default": "gen_random_uuid()"
+    },
+    {
+      "data_type": "text",
+      "table_name": "ppl_clear_stack_rooms",
+      "column_name": "code",
+      "is_nullable": "NO",
+      "column_default": "upper(substr(replace((gen_random_uuid())::text, '-'::text, ''::text), 1, 6))"
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "ppl_clear_stack_rooms",
+      "column_name": "host_user_id",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "data_type": "integer",
+      "table_name": "ppl_clear_stack_rooms",
+      "column_name": "distance",
+      "is_nullable": "NO",
+      "column_default": "20"
+    },
+    {
+      "data_type": "integer",
+      "table_name": "ppl_clear_stack_rooms",
+      "column_name": "stack_size",
+      "is_nullable": "NO",
+      "column_default": "10"
+    },
+    {
+      "data_type": "text",
+      "table_name": "ppl_clear_stack_rooms",
+      "column_name": "status",
+      "is_nullable": "NO",
+      "column_default": "'open'::text"
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "ppl_clear_stack_rooms",
+      "column_name": "created_at",
+      "is_nullable": "NO",
+      "column_default": "now()"
+    },
+    {
+      "data_type": "text",
+      "table_name": "ppl_clear_stack_rooms",
+      "column_name": "host_session_id",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "ppl_league_activities",
+      "column_name": "id",
+      "is_nullable": "NO",
+      "column_default": "gen_random_uuid()"
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "ppl_league_activities",
+      "column_name": "event_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "ppl_league_activities",
+      "column_name": "game_sku",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "ppl_league_activities",
+      "column_name": "name",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "jsonb",
+      "table_name": "ppl_league_activities",
+      "column_name": "settings",
+      "is_nullable": "NO",
+      "column_default": "'{}'::jsonb"
+    },
+    {
+      "data_type": "text",
+      "table_name": "ppl_league_activities",
+      "column_name": "status",
+      "is_nullable": "NO",
+      "column_default": "'open'::text"
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "ppl_league_activities",
+      "column_name": "created_at",
+      "is_nullable": "NO",
+      "column_default": "now()"
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "ppl_league_events",
+      "column_name": "id",
+      "is_nullable": "NO",
+      "column_default": "gen_random_uuid()"
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "ppl_league_events",
+      "column_name": "owner_user_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "ppl_league_events",
+      "column_name": "name",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "date",
+      "table_name": "ppl_league_events",
+      "column_name": "event_date",
+      "is_nullable": "NO",
+      "column_default": "CURRENT_DATE"
+    },
+    {
+      "data_type": "text",
+      "table_name": "ppl_league_events",
+      "column_name": "join_code",
+      "is_nullable": "NO",
+      "column_default": "upper(substr(replace((gen_random_uuid())::text, '-'::text, ''::text), 1, 8))"
+    },
+    {
+      "data_type": "text",
+      "table_name": "ppl_league_events",
+      "column_name": "status",
+      "is_nullable": "NO",
+      "column_default": "'open'::text"
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "ppl_league_events",
+      "column_name": "created_at",
+      "is_nullable": "NO",
+      "column_default": "now()"
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "ppl_league_roster",
+      "column_name": "id",
+      "is_nullable": "NO",
+      "column_default": "gen_random_uuid()"
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "ppl_league_roster",
+      "column_name": "event_id",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "uuid",
+      "table_name": "ppl_league_roster",
+      "column_name": "account_user_id",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "ppl_league_roster",
+      "column_name": "display_name",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "integer",
+      "table_name": "ppl_league_roster",
+      "column_name": "pdga_number",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "data_type": "integer",
+      "table_name": "ppl_league_roster",
+      "column_name": "rating",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "ppl_league_roster",
+      "column_name": "division",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "ppl_league_roster",
+      "column_name": "source",
+      "is_nullable": "NO",
+      "column_default": "'manual'::text"
+    },
+    {
+      "data_type": "boolean",
+      "table_name": "ppl_league_roster",
+      "column_name": "checked_in",
+      "is_nullable": "NO",
+      "column_default": "true"
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "ppl_league_roster",
+      "column_name": "created_at",
+      "is_nullable": "NO",
+      "column_default": "now()"
+    },
+    {
+      "data_type": "text",
+      "table_name": "ppl_room_registry",
+      "column_name": "code",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "ppl_room_registry",
+      "column_name": "game_sku",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "ppl_room_registry",
+      "column_name": "join_href",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "ppl_room_registry",
+      "column_name": "created_at",
+      "is_nullable": "NO",
+      "column_default": "now()"
+    },
+    {
+      "data_type": "timestamp with time zone",
+      "table_name": "ppl_room_registry",
+      "column_name": "expires_at",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "data_type": "text",
+      "table_name": "ppl_room_registry",
+      "column_name": "participation_model",
+      "is_nullable": "NO",
+      "column_default": "'OPEN_LOBBY'::text"
+    },
+    {
+      "data_type": "text",
+      "table_name": "ppl_room_registry",
+      "column_name": "external_session_id",
+      "is_nullable": "YES",
+      "column_default": null
+    }
+  ],
+  "constraints": [
+    {
+      "conname": "ppl_league_events_join_code_key",
+      "contype": "u",
+      "definition": "UNIQUE (join_code)",
+      "table_name": "ppl_league_events",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_league_events_owner_user_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (owner_user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+      "table_name": "ppl_league_events",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_league_events_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "ppl_league_events",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_league_events_status_check",
+      "contype": "c",
+      "definition": "CHECK ((status = ANY (ARRAY['draft'::text, 'open'::text, 'closed'::text])))",
+      "table_name": "ppl_league_events",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_league_roster_account_user_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (account_user_id) REFERENCES auth.users(id) ON DELETE SET NULL",
+      "table_name": "ppl_league_roster",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_league_roster_event_id_account_user_id_key",
+      "contype": "u",
+      "definition": "UNIQUE (event_id, account_user_id)",
+      "table_name": "ppl_league_roster",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_league_roster_event_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (event_id) REFERENCES ppl_league_events(id) ON DELETE CASCADE",
+      "table_name": "ppl_league_roster",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_league_roster_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "ppl_league_roster",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_league_roster_source_check",
+      "contype": "c",
+      "definition": "CHECK ((source = ANY (ARRAY['manual'::text, 'qr'::text, 'import'::text, 'doubles'::text])))",
+      "table_name": "ppl_league_roster",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_league_activities_event_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (event_id) REFERENCES ppl_league_events(id) ON DELETE CASCADE",
+      "table_name": "ppl_league_activities",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_league_activities_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "ppl_league_activities",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_league_activities_status_check",
+      "contype": "c",
+      "definition": "CHECK ((status = ANY (ARRAY['draft'::text, 'open'::text, 'closed'::text])))",
+      "table_name": "ppl_league_activities",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_clear_stack_rooms_code_key",
+      "contype": "u",
+      "definition": "UNIQUE (code)",
+      "table_name": "ppl_clear_stack_rooms",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_clear_stack_rooms_distance_check",
+      "contype": "c",
+      "definition": "CHECK (((distance >= 1) AND (distance <= 100)))",
+      "table_name": "ppl_clear_stack_rooms",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_clear_stack_rooms_host_user_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (host_user_id) REFERENCES auth.users(id) ON DELETE SET NULL",
+      "table_name": "ppl_clear_stack_rooms",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_clear_stack_rooms_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "ppl_clear_stack_rooms",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_clear_stack_rooms_stack_size_check",
+      "contype": "c",
+      "definition": "CHECK (((stack_size >= 1) AND (stack_size <= 100)))",
+      "table_name": "ppl_clear_stack_rooms",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_clear_stack_rooms_status_check",
+      "contype": "c",
+      "definition": "CHECK ((status = ANY (ARRAY['open'::text, 'playing'::text, 'closed'::text])))",
+      "table_name": "ppl_clear_stack_rooms",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_room_registry_code_check",
+      "contype": "c",
+      "definition": "CHECK ((code ~ '^[A-Z2-9]{6}$'::text))",
+      "table_name": "ppl_room_registry",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_room_registry_participation_model_check",
+      "contype": "c",
+      "definition": "CHECK ((participation_model = ANY (ARRAY['OPEN_LOBBY'::text, 'HOSTED_ROSTER'::text])))",
+      "table_name": "ppl_room_registry",
+      "convalidated": true
+    },
+    {
+      "conname": "ppl_room_registry_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (code)",
+      "table_name": "ppl_room_registry",
+      "convalidated": true
+    }
+  ],
+  "triggers": null,
+  "functions": null,
+  "policies": [
+    {
+      "cmd": "DELETE",
+      "qual": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_activities.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "ppl_league_activities",
+      "permissive": "PERMISSIVE",
+      "policyname": "league activities owner delete",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "ppl_league_activities",
+      "permissive": "PERMISSIVE",
+      "policyname": "league activities owner insert",
+      "schemaname": "public",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_activities.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_activities.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "ppl_league_activities",
+      "permissive": "PERMISSIVE",
+      "policyname": "league activities owner select",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "UPDATE",
+      "qual": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_activities.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "ppl_league_activities",
+      "permissive": "PERMISSIVE",
+      "policyname": "league activities owner update",
+      "schemaname": "public",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_activities.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))"
+    },
+    {
+      "cmd": "DELETE",
+      "qual": "(( SELECT auth.uid() AS uid) = owner_user_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "ppl_league_events",
+      "permissive": "PERMISSIVE",
+      "policyname": "league event owner delete",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "ppl_league_events",
+      "permissive": "PERMISSIVE",
+      "policyname": "league event owner insert",
+      "schemaname": "public",
+      "with_check": "(( SELECT auth.uid() AS uid) = owner_user_id)"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(( SELECT auth.uid() AS uid) = owner_user_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "ppl_league_events",
+      "permissive": "PERMISSIVE",
+      "policyname": "league event owner select",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "UPDATE",
+      "qual": "(( SELECT auth.uid() AS uid) = owner_user_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "ppl_league_events",
+      "permissive": "PERMISSIVE",
+      "policyname": "league event owner update",
+      "schemaname": "public",
+      "with_check": "(( SELECT auth.uid() AS uid) = owner_user_id)"
+    },
+    {
+      "cmd": "DELETE",
+      "qual": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_roster.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "ppl_league_roster",
+      "permissive": "PERMISSIVE",
+      "policyname": "league roster owner delete",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "ppl_league_roster",
+      "permissive": "PERMISSIVE",
+      "policyname": "league roster owner insert",
+      "schemaname": "public",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_roster.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_roster.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "ppl_league_roster",
+      "permissive": "PERMISSIVE",
+      "policyname": "league roster owner select",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "UPDATE",
+      "qual": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_roster.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "ppl_league_roster",
+      "permissive": "PERMISSIVE",
+      "policyname": "league roster owner update",
+      "schemaname": "public",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM ppl_league_events e\n  WHERE ((e.id = ppl_league_roster.event_id) AND (e.owner_user_id = ( SELECT auth.uid() AS uid)))))"
+    }
+  ],
+  "rls": [
+    {
+      "relacl": [
+        "postgres=arwdDxtm/postgres",
+        "authenticated=arwd/postgres"
+      ],
+      "relname": "ppl_league_events",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false
+    },
+    {
+      "relacl": [
+        "postgres=arwdDxtm/postgres",
+        "authenticated=arwd/postgres"
+      ],
+      "relname": "ppl_league_roster",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false
+    },
+    {
+      "relacl": [
+        "postgres=arwdDxtm/postgres",
+        "authenticated=arwd/postgres"
+      ],
+      "relname": "ppl_league_activities",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false
+    },
+    {
+      "relacl": [
+        "postgres=arwdDxtm/postgres",
+        "service_role=arwd/postgres"
+      ],
+      "relname": "ppl_clear_stack_rooms",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false
+    },
+    {
+      "relacl": [
+        "postgres=arwdDxtm/postgres",
+        "service_role=arwd/postgres"
+      ],
+      "relname": "ppl_room_registry",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false
+    }
+  ],
+  "grants": [
+    {
+      "grantee": "service_role",
+      "grantor": "postgres",
+      "table_name": "ppl_clear_stack_rooms",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "INSERT",
+      "with_hierarchy": "NO"
+    },
+    {
+      "grantee": "service_role",
+      "grantor": "postgres",
+      "table_name": "ppl_clear_stack_rooms",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "SELECT",
+      "with_hierarchy": "YES"
+    },
+    {
+      "grantee": "service_role",
+      "grantor": "postgres",
+      "table_name": "ppl_clear_stack_rooms",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "UPDATE",
+      "with_hierarchy": "NO"
+    },
+    {
+      "grantee": "service_role",
+      "grantor": "postgres",
+      "table_name": "ppl_clear_stack_rooms",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "DELETE",
+      "with_hierarchy": "NO"
+    },
+    {
+      "grantee": "authenticated",
+      "grantor": "postgres",
+      "table_name": "ppl_league_activities",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "INSERT",
+      "with_hierarchy": "NO"
+    },
+    {
+      "grantee": "authenticated",
+      "grantor": "postgres",
+      "table_name": "ppl_league_activities",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "SELECT",
+      "with_hierarchy": "YES"
+    },
+    {
+      "grantee": "authenticated",
+      "grantor": "postgres",
+      "table_name": "ppl_league_activities",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "UPDATE",
+      "with_hierarchy": "NO"
+    },
+    {
+      "grantee": "authenticated",
+      "grantor": "postgres",
+      "table_name": "ppl_league_activities",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "DELETE",
+      "with_hierarchy": "NO"
+    },
+    {
+      "grantee": "authenticated",
+      "grantor": "postgres",
+      "table_name": "ppl_league_events",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "INSERT",
+      "with_hierarchy": "NO"
+    },
+    {
+      "grantee": "authenticated",
+      "grantor": "postgres",
+      "table_name": "ppl_league_events",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "SELECT",
+      "with_hierarchy": "YES"
+    },
+    {
+      "grantee": "authenticated",
+      "grantor": "postgres",
+      "table_name": "ppl_league_events",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "UPDATE",
+      "with_hierarchy": "NO"
+    },
+    {
+      "grantee": "authenticated",
+      "grantor": "postgres",
+      "table_name": "ppl_league_events",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "DELETE",
+      "with_hierarchy": "NO"
+    },
+    {
+      "grantee": "authenticated",
+      "grantor": "postgres",
+      "table_name": "ppl_league_roster",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "INSERT",
+      "with_hierarchy": "NO"
+    },
+    {
+      "grantee": "authenticated",
+      "grantor": "postgres",
+      "table_name": "ppl_league_roster",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "SELECT",
+      "with_hierarchy": "YES"
+    },
+    {
+      "grantee": "authenticated",
+      "grantor": "postgres",
+      "table_name": "ppl_league_roster",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "UPDATE",
+      "with_hierarchy": "NO"
+    },
+    {
+      "grantee": "authenticated",
+      "grantor": "postgres",
+      "table_name": "ppl_league_roster",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "DELETE",
+      "with_hierarchy": "NO"
+    },
+    {
+      "grantee": "service_role",
+      "grantor": "postgres",
+      "table_name": "ppl_room_registry",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "INSERT",
+      "with_hierarchy": "NO"
+    },
+    {
+      "grantee": "service_role",
+      "grantor": "postgres",
+      "table_name": "ppl_room_registry",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "SELECT",
+      "with_hierarchy": "YES"
+    },
+    {
+      "grantee": "service_role",
+      "grantor": "postgres",
+      "table_name": "ppl_room_registry",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "UPDATE",
+      "with_hierarchy": "NO"
+    },
+    {
+      "grantee": "service_role",
+      "grantor": "postgres",
+      "table_name": "ppl_room_registry",
+      "is_grantable": "NO",
+      "table_schema": "public",
+      "table_catalog": "postgres",
+      "privilege_type": "DELETE",
+      "with_hierarchy": "NO"
+    }
+  ],
+  "roleFlags": [
+    {
+      "rolname": "authenticated",
+      "rolsuper": false,
+      "rolbypassrls": false
+    },
+    {
+      "rolname": "anon",
+      "rolsuper": false,
+      "rolbypassrls": false
+    },
+    {
+      "rolname": "service_role",
+      "rolsuper": false,
+      "rolbypassrls": true
+    }
+  ],
+  "migrationHistory": [
+    {
+      "version": "20260725044417",
+      "name": "quick_score_credential_hashes"
+    },
+    {
+      "version": "20260725054519",
+      "name": "quick_score_email_accounts"
+    },
+    {
+      "version": "20260725151630",
+      "name": "trivia_live_persistence"
+    },
+    {
+      "version": "20260725163448",
+      "name": "trivia_live_realtime"
+    },
+    {
+      "version": "20260725173451",
+      "name": "add_trivia_pacing_modes"
+    },
+    {
+      "version": "20260725175835",
+      "name": "add_trivia_round_scoring_modes"
+    },
+    {
+      "version": "20260725181747",
+      "name": "add_trivia_final_wager"
+    },
+    {
+      "version": "20260725183624",
+      "name": "add_trivia_team_modes"
+    },
+    {
+      "version": "20260725184747",
+      "name": "configure_trivia_team_count"
+    },
+    {
+      "version": "20260725185536",
+      "name": "add_trivia_streak_bonuses"
+    },
+    {
+      "version": "20260725190710",
+      "name": "add_trivia_question_countdown"
+    },
+    {
+      "version": "20260725194023",
+      "name": "harden_database_access"
+    },
+    {
+      "version": "20260725200814",
+      "name": "stage6_cleanup"
+    },
+    {
+      "version": "20260726040509",
+      "name": "create_versioned_trivia_question_bank"
+    },
+    {
+      "version": "20260726040704",
+      "name": "index_trivia_question_bank_foreign_keys"
+    },
+    {
+      "version": "20260726042319",
+      "name": "add_private_published_trivia_catalog"
+    },
+    {
+      "version": "20260827050913",
+      "name": "phone_holdem_mvp"
+    },
+    {
+      "version": "20260827141122",
+      "name": "games_platform_entitlements"
+    },
+    {
+      "version": "20260827181415",
+      "name": "create_chain_reaction_rooms"
+    },
+    {
+      "version": "20260827181441",
+      "name": "grant_chain_reaction_server_access"
+    },
+    {
+      "version": "20260827223408",
+      "name": "create_how_close_rooms"
+    },
+    {
+      "version": "20260827223413",
+      "name": "grant_chain_reaction_service_role"
+    },
+    {
+      "version": "20260827233905",
+      "name": "create_get_there_rooms"
+    },
+    {
+      "version": "20260828034953",
+      "name": "create_inside_man_rooms"
+    },
+    {
+      "version": "20260828142556",
+      "name": "create_on_my_list_rooms"
+    },
+    {
+      "version": "20260901061526",
+      "name": "create_mystery_rooms"
+    },
+    {
+      "version": "20260906050137",
+      "name": "trivia_venue_mode"
+    },
+    {
+      "version": "20260906050144",
+      "name": "trivia_venue_access_keys"
+    },
+    {
+      "version": "20260906050151",
+      "name": "trivia_venue_live_links"
+    },
+    {
+      "version": "20260906050156",
+      "name": "trivia_venue_hourly_championships"
+    },
+    {
+      "version": "20260906174800",
+      "name": "add_all_about_you_rooms"
+    },
+    {
+      "version": "20260906191101",
+      "name": "add_all_about_you_guest_photo_bucket"
+    },
+    {
+      "version": "20260906191541",
+      "name": "make_all_about_you_guest_photos_private"
+    },
+    {
+      "version": "20260906223901",
+      "name": "grant_all_about_you_rooms_to_service_role"
+    },
+    {
+      "version": "20260910030506",
+      "name": "live_craps_durable_state"
+    },
+    {
+      "version": "20260910030533",
+      "name": "live_craps_atomic_join"
+    },
+    {
+      "version": "20260910030600",
+      "name": "lock_down_live_craps_rpcs"
+    },
+    {
+      "version": "20260910060146",
+      "name": "fix_live_craps_ambiguous_version"
+    },
+    {
+      "version": "20261005022034",
+      "name": "add_shared_league_event_roster"
+    },
+    {
+      "version": "20261005022732",
+      "name": "add_clear_stack_join_rooms"
+    },
+    {
+      "version": "20261006203049",
+      "name": "grant_clear_stack_server_access"
+    },
+    {
+      "version": "20261006223821",
+      "name": "clear_stack_host_session_identity"
+    },
+    {
+      "version": "20261009023849",
+      "name": "play_amplified_room_registry"
+    }
+  ]
+}
