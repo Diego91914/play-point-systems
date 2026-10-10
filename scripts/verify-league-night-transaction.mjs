@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 const db = new PGlite();
 await db.exec(fs.readFileSync(new URL('../supabase/tests/fixtures/league-night-transaction.sql',import.meta.url),'utf8'));
 const root = new URL('../supabase/migrations/',import.meta.url);
-for (const name of fs.readdirSync(root).filter(n=>['league_night_server_permissions','legacy_session_directory_codes','league_night_atomic_creation','hosted_session_activity'].some(part=>n.includes(part))).sort()) await db.exec(fs.readFileSync(new URL(name,root),'utf8'));
+for (const name of fs.readdirSync(root).filter(n=>['league_night_server_permissions','legacy_session_directory_codes','league_night_atomic_creation','hosted_session_activity','league_night_server_only_mutations','clear_stack_owner_recovery'].some(part=>n.includes(part))).sort()) await db.exec(fs.readFileSync(new URL(name,root),'utf8'));
 const tables=['ppl_league_events','ppl_league_activities','ppl_league_roster','ppl_room_registry'];
 const snapshot=async()=>Promise.all(tables.map(async table=>(await db.query(`SELECT row_to_json(t) AS row FROM ${table} t ORDER BY 1::text`)).rows.map(r=>r.row).sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b)))));
 const original=await snapshot();

@@ -25,7 +25,7 @@ CREATE TABLE public.ppl_room_registry (
  external_session_id text, created_at timestamptz NOT NULL DEFAULT now(), expires_at timestamptz
 );
 CREATE TABLE public.ppl_clear_stack_rooms (
- id uuid PRIMARY KEY DEFAULT gen_random_uuid(), code text UNIQUE NOT NULL, host_session_id text,
+ id uuid PRIMARY KEY DEFAULT gen_random_uuid(), code text UNIQUE NOT NULL, host_session_id text, host_user_id uuid REFERENCES auth.users(id), distance integer NOT NULL DEFAULT 20, stack_size integer NOT NULL DEFAULT 10,
  status text NOT NULL DEFAULT 'open' CHECK(status IN ('open','playing','closed')), created_at timestamptz NOT NULL DEFAULT now()
 );
 ALTER TABLE public.ppl_league_events ENABLE ROW LEVEL SECURITY;

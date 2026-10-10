@@ -1,3 +1,5 @@
+> Historical checkpoint. See [authorized blocker corrections](release-blocker-corrections-2026-10-09.md) for the latest implementation and release manifest. Production checks remain pending.
+
 # Session lifecycle and League Night transaction safety
 
 Implementation review checkpoint: October 9, 2026 (America/Chicago); validation completed October 10 UTC. Continues PPS draft #26 and Shot Caddy draft #64. No merge, deployment or production migration performed. Prior guest access, hosting restrictions and directory adapters are preserved. This report supersedes the earlier checkpoint's fixed directory expiry and non-atomic League creation limitations.

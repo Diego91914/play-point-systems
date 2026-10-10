@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useHostedSessionActivity } from "@/lib/hooks/use-hosted-session-activity";
+import { RecoverRoom } from "./RecoverRoom";
 import { QRCodeSVG } from "qrcode.react";
 
 type Phase = "setup" | "playing" | "finished";
@@ -170,6 +171,8 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
         <h1 className="mt-3 text-4xl font-black tracking-tight text-white sm:text-6xl">CLEAR THE STACK</h1>
         <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-white/58 sm:text-base">Three rounds. Clear every disc. Early makes pay more. Anything left costs you.</p>
       </header>
+
+      <RecoverRoom />
 
       {phase === "setup" ? (
         <section className="rounded-[30px] border border-white/10 bg-white/[0.045] p-5 sm:p-7">
