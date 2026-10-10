@@ -1,5 +1,7 @@
 # Verified release blocker corrections — October 9, 2026
 
+Latest verification: [final production release report](final-production-release-verification-2026-10-09.md). That report adds two targeted recovered-room fixes and classifies release BLOCKED because usable backup/recovery evidence is unverified. Counts below are the historical correction-stage results.
+
 Both verified blockers are corrected in the staged implementation. **Production remains pending reviewed migrations, application release and real-device verification.** No live room, production migration, merge or deployment was changed. PPS draft #26 is the implementation target; Shot Caddy #64 requires no further code changes. Founder #24 remains separate and unmerged.
 
 ## Root causes and changes

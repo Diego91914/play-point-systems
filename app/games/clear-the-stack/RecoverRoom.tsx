@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useHostedSessionActivity } from "@/lib/hooks/use-hosted-session-activity";
 import { QRCodeSVG } from "qrcode.react";
 
 /** Recover directory access only; never replace the host's in-progress score state. */
@@ -7,14 +8,15 @@ export function RecoverRoom() {
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [recovered, setRecovered] = useState<{ code: string; status: string; joinUrl: string } | null>(null);
+  const [recovered, setRecovered] = useState<{ id: string; code: string; status: string; joinUrl: string } | null>(null);
+  useHostedSessionActivity("/api/games/clear-the-stack/room", recovered?.id, recovered?.status === "playing", "playing");
   async function recover() {
     setBusy(true); setError(""); setRecovered(null);
     try {
       const response = await fetch("/api/games/clear-the-stack/room/recover", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code }) });
       const data = await response.json();
       if (!response.ok) throw new Error(typeof data.error === "string" ? data.error : "Could not recover room.");
-      setRecovered({ code: data.room.code, status: data.room.status, joinUrl: `${window.location.origin}/games/clear-the-stack/join/${data.room.code}` });
+      setRecovered({ id: data.room.id, code: data.room.code, status: data.room.status, joinUrl: `${window.location.origin}/games/clear-the-stack/join/${data.room.code}` });
     } catch (e) { setError(e instanceof Error ? e.message : "Could not recover room."); }
     finally { setBusy(false); }
   }
