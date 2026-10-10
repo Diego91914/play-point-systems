@@ -1,3 +1,5 @@
+> Historical audit-repair checkpoint. See [session lifecycle and transaction follow-up](session-lifecycle-and-league-night-transaction-2026-10-09.md) for current validation, migration order and resolved expiry/partial-creation limitations.
+
 # Verified platform audit repairs — October 9, 2026
 
 Implementation of PR #25 findings, based on Play Point Systems bb3bb936 and Shot Caddy Web 7ec91dd4. The full catalog audit was not repeated. The repaired registry was not recreated or reapplied. No production migrations, session resets, data deletion, merges or production deployments were performed.

@@ -5,10 +5,6 @@ import { cookies } from "next/headers";
 import { GAMES_SESSION_COOKIE, verifyGamesSessionToken } from "@/lib/play-point-core/games-session";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 
-async function hostId() {
-  const token=(await cookies()).get(GAMES_SESSION_COOKIE)?.value;
-  return (await verifyGamesSessionToken(token))?.sub ?? null;
-}
 export async function POST(request: Request) {
   const claims = await verifyGamesSessionToken((await cookies()).get(GAMES_SESSION_COOKIE)?.value);
   if (!claims) return NextResponse.json({ error: "Sign in to host." }, { status: 401 });
@@ -35,10 +31,14 @@ export async function GET(request: Request) {
 export async function PATCH(request: Request) {
   const body=await request.json().catch(()=>({}));
   const id=String(body.id??"");
-  const host=await hostId();
+  const claims = await verifyGamesSessionToken((await cookies()).get(GAMES_SESSION_COOKIE)?.value);
+  if (!claims) return NextResponse.json({ error: "Sign in to manage this room." }, { status: 401 });
+  if (!canHostDuringPrelaunch(claims, "game.clear_the_stack")) return NextResponse.json({ error: prelaunchHostError() }, { status: 403 });
+  if (!["closed", "playing"].includes(body.status)) return NextResponse.json({ error: "Invalid room status." }, { status: 400 });
+  const host=claims.sub;
   if(!id||!host) return NextResponse.json({error:"Not authorized."},{status:401});
   const supabase=getSupabaseServerClient();
-  const {data,error}=await supabase.from("ppl_clear_stack_rooms").update({status:body.status==="closed"?"closed":"playing"}).eq("id",id).eq("host_session_id",host).select("id").maybeSingle();
+  const {data,error}=await supabase.from("ppl_clear_stack_rooms").update({status:body.status==="closed"?"closed":"playing"}).eq("id",id).eq("host_session_id",host).neq("status","closed").select("id").maybeSingle();
   if(error||!data) return NextResponse.json({error:"Could not update room."},{status:403});
   return NextResponse.json({ok:true});
 }

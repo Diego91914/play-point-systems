@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useHostedSessionActivity } from "@/lib/hooks/use-hosted-session-activity";
 import { QRCodeSVG } from "qrcode.react";
 
 type Phase = "setup" | "playing" | "finished";
@@ -122,6 +123,8 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
     }
   }
 
+  useHostedSessionActivity("/api/games/clear-the-stack/room", room?.id, phase === "playing", "playing");
+
   function recordMakes(makes: number) {
     if (!current) return;
     const safeMakes = Math.max(0, Math.min(current.remaining, makes));
@@ -148,9 +151,12 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
 
     setPlayers(next.map(p => ({ ...p, score: p.score - p.remaining * 2 })));
     setPhase("finished");
+    if (room) void fetch("/api/games/clear-the-stack/room", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: room.id, status: "closed" }) });
   }
 
   function reset() {
+    if (room) void fetch("/api/games/clear-the-stack/room", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: room.id, status: "closed" }) });
+    setRoom(null); setShowJoin(false); setJoinedNames([]);
     setPhase("setup");
     setPlayers([]);
     setRound(0);

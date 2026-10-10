@@ -5,7 +5,7 @@ vi.mock("@/lib/play-point-core/quick-score-supabase", () => ({ getSupabaseServer
 import { resolvePlayAmplifiedSession, reservePlayAmplifiedSession } from "../lib/play-point-core/room-registry";
 beforeEach(() => { vi.clearAllMocks(); db.data = null; db.error = null; db.insert.mockResolvedValue({ error: null }); });
 it.each(["", "abc", "../../", "ABC2345"])("invalid code %s never queries a valid room", async code => { expect(await resolvePlayAmplifiedSession(code)).toBeNull(); });
-it("expired entry fails gracefully", async () => { db.data = { expires_at: new Date(Date.now()-1).toISOString() }; expect(await resolvePlayAmplifiedSession("ABC234")).toBeNull(); });
+it("expired entry fails gracefully", async () => { db.data = { game_sku: "unknown", expires_at: new Date(Date.now()-1).toISOString() }; expect(await resolvePlayAmplifiedSession("ABC234")).toBeNull(); });
 it.each(["OPEN_LOBBY", "HOSTED_ROSTER"] as const)("reserves and resolves %s without changing participation", async participationModel => {
  const session = await reservePlayAmplifiedSession({ gameSku: "test", joinHref: "/destination/{code}", participationModel });
  expect(session.code).toMatch(/^[A-Z2-9]{6}$/); expect(session.joinHref).toBe(`/destination/${session.code}`);
