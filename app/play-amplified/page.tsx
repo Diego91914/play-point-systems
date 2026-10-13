@@ -87,34 +87,34 @@ export default function PlayAmplifiedPage() {
         </header>
 
         <main>
-          <section className="px-1 pb-14 pt-16 text-center sm:pb-20 sm:pt-24">
-            <div className="mx-auto inline-flex rounded-full border border-cyan-200/20 bg-cyan-300/[0.08] px-4 py-2 text-[11px] font-black uppercase tracking-[0.22em] text-cyan-100/85">Phones in the game. People in the moment.</div>
-            <h1 className="mx-auto mt-7 max-w-5xl font-[var(--font-display)] text-5xl font-extrabold leading-[0.96] tracking-[-0.055em] text-white sm:text-6xl lg:text-8xl">
+          <section className="px-1 pb-9 pt-7 text-left sm:pb-14 sm:pt-16">
+            <div className="inline-flex rounded-full border border-cyan-200/20 bg-cyan-300/[0.08] px-4 py-2 text-[11px] font-black uppercase tracking-[0.22em] text-cyan-100/85">Phones in the game. People in the moment.</div>
+            <h1 className="mt-5 max-w-4xl font-[var(--font-display)] text-4xl font-extrabold leading-[1.02] tracking-[-0.045em] text-white sm:text-6xl lg:text-7xl">
               One front door for every way you play.
               <span className="mt-2 block bg-gradient-to-r from-cyan-200 via-white to-violet-200 bg-clip-text text-transparent">Play Amplified.</span>
             </h1>
-            <p className="mx-auto mt-7 max-w-3xl text-base leading-8 text-white/65 sm:text-xl sm:leading-9">Social, course, backyard & putting, adventure, and trivia experiences in one Play Amplified catalog.</p>
+            <p className="mt-5 max-w-2xl text-sm leading-6 text-white/65 sm:text-lg sm:leading-8">Social, course, backyard & putting, adventure, and trivia experiences in one Play Amplified catalog.</p>
 
-            <div className="mx-auto mt-8 grid max-w-3xl gap-3 sm:grid-cols-3">
-              <div className="rounded-[22px] border border-emerald-200/18 bg-emerald-300/[0.07] p-4"><div className="text-4xl font-black text-white">{FINISHED_GAME_FORMAT_COUNT}</div><div className="mt-1 text-[10px] font-black uppercase tracking-[0.18em] text-emerald-100/65">Finished playable formats</div></div>
-              <div className="rounded-[22px] border border-amber-200/18 bg-amber-300/[0.07] p-4"><div className="text-4xl font-black text-white">{PREVIEW_GAME_FORMAT_COUNT}</div><div className="mt-1 text-[10px] font-black uppercase tracking-[0.18em] text-amber-100/65">Playable previews</div></div>
-              <div className="rounded-[22px] border border-cyan-200/18 bg-cyan-300/[0.07] p-4"><div className="text-4xl font-black text-white">5</div><div className="mt-1 text-[10px] font-black uppercase tracking-[0.18em] text-cyan-100/65">Core categories</div></div>
-            </div>
-
-            <p className="mx-auto mt-4 max-w-2xl text-xs leading-5 text-white/40">Category describes the kind of experience. Release status, ownership, and purchase availability are tracked separately.</p>
-
-            <div className="mx-auto mt-7 max-w-3xl rounded-2xl border border-amber-200/20 bg-amber-300/[0.07] px-5 py-4 text-sm leading-6 text-amber-50/85">
+            <div className="mt-6 max-w-3xl rounded-2xl border border-amber-200/20 bg-amber-300/[0.07] px-5 py-4 text-sm leading-6 text-amber-50/85">
               <span className="font-black text-amber-50">Private preview:</span> the catalog is open to browse, but public purchasing and hosting are not open yet. Approved Founder/test access remains available during development.
             </div>
 
-            <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-              <a href="#all-games" className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">Browse all {FINISHED_GAME_FORMAT_COUNT} finished formats</a>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <a href="#all-games" className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">Explore games →</a>
               <a href="#founders-special" className="inline-flex items-center justify-center rounded-2xl border border-amber-200/25 bg-amber-300/[0.08] px-6 py-3.5 text-sm font-black text-amber-50 transition hover:-translate-y-0.5 hover:bg-amber-300/[0.13]">See planned Play Packs</a>
               <Link prefetch={false} href="/builder-access?next=%2Fgames" className="inline-flex items-center justify-center rounded-2xl border border-white/14 bg-white/[0.05] px-6 py-3.5 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-white/[0.09]">Founder / Test Sign In</Link>
             </div>
           </section>
 
-          <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <section aria-label="Quick access" className="mb-7 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <Link prefetch={false} href="/games" className="rounded-2xl border border-cyan-300/30 bg-cyan-300/15 px-4 py-4 text-center text-sm font-black text-cyan-50 transition hover:bg-cyan-300/25">My games →</Link>
+            <Link prefetch={false} href="/live/quick-score" className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-4 text-center text-sm font-black text-white transition hover:bg-white/10">Quick score →</Link>
+            <a href="#all-games" className="col-span-2 rounded-2xl border border-violet-300/25 bg-violet-300/10 px-4 py-4 text-center text-sm font-black text-violet-100 transition hover:bg-violet-300/20 sm:col-span-1">Browse catalog ↓</a>
+          </section>
+          <section aria-label="Explore game categories" className="mb-4">
+            <h2 className="mb-4 text-xl font-black tracking-tight sm:text-2xl">Find your kind of play</h2>
+          </section>
+          <section className="grid grid-cols-2 gap-3 lg:grid-cols-5">
             {[
               ["Social", "Party, conversation, deduction, mystery, cards, and celebration games.", "#social-games"],
               ["Course / Shot Caddy", "Disc golf and golf with tactics, challenges, alliances, predictions, and pressure.", "#course-games"],
@@ -122,10 +122,10 @@ export default function PlayAmplifiedPage() {
               ["Adventure / Quest Caddy", "Persistent fantasy Chronicle play digitally or tied to real throws.", "#adventure-games"],
               ["Trivia", "Hosted question-and-answer competition with teams, wagers, and live scoreboards.", "#trivia-games"],
             ].map(([title, body, href]) => (
-              <a key={title} href={href} className="group block select-none touch-manipulation rounded-[28px] border border-white/10 bg-white/[0.035] p-5 transition hover:-translate-y-0.5 hover:border-cyan-200/25 hover:bg-white/[0.055] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200/70">
+              <a key={title} href={href} className="group relative block min-h-40 select-none touch-manipulation overflow-hidden rounded-[22px] border border-white/15 bg-gradient-to-br from-cyan-400/15 via-slate-900 to-violet-500/15 p-4 transition hover:-translate-y-0.5 hover:border-cyan-200/45 hover:shadow-lg hover:shadow-cyan-950/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200/70">
                 <div className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-100/55">Play Amplified</div>
-                <div className="mt-3 flex items-center justify-between gap-3 text-xl font-black"><span>{title}</span><span aria-hidden="true" className="text-cyan-100/55 transition group-hover:translate-y-0.5">↓</span></div>
-                <p className="mt-3 text-sm leading-6 text-white/55">{body}</p>
+                <div className="mt-4 flex items-center justify-between gap-2 text-base font-black sm:text-xl"><span>{title}</span><span aria-hidden="true" className="text-cyan-100/55 transition group-hover:translate-y-0.5">↓</span></div>
+                <p className="mt-3 text-xs leading-5 text-white/65 sm:text-sm sm:leading-6">{body}</p>
               </a>
             ))}
           </section>
