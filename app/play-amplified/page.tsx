@@ -14,7 +14,7 @@ const socialGames = getMasterGamesByLane("social").filter((game) => game.status 
 const courseGames = getMasterGamesByLane("course").filter((game) => game.status === "live");
 const backyardGames = getMasterGamesByLane("backyard").filter((game) => game.status === "live");
 const adventureGames = getMasterGamesByLane("adventure").filter((game) => game.status === "live");
-const triviaGames = getMasterGamesByLane("trivia").filter((game) => game.status === "live");
+const triviaGames = getMasterGamesByLane("trivia");
 
 function GameFormatCard({ game }: { game: MasterGameEntry }) {
   const external = game.href.startsWith("http");
@@ -36,7 +36,7 @@ function GameFormatCard({ game }: { game: MasterGameEntry }) {
     </>
   );
 
-  const className = "group block h-full overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.035] p-3 transition duration-300 hover:-translate-y-1 hover:border-cyan-200/25 hover:bg-white/[0.055] sm:p-4";
+  const className = "group block h-full overflow-hidden rounded-[24px] border border-white/10 bg-gradient-to-b from-white/[0.075] to-white/[0.025] p-3 shadow-lg shadow-black/20 transition duration-300 hover:-translate-y-1 hover:border-cyan-200/35 hover:shadow-cyan-950/25 sm:p-4";
 
   return external ? (
     <a href={game.href} target="_blank" rel="noreferrer" className={className}>{content}</a>
@@ -56,7 +56,7 @@ function CatalogSection({ id, eyebrow, title, description, games }: { id: string
           <p className="mt-3 max-w-3xl text-sm leading-7 text-white/55">{description}</p>
         </div>
         <div className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-white/55">
-          {games.length} finished {games.length === 1 ? "format" : "formats"}
+          {games.length} {games.length === 1 ? "game" : "games"}
         </div>
       </div>
       <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -121,14 +121,23 @@ export default function PlayAmplifiedPage() {
               ["Backyard & Putting", "Basket, yard, putting, station, and casual competitive formats.", "#backyard-games"],
               ["Adventure / Quest Caddy", "Persistent fantasy Chronicle play digitally or tied to real throws.", "#adventure-games"],
               ["Trivia", "Hosted question-and-answer competition with teams, wagers, and live scoreboards.", "#trivia-games"],
-            ].map(([title, body, href]) => (
-              <a key={title} href={href} className="group relative block min-h-40 select-none touch-manipulation overflow-hidden rounded-[22px] border border-white/15 bg-gradient-to-br from-cyan-400/15 via-slate-900 to-violet-500/15 p-4 transition hover:-translate-y-0.5 hover:border-cyan-200/45 hover:shadow-lg hover:shadow-cyan-950/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200/70">
-                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-100/55">Play Amplified</div>
-                <div className="mt-4 flex items-center justify-between gap-2 text-base font-black sm:text-xl"><span>{title}</span><span aria-hidden="true" className="text-cyan-100/55 transition group-hover:translate-y-0.5">↓</span></div>
-                <p className="mt-3 text-xs leading-5 text-white/65 sm:text-sm sm:leading-6">{body}</p>
+            ].map(([title, body, href], index) => (
+              <a key={title} href={href} className={`group relative block min-h-40 select-none touch-manipulation overflow-hidden rounded-[22px] border border-white/15 p-4 shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:border-white/35 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200/70 ${["bg-gradient-to-br from-rose-700/40 via-slate-900 to-amber-600/20", "bg-gradient-to-br from-emerald-700/45 via-slate-900 to-lime-600/20", "bg-gradient-to-br from-sky-700/45 via-slate-900 to-teal-500/20", "bg-gradient-to-br from-violet-700/50 via-slate-900 to-fuchsia-600/25", "bg-gradient-to-br from-blue-700/45 via-slate-900 to-cyan-500/25"][index]}`}>
+                <div aria-hidden="true" className="pointer-events-none absolute -right-7 -top-10 h-32 w-32 rounded-full border border-white/10 bg-white/10 blur-xl transition group-hover:scale-125" />
+                <div className="relative text-[10px] font-black uppercase tracking-[0.2em] text-white/65">Explore category</div>
+                <div className="relative mt-4 flex items-center justify-between gap-2 text-base font-black sm:text-xl"><span>{title}</span><span aria-hidden="true" className="text-cyan-100/55 transition group-hover:translate-y-0.5">↓</span></div>
+                <p className="relative mt-3 text-xs leading-5 text-white/75 sm:text-sm sm:leading-6">{body}</p>
               </a>
             ))}
           </section>
+
+          <div id="all-games" className="scroll-mt-6">
+            <CatalogSection id="social-games" eyebrow="People around the table" title="Social games" description="Face-to-face games where phones become private controllers, hands, roles, answer sheets, or seats while the group stays together." games={socialGames} />
+            <CatalogSection id="course-games" eyebrow="Real play amplified" title="Course / Shot Caddy" description="Disc golf and golf stay real while Shot Caddy adds competition, challenges, predictions, alliances, and tactical layers." games={courseGames} />
+            <CatalogSection id="backyard-games" eyebrow="One setup. A whole game night." title="Backyard & putting" description="Distinct playable formats built for a basket, yard, putting area, practice space, or improvised target setup." games={backyardGames} />
+            <CatalogSection id="adventure-games" eyebrow="Your Chronicle" title="Adventure / Quest Caddy" description="Persistent fantasy play either fully digital or driven by real throws on the course." games={adventureGames} />
+            <CatalogSection id="trivia-games" eyebrow="Questions become competition" title="Trivia" description="Hosted question-and-answer games with teams, wagers, pacing controls, room codes, and live scoreboards." games={triviaGames} />
+          </div>
 
           <section id="founders-special" className="scroll-mt-6 py-16 sm:py-20">
             <div className="overflow-hidden rounded-[34px] border border-amber-200/20 bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.14),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(34,211,238,0.10),transparent_35%),rgba(255,255,255,0.03)] p-7 sm:p-10">
@@ -152,14 +161,6 @@ export default function PlayAmplifiedPage() {
               <p className="mt-6 border-t border-white/10 pt-5 text-sm leading-6 text-white/55"><span className="font-black text-white">Quest Caddy is planned to remain sold separately.</span> Final purchase availability will open only after checkout, entitlement granting, restores/refunds, and platform storefronts are validated.</p>
             </div>
           </section>
-
-          <div id="all-games" className="scroll-mt-6">
-            <CatalogSection id="social-games" eyebrow="People around the table" title="Social games" description="Face-to-face games where phones become private controllers, hands, roles, answer sheets, or seats while the group stays together." games={socialGames} />
-            <CatalogSection id="course-games" eyebrow="Real play amplified" title="Course / Shot Caddy" description="Disc golf and golf stay real while Shot Caddy adds competition, challenges, predictions, alliances, and tactical layers." games={courseGames} />
-            <CatalogSection id="backyard-games" eyebrow="One setup. A whole game night." title="Backyard & putting" description="Distinct playable formats built for a basket, yard, putting area, practice space, or improvised target setup." games={backyardGames} />
-            <CatalogSection id="adventure-games" eyebrow="Your Chronicle" title="Adventure / Quest Caddy" description="Persistent fantasy play either fully digital or driven by real throws on the course." games={adventureGames} />
-            <CatalogSection id="trivia-games" eyebrow="Questions become competition" title="Trivia" description="Hosted question-and-answer games with teams, wagers, pacing controls, room codes, and live scoreboards." games={triviaGames} />
-          </div>
 
           <section className="border-t border-white/10 py-14 sm:py-18">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
