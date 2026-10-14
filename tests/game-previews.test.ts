@@ -35,7 +35,7 @@ describe("authentic static previews", () => {
     expect(capture("play-point-trivia").label).toContain("builder");
   });
 
-  it("ships real, bounded WebP files matching recorded dimensions and hashes", async () => {
+  it("ships real, bounded preview files matching recorded dimensions and hashes", async () => {
     const files: string[] = [];
     for (const capture of manifest.captures) {
       expect(capture.sourceRevision).toMatch(/^[a-f0-9]{40}$/);
@@ -44,12 +44,19 @@ describe("authentic static previews", () => {
       expect(capture.resolvedUrl).not.toContain("/sign-in");
       expect(capture.label).toMatch(/screenshot/);
       expect(capture.alt.length).toBeGreaterThan(20);
-      expect(capture.files.map(file => file.width)).toEqual([480, 800, 1280]);
+
+      const userProvided = capture.sourceUrl.startsWith("User-provided");
+      expect(capture.files.map(file => file.width)).toEqual(userProvided ? [1280] : [480, 800, 1280]);
+
       for (const file of capture.files) {
-        expect(file.src).toMatch(/^\/images\/game-previews\/[a-z0-9-]+-[a-f0-9]{12}-(480|800|1280)\.webp$/);
+        if (userProvided) {
+          expect(file.src).toMatch(/^\/images\/game-previews\/[a-z0-9-]+-1280\.(jpg|jpeg|webp)$/);
+        } else {
+          expect(file.src).toMatch(/^\/images\/game-previews\/[a-z0-9-]+-[a-f0-9]{12}-(480|800|1280)\.webp$/);
+        }
         const bytes = readFileSync(resolve("public", file.src.slice(1)));
         const metadata = await sharp(bytes).metadata();
-        expect(metadata.format).toBe("webp");
+        expect(userProvided ? ["jpeg", "webp"] : ["webp"]).toContain(metadata.format);
         expect(metadata.width).toBe(file.width);
         expect(metadata.height).toBe(file.height);
         expect(file.width / file.height).toBe(capture.width / capture.height);
