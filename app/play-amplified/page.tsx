@@ -314,7 +314,7 @@ export default function PlayAmplifiedPage() {
 
             <div className="mt-4 flex max-w-3xl flex-col gap-2 border-l border-white/12 pl-3 text-[11px] leading-5 text-white/45 sm:flex-row sm:items-center sm:gap-3">
               <span>Browse is open. Public hosting and purchasing remain gated during preview.</span>
-              <Link prefetch={false} href="/builder-access?next=%2Fplay" className="shrink-0 font-black text-white/72 transition hover:text-white">Founder / test sign in →</Link>
+              <Link prefetch={false} href="/builder-access?next=%2Fgames" className="shrink-0 font-black text-white/72 transition hover:text-white">Founder / test sign in →</Link>
             </div>
           </section>
 
