@@ -51,4 +51,13 @@ describe("Play Amplified consumer home", () => {
     expect(pwa).toContain("RESUME");
     expect(pwa).not.toContain("current.slice(1)");
   });
+
+  it("keeps installation compact and reveals manual instructions only on demand", () => {
+    expect(pwa).toContain("play-amplified-install-dismissed");
+    expect(pwa).toContain("installHelpOpen");
+    expect(pwa).toContain("Keep it one tap away");
+    expect(pwa).toContain('aria-expanded={installHelpOpen}');
+    expect(pwa).toContain('{installHelpOpen ? "HIDE" : "HOW"}');
+    expect(pwa).not.toContain("Add Play Amplified to your Home Screen");
+  });
 });
