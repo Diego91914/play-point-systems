@@ -8,8 +8,6 @@ type BeforeInstallPromptEvent = Event & {
   userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
 };
 
-const SERVICE_WORKER_REFRESH_KEY = "play-amplified-sw-v3-reloaded";
-
 function removeLocalKeys(keys: readonly string[]) {
   try {
     for (const key of keys) window.localStorage.removeItem(key);
@@ -53,22 +51,32 @@ export function PlayAmplifiedPwa() {
     };
     window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
 
+    let serviceWorkerRegistration: ServiceWorkerRegistration | null = null;
     let hadServiceWorkerController = false;
     let reloadingForWorker = false;
+
     const onControllerChange = () => {
       if (!hadServiceWorkerController || reloadingForWorker) return;
-      if (window.sessionStorage.getItem(SERVICE_WORKER_REFRESH_KEY) === "1") return;
       reloadingForWorker = true;
-      window.sessionStorage.setItem(SERVICE_WORKER_REFRESH_KEY, "1");
       window.location.reload();
+    };
+
+    const updateServiceWorker = () => {
+      if (document.visibilityState !== "visible" || !serviceWorkerRegistration) return;
+      void serviceWorkerRegistration.update().catch(() => undefined);
     };
 
     if ("serviceWorker" in navigator) {
       hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
       navigator.serviceWorker.addEventListener("controllerchange", onControllerChange);
+      document.addEventListener("visibilitychange", updateServiceWorker);
+      window.addEventListener("pageshow", updateServiceWorker);
       void navigator.serviceWorker
-        .register("/play-amplified-sw.js", { scope: "/" })
-        .then((registration) => registration.update())
+        .register("/play-amplified-sw.js", { scope: "/", updateViaCache: "none" })
+        .then((registration) => {
+          serviceWorkerRegistration = registration;
+          return registration.update();
+        })
         .catch(() => undefined);
     }
 
@@ -76,6 +84,8 @@ export function PlayAmplifiedPwa() {
       cancelled = true;
       window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);
       if ("serviceWorker" in navigator) navigator.serviceWorker.removeEventListener("controllerchange", onControllerChange);
+      document.removeEventListener("visibilitychange", updateServiceWorker);
+      window.removeEventListener("pageshow", updateServiceWorker);
     };
   }, []);
 
