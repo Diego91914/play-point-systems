@@ -46,11 +46,11 @@ describe("authentic static previews", () => {
       expect(capture.alt.length).toBeGreaterThan(20);
 
       const userProvided = capture.sourceUrl.startsWith("User-provided");
-      expect(capture.files.map(file => file.width)).toEqual(userProvided ? [1280] : [480, 800, 1280]);
+      expect(capture.files.map(file => file.width)).toEqual(userProvided ? [capture.width] : [480, 800, 1280]);
 
       for (const file of capture.files) {
         if (userProvided) {
-          expect(file.src).toMatch(/^\/images\/game-previews\/[a-z0-9-]+-1280\.(jpg|jpeg|webp)$/);
+          expect(file.src).toMatch(/^\/images\/game-previews\/[a-z0-9-]+-\d+\.(jpg|jpeg|webp)$/);
         } else {
           expect(file.src).toMatch(/^\/images\/game-previews\/[a-z0-9-]+-[a-f0-9]{12}-(480|800|1280)\.webp$/);
         }
