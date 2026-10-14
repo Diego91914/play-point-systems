@@ -17,6 +17,7 @@ export function SocialRoomController({
   roomApiBase: string;
 }) {
   const [isHost, setIsHost] = useState(false);
+  const [hasSession, setHasSession] = useState(false);
   const [ended, setEnded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [open, setOpen] = useState(false);
@@ -30,7 +31,10 @@ export function SocialRoomController({
 
   const clearSession = useCallback(() => {
     const key = activeStorageKey();
-    if (key) localStorage.removeItem(key);
+    if (!key) return;
+    localStorage.removeItem(key);
+    localStorage.removeItem(`${key}:retention`);
+    setHasSession(false);
   }, [activeStorageKey]);
 
   const getSession = useCallback((): Session | null => {
@@ -70,9 +74,11 @@ export function SocialRoomController({
   const checkRoom = useCallback(async () => {
     const session = getSession();
     if (!session) {
+      setHasSession(false);
       setIsHost(false);
       return;
     }
+    setHasSession(true);
 
     try {
       const response = await fetch("/api/games/social-room-control", {
@@ -83,7 +89,7 @@ export function SocialRoomController({
       });
       const json = await response.json();
       if (!response.ok) {
-        if (response.status === 403) {
+        if ([401, 403, 404, 410].includes(response.status)) {
           clearSession();
           setIsHost(false);
         }
@@ -111,6 +117,16 @@ export function SocialRoomController({
     const timer = window.setInterval(checkRoom, 1200);
     return () => window.clearInterval(timer);
   }, [checkRoom]);
+
+  function saveForLater() {
+    window.location.href = "/play-amplified";
+  }
+
+  function leaveGame() {
+    if (!window.confirm("Leave this game on this device? This will not end the room for anyone else.")) return;
+    clearSession();
+    window.location.href = "/play-amplified";
+  }
 
   async function startOver() {
     const session = getSession();
@@ -181,21 +197,29 @@ export function SocialRoomController({
     );
   }
 
-  if (!isHost) return null;
+  if (!hasSession) return null;
 
   return (
     <div className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-4 z-[80] sm:left-5">
       {open && (
         <div className="mb-2 w-[min(19rem,calc(100vw-2rem))] overflow-hidden rounded-[24px] border border-amber-200/15 bg-[radial-gradient(circle_at_top_left,rgba(213,174,95,.12),transparent_42%),rgba(5,6,8,.97)] p-3 shadow-[0_24px_70px_rgba(0,0,0,.6)] backdrop-blur-xl">
           <div className="px-2 pb-3 pt-1">
-            <div className="text-[10px] font-black uppercase tracking-[.24em] text-amber-100/55">Host controls</div>
-            <div className="mt-1 text-xs leading-5 text-white/45">Manage the whole room from here.</div>
+            <div className="text-[10px] font-black uppercase tracking-[.24em] text-amber-100/55">{isHost ? "Host controls" : "Game controls"}</div>
+            <div className="mt-1 text-xs leading-5 text-white/45">{isHost ? "Manage the room or step away without losing it." : "Step away or leave this room on this device."}</div>
           </div>
-          <button disabled={busy} onClick={() => void startOver()} className="min-h-12 w-full rounded-2xl border border-white/10 bg-white/[.04] px-4 py-3 text-left text-sm font-black text-white transition hover:bg-white/[.08] disabled:opacity-40">↻ &nbsp;START OVER</button>
-          <button disabled={busy} onClick={() => void quitGame()} className="mt-2 min-h-12 w-full rounded-2xl border border-rose-300/20 bg-rose-300/[.08] px-4 py-3 text-left text-sm font-black text-rose-100 transition hover:bg-rose-300/[.13] disabled:opacity-40">QUIT GAME</button>
+          <button onClick={saveForLater} className="min-h-12 w-full rounded-2xl border border-cyan-200/15 bg-cyan-300/[.06] px-4 py-3 text-left text-sm font-black text-cyan-50 transition hover:bg-cyan-300/[.1]">SAVE FOR LATER</button>
+          {!isHost ? (
+            <button onClick={leaveGame} className="mt-2 min-h-12 w-full rounded-2xl border border-white/10 bg-white/[.04] px-4 py-3 text-left text-sm font-black text-white/80 transition hover:bg-white/[.08]">EXIT GAME</button>
+          ) : null}
+          {isHost ? (
+            <>
+              <button disabled={busy} onClick={() => void startOver()} className="mt-2 min-h-12 w-full rounded-2xl border border-white/10 bg-white/[.04] px-4 py-3 text-left text-sm font-black text-white transition hover:bg-white/[.08] disabled:opacity-40">↻ &nbsp;START OVER</button>
+              <button disabled={busy} onClick={() => void quitGame()} className="mt-2 min-h-12 w-full rounded-2xl border border-rose-300/20 bg-rose-300/[.08] px-4 py-3 text-left text-sm font-black text-rose-100 transition hover:bg-rose-300/[.13] disabled:opacity-40">QUIT GAME FOR EVERYONE</button>
+            </>
+          ) : null}
         </div>
       )}
-      <button onClick={() => setOpen((value) => !value)} aria-expanded={open} className="min-h-12 rounded-full border border-amber-200/20 bg-[linear-gradient(145deg,rgba(17,18,21,.97),rgba(5,6,8,.97))] px-5 py-3 text-[11px] font-black uppercase tracking-[.16em] text-amber-50 shadow-[0_14px_42px_rgba(0,0,0,.48)] backdrop-blur-xl transition hover:border-amber-200/35">{open ? "CLOSE" : "HOST MENU"}</button>
+      <button onClick={() => setOpen((value) => !value)} aria-expanded={open} className="min-h-12 rounded-full border border-amber-200/20 bg-[linear-gradient(145deg,rgba(17,18,21,.97),rgba(5,6,8,.97))] px-5 py-3 text-[11px] font-black uppercase tracking-[.16em] text-amber-50 shadow-[0_14px_42px_rgba(0,0,0,.48)] backdrop-blur-xl transition hover:border-amber-200/35">{open ? "CLOSE" : isHost ? "HOST MENU" : "GAME MENU"}</button>
     </div>
   );
 }
