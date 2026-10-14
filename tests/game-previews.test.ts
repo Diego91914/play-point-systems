@@ -5,7 +5,7 @@ import ts from "typescript";
 import sharp from "sharp";
 import { describe, expect, it } from "vitest";
 import { MASTER_GAME_CATALOG } from "../lib/play-point-core/master-game-catalog";
-import manifest from "../lib/play-point-core/game-preview-manifest.json";
+import { GAME_PREVIEW_MANIFEST as manifest } from "../lib/play-point-core/game-preview-catalog";
 import routes from "./fixtures/game-preview-routes.json";
 
 describe("authentic static previews", () => {
@@ -70,7 +70,7 @@ describe("authentic static previews", () => {
   });
 
   it("keeps the preview import graph out of game runtimes and prevents link prefetch", () => {
-    const allowedData = new Set(["master-game-catalog.ts", "founders-bundle.ts", "game-experience-demos.ts", "game-preview-manifest.json"]);
+    const allowedData = new Set(["master-game-catalog.ts", "founders-bundle.ts", "game-experience-demos.ts", "game-preview-catalog.ts", "game-preview-manifest.json"]);
     const visited = new Set<string>();
     function inspect(path: string) {
       path = resolve(path);
