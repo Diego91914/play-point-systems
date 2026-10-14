@@ -35,78 +35,213 @@ type CoverIdentity = {
   motif: CoverMotif;
 };
 
+// Cover marks are intentionally short: these render at roughly 96–112px wide in
+// the mobile library, so each identity must read before the adjacent title does.
 const covers: Record<string, CoverIdentity> = {
-  "chain-reaction": { kicker: "SOCIAL", mark: "CR", frame: "from-cyan-500/45 via-slate-950 to-violet-700/35", ink: "text-cyan-50", motif: "chain" },
-  "how-close": { kicker: "SOCIAL", mark: "1—100", frame: "from-amber-400/45 via-rose-950 to-fuchsia-700/35", ink: "text-amber-50", motif: "gauge" },
-  "on-my-list": { kicker: "SOCIAL", mark: "#1?", frame: "from-fuchsia-500/40 via-slate-950 to-cyan-700/30", ink: "text-fuchsia-50", motif: "ranked" },
-  "all-about-you": { kicker: "GUEST OF HONOR", mark: "YOU", frame: "from-amber-300/40 via-rose-950 to-pink-600/35", ink: "text-amber-50", motif: "spotlight" },
-  "inside-man": { kicker: "SOCIAL DEDUCTION", mark: "IM", frame: "from-red-600/35 via-slate-950 to-cyan-700/30", ink: "text-red-50", motif: "spy" },
-  "phone-holdem": { kicker: "PRIVATE-SEAT POKER", mark: "HOLD'EM", frame: "from-rose-600/40 via-fuchsia-950 to-slate-950", ink: "text-rose-50", motif: "poker" },
-  "live-craps": { kicker: "LIVE TABLE", mark: "7 · 11", frame: "from-amber-400/35 via-emerald-950 to-slate-950", ink: "text-amber-50", motif: "dice" },
-  "last-call": { kicker: "BLACKWOOD HOUSE", mark: "LAST CALL", frame: "from-amber-200/30 via-rose-950 to-black", ink: "text-amber-50", motif: "mansion" },
-  "shot-classic": { kicker: "SHOT CADDY", mark: "CLASSIC", frame: "from-emerald-500/40 via-cyan-950 to-slate-950", ink: "text-emerald-50", motif: "classic" },
-  "shot-chaos": { kicker: "SHOT CADDY", mark: "CHAOS", frame: "from-lime-400/40 via-fuchsia-950 to-orange-700/35", ink: "text-lime-50", motif: "chaos" },
-  "battle-mode": { kicker: "SHOT CADDY", mark: "VS", frame: "from-cyan-500/35 via-slate-950 to-orange-600/40", ink: "text-cyan-50", motif: "battle" },
-  "call-your-score": { kicker: "SHOT CADDY", mark: "CALL IT", frame: "from-sky-500/35 via-indigo-950 to-amber-500/30", ink: "text-sky-50", motif: "prediction" },
-  "challenge-skins-pro": { kicker: "SHOT CADDY PRO", mark: "SKINS", frame: "from-amber-300/35 via-emerald-950 to-black", ink: "text-amber-50", motif: "skins" },
-  wolf: { kicker: "SHOT CADDY", mark: "WOLF", frame: "from-slate-300/20 via-blue-950 to-slate-950", ink: "text-slate-100", motif: "wolf" },
-  "redemption-wolf": { kicker: "SHOT CADDY", mark: "REDEMPTION", frame: "from-orange-400/35 via-red-950 to-slate-950", ink: "text-orange-50", motif: "redemption" },
-  "wolf-pack": { kicker: "SHOT CADDY", mark: "PACK", frame: "from-teal-400/30 via-blue-950 to-slate-950", ink: "text-teal-50", motif: "pack" },
-  "card-shark-classic": { kicker: "CARD SHARK", mark: "CLASSIC", frame: "from-emerald-500/30 via-slate-950 to-black", ink: "text-emerald-50", motif: "card-classic" },
-  "card-shark-stud": { kicker: "CARD SHARK", mark: "STUD", frame: "from-amber-400/30 via-stone-950 to-slate-950", ink: "text-amber-50", motif: "card-stud" },
-  "card-shark-draw": { kicker: "CARD SHARK", mark: "DRAW", frame: "from-violet-500/35 via-rose-950 to-slate-950", ink: "text-violet-50", motif: "card-draw" },
-  "atw-ladder": { kicker: "AROUND THE WORLD", mark: "LADDER", frame: "from-sky-500/35 via-blue-950 to-amber-500/25", ink: "text-sky-50", motif: "ladder" },
-  "atw-sprint": { kicker: "AROUND THE WORLD", mark: "SPRINT", frame: "from-cyan-400/40 via-blue-950 to-lime-500/25", ink: "text-cyan-50", motif: "sprint" },
-  "atw-survival": { kicker: "AROUND THE WORLD", mark: "SURVIVAL", frame: "from-red-500/40 via-slate-950 to-orange-500/25", ink: "text-red-50", motif: "survival" },
-  "disc-warrior": { kicker: "SHOT CADDY", mark: "WARRIOR", frame: "from-amber-300/35 via-indigo-950 to-cyan-700/30", ink: "text-amber-50", motif: "warrior" },
-  "clear-the-stack": { kicker: "PUTTING PRESSURE", mark: "CTS", frame: "from-sky-400/40 via-cyan-950 to-slate-950", ink: "text-sky-50", motif: "stack" },
-  "quest-digital": { kicker: "QUEST CADDY", mark: "CHRONICLE", frame: "from-violet-500/45 via-fuchsia-950 to-slate-950", ink: "text-violet-50", motif: "chronicle" },
-  "quest-disc-golf": { kicker: "QUEST CADDY", mark: "REAL THROWS", frame: "from-emerald-500/35 via-slate-950 to-amber-500/30", ink: "text-emerald-50", motif: "quest-course" },
-  "play-point-trivia": { kicker: "PLAY AMPLIFIED", mark: "TRIVIA", frame: "from-blue-500/40 via-indigo-950 to-cyan-600/35", ink: "text-blue-50", motif: "trivia" },
+  "chain-reaction": { kicker: "SOCIAL", mark: "CHAIN", frame: "from-cyan-400/50 via-slate-950 to-violet-700/45", ink: "text-cyan-50", motif: "chain" },
+  "how-close": { kicker: "1 TO 100", mark: "HOW CLOSE?", frame: "from-amber-300/50 via-rose-950 to-fuchsia-700/45", ink: "text-amber-50", motif: "gauge" },
+  "on-my-list": { kicker: "RANK IT", mark: "#1?", frame: "from-fuchsia-500/45 via-slate-950 to-cyan-700/35", ink: "text-fuchsia-50", motif: "ranked" },
+  "all-about-you": { kicker: "GUEST OF HONOR", mark: "YOU", frame: "from-amber-300/45 via-rose-950 to-pink-600/40", ink: "text-amber-50", motif: "spotlight" },
+  "inside-man": { kicker: "SOCIAL DEDUCTION", mark: "INSIDE MAN", frame: "from-red-600/45 via-slate-950 to-cyan-700/35", ink: "text-red-50", motif: "spy" },
+  "phone-holdem": { kicker: "PRIVATE-SEAT POKER", mark: "HOLD'EM", frame: "from-rose-600/45 via-fuchsia-950 to-slate-950", ink: "text-rose-50", motif: "poker" },
+  "live-craps": { kicker: "LIVE TABLE", mark: "7 · 11", frame: "from-amber-400/40 via-emerald-950 to-slate-950", ink: "text-amber-50", motif: "dice" },
+  "last-call": { kicker: "BLACKWOOD HOUSE", mark: "LAST CALL", frame: "from-amber-200/35 via-rose-950 to-black", ink: "text-amber-50", motif: "mansion" },
+
+  "shot-classic": { kicker: "SHOT CADDY", mark: "CLASSIC", frame: "from-emerald-500/45 via-cyan-950 to-slate-950", ink: "text-emerald-50", motif: "classic" },
+  "shot-chaos": { kicker: "SHOT CADDY", mark: "CHAOS", frame: "from-lime-400/45 via-fuchsia-950 to-orange-700/45", ink: "text-lime-50", motif: "chaos" },
+  "battle-mode": { kicker: "SHOT CADDY", mark: "VS", frame: "from-cyan-500/40 via-slate-950 to-orange-600/45", ink: "text-cyan-50", motif: "battle" },
+  "call-your-score": { kicker: "SHOT CADDY", mark: "CALL IT", frame: "from-sky-500/40 via-indigo-950 to-amber-500/35", ink: "text-sky-50", motif: "prediction" },
+  "challenge-skins-pro": { kicker: "SHOT CADDY PRO", mark: "SKINS", frame: "from-amber-300/40 via-emerald-950 to-black", ink: "text-amber-50", motif: "skins" },
+  wolf: { kicker: "SHOT CADDY", mark: "WOLF", frame: "from-slate-300/25 via-blue-950 to-slate-950", ink: "text-slate-100", motif: "wolf" },
+  "redemption-wolf": { kicker: "SHOT CADDY", mark: "REDEEM", frame: "from-orange-400/40 via-red-950 to-slate-950", ink: "text-orange-50", motif: "redemption" },
+  "wolf-pack": { kicker: "SHOT CADDY", mark: "PACK", frame: "from-teal-400/35 via-blue-950 to-slate-950", ink: "text-teal-50", motif: "pack" },
+
+  "card-shark-classic": { kicker: "CARD SHARK", mark: "CLASSIC", frame: "from-emerald-500/35 via-slate-950 to-black", ink: "text-emerald-50", motif: "card-classic" },
+  "card-shark-stud": { kicker: "CARD SHARK", mark: "STUD", frame: "from-amber-400/35 via-stone-950 to-slate-950", ink: "text-amber-50", motif: "card-stud" },
+  "card-shark-draw": { kicker: "CARD SHARK", mark: "DRAW", frame: "from-violet-500/40 via-rose-950 to-slate-950", ink: "text-violet-50", motif: "card-draw" },
+
+  "atw-ladder": { kicker: "AROUND THE WORLD", mark: "LADDER", frame: "from-sky-500/40 via-blue-950 to-amber-500/30", ink: "text-sky-50", motif: "ladder" },
+  "atw-sprint": { kicker: "AROUND THE WORLD", mark: "SPRINT", frame: "from-cyan-400/45 via-blue-950 to-lime-500/30", ink: "text-cyan-50", motif: "sprint" },
+  "atw-survival": { kicker: "AROUND THE WORLD", mark: "SURVIVE", frame: "from-red-500/45 via-slate-950 to-orange-500/30", ink: "text-red-50", motif: "survival" },
+  "disc-warrior": { kicker: "SHOT CADDY", mark: "WARRIOR", frame: "from-amber-300/40 via-indigo-950 to-cyan-700/35", ink: "text-amber-50", motif: "warrior" },
+  "clear-the-stack": { kicker: "PUTTING PRESSURE", mark: "STACK", frame: "from-sky-400/45 via-cyan-950 to-slate-950", ink: "text-sky-50", motif: "stack" },
+
+  "quest-digital": { kicker: "QUEST CADDY", mark: "QUEST", frame: "from-violet-500/50 via-fuchsia-950 to-slate-950", ink: "text-violet-50", motif: "chronicle" },
+  "quest-disc-golf": { kicker: "QUEST CADDY", mark: "THROWS", frame: "from-emerald-500/40 via-slate-950 to-amber-500/35", ink: "text-emerald-50", motif: "quest-course" },
+  "play-point-trivia": { kicker: "LIVE GAME SHOW", mark: "TRIVIA", frame: "from-blue-500/45 via-indigo-950 to-cyan-600/40", ink: "text-blue-50", motif: "trivia" },
 };
 
-function CoverGlyph({ motif }: { motif: CoverMotif }) {
-  const common = "h-full w-full";
-  const props = { fill: "none", stroke: "currentColor", strokeWidth: 2.2, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+const svgProps = {
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 2.4,
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
+};
 
-  if (motif === "chain") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><circle cx="40" cy="68" r="16"/><circle cx="91" cy="42" r="16"/><circle cx="140" cy="72" r="16"/><path d="M54 60 76 48M106 50l20 13"/><circle cx="91" cy="42" r="5" fill="currentColor" stroke="none"/><path d="M29 91c38 13 79 12 121-3" strokeDasharray="4 7" opacity=".35"/></svg>;
-  if (motif === "gauge") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><path d="M34 86a58 58 0 0 1 112 0"/><path d="M48 78 39 73M62 58l-7-8M90 50V37M118 58l7-8M132 78l9-5"/><path d="m90 82 32-31"/><circle cx="90" cy="82" r="7"/><text x="25" y="101" fill="currentColor" stroke="none" fontSize="10" fontWeight="800">1</text><text x="137" y="101" fill="currentColor" stroke="none" fontSize="10" fontWeight="800">100</text></svg>;
-  if (motif === "ranked") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><rect x="42" y="20" width="92" height="72" rx="12"/><path d="M59 39h15M59 56h37M59 73h25"/><text x="104" y="44" fill="currentColor" stroke="none" fontSize="16" fontWeight="900">#1</text><path d="M108 59h13M108 68h13M108 77h13" opacity=".45"/><path d="M30 99c37-10 78-10 121 0" strokeDasharray="4 7" opacity=".35"/></svg>;
-  if (motif === "spotlight") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><path d="M62 16h56l-14 51H76L62 16Z" opacity=".3"/><circle cx="90" cy="57" r="22"/><path d="M54 101c5-23 17-34 36-34s31 11 36 34"/><path d="M34 28l8 4M146 28l-8 4M52 13l5 8M128 13l-5 8" opacity=".6"/><circle cx="90" cy="57" r="5" fill="currentColor" stroke="none"/></svg>;
-  if (motif === "spy") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><path d="M35 61c28-28 82-28 110 0-28 28-82 28-110 0Z"/><circle cx="90" cy="61" r="19"/><circle cx="90" cy="61" r="6" fill="currentColor" stroke="none"/><path d="M47 24h87M54 95h73" strokeDasharray="10 6" opacity=".35"/><path d="M28 37h30M122 84h31" opacity=".5"/></svg>;
-  if (motif === "poker") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><rect x="45" y="23" width="48" height="70" rx="8" transform="rotate(-10 45 23)"/><rect x="91" y="21" width="48" height="70" rx="8" transform="rotate(8 91 21)"/><path d="M112 42c4-7 14-3 12 5-2 6-12 13-12 13s-10-7-12-13c-2-8 8-12 12-5Z" fill="currentColor" stroke="none"/><circle cx="51" cy="87" r="13"/><circle cx="51" cy="87" r="7"/></svg>;
-  if (motif === "dice") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><rect x="35" y="27" width="56" height="56" rx="10" transform="rotate(-8 35 27)"/><rect x="91" y="35" width="54" height="54" rx="10" transform="rotate(9 91 35)"/>{[[53,45],[72,62],[51,78],[108,51],[128,72],[109,83]].map(([x,y],i)=><circle key={i} cx={x} cy={y} r="4" fill="currentColor" stroke="none"/>)}<path d="M27 101h126" opacity=".35"/></svg>;
-  if (motif === "mansion") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><path d="M36 99h108M45 99V51l45-28 45 28v48M60 99V61h60v38M80 99V76h20v23"/><path d="M64 47h52M72 39h36"/><rect x="111" y="68" width="11" height="14" rx="2"/><path d="M29 101c40 8 81 8 122 0" strokeDasharray="4 8" opacity=".35"/><circle cx="116" cy="74" r="2.5" fill="currentColor" stroke="none"/></svg>;
-  if (motif === "classic") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><ellipse cx="47" cy="37" rx="28" ry="8" transform="rotate(-12 47 37)"/><path d="M22 43c20 8 39 8 57-1M122 22v76M102 45h40M106 56h32M111 67h22M116 78h12M96 98h52"/><path d="M73 36c18-2 32 2 46 10" strokeDasharray="5 6" opacity=".5"/></svg>;
-  if (motif === "chaos") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><path d="m27 79 29-50 13 25 22-31 17 37 20-20 25 45"/><path d="M118 23v76M99 47h38M104 59h28M109 71h18M114 83h8"/><path d="M33 96c28-17 55-18 80-3" strokeDasharray="3 6" opacity=".45"/><circle cx="56" cy="29" r="5" fill="currentColor" stroke="none"/></svg>;
-  if (motif === "battle") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><path d="M33 35h43l17 26-17 26H33L16 61l17-26ZM147 35h-43L87 61l17 26h43l17-26-17-26Z"/><text x="78" y="68" fill="currentColor" stroke="none" fontSize="20" fontWeight="900">VS</text><circle cx="53" cy="61" r="9"/><circle cx="127" cy="61" r="9"/></svg>;
-  if (motif === "prediction") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><circle cx="103" cy="61" r="37"/><circle cx="103" cy="61" r="24"/><circle cx="103" cy="61" r="10"/><path d="m32 86 55-25M33 86l14-2-9-10"/><rect x="22" y="24" width="50" height="28" rx="8"/><text x="35" y="43" fill="currentColor" stroke="none" fontSize="12" fontWeight="900">-2</text></svg>;
-  if (motif === "skins") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><path d="m90 19 15 26 30 6-21 22 4 30-28-13-28 13 4-30-21-22 30-6 15-26Z"/><circle cx="90" cy="61" r="18"/><path d="M82 61h16M90 53v16"/><path d="M32 102h116" opacity=".35"/></svg>;
-  if (motif === "wolf") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><path d="m51 89 12-52 24 16 28-22 15 56-40 18-39-16Z"/><path d="m63 37 13 17M115 31l-15 23M75 72l15 9 17-10M82 91h17"/><circle cx="75" cy="67" r="3" fill="currentColor" stroke="none"/><circle cx="106" cy="66" r="3" fill="currentColor" stroke="none"/><circle cx="137" cy="29" r="15" opacity=".2"/></svg>;
-  if (motif === "redemption") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><path d="M25 91c18-8 31-16 42-27 10-11 21-19 34-20 18-2 34 8 53 32"/><path d="M116 32a31 31 0 0 1 31 31"/><path d="M116 22v18M147 31l-13 13M159 62h-18" opacity=".7"/><path d="m58 92 11-44 20 13 22-17 12 46-32 14-33-12Z" opacity=".9"/></svg>;
-  if (motif === "pack") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><path d="m31 92 9-39 18 12 18-14 10 39-27 12-28-10ZM94 88l10-44 19 13 21-16 11 45-30 14-31-12Z"/><path d="M72 29c17-11 35-12 54-2" strokeDasharray="5 6" opacity=".4"/><circle cx="125" cy="28" r="16" opacity=".15"/></svg>;
-  if (motif === "card-classic") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><rect x="48" y="24" width="46" height="68" rx="7" transform="rotate(-8 48 24)"/><rect x="87" y="22" width="46" height="68" rx="7" transform="rotate(8 87 22)"/><path d="M108 42c4-7 13-3 11 4-1 5-11 12-11 12s-10-7-11-12c-2-7 7-11 11-4Z" fill="currentColor" stroke="none"/><ellipse cx="38" cy="91" rx="18" ry="6"/></svg>;
-  if (motif === "card-stud") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}>{[0,1,2,3].map((i)=><rect key={i} x={35+i*25} y={28+(i%2)*5} width="38" height="57" rx="6" transform={`rotate(${i*4-7} ${35+i*25} ${28+(i%2)*5})`}/>)}<path d="M29 99h123" opacity=".35"/><circle cx="52" cy="48" r="4" fill="currentColor" stroke="none"/></svg>;
-  if (motif === "card-draw") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><rect x="40" y="30" width="44" height="62" rx="7"/><rect x="95" y="24" width="44" height="62" rx="7" transform="rotate(10 95 24)"/><path d="M74 18c25-12 50-7 67 10M141 28l-12-1 6-10"/><path d="M108 48c4-7 13-3 11 4-1 5-11 12-11 12s-10-7-11-12c-2-7 7-11 11-4Z" fill="currentColor" stroke="none"/></svg>;
-  if (motif === "ladder") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><circle cx="90" cy="61" r="43"/><circle cx="90" cy="61" r="7"/><path d="M90 18v43M133 61H90M90 104V61M47 61h43"/><path d="M22 101h32V87h27V73h27V59h29"/><text x="30" y="95" fill="currentColor" stroke="none" fontSize="9" fontWeight="900">1</text><text x="128" y="54" fill="currentColor" stroke="none" fontSize="9" fontWeight="900">4</text></svg>;
-  if (motif === "sprint") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><circle cx="105" cy="61" r="35"/><path d="M105 26v35l25 12"/><path d="M24 36h45M14 55h54M29 74h38M43 93h28" opacity=".7"/><circle cx="105" cy="61" r="5" fill="currentColor" stroke="none"/><path d="M91 18h28"/></svg>;
-  if (motif === "survival") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><circle cx="88" cy="60" r="43"/><path d="M88 17v43M131 60H88M88 103V60M45 60h43"/><path d="M130 23c4-7 13-3 11 4-1 5-11 12-11 12s-10-7-11-12c-2-7 7-11 11-4ZM145 52c3-6 11-3 10 3-2 5-10 10-10 10s-8-5-10-10c-1-6 7-9 10-3Z" fill="currentColor" stroke="none"/><path d="M121 86l29 18M150 86l-29 18"/></svg>;
-  if (motif === "warrior") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><path d="M38 96h19V83h19V70h19V57h19V44h28"/><path d="m62 89 20-47 18 12 19-23 20 54"/><circle cx="140" cy="31" r="9"/><path d="M29 103h125" opacity=".35"/><text x="31" y="91" fill="currentColor" stroke="none" fontSize="9" fontWeight="900">1</text><text x="143" y="42" fill="currentColor" stroke="none" fontSize="9" fontWeight="900">6</text></svg>;
-  if (motif === "stack") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><ellipse cx="65" cy="77" rx="31" ry="8"/><ellipse cx="65" cy="61" rx="26" ry="7"/><ellipse cx="65" cy="47" rx="21" ry="6"/><path d="M127 22v78M108 45h38M112 56h30M117 67h20M122 78h10M103 100h48"/><path d="M90 55c14-5 25-5 36 1" strokeDasharray="5 6" opacity=".45"/></svg>;
-  if (motif === "chronicle") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><path d="M90 16 126 34v30c0 23-13 38-36 51-23-13-36-28-36-51V34l36-18Z"/><path d="m90 39 8 17 19 3-14 13 4 19-17-9-17 9 4-19-14-13 19-3 8-17Z"/><path d="M28 92c15-19 29-28 43-29M109 63c17 3 31 13 43 30" strokeDasharray="5 6" opacity=".45"/></svg>;
-  if (motif === "quest-course") return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><path d="M126 22v78M107 45h38M111 56h30M116 67h20M121 78h10M102 100h48"/><ellipse cx="47" cy="37" rx="26" ry="7" transform="rotate(-12 47 37)"/><path d="M68 38c24 3 41 13 52 30" strokeDasharray="5 6"/><path d="M25 99c26-17 48-23 69-18" opacity=".4"/><path d="m83 76 7 7 7-7 7 7"/></svg>;
-  return <svg aria-hidden="true" viewBox="0 0 180 120" className={common} {...props}><path d="M63 43c2-18 14-29 32-29 20 0 34 12 34 30 0 15-8 22-21 30-10 6-13 11-13 21"/><circle cx="95" cy="106" r="5" fill="currentColor" stroke="none"/><path d="M24 31h18M20 54h26M27 79h19M131 81h23" opacity=".6"/><path d="M141 25v11M135 30h12"/></svg>;
+function Basket({ x = 116, y = 18, scale = 1 }: { x?: number; y?: number; scale?: number }) {
+  return (
+    <g transform={`translate(${x} ${y}) scale(${scale})`}>
+      <path d="M18 0v70M2 20h32M5 30h26M9 40h18M13 50h10M-4 70h44" />
+      <circle cx="18" cy="0" r="3" fill="currentColor" stroke="none" />
+    </g>
+  );
+}
+
+function WolfHead({ x = 90, y = 62, scale = 1 }: { x?: number; y?: number; scale?: number }) {
+  return (
+    <g transform={`translate(${x} ${y}) scale(${scale})`}>
+      <path d="m-34-29 18 8L0-31l16 10 18-8-7 29c0 22-13 38-27 46C-14 38-27 22-27 0l-7-29Z" />
+      <path d="m-15 6 10 5M15 6l-10 5M-8 25 0 30l8-5" />
+      <circle cx="-11" cy="7" r="2.5" fill="currentColor" stroke="none" />
+      <circle cx="11" cy="7" r="2.5" fill="currentColor" stroke="none" />
+    </g>
+  );
+}
+
+function PlayingCard({ x, y, rotate = 0, label }: { x: number; y: number; rotate?: number; label?: string }) {
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
+      <rect width="40" height="58" rx="6" />
+      {label ? <text x="8" y="19" fill="currentColor" stroke="none" fontSize="12" fontWeight="900">{label}</text> : null}
+    </g>
+  );
+}
+
+function CoverGlyph({ motif }: { motif: CoverMotif }) {
+  if (motif === "chain") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><circle cx="35" cy="68" r="17"/><circle cx="90" cy="39" r="17"/><circle cx="145" cy="69" r="17"/><path d="m50 60 24-13M106 47l24 13"/><circle cx="90" cy="39" r="6" fill="currentColor" stroke="none"/><path d="M22 99c45-12 91-12 136 0" strokeDasharray="4 7" opacity=".28"/></svg>;
+  }
+
+  if (motif === "gauge") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M27 91a64 64 0 0 1 126 0"/><path d="m43 83-12-6M57 61l-8-10M90 51V35M123 61l8-10M137 83l12-6"/><path d="m90 88 39-39" strokeWidth="4"/><circle cx="90" cy="88" r="8" fill="currentColor" stroke="none"/><text x="24" y="107" fill="currentColor" stroke="none" fontSize="12" fontWeight="900">1</text><text x="137" y="107" fill="currentColor" stroke="none" fontSize="12" fontWeight="900">100</text></svg>;
+  }
+
+  if (motif === "ranked") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><rect x="41" y="16" width="98" height="82" rx="13"/><path d="M59 38h25M59 57h46M59 76h33"/><text x="104" y="43" fill="currentColor" stroke="none" fontSize="20" fontWeight="900">#1</text><path d="M111 60h14M111 70h14M111 80h14" opacity=".45"/></svg>;
+  }
+
+  if (motif === "spotlight") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M55 10h70l-17 57H72L55 10Z" fill="currentColor" opacity=".08"/><circle cx="90" cy="57" r="23"/><path d="M50 104c6-25 19-37 40-37s34 12 40 37"/><path d="M27 28l11 5M153 28l-11 5M48 11l6 10M132 11l-6 10" opacity=".6"/><circle cx="90" cy="57" r="5" fill="currentColor" stroke="none"/></svg>;
+  }
+
+  if (motif === "spy") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M25 61c34-34 96-34 130 0-34 34-96 34-130 0Z"/><circle cx="90" cy="61" r="21"/><circle cx="90" cy="61" r="7" fill="currentColor" stroke="none"/><path d="M32 23h88M48 96h92" strokeWidth="7" opacity=".28"/><path d="m133 18 20 20M153 18l-20 20" opacity=".7"/></svg>;
+  }
+
+  if (motif === "poker") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><PlayingCard x={37} y={26} rotate={-10} label="A"/><PlayingCard x={86} y={20} rotate={8} label="K"/><path d="M111 45c5-9 17-4 14 6-2 7-14 16-14 16s-12-9-14-16c-3-10 9-15 14-6Z" fill="currentColor" stroke="none"/><circle cx="46" cy="91" r="14"/><circle cx="46" cy="91" r="8"/></svg>;
+  }
+
+  if (motif === "dice") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><rect x="30" y="22" width="61" height="61" rx="11" transform="rotate(-8 30 22)"/><rect x="92" y="31" width="58" height="58" rx="11" transform="rotate(9 92 31)"/>{[[49,40],[72,59],[49,77],[109,48],[133,70],[110,84]].map(([x,y],i)=><circle key={i} cx={x} cy={y} r="4.5" fill="currentColor" stroke="none"/>)}<path d="M22 103h136" opacity=".35"/></svg>;
+  }
+
+  if (motif === "mansion") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M25 103h130M41 103V52l49-31 49 31v51M57 103V64h66v39M80 103V77h20v26"/><path d="M64 49h52M73 40h34"/><path d="M132 26 145 14M142 39l16-4" opacity=".45"/><path d="M28 104c42 8 83 8 124 0" strokeDasharray="4 7" opacity=".3"/><g transform="translate(113 72)"><path d="M0 0h15l-3 13H3L0 0Z"/><path d="M7.5 13v9M2 22h11"/></g></svg>;
+  }
+
+  if (motif === "classic") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><ellipse cx="48" cy="39" rx="30" ry="9" transform="rotate(-12 48 39)"/><path d="M21 46c21 8 41 8 60-2"/><Basket x={117} y={19} scale={1.05}/><path d="M76 38c18-2 32 3 45 11" strokeDasharray="5 6" opacity=".55"/></svg>;
+  }
+
+  if (motif === "chaos") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><Basket x={116} y={18}/><path d="m24 78 26-49 14 27 22-34 18 39 18-22 27 45" strokeWidth="3.2"/><path d="M25 98c35-24 67-23 95-2M34 24c32 16 55 14 75-6" strokeDasharray="4 6" opacity=".45"/><circle cx="50" cy="29" r="5" fill="currentColor" stroke="none"/></svg>;
+  }
+
+  if (motif === "battle") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M31 34h43l18 27-18 27H31L13 61l18-27ZM149 34h-43L88 61l18 27h43l18-27-18-27Z"/><text x="76" y="69" fill="currentColor" stroke="none" fontSize="23" fontWeight="900">VS</text><circle cx="52" cy="61" r="10"/><circle cx="128" cy="61" r="10"/></svg>;
+  }
+
+  if (motif === "prediction") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><circle cx="110" cy="63" r="38"/><circle cx="110" cy="63" r="24"/><circle cx="110" cy="63" r="9" fill="currentColor" stroke="none"/><path d="m29 91 65-30M30 91l15-1-9-12"/><rect x="20" y="20" width="57" height="30" rx="8"/><text x="33" y="40" fill="currentColor" stroke="none" fontSize="12" fontWeight="900">CALL</text></svg>;
+  }
+
+  if (motif === "skins") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M90 16 121 28v26c0 22-12 37-31 48-19-11-31-26-31-48V28L90 16Z"/><circle cx="90" cy="56" r="18"/><path d="m90 43 5 10 11 2-8 8 2 11-10-5-10 5 2-11-8-8 11-2 5-10Z" fill="currentColor" stroke="none" opacity=".7"/><path d="M30 91h27M123 91h27" opacity=".45"/></svg>;
+  }
+
+  if (motif === "wolf") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><circle cx="132" cy="33" r="25" fill="currentColor" stroke="none" opacity=".08"/><WolfHead x={84} y={63} scale={0.9}/><path d="M129 60v42M118 74h22M121 82h16M124 90h10" opacity=".45"/></svg>;
+  }
+
+  if (motif === "redemption") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><circle cx="138" cy="91" r="28" fill="currentColor" stroke="none" opacity=".1"/><path d="M15 91h151"/><path d="M24 89c28-31 50-31 69-17 19 14 36 9 59-20" strokeWidth="4"/><path d="m141 50 14-2-3 14"/><WolfHead x={65} y={62} scale={0.62}/></svg>;
+  }
+
+  if (motif === "pack") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><WolfHead x={90} y={62} scale={0.72}/><WolfHead x={45} y={72} scale={0.42}/><WolfHead x={135} y={72} scale={0.42}/><path d="M25 103c43-14 87-14 130 0" strokeDasharray="4 7" opacity=".3"/></svg>;
+  }
+
+  if (motif === "card-classic") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><PlayingCard x={42} y={25} rotate={-7} label="A"/><PlayingCard x={88} y={23} rotate={7} label="K"/><circle cx="36" cy="91" r="13"/><path d="M30 91h12M36 85v12"/></svg>;
+  }
+
+  if (motif === "card-stud") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><PlayingCard x={22} y={28} rotate={-9} label="A"/><PlayingCard x={68} y={20} label="Q"/><PlayingCard x={114} y={28} rotate={9} label="9"/><path d="M25 101h130" opacity=".35"/></svg>;
+  }
+
+  if (motif === "card-draw") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><PlayingCard x={32} y={29} rotate={-9} label="7"/><PlayingCard x={78} y={24} rotate={3} label="J"/><path d="M130 31c17 9 24 23 20 40M150 71l-7-9 11-2"/><path d="M144 88c-17 8-32 5-44-8M100 80l7 9-11 2"/></svg>;
+  }
+
+  if (motif === "ladder") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><circle cx="92" cy="61" r="45"/><circle cx="92" cy="61" r="31" opacity=".55"/><circle cx="92" cy="61" r="17" opacity=".35"/><path d="M24 98h24V82h24V66h24V50h24V34h24"/><circle cx="92" cy="61" r="4" fill="currentColor" stroke="none"/></svg>;
+  }
+
+  if (motif === "sprint") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><circle cx="105" cy="61" r="34"/><path d="M105 61 122 43M105 28v8M105 86v8M72 61h8M130 61h8"/><circle cx="105" cy="61" r="5" fill="currentColor" stroke="none"/><path d="M18 38h43M12 57h52M22 76h39" strokeWidth="4" opacity=".55"/></svg>;
+  }
+
+  if (motif === "survival") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><circle cx="90" cy="60" r="42"/><path d="M90 18v18M90 84v18M48 60h18M114 60h18"/><path d="M78 58c5-9 17-4 15 6-2 7-15 17-15 17s-13-10-15-17c-2-10 10-15 15-6Z" fill="currentColor" stroke="none"/><path d="m117 39 16-16M128 23h5v5" opacity=".7"/></svg>;
+  }
+
+  if (motif === "warrior") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M34 96h84M45 84h73M56 72h62M67 60h51M78 48h40M89 36h29" strokeWidth="5"/><ellipse cx="132" cy="31" rx="24" ry="7" transform="rotate(-12 132 31)"/><path d="M108 35c-9 4-16 10-22 18" strokeDasharray="4 6" opacity=".5"/><path d="M129 73 144 88l22-30" strokeWidth="4"/></svg>;
+  }
+
+  if (motif === "stack") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><ellipse cx="64" cy="78" rx="34" ry="9"/><ellipse cx="64" cy="61" rx="29" ry="8"/><ellipse cx="64" cy="46" rx="24" ry="7"/><ellipse cx="64" cy="33" rx="18" ry="6"/><Basket x={117} y={18}/><path d="M92 49c13-5 23-5 31 0" strokeDasharray="5 6" opacity=".5"/></svg>;
+  }
+
+  if (motif === "chronicle") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M90 14 122 29v28c0 23-13 38-32 49-19-11-32-26-32-49V29L90 14Z"/><path d="m90 37 7 14 15 2-11 11 3 15-14-8-14 8 3-15-11-11 15-2 7-14Z"/><path d="M18 92c21-26 40-35 59-34M103 58c20 1 39 12 59 35" strokeDasharray="5 7" opacity=".45"/><circle cx="20" cy="92" r="5"/><circle cx="160" cy="93" r="5"/></svg>;
+  }
+
+  if (motif === "quest-course") {
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><ellipse cx="47" cy="35" rx="25" ry="7" transform="rotate(-13 47 35)"/><path d="M20 41c18 7 34 7 52-1"/><path d="M75 35c20 1 35 9 46 23" strokeDasharray="5 6" opacity=".55"/><path d="M128 26 150 38v19c0 16-9 27-22 34-13-7-22-18-22-34V38l22-12Z"/><Basket x={118} y={49} scale={0.55}/></svg>;
+  }
+
+  return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M22 31h136v66H22z"/><path d="M22 49h136M56 31v66M124 31v66" opacity=".45"/><rect x="65" y="56" width="50" height="27" rx="7" fill="currentColor" stroke="none" opacity=".12"/><text x="78" y="75" fill="currentColor" stroke="none" fontSize="14" fontWeight="900">?</text><path d="M32 20l8 6M148 20l-8 6M90 14v10"/><circle cx="42" cy="73" r="7"/><circle cx="138" cy="73" r="7"/></svg>;
 }
 
 export function GameCoverArt({ gameId }: { gameId: string }) {
-  const identity = covers[gameId] ?? covers["chain-reaction"];
+  const cover = covers[gameId];
+  if (!cover) throw new Error(`Missing game cover identity: ${gameId}`);
+
   return (
-    <div aria-hidden="true" data-game-cover={gameId} className={`relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br ${identity.frame} ${identity.ink}`}>
-      <div className="absolute -right-5 -top-6 h-20 w-20 rounded-full border border-white/10 bg-white/10 blur-xl" />
-      <div className="absolute -bottom-7 -left-6 h-20 w-20 rounded-full border border-white/10 bg-black/20 blur-xl" />
-      <div className="absolute inset-1 opacity-75"><CoverGlyph motif={identity.motif} /></div>
-      <div className="absolute left-2 top-2 text-[6px] font-black uppercase tracking-[0.18em] text-white/55 sm:text-[7px]">{identity.kicker}</div>
-      <div className="absolute bottom-2 left-2 rounded-full border border-white/15 bg-black/20 px-1.5 py-0.5 text-[6px] font-black uppercase tracking-[0.12em] text-white/80 backdrop-blur-sm sm:text-[7px]">{identity.mark}</div>
+    <div
+      data-game-cover={gameId}
+      className={`relative aspect-[4/3] min-h-full overflow-hidden bg-gradient-to-br ${cover.frame} ${cover.ink}`}
+    >
+      <div aria-hidden="true" className="absolute -right-5 -top-7 h-20 w-20 rounded-full border border-white/10 bg-white/10 blur-xl" />
+      <div aria-hidden="true" className="absolute -bottom-8 -left-6 h-20 w-20 rounded-full border border-white/10 bg-black/20 blur-xl" />
+
+      <div className="absolute inset-x-2 top-2 z-10 truncate text-[6px] font-black uppercase tracking-[0.16em] text-white/70 sm:text-[7px]">
+        {cover.kicker}
+      </div>
+
+      <div className="absolute inset-x-0 top-[15%] h-[65%] px-1 text-white/72">
+        <CoverGlyph motif={cover.motif} />
+      </div>
+
+      <div className="absolute inset-x-2 bottom-2 z-10">
+        <div className="h-px bg-white/20" />
+        <div className="mt-1.5 truncate text-[9px] font-black uppercase leading-none tracking-[0.04em] text-white sm:text-[10px]">
+          {cover.mark}
+        </div>
+      </div>
     </div>
   );
 }
