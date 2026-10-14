@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FeaturedGameArt, type FeaturedGameArtId } from "./FeaturedGameArt";
 import { GameScreenshot } from "./GameScreenshot";
 import { PlayCategoryArt, type PlayCategoryArtKind } from "./PlayCategoryArt";
 import {
@@ -14,10 +15,71 @@ const backyardGames = getMasterGamesByLane("backyard");
 const adventureGames = getMasterGamesByLane("adventure");
 const triviaGames = getMasterGamesByLane("trivia");
 
-function GameFormatCard({ game }: { game: MasterGameEntry }) {
+const featuredGameIds: readonly FeaturedGameArtId[] = [
+  "shot-classic",
+  "clear-the-stack",
+  "phone-holdem",
+  "live-craps",
+  "quest-digital",
+];
+
+const featuredGameIdentity = {
+  "shot-classic": {
+    eyebrow: "Shot Caddy signature",
+    tagline: "Disc golf, challenged.",
+    frame: "from-emerald-600/45 via-cyan-950/80 to-slate-950",
+    accent: "text-emerald-100",
+  },
+  "clear-the-stack": {
+    eyebrow: "Putting pressure",
+    tagline: "Clear every disc. Three rounds.",
+    frame: "from-sky-600/45 via-cyan-950/80 to-slate-950",
+    accent: "text-sky-100",
+  },
+  "phone-holdem": {
+    eyebrow: "Private-seat poker",
+    tagline: "Your cards. Your phone. One table.",
+    frame: "from-rose-700/45 via-fuchsia-950/75 to-slate-950",
+    accent: "text-rose-100",
+  },
+  "live-craps": {
+    eyebrow: "Live table energy",
+    tagline: "Physical or virtual dice. One shared table.",
+    frame: "from-amber-500/35 via-emerald-950/80 to-slate-950",
+    accent: "text-amber-100",
+  },
+  "quest-digital": {
+    eyebrow: "Living Chronicle",
+    tagline: "A persistent fantasy adventure in your pocket.",
+    frame: "from-violet-700/55 via-fuchsia-950/70 to-slate-950",
+    accent: "text-violet-100",
+  },
+} satisfies Record<FeaturedGameArtId, { eyebrow: string; tagline: string; frame: string; accent: string }>;
+
+function isFeaturedGameArtId(id: string): id is FeaturedGameArtId {
+  return featuredGameIds.includes(id as FeaturedGameArtId);
+}
+
+function GameFormatCard({ game, featured = false }: { game: MasterGameEntry; featured?: boolean }) {
   const external = game.href.startsWith("http");
+  const featuredId = featured && isFeaturedGameArtId(game.id) ? game.id : null;
+  const identity = featuredId ? featuredGameIdentity[featuredId] : null;
   const content = (
     <>
+      {featuredId && identity ? (
+        <div className={`relative mb-4 h-28 overflow-hidden rounded-[20px] border border-white/15 bg-gradient-to-br ${identity.frame}`}>
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-[58%] opacity-80">
+            <FeaturedGameArt gameId={featuredId} />
+          </div>
+          <div className="relative flex h-full max-w-[68%] flex-col justify-between p-4">
+            <div className={`text-[9px] font-black uppercase tracking-[0.22em] ${identity.accent}`}>{identity.eyebrow}</div>
+            <div>
+              <div className="text-lg font-black leading-tight tracking-tight text-white">{game.title}</div>
+              <div className="mt-1 text-xs font-bold leading-5 text-white/70">{identity.tagline}</div>
+            </div>
+          </div>
+        </div>
+      ) : null}
       <GameScreenshot gameId={game.id} />
       <div className="mt-5 flex items-start justify-between gap-4">
         <div className="min-w-0">
@@ -34,7 +96,7 @@ function GameFormatCard({ game }: { game: MasterGameEntry }) {
     </>
   );
 
-  const className = "group block h-full overflow-hidden rounded-[24px] border border-white/10 bg-gradient-to-b from-white/[0.075] to-white/[0.025] p-3 shadow-lg shadow-black/20 transition duration-300 hover:-translate-y-1 hover:border-cyan-200/35 hover:shadow-cyan-950/25 sm:p-4";
+  const className = `group block h-full overflow-hidden rounded-[24px] border bg-gradient-to-b p-3 shadow-lg shadow-black/20 transition duration-300 hover:-translate-y-1 sm:p-4 ${featured ? "border-white/15 from-white/[0.09] to-white/[0.025] hover:border-white/30 hover:shadow-2xl" : "border-white/10 from-white/[0.075] to-white/[0.025] hover:border-cyan-200/35 hover:shadow-cyan-950/25"}`;
 
   return external ? (
     <a href={game.href} target="_blank" rel="noreferrer" className={className}>{content}</a>
@@ -137,18 +199,19 @@ export default function PlayAmplifiedPage() {
 
           <section aria-labelledby="featured-games-heading" className="border-t border-white/10 py-10 sm:py-14">
             <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <p className="text-[11px] font-black uppercase tracking-[0.18em] text-cyan-200/70">Start exploring</p>
+              <div className="max-w-2xl">
+                <p className="text-[11px] font-black uppercase tracking-[0.18em] text-cyan-200/70">Signature experiences</p>
                 <h2 id="featured-games-heading" className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">Featured games</h2>
+                <p className="mt-2 text-sm leading-6 text-white/55">Each flagship keeps its authentic gameplay screenshot while adding a distinct visual identity around it.</p>
               </div>
               <a href="#all-games" className="rounded-full border border-white/15 px-4 py-2 text-xs font-bold text-white/80 transition hover:bg-white/10">See all games ↓</a>
             </div>
-            <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-3">
-              {["shot-classic", "clear-the-stack", "phone-holdem"].map((id) => {
+            <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-3 xl:grid-cols-5">
+              {featuredGameIds.map((id) => {
                 const game = FINISHED_GAME_FORMATS.find((item) => item.id === id);
                 return game ? (
                   <div key={game.id} className="w-[82vw] max-w-sm shrink-0 snap-start sm:w-auto sm:max-w-none">
-                    <GameFormatCard game={game} />
+                    <GameFormatCard game={game} featured />
                   </div>
                 ) : null;
               })}
