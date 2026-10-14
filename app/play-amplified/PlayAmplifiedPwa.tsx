@@ -99,12 +99,16 @@ export function PlayAmplifiedPwa() {
     const isPlayAmplified = hostname === "playamplified.com" || hostname === "www.playamplified.com" || hostname === "localhost";
     if (!isPlayAmplified) return;
 
-    setCandidates(readResumeCandidates());
-    const inStandalone = window.matchMedia?.("(display-mode: standalone)").matches || (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
-    setStandalone(inStandalone);
-    setIsIos(/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
-    setInstallDismissed(window.sessionStorage.getItem("play-amplified-install-dismissed") === "1");
-    setResumeDismissed(window.sessionStorage.getItem("play-amplified-resume-dismissed") === "1");
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (cancelled) return;
+      setCandidates(readResumeCandidates());
+      const inStandalone = window.matchMedia?.("(display-mode: standalone)").matches || (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
+      setStandalone(inStandalone);
+      setIsIos(/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
+      setInstallDismissed(window.sessionStorage.getItem("play-amplified-install-dismissed") === "1");
+      setResumeDismissed(window.sessionStorage.getItem("play-amplified-resume-dismissed") === "1");
+    });
 
     const onBeforeInstallPrompt = (event: Event) => {
       event.preventDefault();
@@ -119,7 +123,10 @@ export function PlayAmplifiedPwa() {
         .catch(() => undefined);
     }
 
-    return () => window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);
+    return () => {
+      cancelled = true;
+      window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);
+    };
   }, []);
 
   const primary = useMemo(() => candidates[0] ?? null, [candidates]);
