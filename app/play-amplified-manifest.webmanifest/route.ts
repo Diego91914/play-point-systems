@@ -60,7 +60,7 @@ export function GET() {
     {
       headers: {
         "content-type": "application/manifest+json; charset=utf-8",
-        "cache-control": "no-cache, must-revalidate",
+        "cache-control": "no-cache, no-store, must-revalidate",
       },
     },
   );
