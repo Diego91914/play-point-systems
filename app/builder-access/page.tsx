@@ -14,15 +14,17 @@ export const metadata: Metadata = {
 };
 
 function safeNextPath(value: string | undefined): string {
-  if (!value || value.startsWith("//")) return "/games";
+  if (!value || value.startsWith("//")) return "/play";
   if (
     value.startsWith("/games") ||
+    value === "/play" ||
+    value.startsWith("/play/") ||
     value.startsWith("/play-amplified") ||
     value.startsWith("/shot-caddy")
   ) {
     return value;
   }
-  return "/games";
+  return "/play";
 }
 
 export default async function BuilderAccessPage({
