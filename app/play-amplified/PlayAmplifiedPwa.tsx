@@ -90,6 +90,7 @@ export function PlayAmplifiedPwa() {
   const [candidates, setCandidates] = useState<ResumeCandidate[]>([]);
   const [standalone, setStandalone] = useState(false);
   const [isIos, setIsIos] = useState(false);
+  const [clientReady, setClientReady] = useState(false);
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [installDismissed, setInstallDismissed] = useState(false);
   const [installHelpOpen, setInstallHelpOpen] = useState(false);
@@ -109,6 +110,7 @@ export function PlayAmplifiedPwa() {
       setIsIos(/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
       setInstallDismissed(window.sessionStorage.getItem("play-amplified-install-dismissed") === "1");
       setResumeDismissed(window.sessionStorage.getItem("play-amplified-resume-dismissed") === "1");
+      setClientReady(true);
     });
 
     const onBeforeInstallPrompt = (event: Event) => {
@@ -150,6 +152,8 @@ export function PlayAmplifiedPwa() {
     if (choice.outcome === "accepted") setStandalone(true);
     setInstallPrompt(null);
   };
+
+  if (!clientReady) return null;
 
   if (primary && !resumeDismissed) {
     return (
