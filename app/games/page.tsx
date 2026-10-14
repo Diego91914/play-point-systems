@@ -106,13 +106,21 @@ function GameCard({ game, owned, featured = false }: { game: ShelfEntry; owned: 
 
       {!owned && game.offer?.available && priceLabel ? <div className="mt-4 text-sm font-black text-amber-100">{priceLabel}</div> : null}
 
-      <div className="mt-5 grid gap-2 border-t border-white/8 pt-4 sm:grid-cols-2">
-        <Link href={game.href} className="inline-flex items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-400/10 px-4 py-3 text-center text-sm font-black text-cyan-50 transition hover:bg-cyan-400/15">
-          {owned ? actionLabel : "Watch demo"}
-        </Link>
-        <a href={game.launchHref} className={`inline-flex items-center justify-center rounded-2xl border px-4 py-3 text-center text-sm font-black transition ${owned ? "border-emerald-300/20 bg-emerald-400/10 text-emerald-50 hover:bg-emerald-400/15" : "border-white/10 bg-white/[0.04] text-white/70 hover:bg-white/[0.08]"}`}>
-          {owned ? "Launch game" : actionLabel}
-        </a>
+      <div className="mt-5 border-t border-white/8 pt-4">
+        {owned ? (
+          <a href={game.launchHref} className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-center text-sm font-black text-emerald-50 transition hover:bg-emerald-400/15">
+            Play now
+          </a>
+        ) : (
+          <div className="grid gap-2 sm:grid-cols-2">
+            <Link href={game.href} className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-400/10 px-4 py-3 text-center text-sm font-black text-cyan-50 transition hover:bg-cyan-400/15">
+              Watch demo
+            </Link>
+            <a href={game.launchHref} className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-center text-sm font-black text-white/70 transition hover:bg-white/[0.08]">
+              {actionLabel}
+            </a>
+          </div>
+        )}
       </div>
     </article>
   );
