@@ -108,9 +108,27 @@ function PlayingCard({ x, y, rotate = 0, label }: { x: number; y: number; rotate
   );
 }
 
+function Disc({ x, y, rotate = 0, scale = 1 }: { x: number; y: number; rotate?: number; scale?: number }) {
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${rotate}) scale(${scale})`}>
+      <ellipse cx="0" cy="0" rx="24" ry="7" />
+      <path d="M-21 3c14 6 28 6 42 0" opacity=".7" />
+    </g>
+  );
+}
+
+function PhoneSeat({ x, y, rotate = 0, scale = 1 }: { x: number; y: number; rotate?: number; scale?: number }) {
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${rotate}) scale(${scale})`}>
+      <rect x="-14" y="-23" width="28" height="46" rx="6" />
+      <path d="M-5 17h10" opacity=".55" />
+    </g>
+  );
+}
+
 function CoverGlyph({ motif }: { motif: CoverMotif }) {
   if (motif === "chain") {
-    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><circle cx="35" cy="68" r="17"/><circle cx="90" cy="39" r="17"/><circle cx="145" cy="69" r="17"/><path d="m50 60 24-13M106 47l24 13"/><circle cx="90" cy="39" r="6" fill="currentColor" stroke="none"/><path d="M22 99c45-12 91-12 136 0" strokeDasharray="4 7" opacity=".28"/></svg>;
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><circle cx="31" cy="67" r="15"/><circle cx="82" cy="42" r="17"/><circle cx="139" cy="66" r="19"/><path d="m45 60 21-11M99 49l21 9" strokeWidth="3.4"/><circle cx="82" cy="42" r="6" fill="currentColor" stroke="none"/><circle cx="139" cy="66" r="27" opacity=".18"/><circle cx="139" cy="66" r="34" opacity=".08"/><path d="m120 58 9 8-9 8"/><path d="M22 99c45-12 91-12 136 0" strokeDasharray="4 7" opacity=".28"/></svg>;
   }
 
   if (motif === "gauge") {
@@ -118,11 +136,11 @@ function CoverGlyph({ motif }: { motif: CoverMotif }) {
   }
 
   if (motif === "ranked") {
-    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><rect x="41" y="16" width="98" height="82" rx="13"/><path d="M59 38h25M59 57h46M59 76h33"/><text x="104" y="43" fill="currentColor" stroke="none" fontSize="20" fontWeight="900">#1</text><path d="M111 60h14M111 70h14M111 80h14" opacity=".45"/></svg>;
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><rect x="37" y="14" width="106" height="86" rx="13"/><rect x="51" y="25" width="78" height="25" rx="7" fill="currentColor" stroke="none" opacity=".1"/><text x="58" y="43" fill="currentColor" stroke="none" fontSize="18" fontWeight="900">#1 ?</text><path d="M53 62h48M53 79h34M111 61h16M111 70h16M111 79h16"/><path d="m133 31 9 7-9 7" opacity=".65"/></svg>;
   }
 
   if (motif === "spotlight") {
-    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M55 10h70l-17 57H72L55 10Z" fill="currentColor" opacity=".08"/><circle cx="90" cy="57" r="23"/><path d="M50 104c6-25 19-37 40-37s34 12 40 37"/><path d="M27 28l11 5M153 28l-11 5M48 11l6 10M132 11l-6 10" opacity=".6"/><circle cx="90" cy="57" r="5" fill="currentColor" stroke="none"/></svg>;
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M55 8h70l-17 59H72L55 8Z" fill="currentColor" opacity=".09"/><circle cx="90" cy="57" r="23"/><circle cx="90" cy="57" r="31" opacity=".18"/><path d="M50 104c6-25 19-37 40-37s34 12 40 37"/><path d="M27 28l11 5M153 28l-11 5M48 11l6 10M132 11l-6 10" opacity=".6"/>{[[35,18],[145,17],[29,67],[151,64],[46,88],[136,88]].map(([x,y],i)=><circle key={i} cx={x} cy={y} r="2.5" fill="currentColor" stroke="none" opacity=".65"/>)}<circle cx="90" cy="57" r="5" fill="currentColor" stroke="none"/></svg>;
   }
 
   if (motif === "spy") {
@@ -130,11 +148,11 @@ function CoverGlyph({ motif }: { motif: CoverMotif }) {
   }
 
   if (motif === "poker") {
-    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><PlayingCard x={37} y={26} rotate={-10} label="A"/><PlayingCard x={86} y={20} rotate={8} label="K"/><path d="M111 45c5-9 17-4 14 6-2 7-14 16-14 16s-12-9-14-16c-3-10 9-15 14-6Z" fill="currentColor" stroke="none"/><circle cx="46" cy="91" r="14"/><circle cx="46" cy="91" r="8"/></svg>;
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><PhoneSeat x={133} y={59} rotate={7} scale={1.08}/><PlayingCard x={31} y={27} rotate={-10} label="A"/><PlayingCard x={73} y={22} rotate={7} label="K"/><path d="M96 45c5-9 17-4 14 6-2 7-14 16-14 16s-12-9-14-16c-3-10 9-15 14-6Z" fill="currentColor" stroke="none"/><circle cx="42" cy="94" r="13"/><circle cx="42" cy="94" r="7"/></svg>;
   }
 
   if (motif === "dice") {
-    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><rect x="30" y="22" width="61" height="61" rx="11" transform="rotate(-8 30 22)"/><rect x="92" y="31" width="58" height="58" rx="11" transform="rotate(9 92 31)"/>{[[49,40],[72,59],[49,77],[109,48],[133,70],[110,84]].map(([x,y],i)=><circle key={i} cx={x} cy={y} r="4.5" fill="currentColor" stroke="none"/>)}<path d="M22 103h136" opacity=".35"/></svg>;
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M16 101c37-15 111-15 148 0M28 91c32-12 92-12 124 0" opacity=".45"/><PhoneSeat x={27} y={73} rotate={-12} scale={0.55}/><PhoneSeat x={151} y={73} rotate={12} scale={0.55}/><rect x="35" y="18" width="56" height="56" rx="11" transform="rotate(-8 35 18)"/><rect x="91" y="28" width="55" height="55" rx="11" transform="rotate(9 91 28)"/>{[[53,36],[73,55],[52,71],[108,45],[131,66],[109,78]].map(([x,y],i)=><circle key={i} cx={x} cy={y} r="4.5" fill="currentColor" stroke="none"/>)}<path d="M72 14c21-8 43-5 62 8" strokeDasharray="5 6" opacity=".35"/></svg>;
   }
 
   if (motif === "mansion") {
@@ -142,15 +160,15 @@ function CoverGlyph({ motif }: { motif: CoverMotif }) {
   }
 
   if (motif === "classic") {
-    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><ellipse cx="48" cy="39" rx="30" ry="9" transform="rotate(-12 48 39)"/><path d="M21 46c21 8 41 8 60-2"/><Basket x={117} y={19} scale={1.05}/><path d="M76 38c18-2 32 3 45 11" strokeDasharray="5 6" opacity=".55"/></svg>;
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><Disc x={48} y={39} rotate={-12} scale={1.25}/><Basket x={117} y={19} scale={1.05}/><path d="M76 38c18-2 32 3 45 11" strokeDasharray="5 6" opacity=".55"/></svg>;
   }
 
   if (motif === "chaos") {
-    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><Basket x={116} y={18}/><path d="m24 78 26-49 14 27 22-34 18 39 18-22 27 45" strokeWidth="3.2"/><path d="M25 98c35-24 67-23 95-2M34 24c32 16 55 14 75-6" strokeDasharray="4 6" opacity=".45"/><circle cx="50" cy="29" r="5" fill="currentColor" stroke="none"/></svg>;
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><Basket x={116} y={18}/><path d="m24 78 26-49 14 27 22-34 18 39 18-22 27 45" strokeWidth="3.2"/><path d="M25 98c35-24 67-23 95-2M34 24c32 16 55 14 75-6" strokeDasharray="4 6" opacity=".45"/><circle cx="50" cy="29" r="5" fill="currentColor" stroke="none"/><path d="m29 35 10 4-7 8M90 18l7 9-10 3M151 48l-10 5 7 8"/></svg>;
   }
 
   if (motif === "battle") {
-    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M31 34h43l18 27-18 27H31L13 61l18-27ZM149 34h-43L88 61l18 27h43l18-27-18-27Z"/><text x="76" y="69" fill="currentColor" stroke="none" fontSize="23" fontWeight="900">VS</text><circle cx="52" cy="61" r="10"/><circle cx="128" cy="61" r="10"/></svg>;
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M31 34h43l18 27-18 27H31L13 61l18-27ZM149 34h-43L88 61l18 27h43l18-27-18-27Z"/><text x="76" y="69" fill="currentColor" stroke="none" fontSize="23" fontWeight="900">VS</text><Disc x={51} y={61} rotate={-12} scale={0.48}/><Disc x={129} y={61} rotate={12} scale={0.48}/><path d="M19 25h47M114 97h47" strokeDasharray="4 6" opacity=".35"/></svg>;
   }
 
   if (motif === "prediction") {
@@ -174,15 +192,15 @@ function CoverGlyph({ motif }: { motif: CoverMotif }) {
   }
 
   if (motif === "card-classic") {
-    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><PlayingCard x={42} y={25} rotate={-7} label="A"/><PlayingCard x={88} y={23} rotate={7} label="K"/><circle cx="36" cy="91" r="13"/><path d="M30 91h12M36 85v12"/></svg>;
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><PlayingCard x={42} y={21} rotate={-7} label="A"/><PlayingCard x={88} y={20} rotate={7} label="K"/><Disc x={38} y={94} rotate={-5} scale={0.55}/><path d="M65 91c23-7 44-6 64 4" strokeDasharray="4 6" opacity=".35"/></svg>;
   }
 
   if (motif === "card-stud") {
-    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><PlayingCard x={22} y={28} rotate={-9} label="A"/><PlayingCard x={68} y={20} label="Q"/><PlayingCard x={114} y={28} rotate={9} label="9"/><path d="M25 101h130" opacity=".35"/></svg>;
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><PlayingCard x={21} y={24} rotate={-9} label="A"/><PlayingCard x={68} y={17} label="Q"/><PlayingCard x={115} y={24} rotate={9} label="9"/><Disc x={90} y={101} scale={0.5}/><path d="M25 101h43M112 101h43" opacity=".3"/></svg>;
   }
 
   if (motif === "card-draw") {
-    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><PlayingCard x={32} y={29} rotate={-9} label="7"/><PlayingCard x={78} y={24} rotate={3} label="J"/><path d="M130 31c17 9 24 23 20 40M150 71l-7-9 11-2"/><path d="M144 88c-17 8-32 5-44-8M100 80l7 9-11 2"/></svg>;
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><PlayingCard x={27} y={27} rotate={-9} label="7"/><PlayingCard x={71} y={21} rotate={3} label="J"/><path d="M126 25c20 9 29 25 24 46M150 71l-7-9 11-2"/><path d="M144 88c-18 9-36 6-50-8M94 80l7 9-11 2"/><Disc x={49} y={99} scale={0.48}/></svg>;
   }
 
   if (motif === "ladder") {
@@ -198,7 +216,7 @@ function CoverGlyph({ motif }: { motif: CoverMotif }) {
   }
 
   if (motif === "warrior") {
-    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M34 96h84M45 84h73M56 72h62M67 60h51M78 48h40M89 36h29" strokeWidth="5"/><ellipse cx="132" cy="31" rx="24" ry="7" transform="rotate(-12 132 31)"/><path d="M108 35c-9 4-16 10-22 18" strokeDasharray="4 6" opacity=".5"/><path d="M129 73 144 88l22-30" strokeWidth="4"/></svg>;
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M27 99h91M39 86h79M51 73h67M63 60h55M75 47h43M87 34h31" strokeWidth="5"/><Disc x={137} y={29} rotate={-12} scale={1.05}/><path d="M111 33c-11 4-20 11-27 21" strokeDasharray="4 6" opacity=".5"/><path d="M128 73 144 89l23-32" strokeWidth="4"/><circle cx="28" cy="99" r="4" fill="currentColor" stroke="none"/><circle cx="39" cy="86" r="4" fill="currentColor" stroke="none"/></svg>;
   }
 
   if (motif === "stack") {
@@ -206,14 +224,14 @@ function CoverGlyph({ motif }: { motif: CoverMotif }) {
   }
 
   if (motif === "chronicle") {
-    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M90 14 122 29v28c0 23-13 38-32 49-19-11-32-26-32-49V29L90 14Z"/><path d="m90 37 7 14 15 2-11 11 3 15-14-8-14 8 3-15-11-11 15-2 7-14Z"/><path d="M18 92c21-26 40-35 59-34M103 58c20 1 39 12 59 35" strokeDasharray="5 7" opacity=".45"/><circle cx="20" cy="92" r="5"/><circle cx="160" cy="93" r="5"/></svg>;
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M20 30c21-8 42-6 63 7v63c-21-12-42-14-63-7V30ZM160 30c-21-8-42-6-63 7v63c21-12 42-14 63-7V30Z" opacity=".45"/><path d="M90 14 119 28v24c0 20-11 34-29 44-18-10-29-24-29-44V28L90 14Z"/><path d="m90 35 6 13 14 2-10 10 2 14-12-7-12 7 2-14-10-10 14-2 6-13Z"/><path d="M27 83c16-21 31-28 46-26M108 58c17 1 32 9 47 26" strokeDasharray="5 7" opacity=".6"/><circle cx="28" cy="83" r="4" fill="currentColor" stroke="none"/><circle cx="154" cy="84" r="4" fill="currentColor" stroke="none"/></svg>;
   }
 
   if (motif === "quest-course") {
-    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><ellipse cx="47" cy="35" rx="25" ry="7" transform="rotate(-13 47 35)"/><path d="M20 41c18 7 34 7 52-1"/><path d="M75 35c20 1 35 9 46 23" strokeDasharray="5 6" opacity=".55"/><path d="M128 26 150 38v19c0 16-9 27-22 34-13-7-22-18-22-34V38l22-12Z"/><Basket x={118} y={49} scale={0.55}/></svg>;
+    return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><Disc x={43} y={34} rotate={-13} scale={1.05}/><path d="M70 35c22 1 39 9 51 23" strokeDasharray="5 6" opacity=".62"/><path d="M128 18 154 32v23c0 19-10 31-26 40-16-9-26-21-26-40V32l26-14Z"/><path d="m128 35 5 10 11 2-8 8 2 11-10-5-10 5 2-11-8-8 11-2 5-10Z" opacity=".7"/><Basket x={118} y={61} scale={0.5}/><path d="M28 100c36-12 76-12 120 0" strokeDasharray="4 7" opacity=".28"/></svg>;
   }
 
-  return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M22 31h136v66H22z"/><path d="M22 49h136M56 31v66M124 31v66" opacity=".45"/><rect x="65" y="56" width="50" height="27" rx="7" fill="currentColor" stroke="none" opacity=".12"/><text x="78" y="75" fill="currentColor" stroke="none" fontSize="14" fontWeight="900">?</text><path d="M32 20l8 6M148 20l-8 6M90 14v10"/><circle cx="42" cy="73" r="7"/><circle cx="138" cy="73" r="7"/></svg>;
+  return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M20 28h140v68H20z"/><path d="M20 45h140M53 28v68M127 28v68" opacity=".4"/><path d="M31 18 43 28M149 18l-12 10M90 12v16" strokeWidth="3"/><circle cx="44" cy="70" r="9"/><circle cx="136" cy="70" r="9"/><rect x="64" y="51" width="52" height="31" rx="7" fill="currentColor" stroke="none" opacity=".13"/><text x="84" y="72" fill="currentColor" stroke="none" fontSize="19" fontWeight="900">?</text><path d="M36 88h16M128 88h16" strokeWidth="4"/><circle cx="44" cy="88" r="3" fill="currentColor" stroke="none"/><circle cx="136" cy="88" r="3" fill="currentColor" stroke="none"/></svg>;
 }
 
 export function GameCoverArt({ gameId }: { gameId: string }) {
@@ -228,11 +246,11 @@ export function GameCoverArt({ gameId }: { gameId: string }) {
       <div aria-hidden="true" className="absolute -right-5 -top-7 h-20 w-20 rounded-full border border-white/10 bg-white/10 blur-xl" />
       <div aria-hidden="true" className="absolute -bottom-8 -left-6 h-20 w-20 rounded-full border border-white/10 bg-black/20 blur-xl" />
 
-      <div className="absolute inset-x-2 top-2 z-10 truncate text-[6px] font-black uppercase tracking-[0.16em] text-white/70 sm:text-[7px]">
+      <div className="absolute left-2 top-2 z-10 max-w-[82%] truncate rounded-full border border-white/10 bg-black/20 px-1.5 py-1 text-[5px] font-black uppercase tracking-[0.16em] text-white/75 backdrop-blur-sm sm:text-[6px]">
         {cover.kicker}
       </div>
 
-      <div className="absolute inset-x-0 top-[15%] h-[65%] px-1 text-white/72">
+      <div className="absolute inset-x-0 top-[15%] h-[65%] px-1 text-white/76">
         <CoverGlyph motif={cover.motif} />
       </div>
 
