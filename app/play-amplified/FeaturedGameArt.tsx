@@ -1,18 +1,22 @@
 export type FeaturedGameArtId = "shot-classic" | "clear-the-stack" | "phone-holdem" | "live-craps" | "quest-digital";
 
-const common = "h-full w-full text-white/55";
+const common = "h-full w-full text-white/60";
 
 export function FeaturedGameArt({ gameId }: { gameId: FeaturedGameArtId }) {
   if (gameId === "shot-classic") {
     return (
       <svg aria-hidden="true" viewBox="0 0 320 180" className={common} fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M24 132c46-35 90-45 139-30 45 14 84 14 133-12" opacity=".28" />
+        <circle cx="226" cy="87" r="72" opacity=".09" />
+        <circle cx="226" cy="87" r="53" opacity=".08" />
+        <path d="M24 132c46-35 90-45 139-30 45 14 84 14 133-12" opacity=".32" />
         <ellipse cx="77" cy="61" rx="45" ry="13" transform="rotate(-12 77 61)" />
         <path d="M37 69c33 13 64 13 92-2" />
         <path d="M225 35v104M199 63h52M205 76h40M211 89h28M217 102h16" />
         <path d="M189 139h72M200 151h50" />
-        <path d="M114 58c42-7 76-2 105 17" strokeDasharray="7 8" opacity=".52" />
+        <path d="M114 58c42-7 76-2 105 17" strokeDasharray="7 8" opacity=".58" />
+        <path d="M47 111c34-17 70-20 105-9" strokeDasharray="3 7" opacity=".25" />
         <circle cx="225" cy="35" r="4" fill="currentColor" stroke="none" />
+        <circle cx="77" cy="61" r="3" fill="currentColor" stroke="none" opacity=".5" />
       </svg>
     );
   }
@@ -20,14 +24,17 @@ export function FeaturedGameArt({ gameId }: { gameId: FeaturedGameArtId }) {
   if (gameId === "clear-the-stack") {
     return (
       <svg aria-hidden="true" viewBox="0 0 320 180" className={common} fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M54 133h98M64 120h78M74 107h58M84 94h38" opacity=".8" />
+        <circle cx="102" cy="83" r="66" opacity=".08" />
+        <path d="M54 133h98M64 120h78M74 107h58M84 94h38" opacity=".86" />
         <ellipse cx="103" cy="82" rx="42" ry="10" />
         <ellipse cx="103" cy="66" rx="35" ry="8" />
         <ellipse cx="103" cy="52" rx="28" ry="7" />
         <path d="M211 33v105M185 61h52M191 75h40M197 89h28M203 103h16" />
         <path d="M178 138h66M189 150h44" />
-        <path d="M143 71c32-10 54-9 68 2" strokeDasharray="7 8" opacity=".52" />
+        <path d="M143 71c32-10 54-9 68 2" strokeDasharray="7 8" opacity=".58" />
+        <path d="M52 145c36 8 74 7 112-3" strokeDasharray="4 7" opacity=".28" />
         <circle cx="211" cy="33" r="4" fill="currentColor" stroke="none" />
+        <circle cx="103" cy="52" r="3" fill="currentColor" stroke="none" opacity=".5" />
       </svg>
     );
   }
@@ -35,12 +42,15 @@ export function FeaturedGameArt({ gameId }: { gameId: FeaturedGameArtId }) {
   if (gameId === "phone-holdem") {
     return (
       <svg aria-hidden="true" viewBox="0 0 320 180" className={common} fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="226" cy="89" r="58" opacity=".09" />
         <rect x="54" y="36" width="64" height="94" rx="12" transform="rotate(-9 54 36)" />
         <rect x="112" y="31" width="64" height="94" rx="12" transform="rotate(4 112 31)" />
-        <path d="M142 55c5-9 18-4 16 6-2 7-16 18-16 18s-14-11-16-18c-2-10 11-15 16-6Z" fill="currentColor" stroke="none" opacity=".55" />
+        <path d="M142 55c5-9 18-4 16 6-2 7-16 18-16 18s-14-11-16-18c-2-10 11-15 16-6Z" fill="currentColor" stroke="none" opacity=".62" />
         <circle cx="231" cy="90" r="38" />
-        <circle cx="231" cy="90" r="25" strokeDasharray="6 7" opacity=".6" />
+        <circle cx="231" cy="90" r="25" strokeDasharray="6 7" opacity=".65" />
+        <circle cx="231" cy="90" r="13" opacity=".34" />
         <path d="M220 81h22M220 90h22M220 99h22" />
+        <path d="M47 145c61 12 122 10 184-5" strokeDasharray="4 8" opacity=".25" />
         <circle cx="86" cy="55" r="4" fill="currentColor" stroke="none" />
       </svg>
     );
@@ -49,13 +59,15 @@ export function FeaturedGameArt({ gameId }: { gameId: FeaturedGameArtId }) {
   if (gameId === "live-craps") {
     return (
       <svg aria-hidden="true" viewBox="0 0 320 180" className={common} fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="163" cy="88" r="73" opacity=".08" />
         <rect x="55" y="42" width="76" height="76" rx="14" transform="rotate(-8 55 42)" />
         <rect x="157" y="47" width="76" height="76" rx="14" transform="rotate(9 157 47)" />
-        {[0,1,2].map((row) => [0,1,2].map((col) => <circle key={`l-${row}-${col}`} cx={78 + col * 18} cy={63 + row * 18} r="4" fill="currentColor" stroke="none" opacity={(row + col) % 2 === 0 ? 0.9 : 0.28} />))}
+        {[0,1,2].map((row) => [0,1,2].map((col) => <circle key={`l-${row}-${col}`} cx={78 + col * 18} cy={63 + row * 18} r="4" fill="currentColor" stroke="none" opacity={(row + col) % 2 === 0 ? 0.95 : 0.3} />))}
         <circle cx="181" cy="68" r="4" fill="currentColor" stroke="none" />
         <circle cx="212" cy="97" r="4" fill="currentColor" stroke="none" />
-        <path d="M43 139h229M62 151h190" opacity=".4" />
-        <path d="M250 47c17 13 26 30 28 50" strokeDasharray="7 8" opacity=".55" />
+        <path d="M43 139h229M62 151h190" opacity=".44" />
+        <path d="M250 47c17 13 26 30 28 50" strokeDasharray="7 8" opacity=".6" />
+        <path d="M251 113c-17 18-40 29-68 32" strokeDasharray="4 8" opacity=".28" />
       </svg>
     );
   }
@@ -63,12 +75,15 @@ export function FeaturedGameArt({ gameId }: { gameId: FeaturedGameArtId }) {
   if (gameId === "quest-digital") {
     return (
       <svg aria-hidden="true" viewBox="0 0 320 180" className={common} fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="160" cy="91" r="77" opacity=".08" />
         <path d="M160 23 211 48v43c0 33-19 55-51 72-32-17-51-39-51-72V48l51-25Z" />
         <path d="m160 53 11 24 26 4-19 18 5 26-23-13-23 13 5-26-19-18 26-4 11-24Z" />
-        <path d="M41 129c26-31 50-46 74-47M205 82c27 4 52 20 74 48" strokeDasharray="7 8" opacity=".45" />
+        <path d="M41 129c26-31 50-46 74-47M205 82c27 4 52 20 74 48" strokeDasharray="7 8" opacity=".5" />
         <circle cx="46" cy="127" r="6" />
         <circle cx="274" cy="129" r="6" />
-        <path d="M160 23v28M109 48l29 35M211 48l-29 35" opacity=".4" />
+        <path d="M160 23v28M109 48l29 35M211 48l-29 35" opacity=".45" />
+        <path d="M79 151c50 13 106 13 162 0" strokeDasharray="4 8" opacity=".25" />
+        <circle cx="160" cy="91" r="6" fill="currentColor" stroke="none" opacity=".35" />
       </svg>
     );
   }
