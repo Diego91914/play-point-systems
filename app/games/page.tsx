@@ -198,7 +198,7 @@ export default async function GamesPage({
               <aside className="rounded-[28px] border border-cyan-300/15 bg-cyan-300/[0.06] p-5 backdrop-blur-sm">
                 <div className="text-[11px] font-black uppercase tracking-[0.2em] text-cyan-100/60">Your library</div>
                 <div className="mt-3 text-3xl font-black text-white">{founder ? "Founder · All Access" : `${ownedGames.length} owned formats`}</div>
-                <p className="mt-2 text-sm leading-6 text-white/58">Explore your available games by category, with previews clearly identified.</p>
+                <p className="mt-2 text-sm leading-6 text-white/58">Your games are ready below. Explore additional experiences whenever you like.</p>
               </aside>
             </div>
 
@@ -208,11 +208,16 @@ export default async function GamesPage({
               <Link href="/play-amplified" className="rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-black text-white/58 transition hover:bg-white/[0.08]">Play Amplified home</Link>
             </div>
 
+            <nav aria-label="Jump to game sections" className="mt-5 flex flex-wrap gap-2">
+              <a href="#ready-to-play" className="rounded-xl border border-emerald-200/20 px-4 py-2 text-sm font-bold text-emerald-100">Ready to play ↓</a>
+              {!ownedOnly ? <a href="#explore-games" className="rounded-xl border border-cyan-200/20 px-4 py-2 text-sm font-bold text-cyan-100">Explore games ↓</a> : null}
+            </nav>
+
             {params.locked ? <div className="mt-6 rounded-2xl border border-amber-300/25 bg-amber-300/10 px-5 py-4 text-sm text-amber-50">That game is not included with this account yet. It stays visible below so you can watch the demo, explore it, or purchase it.</div> : null}
           </div>
         </section>
 
-        <section className="border-t border-white/10 px-5 py-10 sm:px-8 lg:px-10 lg:py-14">
+        <section id="ready-to-play" className="scroll-mt-24 border-t border-white/10 px-5 py-10 sm:px-8 lg:px-10 lg:py-14">
           <div className="mx-auto max-w-6xl">
             <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
               <div>
@@ -234,7 +239,7 @@ export default async function GamesPage({
         </section>
 
         {!ownedOnly ? (
-          <section className="border-t border-white/10 px-5 py-10 sm:px-8 lg:px-10 lg:py-14">
+          <section id="explore-games" className="scroll-mt-24 border-t border-white/10 px-5 py-10 sm:px-8 lg:px-10 lg:py-14">
             <div className="mx-auto max-w-6xl">
               <div className="mb-8 flex flex-wrap items-end justify-between gap-3">
                 <div>
