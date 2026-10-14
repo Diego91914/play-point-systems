@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getGameExperienceDemo } from "@/lib/play-point-core/game-experience-demos";
+import { GameScreenshot } from "./GameScreenshot";
 import {
   FINISHED_GAME_FORMAT_COUNT,
   FINISHED_GAME_FORMATS,
@@ -18,14 +18,9 @@ const triviaGames = getMasterGamesByLane("trivia").filter((game) => game.status 
 
 function GameFormatCard({ game }: { game: MasterGameEntry }) {
   const external = game.href.startsWith("http");
-  const experience = getGameExperienceDemo(game);
   const content = (
     <>
-      <div className="rounded-[20px] border border-cyan-200/10 bg-gradient-to-br from-cyan-300/[0.08] via-white/[0.025] to-violet-300/[0.07] px-5 py-6 sm:px-6">
-        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-100/60">The experience</div>
-        <p className="mt-3 text-lg font-bold leading-7 text-white sm:text-xl">{experience.hook}</p>
-        <div className="mt-5 flex flex-wrap gap-2">{experience.facts.slice(0, 3).map((fact) => <span key={fact} className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-[10px] font-bold text-white/70">{fact}</span>)}</div>
-      </div>
+      <GameScreenshot gameId={game.id} />
       <div className="mt-5 flex items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-100/55">{game.family}</div>
@@ -36,9 +31,8 @@ function GameFormatCard({ game }: { game: MasterGameEntry }) {
           {game.status === "live" ? "Finished" : "Preview"}
         </span>
       </div>
-      <p className="mt-3 text-sm leading-6 text-white/70">{game.description}</p>
-      <p className="mt-3 text-sm leading-6 text-white/55"><span className="font-bold text-white/80">How it plays:</span> {experience.steps[0]?.detail}</p>
-      <div className="mt-5 border-t border-white/8 pt-4 text-sm font-black text-cyan-100">Learn how to play →</div>
+      <p className="mt-3 text-sm leading-6 text-white/58">{game.description}</p>
+      <div className="mt-5 border-t border-white/8 pt-4 text-sm font-black text-cyan-100">View game →</div>
     </>
   );
 
