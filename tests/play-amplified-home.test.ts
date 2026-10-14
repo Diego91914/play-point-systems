@@ -92,5 +92,8 @@ describe("Play Amplified consumer home", () => {
     expect(worker).toContain('caches.match("/play-amplified")');
     expect(manifest).toContain('start_url: "/play-amplified?source=pwa"');
     expect(manifest).toContain('"cache-control": "no-cache, must-revalidate"');
+    expect(pwa).toContain('SERVICE_WORKER_REFRESH_KEY = "play-amplified-sw-v3-reloaded"');
+    expect(pwa).toContain('addEventListener("controllerchange", onControllerChange)');
+    expect(pwa).toContain("window.location.reload()");
   });
 });
