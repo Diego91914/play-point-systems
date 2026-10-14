@@ -60,4 +60,10 @@ describe("Play Amplified consumer home", () => {
     expect(pwa).toContain('{installHelpOpen ? "HIDE" : "HOW"}');
     expect(pwa).not.toContain("Add Play Amplified to your Home Screen");
   });
+
+  it("does not render PWA chrome until the browser confirms a Play Amplified host", () => {
+    expect(pwa).toContain("const [clientReady, setClientReady] = useState(false);");
+    expect(pwa).toContain("setClientReady(true);");
+    expect(pwa).toContain("if (!clientReady) return null;");
+  });
 });
