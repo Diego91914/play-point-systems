@@ -256,7 +256,7 @@ function CatalogSection({
 
 export default function PlayAmplifiedPage() {
   const categories: readonly [string, string, string, PlayCategoryArtKind][] = [
-    ["Social", "Party, conversation, deduction, mystery, cards, and celebration games.", "#social-games", "social"],
+    ["Social", "Games that get people talking, laughing, reacting, and engaging with each other.", "#social-games", "social"],
     ["Course / Shot Caddy", "Disc golf and golf with tactics, challenges, alliances, predictions, and pressure.", "#course-games", "course"],
     ["Backyard & Putting", "Basket, yard, putting, station, and casual competitive formats.", "#backyard-games", "backyard"],
     ["Adventure / Quest Caddy", "Persistent fantasy Chronicle play digitally or tied to real throws.", "#adventure-games", "adventure"],
@@ -391,7 +391,7 @@ export default function PlayAmplifiedPage() {
               </nav>
             </section>
 
-            <CatalogSection id="social-games" eyebrow="People around the table" title="Social games" description="Face-to-face games where phones become private controllers, hands, roles, answer sheets, or seats while the group stays together." games={socialGames} />
+            <CatalogSection id="social-games" eyebrow="People around the table" title="Social games" description="Face-to-face games designed to increase engagement with each other. Phones handle private information and controls so attention stays on the people in the room." games={socialGames} />
             <CatalogSection id="course-games" eyebrow="Real play amplified" title="Course / Shot Caddy" description="Disc golf and golf stay real while Shot Caddy adds competition, challenges, predictions, alliances, and tactical layers." games={courseGames} />
             <CatalogSection id="backyard-games" eyebrow="One setup. A whole game night." title="Backyard & putting" description="Distinct playable formats built for a basket, yard, putting area, practice space, or improvised target setup." games={backyardGames} />
             <CatalogSection id="adventure-games" eyebrow="Your Chronicle" title="Adventure / Quest Caddy" description="Persistent fantasy play either fully digital or driven by real throws on the course." games={adventureGames} />
