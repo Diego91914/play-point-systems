@@ -1,4 +1,4 @@
-import manifest from "@/lib/play-point-core/game-preview-manifest.json";
+import { GAME_PREVIEW_MANIFEST as manifest } from "@/lib/play-point-core/game-preview-catalog";
 import { GameScreenshotImage } from "./GameScreenshotImage";
 
 export function GameScreenshot({ gameId, detail = false }: { gameId: string; detail?: boolean }) {
