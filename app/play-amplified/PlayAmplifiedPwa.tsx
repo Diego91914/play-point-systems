@@ -1,108 +1,49 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-
-type ResumeCandidate = {
-  key: string;
-  title: string;
-  href: string;
-  code?: string;
-};
+import type { ResumeCandidate } from "./PlayAmplifiedResumeRuntime";
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
 };
 
-const SESSION_SOURCES: readonly { key: string; title: string; href: string }[] = [
-  { key: "pps-mystery-session", title: "Last Call: Murder at Blackwood House", href: "/games/mystery" },
-  { key: "pps-chain-reaction-session", title: "Chain Reaction", href: "/games/chain-reaction" },
-  { key: "pps-how-close-session", title: "How Close Are We?", href: "/games/how-close" },
-  { key: "pps-inside-man-session", title: "The Inside Man", href: "/games/inside-man" },
-  { key: "pps-on-my-list-session", title: "On My List", href: "/games/on-my-list" },
-  { key: "pps-all-about-you-session", title: "All About You", href: "/games/all-about-you" },
-];
-
-function readJson(raw: string | null): Record<string, unknown> | null {
-  if (!raw) return null;
+function removeLocalKeys(keys: readonly string[]) {
   try {
-    const parsed = JSON.parse(raw);
-    return parsed && typeof parsed === "object" ? parsed as Record<string, unknown> : null;
-  } catch {
-    return null;
-  }
-}
-
-function readResumeCandidates(): ResumeCandidate[] {
-  const candidates: ResumeCandidate[] = [];
-
-  for (const source of SESSION_SOURCES) {
-    const parsed = readJson(window.localStorage.getItem(source.key));
-    if (!parsed) continue;
-    const code = typeof parsed.code === "string" ? parsed.code.trim().toUpperCase() : "";
-    candidates.push({
-      key: source.key,
-      title: source.title,
-      href: code ? `${source.href}?code=${encodeURIComponent(code)}` : source.href,
-      code: code || undefined,
-    });
-  }
-
-  for (let index = 0; index < window.localStorage.length; index += 1) {
-    const key = window.localStorage.key(index);
-    if (!key?.startsWith("pps-holdem-")) continue;
-    const code = key.slice("pps-holdem-".length).trim().toUpperCase();
-    const parsed = readJson(window.localStorage.getItem(key));
-    if (!parsed || !/^[A-Z2-9]{6}$/.test(code)) continue;
-    if (typeof parsed.playerId !== "string" || typeof parsed.token !== "string") continue;
-    candidates.push({
-      key,
-      title: "Phone Hold'em",
-      href: `/games/holdem?code=${encodeURIComponent(code)}`,
-      code,
-    });
-  }
-
-  const triviaHost = readJson(window.localStorage.getItem("play-point-trivia-host-connection-v2"));
-  if (triviaHost && typeof triviaHost.sessionId === "string") {
-    candidates.push({
-      key: "play-point-trivia-host-connection-v2",
-      title: "Play Point Trivia",
-      href: "/games/trivia/builder",
-    });
-  } else {
-    const triviaPlayer = readJson(window.localStorage.getItem("play-point-trivia-player-connection-v2"));
-    const roomCode = typeof triviaPlayer?.roomCode === "string" ? triviaPlayer.roomCode.trim().toUpperCase() : "";
-    if (triviaPlayer && typeof triviaPlayer.sessionId === "string") {
-      candidates.push({
-        key: "play-point-trivia-player-connection-v2",
-        title: "Play Point Trivia",
-        href: roomCode ? `/games/trivia/join?code=${encodeURIComponent(roomCode)}` : "/games/trivia/join",
-        code: roomCode || undefined,
-      });
-    }
-  }
-
-  return candidates;
+    for (const key of keys) window.localStorage.removeItem(key);
+  } catch {}
 }
 
 export function PlayAmplifiedPwa() {
   const [candidates, setCandidates] = useState<ResumeCandidate[]>([]);
   const [standalone, setStandalone] = useState(false);
   const [isIos, setIsIos] = useState(false);
+  const [clientReady, setClientReady] = useState(false);
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [installDismissed, setInstallDismissed] = useState(false);
+  const [installHelpOpen, setInstallHelpOpen] = useState(false);
+  const [resumeDismissed, setResumeDismissed] = useState(false);
 
   useEffect(() => {
     const hostname = window.location.hostname.toLowerCase();
     const isPlayAmplified = hostname === "playamplified.com" || hostname === "www.playamplified.com" || hostname === "localhost";
     if (!isPlayAmplified) return;
 
-    setCandidates(readResumeCandidates());
-    const inStandalone = window.matchMedia?.("(display-mode: standalone)").matches || (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
-    setStandalone(inStandalone);
-    setIsIos(/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
-    setInstallDismissed(window.sessionStorage.getItem("play-amplified-install-dismissed") === "1");
+    let cancelled = false;
+    queueMicrotask(() => {
+      void (async () => {
+        const { readResumeCandidates } = await import("./PlayAmplifiedResumeRuntime");
+        const nextCandidates = await readResumeCandidates();
+        if (cancelled) return;
+        setCandidates(nextCandidates);
+        const inStandalone = window.matchMedia?.("(display-mode: standalone)").matches || (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
+        setStandalone(inStandalone);
+        setIsIos(/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
+        setInstallDismissed(window.sessionStorage.getItem("play-amplified-install-dismissed") === "1");
+        setResumeDismissed(window.sessionStorage.getItem("play-amplified-resume-dismissed") === "1");
+        setClientReady(true);
+      })();
+    });
 
     const onBeforeInstallPrompt = (event: Event) => {
       event.preventDefault();
@@ -110,21 +51,63 @@ export function PlayAmplifiedPwa() {
     };
     window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
 
+    let serviceWorkerRegistration: ServiceWorkerRegistration | null = null;
+    let hadServiceWorkerController = false;
+    let reloadingForWorker = false;
+
+    const onControllerChange = () => {
+      if (!hadServiceWorkerController || reloadingForWorker) return;
+      reloadingForWorker = true;
+      window.location.reload();
+    };
+
+    const updateServiceWorker = () => {
+      if (document.visibilityState !== "visible" || !serviceWorkerRegistration) return;
+      void serviceWorkerRegistration.update().catch(() => undefined);
+    };
+
     if ("serviceWorker" in navigator) {
+      hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
+      navigator.serviceWorker.addEventListener("controllerchange", onControllerChange);
+      document.addEventListener("visibilitychange", updateServiceWorker);
+      window.addEventListener("pageshow", updateServiceWorker);
       void navigator.serviceWorker
-        .register("/play-amplified-sw.js", { scope: "/" })
-        .then((registration) => registration.update())
+        .register("/play-amplified-sw.js", { scope: "/", updateViaCache: "none" })
+        .then((registration) => {
+          serviceWorkerRegistration = registration;
+          return registration.update();
+        })
         .catch(() => undefined);
     }
 
-    return () => window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);
+    return () => {
+      cancelled = true;
+      window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);
+      if ("serviceWorker" in navigator) navigator.serviceWorker.removeEventListener("controllerchange", onControllerChange);
+      document.removeEventListener("visibilitychange", updateServiceWorker);
+      window.removeEventListener("pageshow", updateServiceWorker);
+    };
   }, []);
 
   const primary = useMemo(() => candidates[0] ?? null, [candidates]);
 
+  const saveResumeForLater = () => {
+    window.sessionStorage.setItem("play-amplified-resume-dismissed", "1");
+    setResumeDismissed(true);
+  };
+
+  const exitResume = () => {
+    if (!primary) return;
+    removeLocalKeys(primary.clearKeys);
+    setCandidates((current) => current.filter((candidate) => candidate.key !== primary.key));
+    window.sessionStorage.setItem("play-amplified-resume-dismissed", "1");
+    setResumeDismissed(true);
+  };
+
   const dismissInstall = () => {
     window.sessionStorage.setItem("play-amplified-install-dismissed", "1");
     setInstallDismissed(true);
+    setInstallHelpOpen(false);
   };
 
   const install = async () => {
@@ -135,74 +118,98 @@ export function PlayAmplifiedPwa() {
     setInstallPrompt(null);
   };
 
-  if (primary) {
+  if (!clientReady) return null;
+
+  if (primary && !resumeDismissed) {
     return (
-      <div className="fixed inset-x-3 bottom-3 z-[100] mx-auto max-w-xl rounded-[24px] border border-cyan-200/25 bg-[#07111d]/95 p-4 text-white shadow-2xl backdrop-blur-xl sm:bottom-5 sm:p-5">
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <div className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-100/55">{standalone ? "Play Amplified" : "Welcome back"}</div>
-            <div className="mt-1 truncate text-lg font-black">Resume {primary.title}</div>
-            <div className="mt-1 text-xs text-white/50">{primary.code ? `Room ${primary.code} · ` : ""}Your phone remembers this game.</div>
+      <div className="fixed inset-x-3 bottom-3 z-[100] mx-auto max-w-2xl rounded-[20px] border border-cyan-200/25 bg-[#07111d]/95 p-3 text-white shadow-2xl backdrop-blur-xl sm:bottom-5 sm:p-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="min-w-0 flex-1">
+            <div className="text-[9px] font-black uppercase tracking-[0.18em] text-cyan-100/55">{standalone ? "Play Amplified" : "Active game"}</div>
+            <div className="mt-1 truncate text-sm font-black sm:text-base">{primary.title}</div>
+            <div className="mt-0.5 truncate text-[11px] text-white/45">
+              {primary.code ? `Room ${primary.code} · recent on this device` : "Active session on this device"}
+            </div>
           </div>
-          <button
-            type="button"
-            aria-label="Dismiss resume card"
-            className="rounded-full px-2 py-1 text-lg text-white/45 hover:bg-white/10 hover:text-white"
-            onClick={() => setCandidates((current) => current.slice(1))}
-          >
-            ×
-          </button>
+          <div className="flex w-full gap-2 sm:w-auto sm:shrink-0">
+            <a href={primary.href} className="flex-1 rounded-xl bg-cyan-300 px-4 py-2.5 text-center text-xs font-black text-slate-950 transition hover:bg-cyan-200 sm:flex-none sm:text-sm">
+              RESUME
+            </a>
+            <button
+              type="button"
+              onClick={saveResumeForLater}
+              title="Keep this active game and ask again next time"
+              className="rounded-xl border border-white/12 bg-white/[0.06] px-3 py-2.5 text-[10px] font-black text-white/75 transition hover:bg-white/10 hover:text-white sm:text-xs"
+            >
+              SAVE FOR LATER
+            </button>
+            <button
+              type="button"
+              onClick={exitResume}
+              title="Remove this remembered game from this device"
+              className="rounded-xl border border-rose-200/15 bg-rose-300/[0.06] px-3 py-2.5 text-xs font-black text-rose-100/80 transition hover:bg-rose-300/10 hover:text-rose-50"
+            >
+              EXIT
+            </button>
+          </div>
         </div>
-        <a
-          href={primary.href}
-          className="mt-4 flex w-full items-center justify-center rounded-2xl bg-cyan-300 px-4 py-3.5 text-sm font-black text-slate-950 transition hover:bg-cyan-200"
-        >
-          RESUME GAME
-        </a>
-        {candidates.length > 1 ? (
-          <div className="mt-2 text-center text-[11px] font-bold text-white/40">{candidates.length - 1} other remembered game{candidates.length === 2 ? "" : "s"}</div>
-        ) : null}
       </div>
     );
   }
 
-  if (standalone || installDismissed) return null;
+  if (primary || resumeDismissed || standalone || installDismissed) return null;
 
   return (
-    <div className="fixed inset-x-3 bottom-3 z-[100] mx-auto max-w-xl rounded-[24px] border border-cyan-200/25 bg-[#07111d]/95 p-4 text-white shadow-2xl backdrop-blur-xl sm:bottom-5 sm:p-5">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-100/55">One-tap return</div>
-          <div className="mt-1 text-lg font-black">Add Play Amplified to your Home Screen</div>
-          <div className="mt-1 text-xs leading-5 text-white/55">Open your games like an app and get back to active rooms faster.</div>
+    <div className="fixed inset-x-3 bottom-3 z-[100] mx-auto max-w-2xl overflow-hidden rounded-[20px] border border-cyan-200/20 bg-[#07111d]/95 text-white shadow-2xl backdrop-blur-xl sm:bottom-5">
+      <div className="flex items-center gap-3 p-3 sm:p-4">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px] border border-cyan-200/20 bg-cyan-300/10 text-cyan-100">
+          <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <rect x="5" y="3" width="14" height="18" rx="3" />
+            <path d="M9 7h6M12 7v7M9.5 11.5 12 14l2.5-2.5" />
+          </svg>
         </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-[9px] font-black uppercase tracking-[0.18em] text-cyan-100/50">Install Play Amplified</div>
+          <div className="mt-0.5 truncate text-sm font-black text-white sm:text-base">Keep it one tap away</div>
+          <div className="hidden text-[11px] text-white/42 sm:block">Open from your Home Screen like an app.</div>
+        </div>
+        {installPrompt ? (
+          <button
+            type="button"
+            onClick={install}
+            className="shrink-0 rounded-xl bg-cyan-300 px-3.5 py-2.5 text-[11px] font-black text-slate-950 transition hover:bg-cyan-200 sm:px-4 sm:text-xs"
+          >
+            INSTALL
+          </button>
+        ) : (
+          <button
+            type="button"
+            aria-expanded={installHelpOpen}
+            onClick={() => setInstallHelpOpen((open) => !open)}
+            className="shrink-0 rounded-xl border border-white/12 bg-white/[0.06] px-3 py-2.5 text-[11px] font-black text-white/80 transition hover:bg-white/10 hover:text-white sm:px-3.5 sm:text-xs"
+          >
+            {installHelpOpen ? "HIDE" : "HOW"}
+          </button>
+        )}
         <button
           type="button"
           aria-label="Dismiss install card"
-          className="rounded-full px-2 py-1 text-lg text-white/45 hover:bg-white/10 hover:text-white"
+          className="shrink-0 rounded-full px-2 py-1 text-lg text-white/40 hover:bg-white/10 hover:text-white"
           onClick={dismissInstall}
         >
           ×
         </button>
       </div>
 
-      {installPrompt ? (
-        <button
-          type="button"
-          onClick={install}
-          className="mt-4 flex w-full items-center justify-center rounded-2xl bg-cyan-300 px-4 py-3.5 text-sm font-black text-slate-950 transition hover:bg-cyan-200"
-        >
-          INSTALL PLAY AMPLIFIED
-        </button>
-      ) : isIos ? (
-        <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.05] p-4 text-sm leading-6 text-white/75">
-          On iPhone: tap <span className="font-black text-white">Share</span> in Safari, then choose <span className="font-black text-white">Add to Home Screen</span> → <span className="font-black text-white">Add</span>.
+      {!installPrompt && installHelpOpen ? (
+        <div className="border-t border-white/10 bg-white/[0.025] px-4 py-3 text-xs leading-5 text-white/60">
+          {isIos ? (
+            <>On iPhone, tap <span className="font-black text-white/85">Share</span> in Safari, then <span className="font-black text-white/85">Add to Home Screen</span> → <span className="font-black text-white/85">Add</span>.</>
+          ) : (
+            <>Open your browser menu and choose <span className="font-black text-white/85">Install app</span> or <span className="font-black text-white/85">Add to Home Screen</span>.</>
+          )}
         </div>
-      ) : (
-        <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.05] p-4 text-sm leading-6 text-white/75">
-          Use your browser menu and choose <span className="font-black text-white">Install app</span> or <span className="font-black text-white">Add to Home Screen</span>.
-        </div>
-      )}
+      ) : null}
     </div>
   );
 }

@@ -50,7 +50,9 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // One codebase, two front doors. The company domain keeps the corporate homepage,
-  // while PlayAmplified.com gets the consumer game destination.
+  // while PlayAmplified.com gets the consumer game destination. Keep the root rewrite
+  // permanent so older installed PWAs whose saved start_url is "/" still land on the
+  // current Play Amplified front door without requiring a Home Screen reinstall.
   if (pathname === "/") {
     const host = (request.headers.get("host") || request.nextUrl.hostname)
       .split(":")[0]
@@ -59,7 +61,9 @@ export async function proxy(request: NextRequest) {
     if (PLAY_AMPLIFIED_HOSTS.has(host)) {
       const target = request.nextUrl.clone();
       target.pathname = "/play-amplified";
-      return NextResponse.rewrite(target);
+      const response = NextResponse.rewrite(target);
+      response.headers.set("Cache-Control", "no-cache, no-store, must-revalidate");
+      return response;
     }
 
     return NextResponse.next();

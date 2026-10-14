@@ -102,10 +102,11 @@ describe("authentic static previews", () => {
     }
   });
 
-  it("does not precache game/account pages when the preview installs its shell", () => {
+  it("does not precache dynamic Play Amplified or game/account pages when the preview installs its shell", () => {
     const worker = readFileSync("public/play-amplified-sw.js", "utf8");
     const shell = worker.match(/const APP_SHELL = (\[[\s\S]*?\]);/)![1];
-    expect(shell).toContain('"/play-amplified"');
+    expect(shell).not.toContain('"/play-amplified"');
     expect(shell).not.toMatch(/"\/(games|play|shot-caddy)(\/|"|\?)/);
+    expect(worker).toContain('fetch(request, { cache: "no-store" })');
   });
 });
