@@ -10,8 +10,6 @@ import {
 } from "@/lib/play-point-core/games-session";
 import {
   MASTER_GAME_CATALOG,
-  FINISHED_GAME_FORMAT_COUNT,
-  PREVIEW_GAME_FORMAT_COUNT,
   type MasterGameEntry,
 } from "@/lib/play-point-core/master-game-catalog";
 import { PLAY_POINT_GAME_CATALOG } from "@/lib/play-point-core/games-catalog";
@@ -200,7 +198,7 @@ export default async function GamesPage({
               <aside className="rounded-[28px] border border-cyan-300/15 bg-cyan-300/[0.06] p-5 backdrop-blur-sm">
                 <div className="text-[11px] font-black uppercase tracking-[0.2em] text-cyan-100/60">Your library</div>
                 <div className="mt-3 text-3xl font-black text-white">{founder ? "Founder · All Access" : `${ownedGames.length} owned formats`}</div>
-                <p className="mt-2 text-sm leading-6 text-white/58">{FINISHED_GAME_FORMAT_COUNT} finished formats and {PREVIEW_GAME_FORMAT_COUNT} previews remain visible after sign-in.</p>
+                <p className="mt-2 text-sm leading-6 text-white/58">Explore your available games by category, with previews clearly identified.</p>
               </aside>
             </div>
 
@@ -222,7 +220,7 @@ export default async function GamesPage({
                 <h2 className="mt-2 text-3xl font-black text-white">Ready to play</h2>
                 <p className="mt-2 text-sm leading-6 text-white/50">Your owned games stay separate from the storefront so there is never any hunting around.</p>
               </div>
-              <div className="rounded-full border border-emerald-200/15 bg-emerald-300/[0.06] px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-emerald-100/70">{ownedGames.length} owned</div>
+              <div className="rounded-full border border-emerald-200/15 bg-emerald-300/[0.06] px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-emerald-100/70">Your game library</div>
             </div>
 
             {ownedGames.length ? (
