@@ -54,7 +54,93 @@ const featuredGameIdentity = {
     frame: "from-violet-700/55 via-fuchsia-950/70 to-slate-950",
     accent: "text-violet-100",
   },
-} satisfies Record<FeaturedGameArtId, { eyebrow: string; tagline: string; frame: string; accent: string }>;
+} satisfies Record<
+  FeaturedGameArtId,
+  { eyebrow: string; tagline: string; frame: string; accent: string }
+>;
+
+type QuickActionKind = "host" | "join" | "games" | "score";
+
+const quickActions: readonly {
+  href: string;
+  label: string;
+  eyebrow: string;
+  description: string;
+  kind: QuickActionKind;
+  frame: string;
+  icon: string;
+}[] = [
+  {
+    href: "/play/host",
+    label: "Host a Game",
+    eyebrow: "Start the room",
+    description: "Pick a game and bring everyone in.",
+    kind: "host",
+    frame: "from-cyan-500/22 via-cyan-950/55 to-slate-950 border-cyan-200/20",
+    icon: "border-cyan-200/25 bg-cyan-300/15 text-cyan-50",
+  },
+  {
+    href: "/play/join",
+    label: "Quick Join",
+    eyebrow: "Enter a code",
+    description: "Jump into the room your host created.",
+    kind: "join",
+    frame: "from-fuchsia-500/20 via-fuchsia-950/50 to-slate-950 border-fuchsia-200/20",
+    icon: "border-fuchsia-200/25 bg-fuchsia-300/15 text-fuchsia-50",
+  },
+  {
+    href: "/games",
+    label: "My Games",
+    eyebrow: "Your library",
+    description: "Open the games and access tied to you.",
+    kind: "games",
+    frame: "from-white/[0.10] via-slate-900 to-slate-950 border-white/15",
+    icon: "border-white/20 bg-white/10 text-white",
+  },
+  {
+    href: "/live/quick-score",
+    label: "Quick Score",
+    eyebrow: "Score instantly",
+    description: "Track a live round without extra setup.",
+    kind: "score",
+    frame: "from-violet-500/20 via-violet-950/50 to-slate-950 border-violet-200/20",
+    icon: "border-violet-200/25 bg-violet-300/15 text-violet-50",
+  },
+];
+
+function QuickActionIcon({ kind }: { kind: QuickActionKind }) {
+  if (kind === "host") {
+    return (
+      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <circle cx="9" cy="8" r="3" />
+        <path d="M3.5 19c.6-3.5 2.4-5.3 5.5-5.3s4.9 1.8 5.5 5.3M18 7v6M15 10h6" />
+      </svg>
+    );
+  }
+  if (kind === "join") {
+    return (
+      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <path d="M4 5h7v14H4M13 12h7M17 8l4 4-4 4" />
+      </svg>
+    );
+  }
+  if (kind === "games") {
+    return (
+      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <rect x="4" y="4" width="6" height="6" rx="1.5" />
+        <rect x="14" y="4" width="6" height="6" rx="1.5" />
+        <rect x="4" y="14" width="6" height="6" rx="1.5" />
+        <rect x="14" y="14" width="6" height="6" rx="1.5" />
+      </svg>
+    );
+  }
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M5 19V9M10 19V5M15 19v-7M20 19V3" />
+      <path d="M3 19h19" />
+    </svg>
+  );
+}
 
 function isFeaturedGameArtId(id: string): id is FeaturedGameArtId {
   return featuredGameIds.includes(id as FeaturedGameArtId);
@@ -135,7 +221,19 @@ function CatalogGameCard({ game }: { game: MasterGameEntry }) {
   );
 }
 
-function CatalogSection({ id, eyebrow, title, description, games }: { id: string; eyebrow: string; title: string; description: string; games: readonly MasterGameEntry[] }) {
+function CatalogSection({
+  id,
+  eyebrow,
+  title,
+  description,
+  games,
+}: {
+  id: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  games: readonly MasterGameEntry[];
+}) {
   if (!games.length) return null;
   return (
     <section id={id} className="scroll-mt-6 border-t border-white/10 py-10 sm:py-12">
@@ -189,7 +287,7 @@ export default function PlayAmplifiedPage() {
         </header>
 
         <main>
-          <section className="px-1 pb-9 pt-7 text-left sm:pb-14 sm:pt-16">
+          <section className="px-1 pb-9 pt-7 text-left sm:pb-12 sm:pt-14">
             <div className="inline-flex rounded-full border border-cyan-200/20 bg-cyan-300/[0.08] px-4 py-2 text-[11px] font-black uppercase tracking-[0.22em] text-cyan-100/85">Phones in the game. People in the moment.</div>
             <h1 className="mt-5 max-w-4xl font-[var(--font-display)] text-4xl font-extrabold leading-[1.02] tracking-[-0.045em] text-white sm:text-6xl lg:text-7xl">
               One front door for every way you play.
@@ -208,11 +306,37 @@ export default function PlayAmplifiedPage() {
             </div>
           </section>
 
-          <section aria-label="Start playing" className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <Link prefetch={false} href="/play/host" className="rounded-2xl border border-cyan-300/30 bg-cyan-300/15 px-4 py-4 text-center text-sm font-black text-cyan-50 transition hover:bg-cyan-300/25">Host a Game →</Link>
-            <Link prefetch={false} href="/play/join" className="rounded-2xl border border-fuchsia-300/30 bg-fuchsia-300/15 px-4 py-4 text-center text-sm font-black text-fuchsia-50 transition hover:bg-fuchsia-300/25">Quick Join →</Link>
-            <Link prefetch={false} href="/games" className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-4 text-center text-sm font-black text-white transition hover:bg-white/10">My Games →</Link>
-            <Link prefetch={false} href="/live/quick-score" className="rounded-2xl border border-violet-300/25 bg-violet-300/10 px-4 py-4 text-center text-sm font-black text-violet-100 transition hover:bg-violet-300/20">Quick Score →</Link>
+          <section aria-label="Start playing" className="mb-10 overflow-hidden rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.08),transparent_34%),rgba(255,255,255,0.025)] p-3 shadow-2xl shadow-black/20 sm:p-4">
+            <div className="mb-3 flex items-end justify-between gap-4 px-1 pb-1">
+              <div>
+                <div className="text-[9px] font-black uppercase tracking-[0.22em] text-cyan-100/45">Instant access</div>
+                <h2 className="mt-1 text-lg font-black tracking-tight text-white sm:text-xl">Play now</h2>
+              </div>
+              <div className="hidden text-[10px] font-bold text-white/35 sm:block">Choose what you want to do</div>
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {quickActions.map((action) => (
+                <Link
+                  key={action.href}
+                  prefetch={false}
+                  href={action.href}
+                  className={`group relative min-h-40 overflow-hidden rounded-[22px] border bg-gradient-to-br p-4 text-left shadow-lg shadow-black/15 transition duration-300 hover:-translate-y-1 hover:border-white/30 hover:shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200/70 ${action.frame}`}
+                >
+                  <div aria-hidden="true" className="pointer-events-none absolute -right-8 -top-9 h-28 w-28 rounded-full border border-white/10 bg-white/[0.05] blur-2xl transition duration-300 group-hover:scale-125" />
+                  <div className={`relative inline-flex h-11 w-11 items-center justify-center rounded-[15px] border shadow-inner shadow-white/5 ${action.icon}`}>
+                    <QuickActionIcon kind={action.kind} />
+                  </div>
+                  <div className="relative mt-5">
+                    <div className="text-[9px] font-black uppercase tracking-[0.16em] text-white/45">{action.eyebrow}</div>
+                    <div className="mt-1.5 flex items-center justify-between gap-2 text-base font-black leading-tight text-white sm:text-lg">
+                      <span>{action.label}</span>
+                      <span aria-hidden="true" className="text-white/35 transition group-hover:translate-x-0.5">→</span>
+                    </div>
+                    <p className="mt-1.5 hidden text-[11px] leading-4 text-white/50 sm:block">{action.description}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </section>
 
           <section aria-label="Explore game categories" className="mb-4">
