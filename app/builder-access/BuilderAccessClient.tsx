@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 
 function safeNextPath(value: string): string {
-  if (value.startsWith("//")) return "/play";
+  if (value.startsWith("//")) return "/games";
   if (
     value.startsWith("/games") ||
     value === "/play" ||
@@ -13,7 +13,7 @@ function safeNextPath(value: string): string {
   ) {
     return value;
   }
-  return "/play";
+  return "/games";
 }
 
 export function BuilderAccessClient({ nextPath }: { nextPath: string }) {
