@@ -1,19 +1,16 @@
 import Link from "next/link";
 import { GameScreenshot } from "./GameScreenshot";
 import {
-  FINISHED_GAME_FORMAT_COUNT,
   FINISHED_GAME_FORMATS,
-  PREVIEW_GAME_FORMAT_COUNT,
-  PREVIEW_GAME_FORMATS,
   getMasterGamesByLane,
   type MasterGameEntry,
 } from "@/lib/play-point-core/master-game-catalog";
 import { FOUNDERS_BUNDLE_TIERS } from "@/lib/play-point-core/founders-bundle";
 
-const socialGames = getMasterGamesByLane("social").filter((game) => game.status === "live");
-const courseGames = getMasterGamesByLane("course").filter((game) => game.status === "live");
-const backyardGames = getMasterGamesByLane("backyard").filter((game) => game.status === "live");
-const adventureGames = getMasterGamesByLane("adventure").filter((game) => game.status === "live");
+const socialGames = getMasterGamesByLane("social");
+const courseGames = getMasterGamesByLane("course");
+const backyardGames = getMasterGamesByLane("backyard");
+const adventureGames = getMasterGamesByLane("adventure");
 const triviaGames = getMasterGamesByLane("trivia");
 
 function GameFormatCard({ game }: { game: MasterGameEntry }) {
@@ -80,9 +77,10 @@ export default function PlayAmplifiedPage() {
             <div className="mt-1 text-xl font-black tracking-[-0.03em] text-white sm:text-2xl">PLAY AMPLIFIED</div>
           </Link>
           <nav className="hidden items-center gap-2 text-sm font-bold text-white/72 md:flex" aria-label="Play Amplified navigation">
+            <Link prefetch={false} href="/play/host" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">Host</Link>
+            <Link prefetch={false} href="/play/join" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">Quick Join</Link>
             <a href="#all-games" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">All Games</a>
             <Link prefetch={false} href="/games" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">My Games</Link>
-            <Link prefetch={false} href="/live/quick-score" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">Score</Link>
           </nav>
         </header>
 
@@ -106,11 +104,13 @@ export default function PlayAmplifiedPage() {
             </div>
           </section>
 
-          <section aria-label="Quick access" className="mb-7 grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <Link prefetch={false} href="/games" className="rounded-2xl border border-cyan-300/30 bg-cyan-300/15 px-4 py-4 text-center text-sm font-black text-cyan-50 transition hover:bg-cyan-300/25">My games →</Link>
-            <Link prefetch={false} href="/live/quick-score" className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-4 text-center text-sm font-black text-white transition hover:bg-white/10">Quick score →</Link>
-            <a href="#all-games" className="col-span-2 rounded-2xl border border-violet-300/25 bg-violet-300/10 px-4 py-4 text-center text-sm font-black text-violet-100 transition hover:bg-violet-300/20 sm:col-span-1">Browse catalog ↓</a>
+          <section aria-label="Start playing" className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <Link prefetch={false} href="/play/host" className="rounded-2xl border border-cyan-300/30 bg-cyan-300/15 px-4 py-4 text-center text-sm font-black text-cyan-50 transition hover:bg-cyan-300/25">Host a game →</Link>
+            <Link prefetch={false} href="/play/join" className="rounded-2xl border border-fuchsia-300/30 bg-fuchsia-300/15 px-4 py-4 text-center text-sm font-black text-fuchsia-50 transition hover:bg-fuchsia-300/25">Quick Join →</Link>
+            <Link prefetch={false} href="/games" className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-4 text-center text-sm font-black text-white transition hover:bg-white/10">My Games →</Link>
+            <Link prefetch={false} href="/live/quick-score" className="rounded-2xl border border-violet-300/25 bg-violet-300/10 px-4 py-4 text-center text-sm font-black text-violet-100 transition hover:bg-violet-300/20">Quick Score →</Link>
           </section>
+
           <section aria-label="Explore game categories" className="mb-4">
             <h2 className="mb-4 text-xl font-black tracking-tight sm:text-2xl">Find your kind of play</h2>
           </section>
@@ -122,7 +122,7 @@ export default function PlayAmplifiedPage() {
               ["Adventure / Quest Caddy", "Persistent fantasy Chronicle play digitally or tied to real throws.", "#adventure-games"],
               ["Trivia", "Hosted question-and-answer competition with teams, wagers, and live scoreboards.", "#trivia-games"],
             ].map(([title, body, href], index) => (
-              <a key={title} href={href} className={`group relative block min-h-40 select-none touch-manipulation overflow-hidden rounded-[22px] border border-white/15 p-4 shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:border-white/35 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200/70 ${["bg-gradient-to-br from-rose-700/40 via-slate-900 to-amber-600/20", "bg-gradient-to-br from-emerald-700/45 via-slate-900 to-lime-600/20", "bg-gradient-to-br from-sky-700/45 via-slate-900 to-teal-500/20", "bg-gradient-to-br from-violet-700/50 via-slate-900 to-fuchsia-600/25", "bg-gradient-to-br from-blue-700/45 via-slate-900 to-cyan-500/25"][index]}`}>
+              <a key={title} href={href} className={`group relative block min-h-40 select-none touch-manipulation overflow-hidden rounded-[22px] border border-white/15 p-4 shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:border-white/35 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200/70 ${index === 4 ? "col-span-2 lg:col-span-1" : ""} ${["bg-gradient-to-br from-rose-700/40 via-slate-900 to-amber-600/20", "bg-gradient-to-br from-emerald-700/45 via-slate-900 to-lime-600/20", "bg-gradient-to-br from-sky-700/45 via-slate-900 to-teal-500/20", "bg-gradient-to-br from-violet-700/50 via-slate-900 to-fuchsia-600/25", "bg-gradient-to-br from-blue-700/45 via-slate-900 to-cyan-500/25"][index]}`}>
                 <div aria-hidden="true" className="pointer-events-none absolute -right-7 -top-10 h-32 w-32 rounded-full border border-white/10 bg-white/10 blur-xl transition group-hover:scale-125" />
                 <div className="relative text-[10px] font-black uppercase tracking-[0.2em] text-white/65">Explore category</div>
                 <div className="relative mt-4 flex items-center justify-between gap-2 text-base font-black sm:text-xl"><span>{title}</span><span aria-hidden="true" className="text-cyan-100/55 transition group-hover:translate-y-0.5">↓</span></div>
@@ -139,10 +139,14 @@ export default function PlayAmplifiedPage() {
               </div>
               <a href="#all-games" className="rounded-full border border-white/15 px-4 py-2 text-xs font-bold text-white/80 transition hover:bg-white/10">See all games ↓</a>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-3">
               {["shot-classic", "clear-the-stack", "phone-holdem"].map((id) => {
                 const game = FINISHED_GAME_FORMATS.find((item) => item.id === id);
-                return game ? <GameFormatCard key={game.id} game={game} /> : null;
+                return game ? (
+                  <div key={game.id} className="w-[82vw] max-w-sm shrink-0 snap-start sm:w-auto sm:max-w-none">
+                    <GameFormatCard game={game} />
+                  </div>
+                ) : null;
               })}
             </div>
           </section>
@@ -178,23 +182,9 @@ export default function PlayAmplifiedPage() {
             </div>
           </section>
 
-          <section className="border-t border-white/10 py-14 sm:py-18">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-100/55">Playable, still in release gating</div>
-                <h2 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">Previews stay in their real category.</h2>
-                <p className="mt-3 max-w-3xl text-sm leading-7 text-white/55">Preview is a release-status badge, not a category. Last Call and All About You remain Social; Trivia remains Trivia.</p>
-              </div>
-              <div className="rounded-full border border-amber-200/15 bg-amber-300/[0.06] px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-amber-100/65">{PREVIEW_GAME_FORMAT_COUNT} previews</div>
-            </div>
-            <div className="mt-7 grid gap-4 sm:grid-cols-2">
-              {PREVIEW_GAME_FORMATS.map((game) => <GameFormatCard key={game.id} game={game} />)}
-            </div>
-          </section>
-
           <section className="border-t border-white/10 py-12 text-center">
             <div className="text-[10px] font-black uppercase tracking-[0.22em] text-white/35">Master inventory</div>
-            <div className="mt-3 text-2xl font-black text-white">{FINISHED_GAME_FORMATS.length} finished playable formats in one Play Amplified catalog.</div>
+            <div className="mt-3 text-2xl font-black text-white">{FINISHED_GAME_FORMATS.length} finished playable formats, with previews labeled inside their real categories.</div>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-white/48">This page is the consumer-facing source of truth for what exists, while commerce, ownership, and release readiness remain independent layers.</p>
           </section>
         </main>
