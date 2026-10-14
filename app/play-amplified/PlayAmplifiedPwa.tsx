@@ -8,6 +8,8 @@ type BeforeInstallPromptEvent = Event & {
   userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
 };
 
+const SERVICE_WORKER_REFRESH_KEY = "play-amplified-sw-v3-reloaded";
+
 function removeLocalKeys(keys: readonly string[]) {
   try {
     for (const key of keys) window.localStorage.removeItem(key);
@@ -51,7 +53,19 @@ export function PlayAmplifiedPwa() {
     };
     window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
 
+    let hadServiceWorkerController = false;
+    let reloadingForWorker = false;
+    const onControllerChange = () => {
+      if (!hadServiceWorkerController || reloadingForWorker) return;
+      if (window.sessionStorage.getItem(SERVICE_WORKER_REFRESH_KEY) === "1") return;
+      reloadingForWorker = true;
+      window.sessionStorage.setItem(SERVICE_WORKER_REFRESH_KEY, "1");
+      window.location.reload();
+    };
+
     if ("serviceWorker" in navigator) {
+      hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
+      navigator.serviceWorker.addEventListener("controllerchange", onControllerChange);
       void navigator.serviceWorker
         .register("/play-amplified-sw.js", { scope: "/" })
         .then((registration) => registration.update())
@@ -61,6 +75,7 @@ export function PlayAmplifiedPwa() {
     return () => {
       cancelled = true;
       window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);
+      if ("serviceWorker" in navigator) navigator.serviceWorker.removeEventListener("controllerchange", onControllerChange);
     };
   }, []);
 
