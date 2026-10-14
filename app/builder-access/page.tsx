@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 function safeNextPath(value: string | undefined): string {
-  if (!value || value.startsWith("//")) return "/play";
+  if (!value || value.startsWith("//")) return "/games";
   if (
     value.startsWith("/games") ||
     value === "/play" ||
@@ -24,7 +24,7 @@ function safeNextPath(value: string | undefined): string {
   ) {
     return value;
   }
-  return "/play";
+  return "/games";
 }
 
 export default async function BuilderAccessPage({
