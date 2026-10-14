@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { GameScreenshot } from "./GameScreenshot";
+import { PlayCategoryArt, type PlayCategoryArtKind } from "./PlayCategoryArt";
 import {
   FINISHED_GAME_FORMATS,
   getMasterGamesByLane,
@@ -64,6 +65,14 @@ function CatalogSection({ id, eyebrow, title, description, games }: { id: string
 }
 
 export default function PlayAmplifiedPage() {
+  const categories: readonly [string, string, string, PlayCategoryArtKind][] = [
+    ["Social", "Party, conversation, deduction, mystery, cards, and celebration games.", "#social-games", "social"],
+    ["Course / Shot Caddy", "Disc golf and golf with tactics, challenges, alliances, predictions, and pressure.", "#course-games", "course"],
+    ["Backyard & Putting", "Basket, yard, putting, station, and casual competitive formats.", "#backyard-games", "backyard"],
+    ["Adventure / Quest Caddy", "Persistent fantasy Chronicle play digitally or tied to real throws.", "#adventure-games", "adventure"],
+    ["Trivia", "Hosted question-and-answer competition with teams, wagers, and live scoreboards.", "#trivia-games", "trivia"],
+  ];
+
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#05070b] text-white">
       <div className="pointer-events-none fixed inset-0">
@@ -115,18 +124,13 @@ export default function PlayAmplifiedPage() {
             <h2 className="mb-4 text-xl font-black tracking-tight sm:text-2xl">Find your kind of play</h2>
           </section>
           <section className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-            {[
-              ["Social", "Party, conversation, deduction, mystery, cards, and celebration games.", "#social-games"],
-              ["Course / Shot Caddy", "Disc golf and golf with tactics, challenges, alliances, predictions, and pressure.", "#course-games"],
-              ["Backyard & Putting", "Basket, yard, putting, station, and casual competitive formats.", "#backyard-games"],
-              ["Adventure / Quest Caddy", "Persistent fantasy Chronicle play digitally or tied to real throws.", "#adventure-games"],
-              ["Trivia", "Hosted question-and-answer competition with teams, wagers, and live scoreboards.", "#trivia-games"],
-            ].map(([title, body, href], index) => (
-              <a key={title} href={href} className={`group relative block min-h-40 select-none touch-manipulation overflow-hidden rounded-[22px] border border-white/15 p-4 shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:border-white/35 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200/70 ${index === 4 ? "col-span-2 lg:col-span-1" : ""} ${["bg-gradient-to-br from-rose-700/40 via-slate-900 to-amber-600/20", "bg-gradient-to-br from-emerald-700/45 via-slate-900 to-lime-600/20", "bg-gradient-to-br from-sky-700/45 via-slate-900 to-teal-500/20", "bg-gradient-to-br from-violet-700/50 via-slate-900 to-fuchsia-600/25", "bg-gradient-to-br from-blue-700/45 via-slate-900 to-cyan-500/25"][index]}`}>
+            {categories.map(([title, body, href, art], index) => (
+              <a key={title} href={href} className={`group relative block min-h-44 select-none touch-manipulation overflow-hidden rounded-[22px] border border-white/15 p-4 shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:border-white/35 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200/70 ${index === 4 ? "col-span-2 lg:col-span-1" : ""} ${["bg-gradient-to-br from-rose-700/40 via-slate-900 to-amber-600/20", "bg-gradient-to-br from-emerald-700/45 via-slate-900 to-lime-600/20", "bg-gradient-to-br from-sky-700/45 via-slate-900 to-teal-500/20", "bg-gradient-to-br from-violet-700/50 via-slate-900 to-fuchsia-600/25", "bg-gradient-to-br from-blue-700/45 via-slate-900 to-cyan-500/25"][index]}`}>
                 <div aria-hidden="true" className="pointer-events-none absolute -right-7 -top-10 h-32 w-32 rounded-full border border-white/10 bg-white/10 blur-xl transition group-hover:scale-125" />
-                <div className="relative text-[10px] font-black uppercase tracking-[0.2em] text-white/65">Explore category</div>
-                <div className="relative mt-4 flex items-center justify-between gap-2 text-base font-black sm:text-xl"><span>{title}</span><span aria-hidden="true" className="text-cyan-100/55 transition group-hover:translate-y-0.5">↓</span></div>
-                <p className="relative mt-3 text-xs leading-5 text-white/75 sm:text-sm sm:leading-6">{body}</p>
+                <div className="pointer-events-none absolute bottom-2 right-2 opacity-80"><PlayCategoryArt kind={art} /></div>
+                <div className="relative max-w-[72%] text-[10px] font-black uppercase tracking-[0.2em] text-white/65">Explore category</div>
+                <div className="relative mt-4 flex max-w-[76%] items-center gap-2 text-base font-black sm:text-xl"><span>{title}</span><span aria-hidden="true" className="text-white/55 transition group-hover:translate-y-0.5">↓</span></div>
+                <p className="relative mt-3 max-w-[72%] text-xs leading-5 text-white/80 sm:text-sm sm:leading-6">{body}</p>
               </a>
             ))}
           </section>
