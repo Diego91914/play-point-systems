@@ -26,13 +26,13 @@ const featuredGameIds: readonly FeaturedGameArtId[] = [
 const featuredGameIdentity = {
   "shot-classic": {
     eyebrow: "Shot Caddy signature",
-    tagline: "Disc golf, challenged.",
+    tagline: "Every hole becomes a new challenge.",
     frame: "from-emerald-600/45 via-cyan-950/80 to-slate-950",
     accent: "text-emerald-100",
   },
   "clear-the-stack": {
     eyebrow: "Putting pressure",
-    tagline: "Clear every disc. Three rounds.",
+    tagline: "Make the putt. Clear the stack.",
     frame: "from-sky-600/45 via-cyan-950/80 to-slate-950",
     accent: "text-sky-100",
   },
@@ -44,13 +44,13 @@ const featuredGameIdentity = {
   },
   "live-craps": {
     eyebrow: "Live table energy",
-    tagline: "Physical or virtual dice. One shared table.",
+    tagline: "One table. Every phone in the action.",
     frame: "from-amber-500/35 via-emerald-950/80 to-slate-950",
     accent: "text-amber-100",
   },
   "quest-digital": {
     eyebrow: "Living Chronicle",
-    tagline: "A persistent fantasy adventure in your pocket.",
+    tagline: "Every choice writes your Chronicle.",
     frame: "from-violet-700/55 via-fuchsia-950/70 to-slate-950",
     accent: "text-violet-100",
   },
@@ -290,10 +290,10 @@ export default function PlayAmplifiedPage() {
           <section className="px-1 pb-9 pt-7 text-left sm:pb-12 sm:pt-14">
             <div className="inline-flex rounded-full border border-cyan-200/20 bg-cyan-300/[0.08] px-4 py-2 text-[11px] font-black uppercase tracking-[0.22em] text-cyan-100/85">Phones in the game. People in the moment.</div>
             <h1 className="mt-5 max-w-4xl font-[var(--font-display)] text-4xl font-extrabold leading-[1.02] tracking-[-0.045em] text-white sm:text-6xl lg:text-7xl">
-              One front door for every way you play.
+              Make the phone part of the play.
               <span className="mt-2 block bg-gradient-to-r from-cyan-200 via-white to-violet-200 bg-clip-text text-transparent">Play Amplified.</span>
             </h1>
-            <p className="mt-5 max-w-2xl text-sm leading-6 text-white/65 sm:text-lg sm:leading-8">Social, course, backyard & putting, adventure, and trivia experiences in one Play Amplified catalog.</p>
+            <p className="mt-5 max-w-2xl text-sm leading-6 text-white/65 sm:text-lg sm:leading-8">Social, course, backyard, adventure, and trivia experiences designed to bring people into the game—not out of the moment.</p>
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <a href="#all-games" className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">Explore games →</a>
@@ -359,7 +359,7 @@ export default function PlayAmplifiedPage() {
               <div className="max-w-2xl">
                 <p className="text-[11px] font-black uppercase tracking-[0.18em] text-cyan-200/70">Signature experiences</p>
                 <h2 id="featured-games-heading" className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">Featured games</h2>
-                <p className="mt-2 text-sm leading-6 text-white/55">Each flagship keeps its authentic gameplay screenshot while adding a distinct visual identity around it.</p>
+                <p className="mt-2 text-sm leading-6 text-white/55">Five signature experiences built around one idea: make the phone part of the game, not a distraction from it.</p>
               </div>
               <a href="#all-games" className="rounded-full border border-white/15 px-4 py-2 text-xs font-bold text-white/80 transition hover:bg-white/10">See all games ↓</a>
             </div>
