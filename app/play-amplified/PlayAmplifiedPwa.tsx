@@ -92,6 +92,7 @@ export function PlayAmplifiedPwa() {
   const [isIos, setIsIos] = useState(false);
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [installDismissed, setInstallDismissed] = useState(false);
+  const [installHelpOpen, setInstallHelpOpen] = useState(false);
   const [resumeDismissed, setResumeDismissed] = useState(false);
 
   useEffect(() => {
@@ -139,6 +140,7 @@ export function PlayAmplifiedPwa() {
   const dismissInstall = () => {
     window.sessionStorage.setItem("play-amplified-install-dismissed", "1");
     setInstallDismissed(true);
+    setInstallHelpOpen(false);
   };
 
   const install = async () => {
@@ -180,40 +182,56 @@ export function PlayAmplifiedPwa() {
   if (primary || resumeDismissed || standalone || installDismissed) return null;
 
   return (
-    <div className="fixed inset-x-3 bottom-3 z-[100] mx-auto max-w-xl rounded-[24px] border border-cyan-200/25 bg-[#07111d]/95 p-4 text-white shadow-2xl backdrop-blur-xl sm:bottom-5 sm:p-5">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-100/55">One-tap return</div>
-          <div className="mt-1 text-lg font-black">Add Play Amplified to your Home Screen</div>
-          <div className="mt-1 text-xs leading-5 text-white/55">Open your games like an app and get back to active rooms faster.</div>
+    <div className="fixed inset-x-3 bottom-3 z-[100] mx-auto max-w-2xl overflow-hidden rounded-[20px] border border-cyan-200/20 bg-[#07111d]/95 text-white shadow-2xl backdrop-blur-xl sm:bottom-5">
+      <div className="flex items-center gap-3 p-3 sm:p-4">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px] border border-cyan-200/20 bg-cyan-300/10 text-cyan-100">
+          <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <rect x="5" y="3" width="14" height="18" rx="3" />
+            <path d="M9 7h6M12 7v7M9.5 11.5 12 14l2.5-2.5" />
+          </svg>
         </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-[9px] font-black uppercase tracking-[0.18em] text-cyan-100/50">Install Play Amplified</div>
+          <div className="mt-0.5 truncate text-sm font-black text-white sm:text-base">Keep it one tap away</div>
+          <div className="hidden text-[11px] text-white/42 sm:block">Open from your Home Screen like an app.</div>
+        </div>
+        {installPrompt ? (
+          <button
+            type="button"
+            onClick={install}
+            className="shrink-0 rounded-xl bg-cyan-300 px-3.5 py-2.5 text-[11px] font-black text-slate-950 transition hover:bg-cyan-200 sm:px-4 sm:text-xs"
+          >
+            INSTALL
+          </button>
+        ) : (
+          <button
+            type="button"
+            aria-expanded={installHelpOpen}
+            onClick={() => setInstallHelpOpen((open) => !open)}
+            className="shrink-0 rounded-xl border border-white/12 bg-white/[0.06] px-3 py-2.5 text-[11px] font-black text-white/80 transition hover:bg-white/10 hover:text-white sm:px-3.5 sm:text-xs"
+          >
+            {installHelpOpen ? "HIDE" : "HOW"}
+          </button>
+        )}
         <button
           type="button"
           aria-label="Dismiss install card"
-          className="rounded-full px-2 py-1 text-lg text-white/45 hover:bg-white/10 hover:text-white"
+          className="shrink-0 rounded-full px-2 py-1 text-lg text-white/40 hover:bg-white/10 hover:text-white"
           onClick={dismissInstall}
         >
           ×
         </button>
       </div>
 
-      {installPrompt ? (
-        <button
-          type="button"
-          onClick={install}
-          className="mt-4 flex w-full items-center justify-center rounded-2xl bg-cyan-300 px-4 py-3.5 text-sm font-black text-slate-950 transition hover:bg-cyan-200"
-        >
-          INSTALL PLAY AMPLIFIED
-        </button>
-      ) : isIos ? (
-        <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.05] p-4 text-sm leading-6 text-white/75">
-          On iPhone: tap <span className="font-black text-white">Share</span> in Safari, then choose <span className="font-black text-white">Add to Home Screen</span> → <span className="font-black text-white">Add</span>.
+      {!installPrompt && installHelpOpen ? (
+        <div className="border-t border-white/10 bg-white/[0.025] px-4 py-3 text-xs leading-5 text-white/60">
+          {isIos ? (
+            <>On iPhone, tap <span className="font-black text-white/85">Share</span> in Safari, then <span className="font-black text-white/85">Add to Home Screen</span> → <span className="font-black text-white/85">Add</span>.</>
+          ) : (
+            <>Open your browser menu and choose <span className="font-black text-white/85">Install app</span> or <span className="font-black text-white/85">Add to Home Screen</span>.</>
+          )}
         </div>
-      ) : (
-        <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.05] p-4 text-sm leading-6 text-white/75">
-          Use your browser menu and choose <span className="font-black text-white">Install app</span> or <span className="font-black text-white">Add to Home Screen</span>.
-        </div>
-      )}
+      ) : null}
     </div>
   );
 }
