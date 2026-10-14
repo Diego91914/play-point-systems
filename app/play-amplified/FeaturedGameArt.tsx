@@ -60,14 +60,18 @@ export function FeaturedGameArt({ gameId }: { gameId: FeaturedGameArtId }) {
     );
   }
 
-  return (
-    <svg aria-hidden="true" viewBox="0 0 320 180" className={common} fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M160 23 211 48v43c0 33-19 55-51 72-32-17-51-39-51-72V48l51-25Z" />
-      <path d="m160 53 11 24 26 4-19 18 5 26-23-13-23 13 5-26-19-18 26-4 11-24Z" />
-      <path d="M41 129c26-31 50-46 74-47M205 82c27 4 52 20 74 48" strokeDasharray="7 8" opacity=".45" />
-      <circle cx="46" cy="127" r="6" />
-      <circle cx="274" cy="129" r="6" />
-      <path d="M160 23v28M109 48l29 35M211 48l-29 35" opacity=".4" />
-    </svg>
-  );
+  if (gameId === "quest-digital") {
+    return (
+      <svg aria-hidden="true" viewBox="0 0 320 180" className={common} fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M160 23 211 48v43c0 33-19 55-51 72-32-17-51-39-51-72V48l51-25Z" />
+        <path d="m160 53 11 24 26 4-19 18 5 26-23-13-23 13 5-26-19-18 26-4 11-24Z" />
+        <path d="M41 129c26-31 50-46 74-47M205 82c27 4 52 20 74 48" strokeDasharray="7 8" opacity=".45" />
+        <circle cx="46" cy="127" r="6" />
+        <circle cx="274" cy="129" r="6" />
+        <path d="M160 23v28M109 48l29 35M211 48l-29 35" opacity=".4" />
+      </svg>
+    );
+  }
+
+  return null;
 }
