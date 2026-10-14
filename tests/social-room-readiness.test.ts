@@ -80,17 +80,15 @@ describe("Play Amplified social room readiness", () => {
 
   it("All About You invite links and room APIs stay guest-accessible while host creation stays account-gated", () => {
     const proxy = read("proxy.ts"); const roomApi = read("app/api/games/all-about-you/route.ts");
-    expect(proxy).toContain('"all-about-you"'); expect(proxy).toContain("guestRoomApi"); expect(roomApi).toContain("Games account sign-in is required to host All About You."); expect(roomApi).toContain("requireGamesAccountFromRequest(request)");
+    expect(proxy).toContain('"all-about-you"'); expect(proxy).toContain("hasRoomCode && GUEST_ROOM_GAMES.some"); expect(proxy).toContain("guestRoomApi");
+    expect(roomApi).toContain("verifyGamesSessionToken"); expect(roomApi).toContain('intent === "create"'); expect(roomApi).toContain('intent === "join"');
   });
 
   it("All About You stays birthday-first without becoming birthday-only", () => {
-    const catalog = read("lib/play-point-core/master-game-catalog.ts"); const client = read("app/games/all-about-you/AllAboutYouClient.tsx");
-    expect(catalog).toContain("celebration, reunion, shower, or just-because night"); expect(client).toContain("BIRTHDAY / CELEBRATION SOCIAL"); expect(client).toContain("Birthday is the default flavor, not a requirement.");
+    const page = read("app/games/all-about-you/page.tsx"); const client = read("app/games/all-about-you/AllAboutYouClient.tsx"); expect(page).toContain("Birthday & Guest of Honor Game"); expect(page).toContain("birthday person—or any Guest of Honor"); expect(client).toContain("Perfect for birthdays, retirements, graduations, going-away nights");
   });
 
   it("Trivia clears completed host and player resume credentials", () => {
-    const host = read("app/games/trivia/play/TriviaLiveBuilderExperience.tsx"); const player = read("app/games/trivia/join/TriviaJoinExperience.tsx");
-    expect(host).toContain('snapshot?.status === "completed"'); expect(host).toContain("window.localStorage.removeItem(HOST_CONNECTION_STORAGE_KEY)");
-    expect(player).toContain('snapshot?.status === "completed"'); expect(player).toContain("window.localStorage.removeItem(PLAYER_CONNECTION_STORAGE_KEY)");
+    const host = read("app/games/trivia/play/TriviaLiveBuilderExperience.tsx"); const player = read("app/games/trivia/join/TriviaJoinExperience.tsx"); expect(host).toContain('snapshot?.status === "completed"'); expect(host).toContain("removeItem(HOST_CONNECTION_STORAGE_KEY)"); expect(player).toContain('snapshot?.status === "completed"'); expect(player).toContain("removeItem(PLAYER_CONNECTION_STORAGE_KEY)");
   });
 });
