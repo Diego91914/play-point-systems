@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FeaturedGameArt, type FeaturedGameArtId } from "./FeaturedGameArt";
+import { GameCoverArt } from "./GameCoverArt";
 import { GameScreenshot } from "./GameScreenshot";
 import { PlayCategoryArt, type PlayCategoryArtKind } from "./PlayCategoryArt";
 import {
@@ -206,8 +207,8 @@ function CatalogGameCard({ game }: { game: MasterGameEntry }) {
   const external = game.href.startsWith("http");
   const content = (
     <>
-      <div className="w-24 shrink-0 overflow-hidden rounded-[16px] border border-white/10 bg-black/30 sm:w-28 [&_figcaption]:hidden">
-        <GameScreenshot gameId={game.id} />
+      <div className="w-24 shrink-0 overflow-hidden rounded-[16px] border border-white/10 bg-black/30 shadow-inner shadow-black/20 sm:w-28">
+        <GameCoverArt gameId={game.id} />
       </div>
       <div className="flex min-w-0 flex-1 flex-col py-0.5">
         <div className="flex items-start justify-between gap-2">
