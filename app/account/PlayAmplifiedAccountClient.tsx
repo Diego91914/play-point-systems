@@ -2,21 +2,13 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { getPlayPointBrowserSupabaseClient } from "@/lib/play-point-core/play-point-browser-supabase";
-
-function safeReturnPath(value: string): string {
-  if (!value || value.startsWith("//")) return "/games";
-  if (
-    value.startsWith("/games") ||
-    value.startsWith("/play-amplified") ||
-    value.startsWith("/shot-caddy")
-  ) {
-    return value;
-  }
-  return "/games";
-}
+import { getSafeGamesReturnPath } from "@/lib/play-point-core/safe-games-return-path";
 
 export function PlayAmplifiedAccountClient({ returnTo }: { returnTo: string }) {
-  const destination = useMemo(() => safeReturnPath(returnTo), [returnTo]);
+  const destination = useMemo(
+    () => getSafeGamesReturnPath(returnTo, "/games"),
+    [returnTo],
+  );
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(true);
   const [message, setMessage] = useState("Checking your Play Amplified session…");
