@@ -7,6 +7,7 @@ const resumeRuntime = readFileSync("app/play-amplified/PlayAmplifiedResumeRuntim
 const worker = readFileSync("public/play-amplified-sw.js", "utf8");
 const manifest = readFileSync("app/play-amplified-manifest.webmanifest/route.ts", "utf8");
 const featuredArt = readFileSync("app/play-amplified/FeaturedGameArt.tsx", "utf8");
+const coverArt = readFileSync("app/play-amplified/GameCoverArt.tsx", "utf8");
 const nextConfig = readFileSync("next.config.ts", "utf8");
 const proxy = readFileSync("proxy.ts", "utf8");
 
@@ -48,6 +49,20 @@ describe("Play Amplified consumer home", () => {
     expect(home).toContain("<GameScreenshot gameId={game.id} />");
     expect(home).toContain("<FeaturedGameArt gameId={featuredId} />");
     expect(home).toContain("xl:grid-cols-5");
+  });
+
+  it("gives the full library product-style cover art instead of repeating setup screenshots", () => {
+    const ids = [
+      "chain-reaction", "how-close", "on-my-list", "all-about-you", "inside-man", "phone-holdem", "live-craps", "last-call",
+      "shot-classic", "shot-chaos", "battle-mode", "call-your-score", "challenge-skins-pro", "wolf", "redemption-wolf", "wolf-pack",
+      "card-shark-classic", "card-shark-stud", "card-shark-draw", "atw-ladder", "atw-sprint", "atw-survival", "disc-warrior", "clear-the-stack",
+      "quest-digital", "quest-disc-golf", "play-point-trivia",
+    ];
+    expect(home).toContain('import { GameCoverArt } from "./GameCoverArt"');
+    expect(home).toContain("<GameCoverArt gameId={game.id} />");
+    expect(coverArt).toContain("const covers: Record<string, CoverIdentity>");
+    expect(coverArt).toContain("data-game-cover={gameId}");
+    for (const id of ids) expect(coverArt).toContain(id);
   });
 
   it("only offers recent server-valid rooms instead of every historical local session", () => {
