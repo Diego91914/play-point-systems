@@ -170,7 +170,7 @@ export function PlayAmplifiedPwa() {
     );
   }
 
-  if (primary || standalone || installDismissed) return null;
+  if (primary || resumeDismissed || standalone || installDismissed) return null;
 
   return (
     <div className="fixed inset-x-3 bottom-3 z-[100] mx-auto max-w-xl rounded-[24px] border border-cyan-200/25 bg-[#07111d]/95 p-4 text-white shadow-2xl backdrop-blur-xl sm:bottom-5 sm:p-5">
