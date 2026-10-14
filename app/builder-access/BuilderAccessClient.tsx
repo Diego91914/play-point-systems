@@ -1,17 +1,10 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-
-function safeNextPath(value: string): string {
-  if (!value || !value.startsWith("/") || value.startsWith("//") || value.includes("\\") || /[\\u0000-\\u001f]/.test(value)) return "/games";
-  const pathname = value.split(/[?#]/, 1)[0];
-  const allowed = ["/games", "/play", "/play-amplified", "/shot-caddy"];
-  if (!allowed.some((root) => pathname === root || pathname.startsWith(`${root}/`))) return "/games";
-  return value;
-}
+import { getSafeGamesReturnPath } from "@/lib/play-point-core/safe-games-return-path";
 
 export function BuilderAccessClient({ nextPath }: { nextPath: string }) {
-  const destination = safeNextPath(nextPath);
+  const destination = getSafeGamesReturnPath(nextPath, "/games");
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
@@ -28,9 +21,6 @@ export function BuilderAccessClient({ nextPath }: { nextPath: string }) {
     setMessage("Opening builder access…");
 
     try {
-      // Create the Play Amplified builder session in one request. The server
-      // verifies the password against the private-access service and then mints
-      // the all-games session cookie on this origin.
       const sessionResponse = await fetch("/api/games/account/builder-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
