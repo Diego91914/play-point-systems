@@ -92,6 +92,7 @@ export function PlayAmplifiedPwa() {
   const [isIos, setIsIos] = useState(false);
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [installDismissed, setInstallDismissed] = useState(false);
+  const [resumeDismissed, setResumeDismissed] = useState(false);
 
   useEffect(() => {
     const hostname = window.location.hostname.toLowerCase();
@@ -103,6 +104,7 @@ export function PlayAmplifiedPwa() {
     setStandalone(inStandalone);
     setIsIos(/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
     setInstallDismissed(window.sessionStorage.getItem("play-amplified-install-dismissed") === "1");
+    setResumeDismissed(window.sessionStorage.getItem("play-amplified-resume-dismissed") === "1");
 
     const onBeforeInstallPrompt = (event: Event) => {
       event.preventDefault();
@@ -122,6 +124,11 @@ export function PlayAmplifiedPwa() {
 
   const primary = useMemo(() => candidates[0] ?? null, [candidates]);
 
+  const dismissResume = () => {
+    window.sessionStorage.setItem("play-amplified-resume-dismissed", "1");
+    setResumeDismissed(true);
+  };
+
   const dismissInstall = () => {
     window.sessionStorage.setItem("play-amplified-install-dismissed", "1");
     setInstallDismissed(true);
@@ -135,38 +142,35 @@ export function PlayAmplifiedPwa() {
     setInstallPrompt(null);
   };
 
-  if (primary) {
+  if (primary && !resumeDismissed) {
     return (
-      <div className="fixed inset-x-3 bottom-3 z-[100] mx-auto max-w-xl rounded-[24px] border border-cyan-200/25 bg-[#07111d]/95 p-4 text-white shadow-2xl backdrop-blur-xl sm:bottom-5 sm:p-5">
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <div className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-100/55">{standalone ? "Play Amplified" : "Welcome back"}</div>
-            <div className="mt-1 truncate text-lg font-black">Resume {primary.title}</div>
-            <div className="mt-1 text-xs text-white/50">{primary.code ? `Room ${primary.code} · ` : ""}Your phone remembers this game.</div>
+      <div className="fixed inset-x-3 bottom-3 z-[100] mx-auto max-w-2xl rounded-[20px] border border-cyan-200/25 bg-[#07111d]/95 p-3 text-white shadow-2xl backdrop-blur-xl sm:bottom-5 sm:p-4">
+        <div className="flex items-center gap-3">
+          <div className="min-w-0 flex-1">
+            <div className="text-[9px] font-black uppercase tracking-[0.18em] text-cyan-100/55">{standalone ? "Play Amplified" : "Resume game"}</div>
+            <div className="mt-1 truncate text-sm font-black sm:text-base">{primary.title}</div>
+            <div className="mt-0.5 truncate text-[11px] text-white/45">
+              {primary.code ? `Room ${primary.code}` : "Remembered on this device"}
+              {candidates.length > 1 ? ` · ${candidates.length - 1} more` : ""}
+            </div>
           </div>
+          <a href={primary.href} className="shrink-0 rounded-xl bg-cyan-300 px-4 py-2.5 text-xs font-black text-slate-950 transition hover:bg-cyan-200 sm:text-sm">
+            RESUME
+          </a>
           <button
             type="button"
             aria-label="Dismiss resume card"
-            className="rounded-full px-2 py-1 text-lg text-white/45 hover:bg-white/10 hover:text-white"
-            onClick={() => setCandidates((current) => current.slice(1))}
+            className="shrink-0 rounded-full px-2 py-1 text-lg text-white/45 hover:bg-white/10 hover:text-white"
+            onClick={dismissResume}
           >
             ×
           </button>
         </div>
-        <a
-          href={primary.href}
-          className="mt-4 flex w-full items-center justify-center rounded-2xl bg-cyan-300 px-4 py-3.5 text-sm font-black text-slate-950 transition hover:bg-cyan-200"
-        >
-          RESUME GAME
-        </a>
-        {candidates.length > 1 ? (
-          <div className="mt-2 text-center text-[11px] font-bold text-white/40">{candidates.length - 1} other remembered game{candidates.length === 2 ? "" : "s"}</div>
-        ) : null}
       </div>
     );
   }
 
-  if (standalone || installDismissed) return null;
+  if (primary || standalone || installDismissed) return null;
 
   return (
     <div className="fixed inset-x-3 bottom-3 z-[100] mx-auto max-w-xl rounded-[24px] border border-cyan-200/25 bg-[#07111d]/95 p-4 text-white shadow-2xl backdrop-blur-xl sm:bottom-5 sm:p-5">
