@@ -32,7 +32,7 @@ function GameFormatCard({ game }: { game: MasterGameEntry }) {
         </span>
       </div>
       <p className="mt-3 text-sm leading-6 text-white/58">{game.description}</p>
-      <div className="mt-5 border-t border-white/8 pt-4 text-sm font-black text-cyan-100">View game →</div>
+      <div className="mt-5 border-t border-white/10 pt-4 text-sm font-black text-cyan-100">View game →</div>
     </>
   );
 
@@ -129,6 +129,22 @@ export default function PlayAmplifiedPage() {
                 <p className="relative mt-3 text-xs leading-5 text-white/75 sm:text-sm sm:leading-6">{body}</p>
               </a>
             ))}
+          </section>
+
+          <section aria-labelledby="featured-games-heading" className="border-t border-white/10 py-10 sm:py-14">
+            <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="text-[11px] font-black uppercase tracking-[0.18em] text-cyan-200/70">Start exploring</p>
+                <h2 id="featured-games-heading" className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">Featured games</h2>
+              </div>
+              <a href="#all-games" className="rounded-full border border-white/15 px-4 py-2 text-xs font-bold text-white/80 transition hover:bg-white/10">See all games ↓</a>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {["shot-classic", "clear-the-stack", "phone-holdem"].map((id) => {
+                const game = FINISHED_GAME_FORMATS.find((item) => item.id === id);
+                return game ? <GameFormatCard key={game.id} game={game} /> : null;
+              })}
+            </div>
           </section>
 
           <div id="all-games" className="scroll-mt-6">
