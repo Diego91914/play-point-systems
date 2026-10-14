@@ -7,10 +7,18 @@ const featuredArt = readFileSync("app/play-amplified/FeaturedGameArt.tsx", "utf8
 
 describe("Play Amplified consumer home", () => {
   it("keeps the four primary play actions on the front door", () => {
-    expect(home).toContain('href="/play/host"');
-    expect(home).toContain('href="/play/join"');
-    expect(home).toContain('href="/games"');
-    expect(home).toContain('href="/live/quick-score"');
+    expect(home).toContain('href: "/play/host"');
+    expect(home).toContain('href: "/play/join"');
+    expect(home).toContain('href: "/games"');
+    expect(home).toContain('href: "/live/quick-score"');
+  });
+
+  it("presents primary actions as a native-style play launcher", () => {
+    expect(home).toContain('type QuickActionKind = "host" | "join" | "games" | "score"');
+    expect(home).toContain("Instant access");
+    expect(home).toContain("Play now");
+    expect(home).toContain("grid grid-cols-2 gap-3 sm:grid-cols-4");
+    expect(home).toContain("<QuickActionIcon kind={action.kind} />");
   });
 
   it("keeps previews inside their real catalog lanes", () => {
