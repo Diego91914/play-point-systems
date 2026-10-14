@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 
 const home = readFileSync("app/play-amplified/page.tsx", "utf8");
 const pwa = readFileSync("app/play-amplified/PlayAmplifiedPwa.tsx", "utf8");
+const featuredArt = readFileSync("app/play-amplified/FeaturedGameArt.tsx", "utf8");
 
 describe("Play Amplified consumer home", () => {
   it("keeps the four primary play actions on the front door", () => {
@@ -24,6 +25,16 @@ describe("Play Amplified consumer home", () => {
     expect(home).toContain("snap-x snap-mandatory");
     expect(home).toContain("w-[82vw]");
     expect(home).toContain('index === 4 ? "col-span-2 lg:col-span-1"');
+  });
+
+  it("gives five flagship games distinct artwork while preserving authentic screenshots", () => {
+    for (const id of ["shot-classic", "clear-the-stack", "phone-holdem", "live-craps", "quest-digital"]) {
+      expect(home).toContain(`"${id}"`);
+      expect(featuredArt).toContain(`gameId === "${id}"`);
+    }
+    expect(home).toContain("<GameScreenshot gameId={game.id} />");
+    expect(home).toContain("<FeaturedGameArt gameId={featuredId} />");
+    expect(home).toContain("xl:grid-cols-5");
   });
 
   it("dismisses the compact remembered-game prompt for the browser session", () => {
