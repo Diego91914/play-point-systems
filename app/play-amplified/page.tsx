@@ -177,12 +177,15 @@ export default function PlayAmplifiedPage() {
             <div className="text-[10px] font-black uppercase tracking-[0.28em] text-cyan-200/55">Play Point Systems presents</div>
             <div className="mt-1 text-xl font-black tracking-[-0.03em] text-white sm:text-2xl">PLAY AMPLIFIED</div>
           </Link>
-          <nav className="hidden items-center gap-2 text-sm font-bold text-white/72 md:flex" aria-label="Play Amplified navigation">
-            <Link prefetch={false} href="/play/host" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">Host</Link>
-            <Link prefetch={false} href="/play/join" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">Quick Join</Link>
-            <a href="#all-games" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">All Games</a>
-            <Link prefetch={false} href="/games" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">My Games</Link>
-          </nav>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <span className="rounded-full border border-amber-200/15 bg-amber-300/[0.05] px-2.5 py-1.5 text-[8px] font-black uppercase tracking-[0.16em] text-amber-100/70 sm:px-3 sm:text-[9px]">Private preview</span>
+            <nav className="hidden items-center gap-2 text-sm font-bold text-white/72 md:flex" aria-label="Play Amplified navigation">
+              <Link prefetch={false} href="/play/host" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">Host</Link>
+              <Link prefetch={false} href="/play/join" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">Quick Join</Link>
+              <a href="#all-games" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">All Games</a>
+              <Link prefetch={false} href="/games" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">My Games</Link>
+            </nav>
+          </div>
         </header>
 
         <main>
@@ -194,14 +197,14 @@ export default function PlayAmplifiedPage() {
             </h1>
             <p className="mt-5 max-w-2xl text-sm leading-6 text-white/65 sm:text-lg sm:leading-8">Social, course, backyard & putting, adventure, and trivia experiences in one Play Amplified catalog.</p>
 
-            <div className="mt-6 max-w-3xl rounded-2xl border border-amber-200/20 bg-amber-300/[0.07] px-5 py-4 text-sm leading-6 text-amber-50/85">
-              <span className="font-black text-amber-50">Private preview:</span> the catalog is open to browse, but public purchasing and hosting are not open yet. Approved Founder/test access remains available during development.
-            </div>
-
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <a href="#all-games" className="inline-flex items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">Explore games →</a>
-              <a href="#founders-special" className="inline-flex items-center justify-center rounded-2xl border border-amber-200/25 bg-amber-300/[0.08] px-6 py-3.5 text-sm font-black text-amber-50 transition hover:-translate-y-0.5 hover:bg-amber-300/[0.13]">See planned Play Packs</a>
-              <Link prefetch={false} href="/builder-access?next=%2Fgames" className="inline-flex items-center justify-center rounded-2xl border border-white/14 bg-white/[0.05] px-6 py-3.5 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-white/[0.09]">Founder / Test Sign In</Link>
+              <a href="#founders-special" className="inline-flex items-center justify-center rounded-2xl border border-white/14 bg-white/[0.045] px-6 py-3.5 text-sm font-black text-white/85 transition hover:-translate-y-0.5 hover:bg-white/[0.08]">See planned Play Packs</a>
+            </div>
+
+            <div className="mt-4 flex max-w-3xl flex-col gap-2 border-l border-white/12 pl-3 text-[11px] leading-5 text-white/45 sm:flex-row sm:items-center sm:gap-3">
+              <span>Browse is open. Public hosting and purchasing remain gated during preview.</span>
+              <Link prefetch={false} href="/builder-access?next=%2Fgames" className="shrink-0 font-black text-white/72 transition hover:text-white">Founder / test sign in →</Link>
             </div>
           </section>
 
