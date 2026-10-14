@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 
 const home = readFileSync("app/play-amplified/page.tsx", "utf8");
 const pwa = readFileSync("app/play-amplified/PlayAmplifiedPwa.tsx", "utf8");
+const resumeRuntime = readFileSync("app/play-amplified/PlayAmplifiedResumeRuntime.ts", "utf8");
 const worker = readFileSync("public/play-amplified-sw.js", "utf8");
 const manifest = readFileSync("app/play-amplified-manifest.webmanifest/route.ts", "utf8");
 const featuredArt = readFileSync("app/play-amplified/FeaturedGameArt.tsx", "utf8");
@@ -48,19 +49,22 @@ describe("Play Amplified consumer home", () => {
   });
 
   it("only offers recent server-valid rooms instead of every historical local session", () => {
-    expect(pwa).toContain("RESUME_MAX_AGE_MS = 24 * 60 * 60 * 1000");
-    expect(pwa).toContain("readRecentRetention");
-    expect(pwa).toContain('fetch("/api/games/social-room-control"');
-    expect(pwa).toContain("validateTriviaResume");
-    expect(pwa).toContain("payload?.ended === true");
+    expect(pwa).toContain('await import("./PlayAmplifiedResumeRuntime")');
+    expect(pwa).not.toMatch(/\bfetch\s*\(/);
+    expect(resumeRuntime).toContain("RESUME_MAX_AGE_MS = 24 * 60 * 60 * 1000");
+    expect(resumeRuntime).toContain("readRecentRetention");
+    expect(resumeRuntime).toContain('fetch("/api/games/social-room-control"');
+    expect(resumeRuntime).toContain("validateTriviaResume");
+    expect(resumeRuntime).toContain("payload?.ended === true");
+    expect(resumeRuntime).toContain("removeLocalKeys(clearKeys)");
     expect(pwa).not.toContain("candidates.length - 1");
   });
 
-  it("lets a player resume, defer, or exit the remembered game explicitly", () => {
+  it("lets a player resume, save for later, or exit the remembered game explicitly", () => {
     expect(pwa).toContain("play-amplified-resume-dismissed");
     expect(pwa).toContain("max-w-2xl");
     expect(pwa).toContain("RESUME");
-    expect(pwa).toContain("LATER");
+    expect(pwa).toContain("SAVE FOR LATER");
     expect(pwa).toContain("EXIT");
     expect(pwa).toContain("const exitResume = () =>");
     expect(pwa).toContain("removeLocalKeys(primary.clearKeys)");
