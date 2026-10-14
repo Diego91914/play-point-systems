@@ -314,7 +314,7 @@ export default function PlayAmplifiedPage() {
 
             <div className="mt-4 flex max-w-3xl flex-col gap-2 border-l border-white/12 pl-3 text-[11px] leading-5 text-white/45 sm:flex-row sm:items-center sm:gap-3">
               <span>Browse is open. Public hosting and purchasing remain gated during preview.</span>
-              <Link prefetch={false} href="/builder-access?next=%2Fgames" className="shrink-0 font-black text-white/72 transition hover:text-white">Founder / test sign in →</Link>
+              <Link prefetch={false} href="/builder-access?next=%2Fplay" className="shrink-0 font-black text-white/72 transition hover:text-white">Founder / test sign in →</Link>
             </div>
           </section>
 
@@ -435,7 +435,7 @@ export default function PlayAmplifiedPage() {
 
           <section className="border-t border-white/10 py-12 text-center">
             <div className="text-[10px] font-black uppercase tracking-[0.22em] text-white/35">Play Amplified library</div>
-            <div className="mt-3 text-2xl font-black text-white">{FINISHED_GAME_FORMATS.length} playable formats — and growing.</div>
+            <div className="mt-3 text-2xl font-black text-white">Discover games across every Play Amplified category.</div>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-white/48">New experiences can join the lineup as they are ready, with in-development previews clearly labeled before release.</p>
           </section>
         </main>
