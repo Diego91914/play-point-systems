@@ -7,6 +7,8 @@ const resumeRuntime = readFileSync("app/play-amplified/PlayAmplifiedResumeRuntim
 const worker = readFileSync("public/play-amplified-sw.js", "utf8");
 const manifest = readFileSync("app/play-amplified-manifest.webmanifest/route.ts", "utf8");
 const featuredArt = readFileSync("app/play-amplified/FeaturedGameArt.tsx", "utf8");
+const nextConfig = readFileSync("next.config.ts", "utf8");
+const proxy = readFileSync("proxy.ts", "utf8");
 
 describe("Play Amplified consumer home", () => {
   it("keeps the four primary play actions on the front door", () => {
@@ -86,14 +88,22 @@ describe("Play Amplified consumer home", () => {
     expect(pwa).toContain("if (!clientReady) return null;");
   });
 
-  it("refreshes the installed PWA shell instead of pinning an old app surface", () => {
-    expect(worker).toContain('const CACHE_NAME = "play-amplified-shell-v3"');
-    expect(worker).toContain("fetch(request)");
-    expect(worker).toContain('caches.match("/play-amplified")');
+  it("keeps the installed icon as a permanent launcher while app releases update in place", () => {
+    expect(worker).toContain('const CACHE_NAME = "play-amplified-shell-v4"');
+    expect(worker).not.toContain('  "/play-amplified",');
+    expect(worker).toContain('fetch(request, { cache: "no-store" })');
+    expect(worker).toContain('caches.match("/offline")');
+    expect(manifest).toContain('id: "/"');
     expect(manifest).toContain('start_url: "/play-amplified?source=pwa"');
-    expect(manifest).toContain('"cache-control": "no-cache, must-revalidate"');
-    expect(pwa).toContain('SERVICE_WORKER_REFRESH_KEY = "play-amplified-sw-v3-reloaded"');
+    expect(manifest).toContain('"cache-control": "no-cache, no-store, must-revalidate"');
+    expect(pwa).toContain('updateViaCache: "none"');
     expect(pwa).toContain('addEventListener("controllerchange", onControllerChange)');
+    expect(pwa).toContain('addEventListener("visibilitychange", updateServiceWorker)');
+    expect(pwa).toContain('addEventListener("pageshow", updateServiceWorker)');
     expect(pwa).toContain("window.location.reload()");
+    expect(nextConfig).toContain('source: "/play-amplified-sw.js"');
+    expect(nextConfig).toContain('value: "no-cache, no-store, must-revalidate"');
+    expect(proxy).toContain('target.pathname = "/play-amplified"');
+    expect(proxy).toContain('response.headers.set("Cache-Control", "no-cache, no-store, must-revalidate")');
   });
 });
