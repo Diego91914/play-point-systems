@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 
 const home = readFileSync("app/play-amplified/page.tsx", "utf8");
 const pwa = readFileSync("app/play-amplified/PlayAmplifiedPwa.tsx", "utf8");
+const worker = readFileSync("public/play-amplified-sw.js", "utf8");
+const manifest = readFileSync("app/play-amplified-manifest.webmanifest/route.ts", "utf8");
 const featuredArt = readFileSync("app/play-amplified/FeaturedGameArt.tsx", "utf8");
 
 describe("Play Amplified consumer home", () => {
@@ -45,10 +47,23 @@ describe("Play Amplified consumer home", () => {
     expect(home).toContain("xl:grid-cols-5");
   });
 
-  it("dismisses the compact remembered-game prompt for the browser session", () => {
+  it("only offers recent server-valid rooms instead of every historical local session", () => {
+    expect(pwa).toContain("RESUME_MAX_AGE_MS = 24 * 60 * 60 * 1000");
+    expect(pwa).toContain("readRecentRetention");
+    expect(pwa).toContain('fetch("/api/games/social-room-control"');
+    expect(pwa).toContain("validateTriviaResume");
+    expect(pwa).toContain("payload?.ended === true");
+    expect(pwa).not.toContain("candidates.length - 1");
+  });
+
+  it("lets a player resume, defer, or exit the remembered game explicitly", () => {
     expect(pwa).toContain("play-amplified-resume-dismissed");
     expect(pwa).toContain("max-w-2xl");
     expect(pwa).toContain("RESUME");
+    expect(pwa).toContain("LATER");
+    expect(pwa).toContain("EXIT");
+    expect(pwa).toContain("const exitResume = () =>");
+    expect(pwa).toContain("removeLocalKeys(primary.clearKeys)");
     expect(pwa).not.toContain("current.slice(1)");
   });
 
@@ -65,5 +80,13 @@ describe("Play Amplified consumer home", () => {
     expect(pwa).toContain("const [clientReady, setClientReady] = useState(false);");
     expect(pwa).toContain("setClientReady(true);");
     expect(pwa).toContain("if (!clientReady) return null;");
+  });
+
+  it("refreshes the installed PWA shell instead of pinning an old app surface", () => {
+    expect(worker).toContain('const CACHE_NAME = "play-amplified-shell-v3"');
+    expect(worker).toContain("fetch(request)");
+    expect(worker).toContain('caches.match("/play-amplified")');
+    expect(manifest).toContain('start_url: "/play-amplified?source=pwa"');
+    expect(manifest).toContain('"cache-control": "no-cache, must-revalidate"');
   });
 });
