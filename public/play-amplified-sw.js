@@ -1,4 +1,4 @@
-const CACHE_NAME = "play-amplified-shell-v2";
+const CACHE_NAME = "play-amplified-shell-v3";
 const APP_SHELL = [
   "/play-amplified",
   "/offline",
@@ -38,22 +38,21 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => response)
-        .catch(async () => (await caches.match(request)) || (await caches.match("/offline")) || (await caches.match("/play-amplified"))),
+        .catch(async () => (await caches.match(request)) || (await caches.match("/play-amplified")) || (await caches.match("/offline"))),
     );
     return;
   }
 
   if (url.pathname.startsWith("/_next/static/") || url.pathname.startsWith("/images/") || url.pathname.endsWith(".ico")) {
     event.respondWith(
-      caches.match(request).then((cached) => {
-        if (cached) return cached;
-        return fetch(request).then((response) => {
+      fetch(request)
+        .then((response) => {
           if (!response || response.status !== 200) return response;
           const copy = response.clone();
           void caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
           return response;
-        });
-      }),
+        })
+        .catch(async () => (await caches.match(request)) || Response.error()),
     );
   }
 });
