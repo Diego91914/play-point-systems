@@ -105,7 +105,7 @@ export default function PlayAmplifiedPage() {
           </section>
 
           <section aria-label="Start playing" className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <Link prefetch={false} href="/play/host" className="rounded-2xl border border-cyan-300/30 bg-cyan-300/15 px-4 py-4 text-center text-sm font-black text-cyan-50 transition hover:bg-cyan-300/25">Host a game →</Link>
+            <Link prefetch={false} href="/play/host" className="rounded-2xl border border-cyan-300/30 bg-cyan-300/15 px-4 py-4 text-center text-sm font-black text-cyan-50 transition hover:bg-cyan-300/25">Host a Game →</Link>
             <Link prefetch={false} href="/play/join" className="rounded-2xl border border-fuchsia-300/30 bg-fuchsia-300/15 px-4 py-4 text-center text-sm font-black text-fuchsia-50 transition hover:bg-fuchsia-300/25">Quick Join →</Link>
             <Link prefetch={false} href="/games" className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-4 text-center text-sm font-black text-white transition hover:bg-white/10">My Games →</Link>
             <Link prefetch={false} href="/live/quick-score" className="rounded-2xl border border-violet-300/25 bg-violet-300/10 px-4 py-4 text-center text-sm font-black text-violet-100 transition hover:bg-violet-300/20">Quick Score →</Link>
