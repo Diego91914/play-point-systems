@@ -7,7 +7,7 @@ export function GET() {
       short_name: "Play Amplified",
       description: "Phones in the game. People in the moment.",
       id: "/",
-      start_url: "/?source=pwa",
+      start_url: "/play-amplified?source=pwa",
       scope: "/",
       display: "standalone",
       orientation: "portrait",
@@ -60,7 +60,7 @@ export function GET() {
     {
       headers: {
         "content-type": "application/manifest+json; charset=utf-8",
-        "cache-control": "public, max-age=3600, stale-while-revalidate=86400",
+        "cache-control": "no-cache, must-revalidate",
       },
     },
   );
