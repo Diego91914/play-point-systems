@@ -11,10 +11,17 @@ type SiteShellProps = {
   showAccessNotice?: boolean;
 };
 
-const navItems = [
+const companyNavItems = [
   { label: "Home", href: "/", key: "home" },
   { label: "Play", href: "/play", key: "play" },
   { label: "Library", href: "/games", key: "games" },
+  { label: "Profile", href: "/account", key: "account" },
+] as const;
+
+const playAmplifiedNavItems = [
+  { label: "Discover", href: "/play-amplified", key: "home" },
+  { label: "Play", href: "/play", key: "play" },
+  { label: "My Games", href: "/games", key: "games" },
   { label: "Profile", href: "/account", key: "account" },
 ] as const;
 
@@ -22,6 +29,7 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showAccessBanner, setShowAccessBanner] = useState(true);
   const [isPlayAmplifiedHost, setIsPlayAmplifiedHost] = useState(false);
+  const navItems = isPlayAmplifiedHost ? playAmplifiedNavItems : companyNavItems;
 
   useEffect(() => {
     const hostname = window.location.hostname.toLowerCase();
@@ -56,7 +64,7 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
             <header className="sticky top-4 z-50 px-4 pt-4 sm:px-6 lg:px-8">
               <div className="rounded-[28px] border border-amber-200/15 bg-[linear-gradient(180deg,rgba(8,8,8,0.97),rgba(8,8,8,0.88))] px-4 py-3 shadow-[0_18px_40px_rgba(0,0,0,0.42)] backdrop-blur-xl sm:px-6">
                 <div className="flex items-center justify-between gap-2 min-[380px]:gap-4">
-                  <Link href="/" aria-label={isPlayAmplifiedHost ? "Play Amplified home" : "Play Point Systems home"} className="flex min-w-0 items-center gap-2 min-[380px]:gap-3">
+                  <Link href={isPlayAmplifiedHost ? "/play-amplified" : "/"} aria-label={isPlayAmplifiedHost ? "Play Amplified home" : "Play Point Systems home"} className="flex min-w-0 items-center gap-2 min-[380px]:gap-3">
                     {isPlayAmplifiedHost ? (
                       <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-cyan-200/20 bg-[linear-gradient(135deg,rgba(34,211,238,0.14),rgba(168,85,247,0.14))] text-sm font-black tracking-[-0.04em] text-white shadow-[0_0_24px_rgba(34,211,238,0.12)] sm:hidden">
                         PA
@@ -143,14 +151,20 @@ export function SiteShell({ children, current, showAccessNotice = false }: SiteS
                   )}
                 </div>
                 <nav aria-label="Footer navigation" className="flex flex-wrap items-center gap-1.5">
-                  <Link href="/play" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">Play</Link>
-                  <Link href="/live/quick-score" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">Score Caddy</Link>
-                  <Link href="/shot-caddy" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">Shot Caddy</Link>
-                  <Link href="/games" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">My Games</Link>
                   {isPlayAmplifiedHost ? (
-                    <a href="https://playpointsystems.com" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">Company</a>
+                    <>
+                      <Link href="/play-amplified" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">Discover</Link>
+                      <Link href="/play" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">Play</Link>
+                      <Link href="/play/join" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">Quick Join</Link>
+                      <Link href="/games" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">My Games</Link>
+                      <a href="https://playpointsystems.com" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">Company</a>
+                    </>
                   ) : (
                     <>
+                      <Link href="/play" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">Play</Link>
+                      <Link href="/live/quick-score" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">Score Caddy</Link>
+                      <Link href="/shot-caddy" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">Shot Caddy</Link>
+                      <Link href="/games" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">My Games</Link>
                       <Link href="/music" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">Music</Link>
                       <Link href="/about" className="rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-semibold text-white/72 transition hover:border-white/22 hover:text-white">About</Link>
                     </>
