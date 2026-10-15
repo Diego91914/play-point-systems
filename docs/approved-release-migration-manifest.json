@@ -1,0 +1,38 @@
+{
+  "project": "qdsyxcjmrsxetjxeuojk",
+  "production_authorized": false,
+  "execution": "Apply only these pending files in one controlled transaction; record actual versions through the approved migration runner. No bulk historical replay.",
+  "already_applied_registry_version": "20261009023849",
+  "migrations": [
+    {
+      "version": "20261009233446",
+      "path": "supabase/migrations/20261009233446_league_night_server_permissions.sql",
+      "sha256": "d5b23f777910ae9fcb7fc6d24a5be99099e3c688464889455c8ef0d18fd1851b"
+    },
+    {
+      "version": "20261009233921",
+      "path": "supabase/migrations/20261009233921_legacy_session_directory_codes.sql",
+      "sha256": "e068fda62fdb7062158f1c2ae7c6045cba1122623b0977648606e5b30c251a31"
+    },
+    {
+      "version": "20261009235626",
+      "path": "supabase/migrations/20261009235626_league_night_atomic_creation.sql",
+      "sha256": "e91d91fd211610cbde2017fdab12335aca6ff4bc7a19621de770bbda03b8f968"
+    },
+    {
+      "version": "20261009235737",
+      "path": "supabase/migrations/20261009235737_hosted_session_activity.sql",
+      "sha256": "845a2868990de800abdf09909b74926cbcf34a7e807c924733a328387a417c21"
+    },
+    {
+      "version": "20261010002707",
+      "path": "supabase/migrations/20261010002707_league_night_server_only_mutations.sql",
+      "sha256": "e1541efc9ad6794389416bbbd50bb54031f206d31c8f7b958e5213f9df37d710"
+    },
+    {
+      "version": "20261010002712",
+      "path": "supabase/migrations/20261010002712_clear_stack_owner_recovery.sql",
+      "sha256": "f3b90d12d028a1c51835e9ccfb1a28aaea9441cf953032af1d19ae57aec247b5"
+    }
+  ]
+}
