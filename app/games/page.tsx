@@ -3,6 +3,7 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { SiteShell } from "@/app/components/SiteShell";
+import { GameCoverArt } from "@/app/play-amplified/GameCoverArt";
 import { loadGamesLibraryForClaims } from "@/lib/play-point-core/games-access-server";
 import {
   GAMES_SESSION_COOKIE,
@@ -48,22 +49,30 @@ type LibraryEntry = MasterGameEntry & { owned: boolean };
 
 function GameCard({ game }: { game: LibraryEntry }) {
   return (
-    <article className="flex h-full flex-col rounded-[28px] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.022))] p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <div className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-100/50">{game.family}</div>
-          {game.parentTitle ? <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white/32">{game.parentTitle} format</div> : null}
+    <article className="group flex min-h-[168px] overflow-hidden rounded-[26px] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.065),rgba(255,255,255,0.022))] shadow-[0_18px_55px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-0.5 hover:border-white/20 sm:min-h-[190px]">
+      <div className="relative w-[34%] min-w-[118px] max-w-[165px] shrink-0 overflow-hidden border-r border-white/10 bg-black/25 sm:w-[38%]">
+        <div className="absolute inset-0 scale-[1.18] transition duration-500 group-hover:scale-[1.23]">
+          <GameCoverArt gameId={game.id} />
         </div>
-        <span className="rounded-full border border-emerald-200/25 bg-emerald-300/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.12em] text-emerald-100">Owned</span>
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,transparent_58%,rgba(3,7,18,0.68)_100%)]" />
       </div>
 
-      <h3 className="mt-4 text-2xl font-black tracking-tight text-white">{game.title}</h3>
-      <p className="mt-3 flex-1 text-sm leading-6 text-white/58">{game.description}</p>
+      <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0 text-[9px] font-black uppercase tracking-[0.16em] text-cyan-100/48 sm:text-[10px]">
+            {game.parentTitle ?? game.family}
+          </div>
+          <span className="shrink-0 rounded-full border border-emerald-200/25 bg-emerald-300/10 px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.12em] text-emerald-100 sm:text-[9px]">Owned</span>
+        </div>
 
-      <div className="mt-5 border-t border-white/8 pt-4">
-        <a href={game.launchHref} className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-center text-sm font-black text-emerald-50 transition hover:bg-emerald-400/15">
-          Play now
-        </a>
+        <h3 className="mt-2 text-xl font-black leading-[1.08] tracking-tight text-white sm:text-2xl">{game.title}</h3>
+        <p className="mt-2 hidden text-sm leading-6 text-white/52 min-[430px]:block">{game.description}</p>
+
+        <div className="mt-auto pt-4">
+          <a href={game.launchHref} className="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-emerald-300/22 bg-emerald-400/10 px-4 py-2.5 text-center text-sm font-black text-emerald-50 transition hover:border-emerald-200/35 hover:bg-emerald-400/16">
+            Play now →
+          </a>
+        </div>
       </div>
     </article>
   );
@@ -99,27 +108,27 @@ export default async function GamesPage({
   return (
     <SiteShell current="games">
       <GameAtmosphere variant="library">
-        <section className="px-5 pb-10 pt-10 sm:px-8 lg:px-10 lg:pb-14 lg:pt-14">
+        <section className="px-5 pb-8 pt-8 sm:px-8 sm:pb-10 sm:pt-10 lg:px-10 lg:pb-12 lg:pt-12">
           <div className="mx-auto max-w-6xl">
             <GamesAccountBar email={claims.email} founder={founder} />
 
-            <div className="mt-8 grid gap-7 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+            <div className="mt-7 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
               <div>
                 <div className="inline-flex rounded-full border border-amber-200/20 bg-amber-300/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.26em] text-amber-100">Play Amplified</div>
-                <h1 className="marketing-headline mt-5 lg:text-7xl">My Games.</h1>
-                <p className="mt-5 max-w-3xl text-lg leading-8 text-white/72">
-                  This is your library—not another storefront. Open what you own and get straight into the game.
+                <h1 className="marketing-headline mt-4 lg:text-7xl">My Games.</h1>
+                <p className="mt-4 max-w-3xl text-base leading-7 text-white/68 sm:text-lg sm:leading-8">
+                  Your library is built to launch, not browse. Pick the experience and get into the game.
                 </p>
               </div>
 
-              <aside className="rounded-[28px] border border-cyan-300/15 bg-cyan-300/[0.06] p-5 backdrop-blur-sm">
+              <aside className="rounded-[26px] border border-cyan-300/15 bg-cyan-300/[0.06] p-5 backdrop-blur-sm">
                 <div className="text-[11px] font-black uppercase tracking-[0.2em] text-cyan-100/60">Your library</div>
-                <div className="mt-3 text-3xl font-black text-white">{founder ? "Founder · All Access" : `${ownedGames.length} owned ${ownedGames.length === 1 ? "game" : "games"}`}</div>
-                <p className="mt-2 text-sm leading-6 text-white/58">Everything attached to this account is ready below with one direct Play Now action.</p>
+                <div className="mt-2 text-2xl font-black text-white sm:text-3xl">{founder ? "Founder · All Access" : `${ownedGames.length} owned ${ownedGames.length === 1 ? "game" : "games"}`}</div>
+                <p className="mt-2 text-sm leading-6 text-white/55">Visual covers identify each game at a glance. Every owned title has one direct Play Now action.</p>
               </aside>
             </div>
 
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div className="mt-6 flex flex-wrap gap-3">
               <Link href="/play" className="rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-black text-white/62 transition hover:bg-white/[0.08]">Play launcher</Link>
               <Link href="/play-amplified" className="rounded-2xl border border-cyan-200/25 bg-cyan-300/10 px-5 py-3 text-sm font-black text-cyan-50 transition hover:bg-cyan-300/16">Discover more games</Link>
             </div>
@@ -132,19 +141,18 @@ export default async function GamesPage({
           </div>
         </section>
 
-        <section id="ready-to-play" className="scroll-mt-24 border-t border-white/10 px-5 py-10 sm:px-8 lg:px-10 lg:py-14">
+        <section id="ready-to-play" className="scroll-mt-24 border-t border-white/10 px-5 py-8 sm:px-8 lg:px-10 lg:py-12">
           <div className="mx-auto max-w-6xl">
-            <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+            <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
               <div>
                 <div className="text-[11px] font-black uppercase tracking-[0.2em] text-emerald-100/55">Your games</div>
                 <h2 className="mt-2 text-3xl font-black text-white">Ready to play</h2>
-                <p className="mt-2 text-sm leading-6 text-white/50">No demos to work through here. Pick a game and launch it.</p>
               </div>
               <div className="rounded-full border border-emerald-200/15 bg-emerald-300/[0.06] px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-emerald-100/70">Your game library</div>
             </div>
 
             {ownedGames.length ? (
-              <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {ownedGames.map((game) => <GameCard key={game.id} game={game} />)}
               </div>
             ) : (
