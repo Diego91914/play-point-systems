@@ -71,20 +71,20 @@ const demos: Record<string, GameExperienceDemo> = {
   "shot-classic": {
     hook: "Keep the disc golf round. Add a fresh challenge to every hole.",
     payoff: "The course stays real, but every tee suddenly has a new reason to think, risk, or celebrate.",
-    facts: ["Real round", "Hole challenges", "Tokens & plays", "Disc golf"],
+    facts: ["Real round", "Hole challenges", "Game Changers", "Disc golf"],
     steps: [
       { eyebrow: "Hole 7", headline: "Challenge: Park the approach", detail: "The app gives the group a clear side objective without replacing normal scoring.", phoneLabel: "CHALLENGE", phoneBody: "INSIDE 20 FT", accent: "cyan" },
-      { eyebrow: "Pressure", headline: "Use a Special Play—or save it", detail: "The strategy comes from deciding when the hole is worth spending an advantage.", phoneLabel: "SPECIAL PLAY", phoneBody: "MULLIGAN", accent: "amber" },
+      { eyebrow: "Pressure", headline: "Use a Game Changer—or save it", detail: "The strategy comes from deciding when the hole is worth spending an advantage.", phoneLabel: "GAME CHANGER", phoneBody: "MULLIGAN", accent: "amber" },
       { eyebrow: "Payoff", headline: "Challenge cleared", detail: "The throw mattered twice: once for the round and once for the game layered on top.", phoneLabel: "REWARD", phoneBody: "+2 TOKENS", accent: "emerald" },
     ],
   },
   "shot-chaos": {
     hook: "Shot Caddy Classic with the safety rails removed.",
-    payoff: "Chaos creates the kind of swing where one power play can turn an ordinary hole into the story of the round.",
-    facts: ["Real round", "Disruptive powers", "Bigger swings", "Disc golf"],
+    payoff: "Chaos creates the kind of swing where one Game Changer can turn an ordinary hole into the story of the round.",
+    facts: ["Real round", "Disruptive Game Changers", "Bigger swings", "Disc golf"],
     steps: [
-      { eyebrow: "Chaos card", headline: "Your rival just changed the hole", detail: "A power-up adds a temporary rule that everyone has to play around.", phoneLabel: "CHAOS", phoneBody: "ONE-DISC HOLE", accent: "rose" },
-      { eyebrow: "Counterplay", headline: "Do you burn your protection now?", detail: "You can answer chaos with your own saved Special Play—or take the risk.", phoneLabel: "AVAILABLE", phoneBody: "INSURANCE", accent: "amber" },
+      { eyebrow: "Chaos card", headline: "Your rival just changed the hole", detail: "A Game Changer adds a temporary rule that everyone has to play around.", phoneLabel: "CHAOS", phoneBody: "ONE-DISC HOLE", accent: "rose" },
+      { eyebrow: "Counterplay", headline: "Do you burn your protection now?", detail: "You can answer chaos with your own saved Game Changer—or take the risk.", phoneLabel: "AVAILABLE", phoneBody: "INSURANCE", accent: "amber" },
       { eyebrow: "Swing", headline: "The hole flips the standings", detail: "The physical throws still decide it. Chaos just makes the consequences louder.", phoneLabel: "HOLE SWING", phoneBody: "+4", accent: "emerald" },
     ],
   },
@@ -238,7 +238,7 @@ export function getGameExperienceDemo(game: MasterGameEntry): GameExperienceDemo
   return demos[game.id] ?? {
     hook: game.description,
     payoff: "See how the game creates a shared moment before you decide to start it.",
-    facts: [game.family, game.lane, game.status === "live" ? "Finished" : "Playable preview"],
+    facts: [game.family, game.lane, game.status === "live" ? "Playable" : "Playable preview"],
     steps: [
       { eyebrow: "Set the moment", headline: game.title, detail: game.description, phoneLabel: "READY", phoneBody: "START", accent: "cyan" },
       { eyebrow: "Play", headline: "The group makes the decisions", detail: "The phone handles the private information and game state while people stay focused on each other.", phoneLabel: "LIVE", phoneBody: "IN PLAY", accent: "amber" },

@@ -5,6 +5,10 @@ const play = readFileSync("app/play/page.tsx", "utf8");
 const library = readFileSync("app/games/page.tsx", "utf8");
 const host = readFileSync("app/play/host/page.tsx", "utf8");
 const shell = readFileSync("app/components/SiteShell.tsx", "utf8");
+const productCatalog = readFileSync("lib/play-point-core/games-catalog.ts", "utf8");
+const masterCatalog = readFileSync("lib/play-point-core/master-game-catalog.ts", "utf8");
+const demos = readFileSync("lib/play-point-core/game-experience-demos.ts", "utf8");
+const scoreCaddy = readFileSync("app/live/page.tsx", "utf8");
 
 describe("Play Amplified navigation roles", () => {
   it("keeps /play as a short action launcher instead of another catalog", () => {
@@ -43,5 +47,17 @@ describe("Play Amplified navigation roles", () => {
     expect(shell).toContain('{ label: "My Games", href: "/games", key: "games" }');
     expect(shell).toContain('href="/play/join"');
     expect(shell).toContain('isPlayAmplifiedHost ? "/play-amplified" : "/"');
+  });
+
+  it("uses the locked Game Changers terminology on active customer-facing surfaces", () => {
+    for (const source of [productCatalog, masterCatalog, demos, scoreCaddy]) {
+      expect(source).not.toContain("Special Plays");
+      expect(source).not.toContain("power-ups");
+      expect(source).not.toContain("Disruptive powers");
+    }
+    expect(productCatalog).toContain("Game Changers");
+    expect(masterCatalog).toContain("disruptive Game Changers");
+    expect(demos).toContain("GAME CHANGER");
+    expect(scoreCaddy).toContain("challenges, Game Changers, competitive formats");
   });
 });
