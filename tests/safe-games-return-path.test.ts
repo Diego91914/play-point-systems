@@ -30,6 +30,17 @@ describe("getSafeGamesReturnPath", () => {
     }
   });
 
+  it("rejects dot-segment paths that normalize outside an approved route root", () => {
+    for (const path of [
+      "/games/../account",
+      "/games/..//example.com",
+      "/play-amplified/%2e%2e/account",
+      "/shot-caddy/%2e%2e/games/sign-in",
+    ]) {
+      expect(getSafeGamesReturnPath(path)).toBe("/games");
+    }
+  });
+
   it("prevents sign-in recursion and honors the caller fallback", () => {
     expect(getSafeGamesReturnPath("/games/sign-in")).toBe("/games");
     expect(getSafeGamesReturnPath("/games/sign-in?next=%2Fgames", "/play-amplified")).toBe("/play-amplified");
