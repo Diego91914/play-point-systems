@@ -7,6 +7,7 @@ import {
   GAMES_SESSION_COOKIE,
   verifyGamesSessionToken,
 } from "@/lib/play-point-core/games-session";
+import { getSafeGamesReturnPath } from "@/lib/play-point-core/safe-games-return-path";
 import { GamesSignInClient } from "./GamesSignInClient";
 
 export const metadata: Metadata = {
@@ -15,20 +16,13 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false, noarchive: true },
 };
 
-function safeNextPath(value: string | undefined): string {
-  if (!value || value.startsWith("//")) return "/play-amplified";
-  if (value.startsWith("/games/sign-in")) return "/play-amplified";
-  if (value.startsWith("/games") || value.startsWith("/play-amplified")) return value;
-  return "/play-amplified";
-}
-
 export default async function GamesSignInPage({
   searchParams,
 }: {
   searchParams: Promise<{ next?: string }>;
 }) {
   const params = await searchParams;
-  const destination = safeNextPath(params.next);
+  const destination = getSafeGamesReturnPath(params.next, "/play-amplified");
   const cookieStore = await cookies();
   const token = cookieStore.get(GAMES_SESSION_COOKIE)?.value;
   const claims = await verifyGamesSessionToken(token);

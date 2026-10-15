@@ -115,6 +115,11 @@
     "launchHref": "/shot-caddy/mode/disc-warrior"
   },
   {
+    "id": "clear-the-stack",
+    "href": "/play-amplified/games/clear-the-stack",
+    "launchHref": "/games/clear-the-stack"
+  },
+  {
     "id": "quest-digital",
     "href": "/play-amplified/games/quest-digital",
     "launchHref": "/shot-caddy/mode/quest-caddy/living-rpg"

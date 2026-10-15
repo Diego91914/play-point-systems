@@ -1,22 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-function safeNextPath(value: string): string {
-  if (value.startsWith("//")) return "/play-amplified";
-  if (value.startsWith("/games/sign-in")) return "/play-amplified";
-  if (
-    value.startsWith("/games") ||
-    value.startsWith("/play-amplified") ||
-    value.startsWith("/shot-caddy")
-  ) {
-    return value;
-  }
-  return "/play-amplified";
-}
+import { getSafeGamesReturnPath } from "@/lib/play-point-core/safe-games-return-path";
 
 export function GamesSignInClient({ nextPath }: { nextPath: string }) {
-  const destination = safeNextPath(nextPath);
+  const destination = getSafeGamesReturnPath(nextPath, "/play-amplified");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -55,10 +43,6 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
         return;
       }
 
-      // Public purchasing/hosting is still closed. Any unsigned attempt to
-      // enter the game library stays on the private builder-password path.
-      // Customer email sign-in remains available from the dedicated /account
-      // screen, but it is not part of Founder/builder test access.
       if (!cancelled) {
         const target = new URL("/builder-access", window.location.origin);
         target.searchParams.set("next", destination);

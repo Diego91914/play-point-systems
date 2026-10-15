@@ -5,6 +5,7 @@ import {
   GAMES_SESSION_COOKIE,
   verifyGamesSessionToken,
 } from "@/lib/play-point-core/games-session";
+import { getSafeGamesReturnPath } from "@/lib/play-point-core/safe-games-return-path";
 import { BuilderAccessClient } from "./BuilderAccessClient";
 
 export const metadata: Metadata = {
@@ -13,25 +14,13 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false, noarchive: true },
 };
 
-function safeNextPath(value: string | undefined): string {
-  if (!value || value.startsWith("//")) return "/games";
-  if (
-    value.startsWith("/games") ||
-    value.startsWith("/play-amplified") ||
-    value.startsWith("/shot-caddy")
-  ) {
-    return value;
-  }
-  return "/games";
-}
-
 export default async function BuilderAccessPage({
   searchParams,
 }: {
   searchParams: Promise<{ next?: string }>;
 }) {
   const params = await searchParams;
-  const destination = safeNextPath(params.next);
+  const destination = getSafeGamesReturnPath(params.next, "/games");
   const cookieStore = await cookies();
   const claims = await verifyGamesSessionToken(
     cookieStore.get(GAMES_SESSION_COOKIE)?.value,

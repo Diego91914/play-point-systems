@@ -435,7 +435,7 @@ export default function PlayAmplifiedPage() {
 
           <section className="border-t border-white/10 py-12 text-center">
             <div className="text-[10px] font-black uppercase tracking-[0.22em] text-white/35">Play Amplified library</div>
-            <div className="mt-3 text-2xl font-black text-white">{FINISHED_GAME_FORMATS.length} playable formats — and growing.</div>
+            <div className="mt-3 text-2xl font-black text-white">Discover games across every Play Amplified category.</div>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-white/48">New experiences can join the lineup as they are ready, with in-development previews clearly labeled before release.</p>
           </section>
         </main>
