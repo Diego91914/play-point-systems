@@ -22,12 +22,15 @@ describe("Play Amplified navigation roles", () => {
     expect(play).not.toContain("PlayCategory");
   });
 
-  it("keeps /games focused on owned access and Founder recognition", () => {
+  it("keeps /games focused on owned access, Founder recognition, and visual covers", () => {
     expect(library).toContain("Founder · All Access");
-    expect(library).toContain("Play now");
+    expect(library).toContain("Play now →");
     expect(library).toContain("MASTER_TO_PRODUCT_SKU");
     expect(library).toContain('id="ready-to-play"');
     expect(library).toContain('href="/play-amplified"');
+    expect(library).toContain('import { GameCoverArt } from "@/app/play-amplified/GameCoverArt"');
+    expect(library).toContain("<GameCoverArt gameId={game.id} />");
+    expect(library).toContain("Visual covers identify each game at a glance.");
     expect(library).not.toContain("StorefrontLane");
     expect(library).not.toContain("getStorefrontOffer");
     expect(library).not.toContain("Explore & buy");
