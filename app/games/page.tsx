@@ -143,8 +143,9 @@ export default async function GamesPage({
     const members = shelf.filter((candidate) =>
       group.memberIds.some((memberId) => memberId === candidate.id),
     );
+    const representative = shelf.find((candidate) => candidate.id === group.id) ?? game;
     return [{
-      ...game,
+      ...representative,
       title: group.title,
       parentTitle: game.family,
       description: group.description,
