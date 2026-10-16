@@ -52,7 +52,7 @@ const LIBRARY_PRODUCT_GROUPS = [
     id: "card-shark-classic",
     memberIds: ["card-shark-classic", "card-shark-stud", "card-shark-draw"],
     title: "Card Shark",
-    description: "Classic, Stud, and Draw: earn cards through play, then choose whether to keep the hand simple or add play-chip betting and draw strategy.",
+    description: "Classic has no betting. Stud adds progressive betting with play chips; Draw adds play-chip betting plus a discard and replacement-card decision.",
     launchHref: "/shot-caddy/mode/card-shark",
   },
   {
@@ -66,7 +66,7 @@ const LIBRARY_PRODUCT_GROUPS = [
     id: "quest-digital",
     memberIds: ["quest-digital", "quest-disc-golf"],
     title: "Quest Caddy",
-    description: "One persistent fantasy world with a Digital Adventure, Company Adventure, and a separate Disc Golf Journey.",
+    description: "One Quest Caddy product with a persistent Digital Adventure, Company Adventure, and a separate Disc Golf Journey; each path keeps its own campaign.",
     launchHref: "/shot-caddy/mode/quest-caddy",
   },
 ] as const;
