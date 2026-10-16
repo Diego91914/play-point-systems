@@ -71,7 +71,9 @@ const LIBRARY_PRODUCT_GROUPS = [
   },
 ] as const;
 
-const LIBRARY_GROUP_BY_MEMBER = new Map(
+type LibraryProductGroup = (typeof LIBRARY_PRODUCT_GROUPS)[number];
+
+const LIBRARY_GROUP_BY_MEMBER = new Map<string, LibraryProductGroup>(
   LIBRARY_PRODUCT_GROUPS.flatMap((group) =>
     group.memberIds.map((memberId) => [memberId, group] as const),
   ),
