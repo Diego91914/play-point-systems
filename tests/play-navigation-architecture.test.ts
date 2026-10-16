@@ -60,7 +60,7 @@ describe("Play Amplified navigation roles", () => {
     }
     expect(productCatalog).toContain("Game Changers");
     expect(masterCatalog).toContain("Game Changers");
-    expect(demos).toContain("GAME CHANGER");
+    expect(demos).toContain("Game Changers");
     expect(scoreCaddy).toContain("challenges, Game Changers, competitive formats");
   });
 });
