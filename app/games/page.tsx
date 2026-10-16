@@ -47,6 +47,36 @@ const MASTER_TO_PRODUCT_SKU: Record<string, string | undefined> = {
 
 type LibraryEntry = MasterGameEntry & { owned: boolean };
 
+const LIBRARY_PRODUCT_GROUPS = [
+  {
+    id: "card-shark-classic",
+    memberIds: ["card-shark-classic", "card-shark-stud", "card-shark-draw"],
+    title: "Card Shark",
+    description: "Classic, Stud, and Draw: earn cards through play, then choose whether to keep the hand simple or add play-chip betting and draw strategy.",
+    launchHref: "/shot-caddy/mode/card-shark",
+  },
+  {
+    id: "atw-ladder",
+    memberIds: ["atw-ladder", "atw-sprint", "atw-survival"],
+    title: "Around The World",
+    description: "Choose Ladder, Sprint, or Survival for three ways to race stations around one basket.",
+    launchHref: "/shot-caddy/mode/around-the-world",
+  },
+  {
+    id: "quest-digital",
+    memberIds: ["quest-digital", "quest-disc-golf"],
+    title: "Quest Caddy",
+    description: "One persistent fantasy world with a Digital Adventure, Company Adventure, and a separate Disc Golf Journey.",
+    launchHref: "/shot-caddy/mode/quest-caddy",
+  },
+] as const;
+
+const LIBRARY_GROUP_BY_MEMBER = new Map(
+  LIBRARY_PRODUCT_GROUPS.flatMap((group) =>
+    group.memberIds.map((memberId) => [memberId, group] as const),
+  ),
+);
+
 function GameCard({ game }: { game: LibraryEntry }) {
   return (
     <article className="group flex min-h-[168px] overflow-hidden rounded-[26px] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.065),rgba(255,255,255,0.022))] shadow-[0_18px_55px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-0.5 hover:border-white/20 sm:min-h-[190px]">
@@ -103,7 +133,25 @@ export default async function GamesPage({
     };
   });
 
-  const ownedGames = shelf.filter((game) => game.owned);
+  const emittedGroups = new Set<string>();
+  const ownedGames: LibraryEntry[] = shelf.flatMap((game) => {
+    if (!game.owned) return [];
+    const group = LIBRARY_GROUP_BY_MEMBER.get(game.id);
+    if (!group) return [game];
+    if (emittedGroups.has(group.id)) return [];
+    emittedGroups.add(group.id);
+    const members = shelf.filter((candidate) =>
+      group.memberIds.some((memberId) => memberId === candidate.id),
+    );
+    return [{
+      ...game,
+      title: group.title,
+      parentTitle: game.family,
+      description: group.description,
+      launchHref: group.launchHref,
+      owned: members.some((member) => member.owned),
+    }];
+  });
 
   return (
     <SiteShell current="games">
