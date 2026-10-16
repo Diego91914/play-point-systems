@@ -53,24 +53,18 @@ const actions = [
 
 export default function PlayPage() {
   return (
-    <SiteShell current="play">
+    <SiteShell current="play" variant="play-amplified">
       <section className="px-5 pb-12 pt-12 sm:px-8 sm:pb-16 sm:pt-16 lg:px-10 lg:py-20">
         <div className="mx-auto max-w-6xl">
           <div className="max-w-3xl">
             <div className="text-[11px] font-black uppercase tracking-[0.24em] text-cyan-100/58">Play Amplified</div>
             <h1 className="marketing-headline mt-4 leading-[0.98] lg:text-7xl">What do you want to do?</h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-white/68">
-              This is the action screen. Discover games on Play Amplified, then come here when it is time to start, join, score, or get back into your library.
-            </p>
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-white/68">This is the action screen. Discover games on Play Amplified, then come here when it is time to start, join, score, or get back into your library.</p>
           </div>
 
           <div className="mt-9 grid gap-4 sm:grid-cols-2">
             {actions.map((action, index) => (
-              <Link
-                key={action.title}
-                href={action.href}
-                className={`group rounded-[28px] border p-6 transition duration-200 hover:-translate-y-0.5 hover:border-white/30 ${action.frame} ${index === 0 ? "sm:col-span-2" : ""}`}
-              >
+              <Link key={action.title} href={action.href} className={`group rounded-[28px] border p-6 transition duration-200 hover:-translate-y-0.5 hover:border-white/30 ${action.frame} ${index === 0 ? "sm:col-span-2" : ""}`}>
                 <div className={`text-[10px] font-black uppercase tracking-[0.2em] ${action.accent}`}>{action.eyebrow}</div>
                 <div className="mt-3 text-3xl font-black tracking-tight text-white">{action.title}</div>
                 <p className="mt-3 max-w-xl text-sm leading-7 text-white/60">{action.body}</p>
