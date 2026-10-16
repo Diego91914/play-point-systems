@@ -157,7 +157,7 @@ export default async function GamesPage({
   });
 
   return (
-    <SiteShell current="games">
+    <SiteShell current="games" variant="play-amplified">
       <GameAtmosphere variant="library">
         <section className="px-5 pb-8 pt-8 sm:px-8 sm:pb-10 sm:pt-10 lg:px-10 lg:pb-12 lg:pt-12">
           <div className="mx-auto max-w-6xl">
