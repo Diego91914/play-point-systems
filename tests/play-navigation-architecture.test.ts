@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 const play = readFileSync("app/play/page.tsx", "utf8");
 const library = readFileSync("app/games/page.tsx", "utf8");
 const host = readFileSync("app/play/host/page.tsx", "utf8");
+const join = readFileSync("app/play/join/page.tsx", "utf8");
 const shell = readFileSync("app/components/SiteShell.tsx", "utf8");
 const productCatalog = readFileSync("lib/play-point-core/games-catalog.ts", "utf8");
 const masterCatalog = readFileSync("lib/play-point-core/master-game-catalog.ts", "utf8");
@@ -42,6 +43,15 @@ describe("Play Amplified navigation roles", () => {
     expect(host).toContain("Host room →");
     expect(host).toContain("Play Amplified does not force every game into the same room flow.");
     expect(host).toContain('href="/games"');
+  });
+
+  it("renders Play Amplified shell identity without waiting for hostname detection", () => {
+    for (const source of [play, library, host, join]) {
+      expect(source).toContain('variant="play-amplified"');
+    }
+    expect(shell).toContain('variant?: "auto" | "company" | "play-amplified"');
+    expect(shell).toContain("useSyncExternalStore");
+    expect(shell).not.toContain("setIsPlayAmplifiedHost");
   });
 
   it("uses consumer navigation roles on the Play Amplified host", () => {
