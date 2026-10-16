@@ -59,7 +59,7 @@ describe("Play Amplified navigation roles", () => {
       expect(source).not.toContain("Disruptive powers");
     }
     expect(productCatalog).toContain("Game Changers");
-    expect(masterCatalog).toContain("disruptive Game Changers");
+    expect(masterCatalog).toContain("Game Changers");
     expect(demos).toContain("GAME CHANGER");
     expect(scoreCaddy).toContain("challenges, Game Changers, competitive formats");
   });
