@@ -3,13 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 type SiteShellProps = {
   children: ReactNode;
   current?: "home" | "play" | "games" | "account" | "live" | "score-caddy" | "shot-caddy" | "music" | "about" | "contact";
   showAccessNotice?: boolean;
+  variant?: "auto" | "company" | "play-amplified";
 };
+
+const PLAY_AMPLIFIED_HOSTS = new Set(["playamplified.com", "www.playamplified.com"]);
 
 const companyNavItems = [
   { label: "Home", href: "/", key: "home" },
@@ -25,16 +28,29 @@ const playAmplifiedNavItems = [
   { label: "Profile", href: "/account", key: "account" },
 ] as const;
 
-export function SiteShell({ children, current, showAccessNotice = false }: SiteShellProps) {
+function subscribeToHostname() {
+  return () => {};
+}
+
+function getPlayAmplifiedHostSnapshot() {
+  return PLAY_AMPLIFIED_HOSTS.has(window.location.hostname.toLowerCase());
+}
+
+function getServerPlayAmplifiedHostSnapshot() {
+  return false;
+}
+
+export function SiteShell({ children, current, showAccessNotice = false, variant = "auto" }: SiteShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showAccessBanner, setShowAccessBanner] = useState(true);
-  const [isPlayAmplifiedHost, setIsPlayAmplifiedHost] = useState(false);
+  const detectedPlayAmplifiedHost = useSyncExternalStore(
+    subscribeToHostname,
+    getPlayAmplifiedHostSnapshot,
+    getServerPlayAmplifiedHostSnapshot,
+  );
+  const isPlayAmplifiedHost =
+    variant === "play-amplified" || (variant === "auto" && detectedPlayAmplifiedHost);
   const navItems = isPlayAmplifiedHost ? playAmplifiedNavItems : companyNavItems;
-
-  useEffect(() => {
-    const hostname = window.location.hostname.toLowerCase();
-    setIsPlayAmplifiedHost(hostname === "playamplified.com" || hostname === "www.playamplified.com");
-  }, []);
 
   useEffect(() => {
     if (!mobileOpen) return;
