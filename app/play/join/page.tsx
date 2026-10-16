@@ -40,7 +40,7 @@ export default function JoinGamePage() {
   }, []);
 
   return (
-    <SiteShell current="play">
+    <SiteShell current="play" variant="play-amplified">
       <section className="px-5 py-10 sm:px-8 lg:px-10 lg:py-16">
         <div className="mx-auto max-w-xl">
           <Link href="/play" className="text-sm font-bold text-white/50 hover:text-white">← Back to Play</Link>
