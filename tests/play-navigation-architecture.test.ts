@@ -6,6 +6,8 @@ const library = readFileSync("app/games/page.tsx", "utf8");
 const host = readFileSync("app/play/host/page.tsx", "utf8");
 const join = readFileSync("app/play/join/page.tsx", "utf8");
 const shell = readFileSync("app/components/SiteShell.tsx", "utf8");
+const shellClient = readFileSync("app/components/SiteShellClient.tsx", "utf8");
+const shellBrand = readFileSync("lib/site-shell-brand.ts", "utf8");
 const productCatalog = readFileSync("lib/play-point-core/games-catalog.ts", "utf8");
 const masterCatalog = readFileSync("lib/play-point-core/master-game-catalog.ts", "utf8");
 const demos = readFileSync("lib/play-point-core/game-experience-demos.ts", "utf8");
@@ -67,16 +69,20 @@ describe("Play Amplified navigation roles", () => {
       expect(source).toContain('variant="play-amplified"');
     }
     expect(shell).toContain('variant?: "auto" | "company" | "play-amplified"');
-    expect(shell).toContain("useSyncExternalStore");
-    expect(shell).not.toContain("setIsPlayAmplifiedHost");
+    expect(shell).toContain("await headers()");
+    expect(shell).toContain("isPlayAmplifiedShell(hostname, current)");
+    expect(shell).toContain('variant === "play-amplified"');
+    expect(shell).toContain('variant === "auto"');
+    expect(shell).not.toContain("window.location.hostname");
+    expect(shellClient).not.toContain("useSyncExternalStore");
   });
 
   it("uses consumer navigation roles on the Play Amplified host", () => {
-    expect(shell).toContain("playAmplifiedNavItems");
-    expect(shell).toContain('{ label: "Discover", href: "/play-amplified", key: "home" }');
-    expect(shell).toContain('{ label: "My Games", href: "/games", key: "games" }');
-    expect(shell).toContain('href="/play/join"');
-    expect(shell).toContain('isPlayAmplifiedHost ? "/play-amplified" : "/"');
+    expect(shellBrand).toContain('{ label: "Discover", href: "/play-amplified", key: "home" }');
+    expect(shellBrand).toContain('{ label: "My Games", href: "/games", key: "games" }');
+    expect(shellClient).toContain("getSiteShellNavigationItems(isPlayAmplifiedHost)");
+    expect(shellClient).toContain("getSiteShellHomeHref(isPlayAmplifiedHost)");
+    expect(shellClient).toContain('href="/play/join"');
   });
 
   it("uses the locked Game Changers terminology on active customer-facing surfaces", () => {
