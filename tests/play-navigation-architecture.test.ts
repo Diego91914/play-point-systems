@@ -27,6 +27,7 @@ describe("Play Amplified navigation roles", () => {
     expect(library).toContain("Founder · All Access");
     expect(library).toContain("Play now →");
     expect(library).toContain("MASTER_TO_PRODUCT_SKU");
+    expect(library).toContain('"clear-the-stack": "game.clear_the_stack"');
     expect(library).toContain('id="ready-to-play"');
     expect(library).toContain('href="/play-amplified"');
     expect(library).toContain('import { GameCoverArt } from "@/app/play-amplified/GameCoverArt"');
