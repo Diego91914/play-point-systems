@@ -1,25 +1,29 @@
 import Link from "next/link";
 import { SiteShell } from "@/app/components/SiteShell";
-import { PLAY_POINT_GAME_CATALOG } from "@/lib/play-point-core/games-catalog";
+import { MASTER_GAME_CATALOG } from "@/lib/play-point-core/master-game-catalog";
 
 export const metadata = {
   title: "Host a Room | Play Amplified",
   description: "Choose a Play Amplified room game and invite your group by QR code or room code.",
 };
 
-const ROOM_GAME_SKUS = new Set<string>([
-  "game.chain_reaction",
-  "game.how_close",
-  "game.on_my_list",
-  "game.inside_man",
-  "game.phone_holdem",
-  "game.play_point_trivia",
+// Room capability is a product/experience concern, not a commerce concern.
+// Keep this explicit so Shot Caddy, Quest Caddy, Clear the Stack, and other
+// experiences with their own setup flows never get pulled into the shared-room hub.
+const ROOM_GAME_IDS = new Set<string>([
+  "chain-reaction",
+  "how-close",
+  "on-my-list",
+  "all-about-you",
+  "inside-man",
+  "phone-holdem",
+  "live-craps",
+  "last-call",
+  "play-point-trivia",
 ]);
 
 export default function HostGamePage() {
-  const roomGames = PLAY_POINT_GAME_CATALOG.filter(
-    (game) => game.status === "live" && ROOM_GAME_SKUS.has(game.sku),
-  );
+  const roomGames = MASTER_GAME_CATALOG.filter((game) => ROOM_GAME_IDS.has(game.id));
 
   return (
     <SiteShell current="play" variant="play-amplified">
@@ -34,8 +38,13 @@ export default function HostGamePage() {
 
           <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {roomGames.map((game) => (
-              <Link key={game.sku} href={game.href} className="rounded-[24px] border border-white/10 bg-white/[0.035] p-5 transition hover:-translate-y-0.5 hover:border-cyan-200/25 hover:bg-white/[0.055]">
-                <div className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-100/50">{game.brand}</div>
+              <Link key={game.id} href={game.launchHref} className="rounded-[24px] border border-white/10 bg-white/[0.035] p-5 transition hover:-translate-y-0.5 hover:border-cyan-200/25 hover:bg-white/[0.055]">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-100/50">{game.family}</div>
+                  <span className={`shrink-0 rounded-full border px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.12em] ${game.status === "live" ? "border-emerald-200/20 bg-emerald-300/[0.08] text-emerald-100" : "border-amber-200/20 bg-amber-300/[0.08] text-amber-100"}`}>
+                    {game.status === "live" ? "Playable" : "Preview"}
+                  </span>
+                </div>
                 <div className="mt-2 text-xl font-black text-white">{game.title}</div>
                 <p className="mt-2 text-sm leading-6 text-white/52">{game.description}</p>
                 <div className="mt-4 text-sm font-black text-cyan-100">Host room →</div>
