@@ -84,6 +84,28 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      // Shot Caddy gameplay is a Play Amplified game family. Legacy zone-level
+      // shell destinations must return to the Play Amplified navigation rather
+      // than opening a second My Games / Account / QuickScore experience.
+      {
+        source: "/shot-caddy/games",
+        destination: "/games",
+        permanent: false,
+      },
+      {
+        source: "/shot-caddy/account",
+        destination: "/account",
+        permanent: false,
+      },
+      {
+        source: "/shot-caddy/score",
+        destination: "/live/quick-score",
+        permanent: false,
+      },
+    ];
+  },
   async rewrites() {
     return {
       beforeFiles: [
