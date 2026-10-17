@@ -141,6 +141,7 @@ export function TriviaJoinExperience() {
   const [clockNowMs, setClockNowMs] = useState(Date.now());
   const [serverClockOffsetMs, setServerClockOffsetMs] = useState(0);
   const [streamConnected, setStreamConnected] = useState(false);
+  const [recoveringConnection, setRecoveringConnection] = useState(false);
   const [wagerInput, setWagerInput] = useState("");
   const [submittingWager, setSubmittingWager] = useState(false);
   const snapshotServerTimeMs = snapshot?.serverTimeMs;
@@ -180,6 +181,7 @@ export function TriviaJoinExperience() {
         return;
       }
 
+      setRecoveringConnection(true);
       setPlayerToken(legacyPlayerToken);
       setHasPlayerCredential(true);
       requestJson<JoinSnapshot>(
@@ -189,6 +191,7 @@ export function TriviaJoinExperience() {
       )
         .then((nextSnapshot) => {
           setSnapshot(nextSnapshot);
+          setJoinError(null);
           window.localStorage.setItem(
             PLAYER_CONNECTION_STORAGE_KEY,
             JSON.stringify({
@@ -200,12 +203,12 @@ export function TriviaJoinExperience() {
           window.sessionStorage.removeItem(LEGACY_PLAYER_CONNECTION_STORAGE_KEY);
           setPlayerToken(null);
         })
-        .catch(() => {
-          window.localStorage.removeItem(PLAYER_CONNECTION_STORAGE_KEY);
-          window.sessionStorage.removeItem(LEGACY_PLAYER_CONNECTION_STORAGE_KEY);
-          setPlayerToken(null);
+        .catch((error) => {
+          // Network failures must not erase the only reference to an existing seat.
+          setJoinError(error instanceof Error ? `${error.message} Try Resume Game again.` : "Unable to resume. Try again.");
           setHasPlayerCredential(false);
-        });
+        })
+        .finally(() => setRecoveringConnection(false));
     } catch {
       window.localStorage.removeItem(PLAYER_CONNECTION_STORAGE_KEY);
       window.sessionStorage.removeItem(LEGACY_PLAYER_CONNECTION_STORAGE_KEY);
@@ -286,6 +289,29 @@ export function TriviaJoinExperience() {
     && snapshot.currentCard.roundIndex === snapshot.currentCard.totalRounds - 1
     && snapshot.currentCard.questionNumberInRound === snapshot.currentCard.totalQuestionsInRound,
   );
+
+  async function resumeGame() {
+    const raw = window.localStorage.getItem(PLAYER_CONNECTION_STORAGE_KEY)
+      ?? window.sessionStorage.getItem(LEGACY_PLAYER_CONNECTION_STORAGE_KEY);
+    if (!raw) return;
+    try {
+      setRecoveringConnection(true);
+      const connection = JSON.parse(raw) as { sessionId: string; playerId: string; roomCode: string; playerToken?: string };
+      if (roomCode && connection.roomCode !== roomCode.toUpperCase()) {
+        setJoinError("Saved player belongs to another room.");
+        return;
+      }
+      const next = await requestJson<JoinSnapshot>(`/api/trivia/sessions/${connection.sessionId}/players/${connection.playerId}`, undefined, connection.playerToken);
+      setSnapshot(next);
+      setPlayerToken(connection.playerToken ?? null);
+      setHasPlayerCredential(true);
+      setJoinError(null);
+    } catch (error) {
+      setJoinError(error instanceof Error ? error.message : "Unable to resume this game.");
+    } finally {
+      setRecoveringConnection(false);
+    }
+  }
 
   async function joinRoom() {
     try {
@@ -390,6 +416,9 @@ export function TriviaJoinExperience() {
                 {joinError ? <div className="mt-4 text-sm font-semibold text-amber-200">{joinError}</div> : null}
 
                 <div className="mt-5 flex flex-wrap gap-3">
+                  {(typeof window !== "undefined" && (window.localStorage.getItem(PLAYER_CONNECTION_STORAGE_KEY) || window.sessionStorage.getItem(LEGACY_PLAYER_CONNECTION_STORAGE_KEY))) ? (
+                    <button type="button" onClick={resumeGame} disabled={recoveringConnection} className="inline-flex rounded-2xl border border-emerald-300/40 px-5 py-3 text-sm font-black text-emerald-100">{recoveringConnection ? "Resuming..." : "Resume Game"}</button>
+                  ) : null}
                   <button
                     type="button"
                     onClick={joinRoom}
