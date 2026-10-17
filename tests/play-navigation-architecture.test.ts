@@ -38,8 +38,24 @@ describe("Play Amplified navigation roles", () => {
     expect(library).not.toContain("Explore & buy");
   });
 
-  it("limits the host path to actual shared-room games", () => {
-    expect(host).toContain("ROOM_GAME_SKUS");
+  it("limits the host path to actual shared-room games without using commerce as capability", () => {
+    expect(host).toContain("ROOM_GAME_IDS");
+    expect(host).toContain("MASTER_GAME_CATALOG");
+    expect(host).not.toContain("PLAY_POINT_GAME_CATALOG");
+    for (const gameId of [
+      "chain-reaction",
+      "how-close",
+      "on-my-list",
+      "all-about-you",
+      "inside-man",
+      "phone-holdem",
+      "live-craps",
+      "last-call",
+      "play-point-trivia",
+    ]) {
+      expect(host).toContain(`"${gameId}"`);
+    }
+    expect(host).toContain("game.launchHref");
     expect(host).toContain("Host a room");
     expect(host).toContain("Host room →");
     expect(host).toContain("Play Amplified does not force every game into the same room flow.");
