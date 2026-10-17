@@ -122,7 +122,7 @@ export default function ScoreCaddyLandingPage() {
             <div>
               <div className="text-[11px] font-black uppercase tracking-[0.22em] text-emerald-100/52">When scoring isn&apos;t enough</div>
               <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Score Caddy keeps score. Shot Caddy changes the game.</h2>
-              <p className="mt-4 max-w-3xl text-sm leading-7 text-white/62">When you want challenges, Special Plays, competitive formats, and strategic overlays, move into Shot Caddy without turning the simple scorer into a complicated game platform.</p>
+              <p className="mt-4 max-w-3xl text-sm leading-7 text-white/62">When you want challenges, Game Changers, competitive formats, and strategic overlays, move into Shot Caddy without turning the simple scorer into a complicated game platform.</p>
             </div>
             <Link href="/shot-caddy" className="inline-flex items-center justify-center rounded-2xl border border-emerald-200/25 bg-emerald-400/10 px-5 py-3.5 text-sm font-black text-emerald-50 transition hover:bg-emerald-400/16">Explore Shot Caddy →</Link>
           </div>
