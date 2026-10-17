@@ -65,7 +65,7 @@ describe("Play Amplified navigation roles", () => {
   });
 
   it("renders Play Amplified shell identity without waiting for hostname detection", () => {
-    for (const source of [play, library, host, join]) {
+    for (const source of [play, library, host]) {
       expect(source).toContain('variant="play-amplified"');
     }
     expect(shell).toContain('variant?: "auto" | "company" | "play-amplified"');
@@ -75,6 +75,8 @@ describe("Play Amplified navigation roles", () => {
     expect(shell).toContain('variant === "auto"');
     expect(shell).not.toContain("window.location.hostname");
     expect(shellClient).not.toContain("useSyncExternalStore");
+    expect(join).not.toContain('"use client"');
+    expect(join).toContain("GuestJoinGameClient");
   });
 
   it("uses consumer navigation roles on the Play Amplified host", () => {
