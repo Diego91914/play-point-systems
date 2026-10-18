@@ -71,20 +71,20 @@ const demos: Record<string, GameExperienceDemo> = {
   "shot-classic": {
     hook: "Keep the disc golf round. Add a fresh challenge to every hole.",
     payoff: "The course stays real, but every tee suddenly has a new reason to think, risk, or celebrate.",
-    facts: ["Real round", "Hole challenges", "Tokens & plays", "Disc golf"],
+    facts: ["Real round", "Hole challenges", "Game Changers", "Disc golf"],
     steps: [
       { eyebrow: "Hole 7", headline: "Challenge: Park the approach", detail: "The app gives the group a clear side objective without replacing normal scoring.", phoneLabel: "CHALLENGE", phoneBody: "INSIDE 20 FT", accent: "cyan" },
-      { eyebrow: "Pressure", headline: "Use a Special Play—or save it", detail: "The strategy comes from deciding when the hole is worth spending an advantage.", phoneLabel: "SPECIAL PLAY", phoneBody: "MULLIGAN", accent: "amber" },
-      { eyebrow: "Payoff", headline: "Challenge cleared", detail: "The throw mattered twice: once for the round and once for the game layered on top.", phoneLabel: "REWARD", phoneBody: "+2 TOKENS", accent: "emerald" },
+      { eyebrow: "Set your mix", headline: "Choose the challenges in your round", detail: "Tune how much Direct, Restriction, Chaos, and Precision you want in the challenge mix.", phoneLabel: "PACK MIX", phoneBody: "DIRECT · PRECISION", accent: "amber" },
+      { eyebrow: "Payoff", headline: "Challenge cleared", detail: "Your normal score and the hole challenge both matter, while Classic keeps bonus challenges and Game Changers off.", phoneLabel: "ROUND", phoneBody: "CLASSIC", accent: "emerald" },
     ],
   },
   "shot-chaos": {
-    hook: "Shot Caddy Classic with the safety rails removed.",
-    payoff: "Chaos creates the kind of swing where one power play can turn an ordinary hole into the story of the round.",
-    facts: ["Real round", "Disruptive powers", "Bigger swings", "Disc golf"],
+    hook: "Classic challenges with bonus challenges and Game Changers layered on top.",
+    payoff: "Tune the underlying challenge-pack mix, then add bonus challenges and Game Changers for a more unpredictable round.",
+    facts: ["Real round", "Challenge-pack mix", "Bonus challenges", "Game Changers"],
     steps: [
-      { eyebrow: "Chaos card", headline: "Your rival just changed the hole", detail: "A power-up adds a temporary rule that everyone has to play around.", phoneLabel: "CHAOS", phoneBody: "ONE-DISC HOLE", accent: "rose" },
-      { eyebrow: "Counterplay", headline: "Do you burn your protection now?", detail: "You can answer chaos with your own saved Special Play—or take the risk.", phoneLabel: "AVAILABLE", phoneBody: "INSURANCE", accent: "amber" },
+      { eyebrow: "Bonus layer", headline: "A bonus challenge joins the hole", detail: "Chaos keeps the Classic challenge mix and adds a separate layer of bonus challenges and Game Changers.", phoneLabel: "CHAOS", phoneBody: "BONUS CHALLENGE", accent: "rose" },
+      { eyebrow: "Choose your mix", headline: "Set the challenge balance", detail: "Adjust how much Direct, Restriction, Chaos, and Precision you want underneath the bonus layer.", phoneLabel: "PACK MIX", phoneBody: "YOUR CHOICE", accent: "amber" },
       { eyebrow: "Swing", headline: "The hole flips the standings", detail: "The physical throws still decide it. Chaos just makes the consequences louder.", phoneLabel: "HOLE SWING", phoneBody: "+4", accent: "emerald" },
     ],
   },
@@ -103,23 +103,23 @@ const demos: Record<string, GameExperienceDemo> = {
     payoff: "A routine par putt feels different when everybody knows you called birdie two minutes ago.",
     facts: ["Pre-hole prediction", "Disc + ball golf", "Risk/reward", "Simple scoring"],
     steps: [
-      { eyebrow: "Before the tee", headline: "Call it: Birdie, Par, or Worse", detail: "Commit before the hole starts.", phoneLabel: "YOUR CALL", phoneBody: "BIRDIE", accent: "cyan" },
+      { eyebrow: "Before the tee", headline: "Call it: Birdie, Par, or Bogey", detail: "Commit before the hole starts.", phoneLabel: "YOUR CALL", phoneBody: "BIRDIE", accent: "cyan" },
       { eyebrow: "Now it matters", headline: "18 feet left for the called birdie", detail: "The prediction turns an ordinary putt into a public promise.", phoneLabel: "STATUS", phoneBody: "FOR BIRDIE", accent: "amber" },
-      { eyebrow: "Back it up", headline: "Call confirmed", detail: "Make the prediction real and collect the points.", phoneLabel: "RESULT", phoneBody: "+3", accent: "emerald" },
+      { eyebrow: "Back it up", headline: "Birdie call confirmed", detail: "Meet or beat your call to earn its reward tier. A successful Birdie call is worth 2 points on an ordinary hole.", phoneLabel: "RESULT", phoneBody: "+2", accent: "emerald" },
     ],
   },
   "challenge-skins-pro": {
-    hook: "One focused skill contest on every hole. One winner.",
+    hook: "One par-based skill contest on each hole, with a carryover if there is no clear winner.",
     payoff: "It keeps the round moving while giving every hole a second scoreboard to care about.",
     facts: ["One challenge per hole", "Disc + ball golf", "Skin winner", "Tournament-friendly"],
     steps: [
       { eyebrow: "Hole challenge", headline: "Best drive inside the fairway", detail: "Everybody gets the same objective.", phoneLabel: "SKIN", phoneBody: "FAIRWAY DRIVE", accent: "cyan" },
-      { eyebrow: "Result", headline: "Two qualify. One is closer.", detail: "The app resolves the challenge while normal hole scoring continues.", phoneLabel: "LEADER", phoneBody: "TYLER", accent: "amber" },
-      { eyebrow: "Skin awarded", headline: "Tyler takes Hole 5", detail: "One clean payoff, then the group moves on.", phoneLabel: "SKINS", phoneBody: "TYLER 3", accent: "emerald" },
+      { eyebrow: "Result", headline: "The host records the hole winner", detail: "A tie-break shot can settle a close call. If the group still has no clear winner, the skill pot carries forward.", phoneLabel: "SKILL POT", phoneBody: "CARRYOVER", accent: "amber" },
+      { eyebrow: "Skill pot", headline: "A clear winner takes the pot", detail: "The host records the winner, while ordinary stroke scoring can continue alongside the skill contest.", phoneLabel: "WINNER", phoneBody: "HOLE 5", accent: "emerald" },
     ],
   },
   "wolf": {
-    hook: "Every hole asks the leader: partner up or go alone?", payoff: "The best moments happen when somebody rejects the safe partner and calls Lone Wolf.", facts: ["Rotating Wolf", "Partner choices", "Lone Wolf", "Disc + ball golf"],
+    hook: "The rotating Wolf watches the drives, then chooses a partner or goes alone.", payoff: "The best moments happen when somebody rejects the safe partner and calls Lone Wolf.", facts: ["Rotating Wolf", "Partner choices", "Lone Wolf", "Disc + ball golf"],
     steps: [
       { eyebrow: "You are the Wolf", headline: "Watch the first drive", detail: "After each player throws, decide whether to take that partner or keep waiting.", phoneLabel: "WOLF", phoneBody: "CHANNING", accent: "violet" },
       { eyebrow: "Decision", headline: "Take Tyler—or hunt alone?", detail: "Passing on a strong drive can create a bigger payoff but more risk.", phoneLabel: "CHOICE", phoneBody: "LONE WOLF", accent: "amber" },
@@ -137,8 +137,8 @@ const demos: Record<string, GameExperienceDemo> = {
   "wolf-pack": {
     hook: "Build the only team on the card—or decide the pack is better hunted alone.", payoff: "Every selection changes alliances in public, which makes the next throw immediately personal.", facts: ["Dynamic teams", "3–6 players", "Solo option", "Disc + ball golf"],
     steps: [
-      { eyebrow: "Pack forming", headline: "Pick one player after each drive", detail: "The team grows in real time as throws come in.", phoneLabel: "PACK", phoneBody: "OLIVIA + TYLER", accent: "violet" },
-      { eyebrow: "The holdout", headline: "One player stays outside", detail: "That player can still beat the whole pack with the right hole.", phoneLabel: "HUNTER", phoneBody: "CHANNING", accent: "amber" },
+      { eyebrow: "Tee shots", headline: "Watch every drive first", detail: "After all tee shots are complete, the Wolf selects one partner or declares Lone Wolf.", phoneLabel: "WOLF", phoneBody: "CHOOSE AFTER", accent: "violet" },
+      { eyebrow: "Join the Pack", headline: "Use the option once", detail: "A partnered Wolf may abandon their current lie and continue from the partner’s lie before either player holes out.", phoneLabel: "JOIN", phoneBody: "ONCE PER HOLE", accent: "amber" },
       { eyebrow: "Showdown", headline: "Hunter takes the hole", detail: "The alliance you built just became the team that lost together.", phoneLabel: "RESULT", phoneBody: "HUNTER +3", accent: "emerald" },
     ],
   },
@@ -211,7 +211,7 @@ const demos: Record<string, GameExperienceDemo> = {
     hook: "Your real disc-golf round becomes the engine of a fantasy adventure.", payoff: "A drive is still a drive—but now the result can open a path, trigger danger, or change what your Hero carries into the next chapter.", facts: ["Real throws", "Persistent Hero", "Fantasy layer", "Disc golf"],
     steps: [
       { eyebrow: "Hole begins", headline: "The ruined gate is sealed", detail: "The fantasy challenge is tied to what happens on the real hole.", phoneLabel: "QUEST", phoneBody: "BREAK THE SEAL", accent: "violet" },
-      { eyebrow: "Real throw", headline: "Park the drive to create an opening", detail: "The physical result determines the fiction instead of an arbitrary button press.", phoneLabel: "THROW RESULT", phoneBody: "PARKED", accent: "cyan" },
+      { eyebrow: "Real throw", headline: "Park the drive to create an opening", detail: "Your real hole score shapes the story consequence and the Chronicle remembers the result.", phoneLabel: "THROW RESULT", phoneBody: "PARKED", accent: "cyan" },
       { eyebrow: "Story moves", headline: "The gate opens", detail: "Your round created a story consequence that stays in the Chronicle.", phoneLabel: "CHRONICLE", phoneBody: "+ NEW PATH", accent: "emerald" },
     ],
   },
@@ -238,7 +238,7 @@ export function getGameExperienceDemo(game: MasterGameEntry): GameExperienceDemo
   return demos[game.id] ?? {
     hook: game.description,
     payoff: "See how the game creates a shared moment before you decide to start it.",
-    facts: [game.family, game.lane, game.status === "live" ? "Finished" : "Playable preview"],
+    facts: [game.family, game.lane, game.status === "live" ? "Playable" : "Playable preview"],
     steps: [
       { eyebrow: "Set the moment", headline: game.title, detail: game.description, phoneLabel: "READY", phoneBody: "START", accent: "cyan" },
       { eyebrow: "Play", headline: "The group makes the decisions", detail: "The phone handles the private information and game state while people stay focused on each other.", phoneLabel: "LIVE", phoneBody: "IN PLAY", accent: "amber" },

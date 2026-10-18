@@ -17,6 +17,8 @@ async function savedState(page: Page) {
 }
 
 test("browsing all previews preserves sessions and never loads or mutates games", async ({ page, context }, testInfo) => {
+  // Checking every game detail page is intentionally broader than the default 30-second smoke-test limit.
+  test.setTimeout(120_000);
   // Seed from an inert test document: the real /offline page has its own game Links.
   await context.route("**/__preview-test-bootstrap", route => route.fulfill({ contentType: "text/html", body: "<!doctype html><title>Preview test fixture</title>" }));
   await page.goto("/__preview-test-bootstrap");
@@ -77,20 +79,28 @@ test("browsing all previews preserves sessions and never loads or mutates games"
     }
   });
   await page.goto("/play-amplified");
-  await expect(page.locator("[data-game-preview]")).toHaveCount(MASTER_GAME_CATALOG.length);
-  for (const game of MASTER_GAME_CATALOG) {
-    const figure = page.locator(`[data-game-preview="${game.id}"]`);
+  // The storefront now reserves full screenshots for its five featured games;
+  // the complete library uses compact cover art, linked to the same detail pages.
+  const featuredGameIds = ["shot-classic", "clear-the-stack", "phone-holdem", "live-craps", "quest-digital"] as const;
+  await expect(page.locator("[data-game-preview]")).toHaveCount(featuredGameIds.length);
+  for (const gameId of featuredGameIds) {
+    const game = MASTER_GAME_CATALOG.find((entry) => entry.id === gameId);
+    expect(game).toBeDefined();
+    const figure = page.locator(`[data-game-preview="${gameId}"]`);
     await figure.scrollIntoViewIfNeeded();
     await expect(figure.locator("img")).toBeVisible();
     await expect.poll(() => figure.locator("img").evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
-    await expect(figure.locator("xpath=ancestor::a")).toHaveAttribute("href", game.href);
+    await expect(figure.locator("xpath=ancestor::a")).toHaveAttribute("href", game!.href);
     await figure.hover();
   }
+  for (const game of MASTER_GAME_CATALOG) {
+    await expect(page.locator(`#all-games a[href="${game.href}"]`).first()).toHaveCount(1);
+  }
   await expect(page.locator("iframe, object, embed")).toHaveCount(0);
-  await page.locator('[data-game-preview="chain-reaction"]').scrollIntoViewIfNeeded();
+  await page.locator("#all-games").scrollIntoViewIfNeeded();
   await page.screenshot({ path: testInfo.outputPath("catalog.png") });
   // Real client navigation exercises the Link boundary, not just direct requests.
-  await page.locator('[data-game-preview="chain-reaction"]').click();
+  await page.locator('#all-games a[href="/play-amplified/games/chain-reaction"]').first().click();
   await expect(page).toHaveURL(/\/play-amplified\/games\/chain-reaction$/);
   for (const game of MASTER_GAME_CATALOG) {
     await page.goto(game.href);
@@ -114,7 +124,16 @@ test("browsing all previews preserves sessions and never loads or mutates games"
   expect(forbidden).toEqual([]);
   expect(errors).toEqual([]);
   await testInfo.attach("preview-network", { body: network.join("\n"), contentType: "text/plain" });
-  expect(await page.evaluate(async () => (await navigator.serviceWorker.getRegistrations()).some(r => r.active?.scriptURL.endsWith("/play-amplified-sw.js")))).toBe(true);
+  // PWA registration is intentionally limited to Play Amplified domains and localhost.
+  // CI uses 127.0.0.1, so it should not register a service worker on that host.
+  const serviceWorkerRegistered = await page.evaluate(async () =>
+    (await navigator.serviceWorker.getRegistrations())
+      .some((registration) => registration.active?.scriptURL.endsWith("/play-amplified-sw.js")),
+  );
+  const host = new URL(page.url()).hostname.toLowerCase();
+  expect(serviceWorkerRegistered).toBe(
+    host === "localhost" || host === "playamplified.com" || host === "www.playamplified.com",
+  );
 });
 
 test("failed screenshots retain layout and explicit launch navigation without a runtime fallback", async ({ page, context }) => {
