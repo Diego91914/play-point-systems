@@ -77,6 +77,7 @@ describe("Play Amplified navigation roles", () => {
     expect(shellClient).not.toContain("useSyncExternalStore");
     expect(join).not.toContain('"use client"');
     expect(join).toContain("GuestJoinGameClient");
+    expect(join).toContain('<SiteShell current="play" variant="play-amplified">');
   });
 
   it("uses consumer navigation roles on the Play Amplified host", () => {
