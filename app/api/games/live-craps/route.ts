@@ -1,4 +1,5 @@
-import { randomInt, randomUUID } from "node:crypto";
+import { reservePlayAmplifiedSession, releasePlayAmplifiedSession } from "@/lib/play-point-core/room-registry";
+import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { createLiveCrapsServerRoom, joinLiveCrapsServerRoom } from "@/lib/play-point-core/live-craps-room-server";
 import type { LiveCrapsDiceMode } from "@/lib/play-point-core/live-craps-dice-mode";
@@ -8,11 +9,6 @@ import { canHostDuringPrelaunch, prelaunchHostError } from "@/lib/play-point-cor
 /** Initial table entry always receives a fresh opaque server-owned identity. Rejoin uses the issued playerId + token on the room endpoint. */
 function newPlayerId() {
   return `player-${randomUUID()}`;
-}
-
-function newRoomCode() {
-  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  return Array.from({ length: 6 }, () => alphabet[randomInt(alphabet.length)]).join("");
 }
 
 function diceMode(value: unknown): LiveCrapsDiceMode | undefined {
@@ -35,14 +31,20 @@ export async function POST(request: NextRequest) {
       if (!claims) return NextResponse.json({ error: "Sign in to host Live Craps." }, { status: 401 });
       // Live Craps is founder/builder playtest-only until it receives a public catalog entitlement.
       if (!canHostDuringPrelaunch(claims)) return NextResponse.json({ error: prelaunchHostError() }, { status: 403 });
-      const requestedCode = String(body.code ?? "").trim().toUpperCase();
-      const result = await createLiveCrapsServerRoom({
-        code: requestedCode || newRoomCode(),
-        hostPlayerId: newPlayerId(),
-        hostName: requiredName(body.name, "Host"),
-        diceMode: diceMode(body.diceMode),
-      });
-      return NextResponse.json({ success: true, ...result }, { status: 201 });
+      const mode = diceMode(body.diceMode);
+      const session = await reservePlayAmplifiedSession({ gameSku: "game.live_craps", participationModel: "OPEN_LOBBY", joinHref: "/games/live-craps?code={code}", expiresAt: new Date(Date.now() + 86400000).toISOString() });
+      try {
+        const result = await createLiveCrapsServerRoom({
+          code: session.code,
+          hostPlayerId: newPlayerId(),
+          hostName: requiredName(body.name, "Host"),
+          diceMode: mode,
+        });
+        return NextResponse.json({ success: true, ...result }, { status: 201 });
+      } catch (error) {
+        await releasePlayAmplifiedSession(session.code);
+        throw error;
+      }
     }
     if (action === "join") {
       const result = await joinLiveCrapsServerRoom(String(body.code ?? ""), {

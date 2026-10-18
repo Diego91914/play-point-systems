@@ -1,0 +1,177 @@
+{
+  "project": "qdsyxcjmrsxetjxeuojk",
+  "migrationHistory": [
+    {
+      "version": "20260725044417",
+      "name": "quick_score_credential_hashes"
+    },
+    {
+      "version": "20260725054519",
+      "name": "quick_score_email_accounts"
+    },
+    {
+      "version": "20260725151630",
+      "name": "trivia_live_persistence"
+    },
+    {
+      "version": "20260725163448",
+      "name": "trivia_live_realtime"
+    },
+    {
+      "version": "20260725173451",
+      "name": "add_trivia_pacing_modes"
+    },
+    {
+      "version": "20260725175835",
+      "name": "add_trivia_round_scoring_modes"
+    },
+    {
+      "version": "20260725181747",
+      "name": "add_trivia_final_wager"
+    },
+    {
+      "version": "20260725183624",
+      "name": "add_trivia_team_modes"
+    },
+    {
+      "version": "20260725184747",
+      "name": "configure_trivia_team_count"
+    },
+    {
+      "version": "20260725185536",
+      "name": "add_trivia_streak_bonuses"
+    },
+    {
+      "version": "20260725190710",
+      "name": "add_trivia_question_countdown"
+    },
+    {
+      "version": "20260725194023",
+      "name": "harden_database_access"
+    },
+    {
+      "version": "20260725200814",
+      "name": "stage6_cleanup"
+    },
+    {
+      "version": "20260726040509",
+      "name": "create_versioned_trivia_question_bank"
+    },
+    {
+      "version": "20260726040704",
+      "name": "index_trivia_question_bank_foreign_keys"
+    },
+    {
+      "version": "20260726042319",
+      "name": "add_private_published_trivia_catalog"
+    },
+    {
+      "version": "20260827050913",
+      "name": "phone_holdem_mvp"
+    },
+    {
+      "version": "20260827141122",
+      "name": "games_platform_entitlements"
+    },
+    {
+      "version": "20260827181415",
+      "name": "create_chain_reaction_rooms"
+    },
+    {
+      "version": "20260827181441",
+      "name": "grant_chain_reaction_server_access"
+    },
+    {
+      "version": "20260827223408",
+      "name": "create_how_close_rooms"
+    },
+    {
+      "version": "20260827223413",
+      "name": "grant_chain_reaction_service_role"
+    },
+    {
+      "version": "20260827233905",
+      "name": "create_get_there_rooms"
+    },
+    {
+      "version": "20260828034953",
+      "name": "create_inside_man_rooms"
+    },
+    {
+      "version": "20260828142556",
+      "name": "create_on_my_list_rooms"
+    },
+    {
+      "version": "20260901061526",
+      "name": "create_mystery_rooms"
+    },
+    {
+      "version": "20260906050137",
+      "name": "trivia_venue_mode"
+    },
+    {
+      "version": "20260906050144",
+      "name": "trivia_venue_access_keys"
+    },
+    {
+      "version": "20260906050151",
+      "name": "trivia_venue_live_links"
+    },
+    {
+      "version": "20260906050156",
+      "name": "trivia_venue_hourly_championships"
+    },
+    {
+      "version": "20260906174800",
+      "name": "add_all_about_you_rooms"
+    },
+    {
+      "version": "20260906191101",
+      "name": "add_all_about_you_guest_photo_bucket"
+    },
+    {
+      "version": "20260906191541",
+      "name": "make_all_about_you_guest_photos_private"
+    },
+    {
+      "version": "20260906223901",
+      "name": "grant_all_about_you_rooms_to_service_role"
+    },
+    {
+      "version": "20260910030506",
+      "name": "live_craps_durable_state"
+    },
+    {
+      "version": "20260910030533",
+      "name": "live_craps_atomic_join"
+    },
+    {
+      "version": "20260910030600",
+      "name": "lock_down_live_craps_rpcs"
+    },
+    {
+      "version": "20260910060146",
+      "name": "fix_live_craps_ambiguous_version"
+    },
+    {
+      "version": "20261005022034",
+      "name": "add_shared_league_event_roster"
+    },
+    {
+      "version": "20261005022732",
+      "name": "add_clear_stack_join_rooms"
+    },
+    {
+      "version": "20261006203049",
+      "name": "grant_clear_stack_server_access"
+    },
+    {
+      "version": "20261006223821",
+      "name": "clear_stack_host_session_identity"
+    },
+    {
+      "version": "20261009023849",
+      "name": "play_amplified_room_registry"
+    }
+  ]
+}
