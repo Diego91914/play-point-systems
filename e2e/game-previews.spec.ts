@@ -17,6 +17,8 @@ async function savedState(page: Page) {
 }
 
 test("browsing all previews preserves sessions and never loads or mutates games", async ({ page, context }, testInfo) => {
+  // Checking every game detail page is intentionally broader than the default 30-second smoke-test limit.
+  test.setTimeout(120_000);
   // Seed from an inert test document: the real /offline page has its own game Links.
   await context.route("**/__preview-test-bootstrap", route => route.fulfill({ contentType: "text/html", body: "<!doctype html><title>Preview test fixture</title>" }));
   await page.goto("/__preview-test-bootstrap");
@@ -122,7 +124,16 @@ test("browsing all previews preserves sessions and never loads or mutates games"
   expect(forbidden).toEqual([]);
   expect(errors).toEqual([]);
   await testInfo.attach("preview-network", { body: network.join("\n"), contentType: "text/plain" });
-  expect(await page.evaluate(async () => (await navigator.serviceWorker.getRegistrations()).some(r => r.active?.scriptURL.endsWith("/play-amplified-sw.js")))).toBe(true);
+  // PWA registration is intentionally limited to Play Amplified domains and localhost.
+  // CI uses 127.0.0.1, so it should not register a service worker on that host.
+  const serviceWorkerRegistered = await page.evaluate(async () =>
+    (await navigator.serviceWorker.getRegistrations())
+      .some((registration) => registration.active?.scriptURL.endsWith("/play-amplified-sw.js")),
+  );
+  const host = new URL(page.url()).hostname.toLowerCase();
+  expect(serviceWorkerRegistered).toBe(
+    host === "localhost" || host === "playamplified.com" || host === "www.playamplified.com",
+  );
 });
 
 test("failed screenshots retain layout and explicit launch navigation without a runtime fallback", async ({ page, context }) => {
