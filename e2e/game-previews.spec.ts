@@ -77,20 +77,28 @@ test("browsing all previews preserves sessions and never loads or mutates games"
     }
   });
   await page.goto("/play-amplified");
-  await expect(page.locator("[data-game-preview]")).toHaveCount(MASTER_GAME_CATALOG.length);
-  for (const game of MASTER_GAME_CATALOG) {
-    const figure = page.locator(`[data-game-preview="${game.id}"]`);
+  // The storefront now reserves full screenshots for its five featured games;
+  // the complete library uses compact cover art, linked to the same detail pages.
+  const featuredGameIds = ["shot-classic", "clear-the-stack", "phone-holdem", "live-craps", "quest-digital"] as const;
+  await expect(page.locator("[data-game-preview]")).toHaveCount(featuredGameIds.length);
+  for (const gameId of featuredGameIds) {
+    const game = MASTER_GAME_CATALOG.find((entry) => entry.id === gameId);
+    expect(game).toBeDefined();
+    const figure = page.locator(`[data-game-preview="${gameId}"]`);
     await figure.scrollIntoViewIfNeeded();
     await expect(figure.locator("img")).toBeVisible();
     await expect.poll(() => figure.locator("img").evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
-    await expect(figure.locator("xpath=ancestor::a")).toHaveAttribute("href", game.href);
+    await expect(figure.locator("xpath=ancestor::a")).toHaveAttribute("href", game!.href);
     await figure.hover();
   }
+  for (const game of MASTER_GAME_CATALOG) {
+    await expect(page.locator(`#all-games a[href="${game.href}"]`).first()).toHaveCount(1);
+  }
   await expect(page.locator("iframe, object, embed")).toHaveCount(0);
-  await page.locator('[data-game-preview="chain-reaction"]').scrollIntoViewIfNeeded();
+  await page.locator("#all-games").scrollIntoViewIfNeeded();
   await page.screenshot({ path: testInfo.outputPath("catalog.png") });
   // Real client navigation exercises the Link boundary, not just direct requests.
-  await page.locator('[data-game-preview="chain-reaction"]').click();
+  await page.locator('#all-games a[href="/play-amplified/games/chain-reaction"]').first().click();
   await expect(page).toHaveURL(/\/play-amplified\/games\/chain-reaction$/);
   for (const game of MASTER_GAME_CATALOG) {
     await page.goto(game.href);
