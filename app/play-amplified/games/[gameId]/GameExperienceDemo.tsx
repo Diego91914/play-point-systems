@@ -17,7 +17,7 @@ export function GameExperienceDemo({ gameId, title, launchHref }: { gameId: stri
   const external = launchHref.startsWith("http");
 
   return (
-    <div className="overflow-hidden rounded-[34px] border border-white/10 bg-white/[0.035] p-6 shadow-2xl sm:p-8">
+    <div data-game-experience-demo={gameId} className="overflow-hidden rounded-[34px] border border-white/10 bg-white/[0.035] p-6 shadow-2xl sm:p-8">
       <div className="max-w-3xl">
         <div className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-100/55">How {title} plays</div>
         <h2 className="mt-3 text-3xl font-black tracking-[-0.035em] text-white sm:text-4xl">Understand the experience before you play.</h2>
@@ -30,7 +30,7 @@ export function GameExperienceDemo({ gameId, title, launchHref }: { gameId: stri
         {demo.steps.map((step, index) => {
           const accent = step.accent ?? "cyan";
           return (
-            <article key={`${step.eyebrow}-${index}`} className="rounded-[26px] border border-white/10 bg-black/20 p-6">
+            <article key={`${step.eyebrow}-${index}`} data-experience-step={index + 1} className="rounded-[26px] border border-white/10 bg-black/20 p-6">
               <div className="flex items-center justify-between gap-3">
                 <div className="text-[10px] font-black uppercase tracking-[0.18em] text-white/42">Step {index + 1}</div>
                 <div className={`rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-[0.14em] ${accentClasses[accent]}`}>{step.eyebrow}</div>

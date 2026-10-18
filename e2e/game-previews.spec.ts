@@ -16,7 +16,7 @@ async function savedState(page: Page) {
   });
 }
 
-test("browsing all previews preserves sessions and never loads or mutates games", async ({ page, context }, testInfo) => {
+test("browsing all game details preserves sessions and never loads or mutates games", async ({ page, context }, testInfo) => {
   // Checking every game detail page is intentionally broader than the default 30-second smoke-test limit.
   test.setTimeout(120_000);
   // Seed from an inert test document: the real /offline page has its own game Links.
@@ -103,11 +103,14 @@ test("browsing all previews preserves sessions and never loads or mutates games"
   await expect(page).toHaveURL(/\/play-amplified\/games\/chain-reaction$/);
   for (const game of MASTER_GAME_CATALOG) {
     await page.goto(game.href);
-    const figure = page.locator(`[data-game-preview="${game.id}"]`);
-    await figure.scrollIntoViewIfNeeded();
-    await expect.poll(() => figure.locator("img").evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
+    const experience = page.locator(`[data-game-experience-demo="${game.id}"]`);
+    await expect(experience).toBeVisible();
+    await expect(experience.getByRole("heading", { level: 2 })).toHaveText("Understand the experience before you play.");
+    expect(await experience.locator("[data-experience-step]").count()).toBeGreaterThan(0);
+    await expect(experience.locator("[data-experience-step]").first().getByRole("heading", { level: 3 })).toBeVisible();
+    await expect(page.locator("[data-game-preview]")).toHaveCount(0);
     await expect(page.locator("iframe, object, embed")).toHaveCount(0);
-    const launch = page.getByRole("link", { name: "Open full game" });
+    const launch = experience.getByRole("link", { name: "Open full game" });
     await expect(launch).toHaveAttribute("href", game.launchHref);
     await launch.hover();
     await launch.focus();
@@ -135,14 +138,17 @@ test("browsing all previews preserves sessions and never loads or mutates games"
   );
 });
 
-test("failed screenshots retain layout and explicit launch navigation without a runtime fallback", async ({ page, context }) => {
+test("instruction-first details retain useful guidance when preview images fail", async ({ page, context }) => {
   await context.route("**/images/game-previews/**", route => route.abort());
   await page.goto("/play-amplified/games/chain-reaction");
-  const figure = page.locator("[data-game-preview]");
-  await figure.scrollIntoViewIfNeeded();
-  await expect(figure.getByRole("status")).toContainText("Screenshot unavailable");
+  const experience = page.locator('[data-game-experience-demo="chain-reaction"]');
+  await expect(experience).toBeVisible();
+  await expect(experience.getByRole("heading", { level: 2 })).toHaveText("Understand the experience before you play.");
+  await expect(experience.locator("[data-experience-step]").first()).toBeVisible();
+  await expect(experience.getByText("At a glance")).toBeVisible();
   await expect(page.locator("iframe, object, embed")).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "Open full game" })).toHaveAttribute("href", "/games/chain-reaction");
-  const box = await figure.locator("div").first().boundingBox();
-  expect(box!.width / box!.height).toBeCloseTo(4 / 3, 1);
+  await expect(experience.getByRole("link", { name: "Open full game" })).toHaveAttribute("href", "/games/chain-reaction");
+  const box = await experience.boundingBox();
+  expect(box?.width).toBeGreaterThan(0);
+  expect(box?.height).toBeGreaterThan(0);
 });
