@@ -76,7 +76,7 @@ export function EditorialGameCoverArt({ gameId, immersive = false }: { gameId: s
       <div className="absolute inset-x-0 bottom-0 h-[42%] bg-gradient-to-t from-black/55 to-transparent" />
       <div className={`absolute inset-x-[4%] ${immersive ? "top-[8%] h-[82%]" : "top-[14%] h-[66%]"}`}><Scene kind={cover.scene} /></div>
       <div className={`absolute left-4 top-4 z-10 rounded-full bg-black/28 px-2.5 py-1.5 font-black uppercase tracking-[0.16em] text-white/68 backdrop-blur-md ${immersive ? "text-[8px] sm:text-[9px]" : "text-[6px]"}`}>{cover.kicker}</div>
-      <div className={`absolute bottom-4 left-4 z-10 font-black uppercase tracking-[0.02em] text-white drop-shadow-2xl ${immersive ? "text-lg sm:text-2xl" : "text-[10px] sm:text-xs"}`}>{cover.mark}</div>
+      {!immersive ? <div className="absolute bottom-4 left-4 z-10 text-[10px] font-black uppercase tracking-[0.02em] text-white drop-shadow-2xl sm:text-xs">{cover.mark}</div> : null}
       <div className="absolute inset-0 ring-1 ring-inset ring-white/10" />
     </div>
   );
