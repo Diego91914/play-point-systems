@@ -1,4 +1,6 @@
 import { expect, test } from "@playwright/test";
+import { MASTER_GAME_CATALOG } from "../lib/play-point-core/master-game-catalog";
+import { getGameHostingMode } from "../lib/play-point-core/game-hosting";
 
 for (const route of ["/play", "/play/host", "/play/join"] as const) {
   test(`${route} fits the phone viewport and keeps Play Amplified navigation`, async ({ page }) => {
@@ -35,6 +37,19 @@ test("Play launcher separates hosting, joining, scoring, library, and discovery"
     await expect(page.locator(`main a[href="${href}"]`).first()).toBeVisible();
   }
   await expect(page.locator('main a[href="/play-amplified"]').first()).toBeVisible();
+});
+
+test("Host page offers every catalog format through its own setup", async ({ page }) => {
+  await page.goto("/play/host");
+  const options = page.locator("[data-host-game]");
+  await expect(options).toHaveCount(MASTER_GAME_CATALOG.length);
+
+  for (const game of MASTER_GAME_CATALOG) {
+    const option = page.locator(`[data-host-game="${game.id}"]`);
+    await expect(option).toHaveAttribute("href", game.launchHref);
+    await expect(option).toHaveAttribute("data-hosting-mode", getGameHostingMode(game.id));
+    await expect(option).toContainText(game.title);
+  }
 });
 
 test("Quick Join accepts a room code without a customer or Builder sign-in screen", async ({ page }) => {

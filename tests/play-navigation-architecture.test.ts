@@ -11,6 +11,7 @@ const shellBrand = readFileSync("lib/site-shell-brand.ts", "utf8");
 const productCatalog = readFileSync("lib/play-point-core/games-catalog.ts", "utf8");
 const masterCatalog = readFileSync("lib/play-point-core/master-game-catalog.ts", "utf8");
 const demos = readFileSync("lib/play-point-core/game-experience-demos.ts", "utf8");
+const hosting = readFileSync("lib/play-point-core/game-hosting.ts", "utf8");
 const scoreCaddy = readFileSync("app/live/page.tsx", "utf8");
 
 describe("Play Amplified navigation roles", () => {
@@ -40,28 +41,22 @@ describe("Play Amplified navigation roles", () => {
     expect(library).not.toContain("Explore & buy");
   });
 
-  it("limits the host path to actual shared-room games without using commerce as capability", () => {
-    expect(host).toContain("ROOM_GAME_IDS");
-    expect(host).toContain("MASTER_GAME_CATALOG");
-    expect(host).not.toContain("PLAY_POINT_GAME_CATALOG");
-    for (const gameId of [
-      "chain-reaction",
-      "how-close",
-      "on-my-list",
-      "all-about-you",
-      "inside-man",
-      "phone-holdem",
-      "live-craps",
-      "last-call",
-      "play-point-trivia",
-    ]) {
-      expect(host).toContain(`"${gameId}"`);
-    }
+  it("offers every catalog format through its own hosting mode", () => {
+    expect(host).toContain("MASTER_GAME_CATALOG.filter((game) => game.lane === lane.id)");
+    expect(host).toContain('data-host-game={game.id}');
+    expect(host).toContain('data-hosting-mode={getGameHostingMode(game.id)}');
     expect(host).toContain("game.launchHref");
-    expect(host).toContain("Host a room");
-    expect(host).toContain("Host room →");
-    expect(host).toContain("Play Amplified does not force every game into the same room flow.");
-    expect(host).toContain('href="/games"');
+    expect(host).toContain("Shared room");
+    expect(host).toContain("Game engine");
+    expect(host).toContain("Preview labels describe release readiness");
+    expect(host).not.toContain("ROOM_GAME_IDS");
+    expect(host).not.toContain('game.status === "live"');
+    expect(hosting).toContain("SHARED_ROOM_GAME_IDS");
+    expect(hosting).toContain('return SHARED_ROOM_GAME_IDS.has(gameId) ? "shared-room" : "game-engine"');
+    for (const gameId of [
+      "chain-reaction", "how-close", "on-my-list", "all-about-you", "inside-man",
+      "phone-holdem", "live-craps", "last-call", "play-point-trivia",
+    ]) expect(hosting).toContain(`"${gameId}"`);
   });
 
   it("renders Play Amplified shell identity without waiting for hostname detection", () => {
