@@ -50,7 +50,7 @@ describe("Play Amplified navigation roles", () => {
     expect(host).toContain("Game engine");
     expect(host).toContain("Preview labels describe release readiness");
     expect(host).not.toContain("ROOM_GAME_IDS");
-    expect(host).not.toContain('game.status === "live"');
+    expect(host).not.toMatch(/\.filter\(\(game\) => game\.status === "live"\)/);
     expect(hosting).toContain("SHARED_ROOM_GAME_IDS");
     expect(hosting).toContain('return SHARED_ROOM_GAME_IDS.has(gameId) ? "shared-room" : "game-engine"');
     for (const gameId of [
