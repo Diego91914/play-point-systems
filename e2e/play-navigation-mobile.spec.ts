@@ -32,9 +32,9 @@ test("Play launcher separates hosting, joining, scoring, library, and discovery"
   ] as const;
 
   for (const [href] of links) {
-    await expect(page.locator(`a[href="${href}"]`).first()).toBeVisible();
+    await expect(page.locator(`main a[href="${href}"]`).first()).toBeVisible();
   }
-  await expect(page.locator('a[href="/play-amplified"]').first()).toBeVisible();
+  await expect(page.locator('main a[href="/play-amplified"]').first()).toBeVisible();
 });
 
 test("Quick Join accepts a room code without a customer or Builder sign-in screen", async ({ page }) => {
