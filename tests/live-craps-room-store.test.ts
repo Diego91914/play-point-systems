@@ -75,6 +75,7 @@ describe("Live Craps authoritative room boundaries", () => {
 
   it("never projects a committed virtual result before reveal begins", () => {
     const code = createStartedRoom("virtual");
+    applyLiveCrapsRoomCommand(code, "opening-pass", { type: "place-bet", actorPlayerId: HOST, kind: "pass-line", amount: 10 });
     applyLiveCrapsRoomCommand(code, "to-dice-out", { type: "tick", nowMs: actionDeadline(code) });
     expect(projectStoredLiveCrapsRoom(code, HOST).virtualReveal).toBeNull();
 
@@ -88,6 +89,7 @@ describe("Live Craps authoritative room boundaries", () => {
 
   it("settles an authoritative virtual roll once the reveal deadline is reached", () => {
     const code = createStartedRoom("virtual");
+    applyLiveCrapsRoomCommand(code, "opening-pass", { type: "place-bet", actorPlayerId: HOST, kind: "pass-line", amount: 10 });
     applyLiveCrapsRoomCommand(code, "to-dice-out", { type: "tick", nowMs: actionDeadline(code) });
     applyLiveCrapsRoomCommand(code, "begin", { type: "begin-roll", actorPlayerId: HOST });
     const runtime = getStoredLiveCrapsRoom(code).runtime;
