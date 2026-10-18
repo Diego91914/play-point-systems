@@ -20,7 +20,7 @@ export default async function JoinGamePage({
   const rawLookup = Array.isArray(params.lookup) ? params.lookup[0] : params.lookup;
 
   return (
-    <SiteShell current="play">
+    <SiteShell current="play" variant="play-amplified">
       <GuestJoinGameClient initialCode={initialCode} autoLookup={rawLookup === "1" && CODE_PATTERN.test(initialCode)} />
     </SiteShell>
   );
