@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { NextRequest, NextResponse } from "next/server";
+
+// This suite verifies HTTP credential behavior without writing into a live room registry.
+vi.mock("../lib/play-point-core/room-registry", () => ({
+  registerPlayAmplifiedRoom: vi.fn(async () => undefined),
+}));
 import { GET as getHostSnapshot } from "../app/api/trivia/sessions/[sessionId]/route";
 import { GET as getPlayerSnapshot } from "../app/api/trivia/sessions/[sessionId]/players/[playerId]/route";
 import { POST as createRoom } from "../app/api/trivia/sessions/route";
