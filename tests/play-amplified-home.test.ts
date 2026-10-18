@@ -7,7 +7,9 @@ const resumeRuntime = readFileSync("app/play-amplified/PlayAmplifiedResumeRuntim
 const worker = readFileSync("public/play-amplified-sw.js", "utf8");
 const manifest = readFileSync("app/play-amplified-manifest.webmanifest/route.ts", "utf8");
 const featuredArt = readFileSync("app/play-amplified/FeaturedGameArt.tsx", "utf8");
-const coverArt = readFileSync("app/play-amplified/GameCoverArt.tsx", "utf8");
+const editorialCoverArt = readFileSync("app/play-amplified/EditorialGameCoverArt.tsx", "utf8");
+const libraryCoverArt = readFileSync("app/play-amplified/GameCoverArt.tsx", "utf8");
+const games = readFileSync("app/games/page.tsx", "utf8");
 const nextConfig = readFileSync("next.config.ts", "utf8");
 const proxy = readFileSync("proxy.ts", "utf8");
 
@@ -19,12 +21,22 @@ describe("Play Amplified consumer home", () => {
     expect(home).toContain('href: "/live/quick-score"');
   });
 
-  it("presents primary actions as a native-style play launcher", () => {
+  it("keeps Play now compact so games remain the visual focus", () => {
     expect(home).toContain('type QuickActionKind = "host" | "join" | "games" | "score"');
     expect(home).toContain("Instant access");
     expect(home).toContain("Play now");
-    expect(home).toContain("grid grid-cols-2 gap-3 sm:grid-cols-4");
+    expect(home).toContain("grid grid-cols-2 gap-2 sm:grid-cols-4");
     expect(home).toContain("<QuickActionIcon kind={action.kind} />");
+    expect(home).not.toContain("min-h-40");
+  });
+
+  it("keeps storefront text at the navigation contrast floor", () => {
+    const lowOpacityText = (source: string) =>
+      [...source.matchAll(/text-(?:white|cyan-[0-9]+)[/]([0-9]+)/g)]
+        .map((match) => Number(match[1]))
+        .filter((opacity) => opacity < 55);
+    expect(lowOpacityText(home)).toEqual([]);
+    expect(lowOpacityText(pwa)).toEqual([]);
   });
 
   it("keeps previews inside their real catalog lanes", () => {
@@ -35,34 +47,45 @@ describe("Play Amplified consumer home", () => {
     expect(home).not.toContain("PREVIEW_GAME_FORMATS.map");
   });
 
-  it("uses a mobile swipe rail for featured games and balances the fifth category tile", () => {
-    expect(home).toContain("snap-x snap-mandatory");
-    expect(home).toContain("w-[82vw]");
-    expect(home).toContain('index === 4 ? "col-span-2 lg:col-span-1"');
+  it("uses editorial hierarchy instead of a uniform dashboard grid", () => {
+    expect(home).toContain("function LeadGameCard");
+    expect(home).toContain("function EditorialGameCard");
+    expect(home).toContain("Featured in this category");
+    expect(home).toContain("Games with their own world.");
+    expect(home).toContain("lg:grid-cols-2");
+    expect(home).toContain("md:grid-cols-3");
+    expect(home).not.toContain("xl:grid-cols-5");
+    expect(home).not.toContain("View game →");
   });
 
-  it("gives five flagship games distinct artwork while preserving authentic screenshots", () => {
+  it("gives the five signature games large editorial artwork", () => {
     for (const id of ["shot-classic", "clear-the-stack", "phone-holdem", "live-craps", "quest-digital"]) {
       expect(home).toContain(`"${id}"`);
       expect(featuredArt).toContain(`gameId === "${id}"`);
     }
-    expect(home).toContain("<GameScreenshot gameId={game.id} />");
-    expect(home).toContain("<FeaturedGameArt gameId={featuredId} />");
-    expect(home).toContain("xl:grid-cols-5");
+    expect(home).toContain("<FeaturedGameArt gameId={id} />");
+    expect(home).toContain("<div data-game-preview={id}>");
+    expect(home).toContain("min-h-[360px]");
   });
 
-  it("gives the full library product-style cover art instead of repeating setup screenshots", () => {
+  it("uses immersive full-bleed game art for the full library", () => {
     const ids = [
       "chain-reaction", "how-close", "on-my-list", "all-about-you", "inside-man", "phone-holdem", "live-craps", "last-call",
       "shot-classic", "shot-chaos", "battle-mode", "call-your-score", "challenge-skins-pro", "wolf", "redemption-wolf", "wolf-pack",
       "card-shark-classic", "card-shark-stud", "card-shark-draw", "atw-ladder", "atw-sprint", "atw-survival", "disc-warrior", "clear-the-stack",
       "quest-digital", "quest-disc-golf", "play-point-trivia",
     ];
-    expect(home).toContain('import { GameCoverArt } from "./GameCoverArt"');
-    expect(home).toContain("<GameCoverArt gameId={game.id} />");
-    expect(coverArt).toContain("const covers: Record<string, CoverIdentity>");
-    expect(coverArt).toContain("data-game-cover={gameId}");
-    for (const id of ids) expect(coverArt).toContain(id);
+    expect(home).toContain('import { EditorialGameCoverArt } from "./EditorialGameCoverArt"');
+    expect(home).toContain("<EditorialGameCoverArt gameId={game.id} immersive />");
+    expect(editorialCoverArt).toContain("const covers: Record<string, CoverIdentity>");
+    expect(editorialCoverArt).toContain("data-game-cover={gameId}");
+    expect(editorialCoverArt).toContain("immersive = false");
+    expect(games).toContain('import { GameCoverArt } from "@/app/play-amplified/GameCoverArt"');
+    expect(games).toContain("<GameCoverArt gameId={game.id} />");
+    for (const id of ids) {
+      expect(editorialCoverArt).toContain(id);
+      expect(libraryCoverArt).toContain(id);
+    }
   });
 
   it("only offers recent server-valid rooms instead of every historical local session", () => {
@@ -88,13 +111,15 @@ describe("Play Amplified consumer home", () => {
     expect(pwa).not.toContain("current.slice(1)");
   });
 
-  it("keeps installation compact and reveals manual instructions only on demand", () => {
+  it("keeps installation collapsed until the user asks for it", () => {
     expect(pwa).toContain("play-amplified-install-dismissed");
-    expect(pwa).toContain("installHelpOpen");
+    expect(pwa).toContain("installCardOpen");
     expect(pwa).toContain("Keep it one tap away");
     expect(pwa).toContain('aria-expanded={installHelpOpen}');
     expect(pwa).toContain('{installHelpOpen ? "HIDE" : "HOW"}');
-    expect(pwa).not.toContain("Add Play Amplified to your Home Screen");
+    expect(pwa).toContain("Install app");
+    expect(pwa).toContain("bottom-4 right-4");
+    expect(pwa).not.toContain("fixed inset-x-3 bottom-3 z-[100] mx-auto max-w-2xl overflow-hidden");
   });
 
   it("does not render PWA chrome until the browser confirms a Play Amplified host", () => {
