@@ -58,8 +58,6 @@ test("the mobile brand mark and company name remain fully visible", async ({ pag
 test("private game hosting routes send unsigned users to Founder / Builder Access", async ({ page }) => {
   for (const route of [
     "/games",
-    "/games/holdem",
-    "/games/trivia/join",
     "/games/trivia/builder",
   ]) {
     await page.goto(route);
@@ -67,6 +65,14 @@ test("private game hosting routes send unsigned users to Founder / Builder Acces
     await expect(
       page.getByRole("heading", { name: /founder \/ builder access/i })
     ).toBeVisible();
+  }
+});
+
+test("invited guests may open Hold'em and Trivia without Builder Access", async ({ page }) => {
+  for (const route of ["/games/holdem", "/games/trivia/join"]) {
+    await page.goto(route);
+    await expect(page).not.toHaveURL(/\/builder-access\?next=/);
+    await expect(page.locator("h1").first()).toBeVisible();
   }
 });
 
