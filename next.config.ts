@@ -84,16 +84,37 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      // Shot Caddy gameplay is a Play Amplified game family. Legacy zone-level
+      // shell destinations must return to the Play Amplified navigation rather
+      // than opening a second My Games / Account / QuickScore experience.
+      {
+        source: "/shot-caddy/games",
+        destination: "/games",
+        permanent: false,
+      },
+      {
+        source: "/shot-caddy/account",
+        destination: "/account",
+        permanent: false,
+      },
+      {
+        source: "/shot-caddy/score",
+        destination: "/live/quick-score",
+        permanent: false,
+      },
+    ];
+  },
   async rewrites() {
     return {
       beforeFiles: [
-        // The Play Amplified app owns /shot-caddy itself. Do not proxy the
-        // landing route to the Shot Caddy zone; proxying it can cause the
-        // zone's canonical-host redirect to loop back through this frontend.
-        // Gameplay subroutes are proxied explicitly below.
+        // The Play Amplified app owns /shot-caddy itself. Gameplay is proxied to
+        // the dedicated Shot Caddy zone with an explicit shell marker so the
+        // zone renders as a Play Amplified game family, not as a second PWA.
         {
           source: "/shot-caddy/:path+",
-          destination: `${SHOT_CADDY_ZONE_ORIGIN}/shot-caddy/:path*`,
+          destination: `${SHOT_CADDY_ZONE_ORIGIN}/shot-caddy/:path*?playAmplified=1`,
         },
         ...shotCaddyApiNamespaces.map((namespace) => ({
           source: `/api/${namespace}/:path*`,
