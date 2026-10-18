@@ -79,8 +79,8 @@ test("browsing all previews preserves sessions and never loads or mutates games"
     }
   });
   await page.goto("/play-amplified");
-  // The storefront now reserves full screenshots for its five featured games;
-  // the complete library uses compact cover art, linked to the same detail pages.
+  // The storefront reserves bespoke art for its five signature games;
+  // the complete catalog uses linked covers to the same detail pages.
   const featuredGameIds = ["shot-classic", "clear-the-stack", "phone-holdem", "live-craps", "quest-digital"] as const;
   await expect(page.locator("[data-game-preview]")).toHaveCount(featuredGameIds.length);
   for (const gameId of featuredGameIds) {
@@ -88,9 +88,8 @@ test("browsing all previews preserves sessions and never loads or mutates games"
     expect(game).toBeDefined();
     const figure = page.locator(`[data-game-preview="${gameId}"]`);
     await figure.scrollIntoViewIfNeeded();
-    await expect(figure.locator("img")).toBeVisible();
-    await expect.poll(() => figure.locator("img").evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
-    await expect(figure.locator("xpath=ancestor::a")).toHaveAttribute("href", game!.href);
+    await expect(figure.locator("svg")).toBeVisible();
+    await expect(figure.locator("a")).toHaveAttribute("href", game!.href);
     await figure.hover();
   }
   for (const game of MASTER_GAME_CATALOG) {
