@@ -181,7 +181,7 @@ function GameFormatCard({ game, featured = false }: { game: MasterGameEntry; fea
             <div className="min-w-0">
               <div className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-100/55">{game.family}</div>
               <h3 className="mt-2 text-xl font-black tracking-tight text-white">{game.title}</h3>
-              {game.parentTitle ? <div className="mt-1 text-[11px] font-bold uppercase tracking-[0.12em] text-white/35">{game.parentTitle} format</div> : null}
+              {game.parentTitle ? <div className="mt-1 text-[11px] font-bold uppercase tracking-[0.12em] text-white/55">{game.parentTitle} format</div> : null}
             </div>
             <span className={`shrink-0 rounded-full border px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.12em] ${game.status === "live" ? "border-emerald-200/20 bg-emerald-300/[0.08] text-emerald-100" : "border-amber-200/20 bg-amber-300/[0.08] text-amber-100"}`}>
               {game.status === "live" ? "Playable" : "Preview"}
@@ -218,7 +218,7 @@ function CatalogGameCard({ game }: { game: MasterGameEntry }) {
           </span>
         </div>
         <h3 className="mt-1.5 text-base font-black leading-tight tracking-tight text-white">{game.title}</h3>
-        {game.parentTitle ? <div className="mt-1 text-[9px] font-bold uppercase tracking-[0.1em] text-white/35">{game.parentTitle} format</div> : null}
+        {game.parentTitle ? <div className="mt-1 text-[9px] font-bold uppercase tracking-[0.1em] text-white/55">{game.parentTitle} format</div> : null}
         <p className="mt-2 hidden text-xs leading-5 text-white/52 sm:block">{game.description}</p>
         <div className="mt-auto pt-2 text-xs font-black text-cyan-100/90">View game →</div>
       </div>
@@ -312,7 +312,7 @@ export default function PlayAmplifiedPage() {
               <a href="#founders-special" className="inline-flex items-center justify-center rounded-2xl border border-white/14 bg-white/[0.045] px-6 py-3.5 text-sm font-black text-white/85 transition hover:-translate-y-0.5 hover:bg-white/[0.08]">See planned Play Packs</a>
             </div>
 
-            <div className="mt-4 flex max-w-3xl flex-col gap-2 border-l border-white/12 pl-3 text-[11px] leading-5 text-white/45 sm:flex-row sm:items-center sm:gap-3">
+            <div className="mt-4 flex max-w-3xl flex-col gap-2 border-l border-white/12 pl-3 text-[11px] leading-5 text-white/55 sm:flex-row sm:items-center sm:gap-3">
               <span>Browse is open. Public hosting and purchasing remain gated during preview.</span>
               <Link prefetch={false} href="/builder-access?next=%2Fgames" className="shrink-0 font-black text-white/72 transition hover:text-white">Founder / test sign in →</Link>
             </div>
@@ -321,10 +321,10 @@ export default function PlayAmplifiedPage() {
           <section aria-label="Start playing" className="mb-10 overflow-hidden rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.08),transparent_34%),rgba(255,255,255,0.025)] p-3 shadow-2xl shadow-black/20 sm:p-4">
             <div className="mb-3 flex items-end justify-between gap-4 px-1 pb-1">
               <div>
-                <div className="text-[9px] font-black uppercase tracking-[0.22em] text-cyan-100/45">Instant access</div>
+                <div className="text-[9px] font-black uppercase tracking-[0.22em] text-cyan-100/60">Instant access</div>
                 <h2 className="mt-1 text-lg font-black tracking-tight text-white sm:text-xl">Play now</h2>
               </div>
-              <div className="hidden text-[10px] font-bold text-white/35 sm:block">Choose what you want to do</div>
+              <div className="hidden text-[10px] font-bold text-white/55 sm:block">Choose what you want to do</div>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {quickActions.map((action) => (
@@ -339,10 +339,10 @@ export default function PlayAmplifiedPage() {
                     <QuickActionIcon kind={action.kind} />
                   </div>
                   <div className="relative mt-5">
-                    <div className="text-[9px] font-black uppercase tracking-[0.16em] text-white/45">{action.eyebrow}</div>
+                    <div className="text-[9px] font-black uppercase tracking-[0.16em] text-white/55">{action.eyebrow}</div>
                     <div className="mt-1.5 flex items-center justify-between gap-2 text-base font-black leading-tight text-white sm:text-lg">
                       <span>{action.label}</span>
-                      <span aria-hidden="true" className="text-white/35 transition group-hover:translate-x-0.5">→</span>
+                      <span aria-hidden="true" className="text-white/55 transition group-hover:translate-x-0.5">→</span>
                     </div>
                     <p className="mt-1.5 hidden text-[11px] leading-4 text-white/50 sm:block">{action.description}</p>
                   </div>
@@ -434,7 +434,7 @@ export default function PlayAmplifiedPage() {
           </section>
 
           <section className="border-t border-white/10 py-12 text-center">
-            <div className="text-[10px] font-black uppercase tracking-[0.22em] text-white/35">Play Amplified library</div>
+            <div className="text-[10px] font-black uppercase tracking-[0.22em] text-white/55">Play Amplified library</div>
             <div className="mt-3 text-2xl font-black text-white">Discover games across every Play Amplified category.</div>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-white/48">New experiences can join the lineup as they are ready, with in-development previews clearly labeled before release.</p>
           </section>
