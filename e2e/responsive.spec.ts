@@ -15,6 +15,9 @@ for (const route of marketingRoutes) {
   test(`${route} keeps its headline inside the mobile viewport`, async ({ page }) => {
     await page.goto(route);
     await page.waitForLoadState("domcontentloaded");
+    if (route === "/games/sign-in") {
+      await expect(page).toHaveURL(/\/builder-access\?next=/);
+    }
 
     const headline = page.locator("h1").first();
     await expect(headline).toBeVisible();
