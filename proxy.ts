@@ -18,7 +18,7 @@ const PLAY_AMPLIFIED_HOSTS = new Set(["playamplified.com", "www.playamplified.co
 
 // Multiplayer phone games use one access model: the host must own/access the game,
 // while invited guests may enter an existing room with a room code and first name.
-const GUEST_ROOM_GAMES = ["chain-reaction", "how-close", "inside-man", "on-my-list", "all-about-you", "holdem", "live-craps"] as const;
+const GUEST_ROOM_GAMES = ["chain-reaction", "how-close", "inside-man", "on-my-list", "all-about-you", "holdem", "live-craps", "mystery"] as const;
 
 function isGuestRoomPage(pathname: string, hasRoomCode: boolean) {
   // Hold'em and Live Craps support manual desktop joining. Guests can open the landing
