@@ -65,6 +65,8 @@ to an administrator connection on a **disposable local PostgreSQL cluster**:
 and drops a unique database, prepares Supabase-compatible roles on that local
 cluster, and checks real lock waits, rollback, literal names, and denied access.
 Without that explicit variable the database suite is skipped.
+The `event-transactions` quality-check job supplies a disposable PostgreSQL 17
+service and runs this suite on pull requests, so CI does not silently skip it.
 
 ## Not included yet
 
