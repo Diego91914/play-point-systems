@@ -81,3 +81,26 @@ The result table follows the existing hardened data model:
 - public Event Hub data served through a server route using only published/live/complete event codes
 
 No production migration is executed by this branch.
+
+## Atomic writes and deployment order
+
+Result submissions and completion use the service-role-only, security-invoker
+`ppl_amplified_event_score` RPC. Both lock the event row used by registration and
+team locking, then check ownership and live status. Each correction allocates its
+version, inserts its entire result set, and completes its activity in one
+transaction. Completion takes the same lock, requires results for every activity,
+and prevents waiting corrections from changing final standings.
+
+The previously unexecuted `20261015223000_play_amplified_event_hub_scoring.sql`
+has been folded into `20261021035438_play_amplified_event_atomic_scoring.sql`.
+Apply the migrations in timestamp order: persistence, atomic lifecycle, then
+atomic scoring (which also creates the results table). This lets PR #34 deploy
+before #35 without requiring an out-of-order migration. If the original scoring
+migration has been applied anywhere, reconcile that environment's migration
+history before using this revised draft stack.
+
+The local database regression suite described in
+`PLAY_AMPLIFIED_EVENTS_PERSISTENCE.md` also exercises overlapping corrections,
+both correction/completion orderings, invalid-result rollback, and cross-event
+and browser-role denial. It creates and drops its own test database; it does not
+contact production.

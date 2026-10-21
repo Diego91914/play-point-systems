@@ -89,7 +89,8 @@ describe.skipIf(!testUrl)("Play Amplified PostgreSQL transactions", () => {
     await admin.query(`create database ${database}`);
     db = await connection(false);
     const selected = ["20261015214500_play_amplified_events_persistence.sql",
-      ...migrations.filter(name => name.endsWith("_play_amplified_event_atomic_lifecycle.sql"))];
+      ...migrations.filter(name => name.endsWith("_play_amplified_event_atomic_lifecycle.sql")
+        || name.endsWith("_play_amplified_event_atomic_scoring.sql"))];
     for (const name of selected.sort()) await db.query(readFileSync(join(process.cwd(), "supabase/migrations", name), "utf8"));
     await db.query("set role service_role");
   }, 20000);
@@ -171,6 +172,90 @@ describe.skipIf(!testUrl)("Play Amplified PostgreSQL transactions", () => {
       await client.query(`set role ${role}`);
       await expect(mutate(client, "publish", id, { joinCode: "DENIED" })).rejects.toMatchObject({ code: "42501" });
       await expect(client.query("select * from public.ppl_amplified_events")).rejects.toMatchObject({ code: "42501" });
+    }
+  });
+
+  async function liveEvent() {
+    const fixture = await event();
+    await publish(fixture.id);
+    await mutate(db, "start", fixture.id, teams(fixture.playerId));
+    const { rows: [activity] } = await db.query("select id from public.ppl_amplified_event_activities where event_id=$1", [fixture.id]);
+    const { rows: [team] } = await db.query("select id from public.ppl_amplified_event_teams where event_id=$1", [fixture.id]);
+    return { ...fixture, activityId: activity.id as string, teamId: team.id as string };
+  }
+
+  async function score(client: Client, id: string, activityId: string, entityId: string, entityType = "participant", placement = 1) {
+    return (await client.query("select public.ppl_amplified_event_score('score', $1, 'owner', $2) as result", [id, {
+      activityId, source: "manual", entries: [{ entityId, entityType, placement, eventPoints: 999 }],
+    }])).rows[0].result;
+  }
+
+  async function complete(client: Client, id: string) {
+    return client.query("select public.ppl_amplified_event_score('complete', $1, 'owner', '{}')", [id]);
+  }
+
+  it("serializes disjoint correction sets into separate revisions", async () => {
+    const { id, activityId, playerId, teamId } = await liveEvent();
+    const result = await behindLock(id,
+      client => score(client, id, activityId, playerId),
+      client => score(client, id, activityId, teamId, "team", 2));
+    expect(result.error).toBeNull();
+    expect(result.value.resultVersion).toBe(2);
+    const { rows } = await db.query("select result_version, entity_type, event_points from public.ppl_amplified_event_results where event_id=$1 order by result_version", [id]);
+    expect(rows).toEqual([
+      { result_version: 1, entity_type: "participant", event_points: 10 },
+      { result_version: 2, entity_type: "team", event_points: 7 },
+    ]);
+  });
+
+  it("serializes corrections of the same entity without uniqueness failures", async () => {
+    const { id, activityId, playerId } = await liveEvent();
+    const result = await behindLock(id,
+      client => score(client, id, activityId, playerId),
+      client => score(client, id, activityId, playerId, "participant", 2));
+    expect(result.error).toBeNull();
+    expect(result.value.resultVersion).toBe(2);
+  });
+
+  it("rejects a pending correction after completion and preserves final scores", async () => {
+    const { id, activityId, playerId } = await liveEvent();
+    await score(db, id, activityId, playerId);
+    const result = await behindLock(id,
+      client => complete(client, id),
+      client => score(client, id, activityId, playerId, "participant", 2));
+    expect(result.error?.code).toBe("PT409");
+    expect((await db.query("select count(*)::int as count from public.ppl_amplified_event_results where event_id=$1", [id])).rows[0].count).toBe(1);
+  });
+
+  it("includes a correction that commits before completion", async () => {
+    const { id, activityId, playerId } = await liveEvent();
+    await score(db, id, activityId, playerId);
+    const result = await behindLock(id,
+      client => score(client, id, activityId, playerId, "participant", 2),
+      client => complete(client, id));
+    expect(result.error).toBeNull();
+    expect((await db.query("select status from public.ppl_amplified_events where id=$1", [id])).rows[0].status).toBe("complete");
+    expect((await db.query("select event_points from public.ppl_amplified_event_results where event_id=$1 order by result_version desc limit 1", [id])).rows[0].event_points).toBe(7);
+  });
+
+  it("requires scored activities and rolls back invalid results without completing an activity", async () => {
+    const { id, activityId, playerId } = await liveEvent();
+    await expect(complete(db, id)).rejects.toMatchObject({ code: "PT409" });
+    await expect(score(db, id, activityId, playerId, "participant", 0)).rejects.toMatchObject({ code: "23514" });
+    expect((await db.query("select status from public.ppl_amplified_event_activities where id=$1", [activityId])).rows[0].status).toBe("scheduled");
+    expect((await db.query("select count(*)::int as count from public.ppl_amplified_event_results where event_id=$1", [id])).rows[0].count).toBe(0);
+  });
+
+  it("rejects scoring another event's activity or entities and denies browser RPC access", async () => {
+    const first = await liveEvent();
+    const other = await liveEvent();
+    await expect(score(db, first.id, other.activityId, first.playerId)).rejects.toMatchObject({ code: "PT404" });
+    await expect(score(db, first.id, first.activityId, other.playerId)).rejects.toMatchObject({ code: "PT400" });
+    await expect(db.query("select public.ppl_amplified_event_score('complete', $1, 'other-owner', '{}')", [first.id])).rejects.toMatchObject({ code: "PT404" });
+    for (const role of ["anon", "authenticated"]) {
+      const client = await connection(false);
+      await client.query(`set role ${role}`);
+      await expect(complete(client, first.id)).rejects.toMatchObject({ code: "42501" });
     }
   });
 });
