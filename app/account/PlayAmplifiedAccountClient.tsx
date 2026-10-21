@@ -21,10 +21,13 @@ export function PlayAmplifiedAccountClient({ returnTo }: { returnTo: string }) {
     const supabase = getPlayPointBrowserSupabaseClient();
     let cancelled = false;
 
-    async function finishAccountSession() {
-      const { data } = await supabase.auth.getSession();
+    async function finishAccountSession(authSession?: Awaited<ReturnType<typeof supabase.auth.getSession>>["data"]["session"]) {
+      // The auth listener passes its session directly. Calling getSession
+      // inside onAuthStateChange can deadlock Supabase's auth lock.
+      const session = authSession === undefined
+        ? (await supabase.auth.getSession()).data.session
+        : authSession;
       if (cancelled) return;
-      const session = data.session;
       if (!session) {
         setBusy(false);
         setMessage("Sign in to your Play Amplified account.");
@@ -54,7 +57,7 @@ export function PlayAmplifiedAccountClient({ returnTo }: { returnTo: string }) {
 
     void finishAccountSession();
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) void finishAccountSession();
+      if (session) void finishAccountSession(session);
     });
 
     return () => {
