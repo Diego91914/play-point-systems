@@ -84,7 +84,7 @@ begin
     if v_event.status <> 'published' then
       raise sqlstate 'PT409' using message = 'Publish the event and finish registration before starting.';
     end if;
-    if jsonb_array_length(p_payload->'teams') not between 1 and 32 then
+    if coalesce(jsonb_array_length(p_payload->'teams'), 0) not between 1 and 32 then
       raise sqlstate 'PT400' using message = 'Balance at least one team before starting the event.';
     end if;
     select array_agg(member::uuid) into v_ids
