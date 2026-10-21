@@ -8,13 +8,10 @@ import {
   type GamesSessionRole,
 } from "@/lib/play-point-core/games-session";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
+import { isFounderAppMetadata, matchesVerifiedAccountLink } from "@/lib/play-point-core/verified-account-link";
 
 function isPlayPointFounder(user: User): boolean {
-  const appMetadata = user.app_metadata ?? {};
-  return (
-    appMetadata.play_point_founder === true ||
-    appMetadata.play_point_role === "founder"
-  );
+  return isFounderAppMetadata(user.app_metadata);
 }
 
 export async function requireGamesSupabaseUser(request: Request): Promise<User> {
@@ -29,7 +26,7 @@ export async function requireGamesSupabaseUser(request: Request): Promise<User> 
   if (error || !data.user) {
     throw new Error("Play Point account session is invalid or expired.");
   }
-  if (!data.user.email) {
+  if (!data.user.email || !(data.user.email_confirmed_at || data.user.confirmed_at)) {
     throw new Error("A verified email account is required.");
   }
 
@@ -92,4 +89,39 @@ export async function loadGamesLibraryForClaims(claims: GamesSessionClaims) {
       launchable: owned || game.ownershipAuthority === "shot_caddy",
     };
   });
+}
+
+/**
+ * Shot Caddy proves its own account login, not a Play Amplified identity.
+ * Only an independently reviewed, service-role-only link bridges the two.
+ */
+export async function resolveLinkedShotCaddySessionInput(
+  externalAccountId: string,
+  handoffEmail: string,
+): Promise<Awaited<ReturnType<typeof buildGamesSessionInput>> | null> {
+  if (!/^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(externalAccountId) || !handoffEmail.trim()) return null;
+  const supabase = getSupabaseServerClient();
+  const { data: link, error: linkError } = await supabase
+    .from("ppl_external_account_links")
+    .select("external_account_id, play_point_user_id")
+    .eq("provider", "shot_caddy")
+    .eq("external_account_id", externalAccountId)
+    .maybeSingle();
+
+  if (linkError) throw new Error("Unable to verify the account link: " + linkError.message);
+  if (!link) return null;
+
+  const { data: userData, error: userError } = await supabase.auth.admin.getUserById(link.play_point_user_id);
+  if (userError || !userData.user) throw new Error("The linked Play Amplified account is unavailable.");
+
+  if (!matchesVerifiedAccountLink({
+    externalAccountId,
+    handoffEmail,
+    link,
+    user: userData.user,
+  })) return null;
+
+  // Ignore Shot Caddy's founder grant and mint a canonical Play Amplified
+  // subject with local app_metadata role and local entitlements.
+  return buildGamesSessionInput(userData.user);
 }
