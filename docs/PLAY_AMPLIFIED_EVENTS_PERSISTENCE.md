@@ -44,7 +44,27 @@ Registration remains open only while the event is `published`. Starting the even
 
 ## Team lock
 
-Starting requires every registered participant to appear on exactly one submitted team. The server validates membership against the event roster before persisting teams. If member insertion or event start fails, newly created team rows are removed so a partially started event is not left behind.
+Starting requires every registered participant to appear on exactly one submitted team. The database validates membership against the event roster before persisting teams. If any write fails, the entire start transaction rolls back.
+
+The atomic-lifecycle migration replaces separate server writes with the
+service-role-only, security-invoker `ppl_amplified_event_mutate` RPC. Creation and
+draft replacement commit metadata and children together. Save, publish, join,
+and start lock the event row before checking its state; failed operations roll
+back completely. A join that commits first invalidates a stale submitted roster;
+a start that commits first causes a waiting join or second start to return 409.
+Team skill totals are computed from persisted participants. Name matching uses
+literal case-insensitive equality, including names containing `%` or `_`.
+
+Apply the persistence migration and then the atomic-lifecycle migration before
+deploying these routes. This change does not execute either migration remotely.
+The lifecycle RPC has no dependency on Event Hub scoring tables.
+
+Run the database regression suite with `AMPLIFIED_EVENT_TEST_DATABASE_URL` set
+to an administrator connection on a **disposable local PostgreSQL cluster**:
+`npx vitest run tests/play-amplified-event-transactions.test.ts`. The suite creates
+and drops a unique database, prepares Supabase-compatible roles on that local
+cluster, and checks real lock waits, rollback, literal names, and denied access.
+Without that explicit variable the database suite is skipped.
 
 ## Not included yet
 

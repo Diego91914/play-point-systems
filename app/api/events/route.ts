@@ -5,7 +5,8 @@ import {
   getAmplifiedEventAccount,
   loadOwnedAmplifiedEvent,
   normalizeAmplifiedEventDraft,
-  replaceAmplifiedEventDraftChildren,
+  amplifiedEventDraftPayload,
+  amplifiedEventErrorStatus,
 } from "@/lib/play-point-core/play-amplified-event-server";
 
 export async function GET() {
@@ -24,30 +25,17 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const claims = await getAmplifiedEventAccount();
-  if (!claims) return NextResponse.json({ error: "Sign in to create a Play Amplified Event." }, { status: 401 });
+  if (!claims) return NextResponse.json({ error: "Sign in to manage Play Amplified Events." }, { status: 401 });
   const draft = normalizeAmplifiedEventDraft(await request.json().catch(() => ({})));
-  const supabase = getSupabaseServerClient();
-  const { data: event, error } = await supabase
-    .from(AMPLIFIED_EVENT_TABLES.events)
-    .insert({
-      owner_user_id: claims.sub,
-      template_id: draft.templateId,
-      name: draft.name,
-      event_date: draft.eventDate,
-      team_count: draft.teamCount,
-      status: "draft",
-      registration_open: false,
-    })
-    .select("id")
-    .single();
-  if (error || !event) return NextResponse.json({ error: error?.message ?? "Could not create event." }, { status: 500 });
-
   try {
-    await replaceAmplifiedEventDraftChildren(event.id, draft);
-    const fullEvent = await loadOwnedAmplifiedEvent(event.id, claims.sub);
-    return NextResponse.json({ event: fullEvent }, { status: 201 });
+    const { data, error } = await getSupabaseServerClient().rpc("ppl_amplified_event_mutate", {
+      p_action: "create", p_event_id: null, p_owner_user_id: claims.sub,
+      p_payload: amplifiedEventDraftPayload(draft),
+    });
+    if (error) return NextResponse.json({ error: error.message }, { status: amplifiedEventErrorStatus(error) });
+    const event = await loadOwnedAmplifiedEvent(data.id, claims.sub);
+    return NextResponse.json({ event }, { status: 201 });
   } catch (caught) {
-    await supabase.from(AMPLIFIED_EVENT_TABLES.events).delete().eq("id", event.id).eq("owner_user_id", claims.sub);
     return NextResponse.json({ error: caught instanceof Error ? caught.message : "Could not save event draft." }, { status: 500 });
   }
 }

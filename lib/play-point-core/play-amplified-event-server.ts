@@ -50,42 +50,14 @@ export function normalizeAmplifiedEventDraft(body: unknown): AmplifiedEventDraft
   return { templateId: template.id, name, eventDate, teamCount, participants };
 }
 
-export async function replaceAmplifiedEventDraftChildren(eventId: string, draft: AmplifiedEventDraftInput) {
-  const supabase = getSupabaseServerClient();
-  const tables = AMPLIFIED_EVENT_TABLES;
+export function amplifiedEventDraftPayload(draft: AmplifiedEventDraftInput) {
   const template = PLAY_AMPLIFIED_EVENT_TEMPLATES.find((item) => item.id === draft.templateId) ?? PLAY_AMPLIFIED_EVENT_TEMPLATES[0];
-  const runOfPlay = buildEventRunOfPlay(template.modules);
+  return { ...draft, activities: buildEventRunOfPlay(template.modules) };
+}
 
-  const { error: deleteParticipantsError } = await supabase.from(tables.participants).delete().eq("event_id", eventId).eq("source", "organizer");
-  if (deleteParticipantsError) throw new Error(deleteParticipantsError.message);
-  const { error: deleteActivitiesError } = await supabase.from(tables.activities).delete().eq("event_id", eventId);
-  if (deleteActivitiesError) throw new Error(deleteActivitiesError.message);
-
-  if (draft.participants.length) {
-    const { error } = await supabase.from(tables.participants).insert(
-      draft.participants.map((participant) => ({
-        event_id: eventId,
-        display_name: participant.name,
-        skill: participant.skill,
-        source: "organizer",
-        checked_in: false,
-      })),
-    );
-    if (error) throw new Error(error.message);
-  }
-
-  if (runOfPlay.length) {
-    const { error } = await supabase.from(tables.activities).insert(
-      runOfPlay.map((item) => ({
-        event_id: eventId,
-        module_id: item.moduleId,
-        name: item.label,
-        sort_order: item.order,
-        status: "scheduled",
-      })),
-    );
-    if (error) throw new Error(error.message);
-  }
+export function amplifiedEventErrorStatus(error: { code?: string }) {
+  const match = /^PT(400|401|404|409)$/.exec(error.code ?? "");
+  return match ? Number(match[1]) : 500;
 }
 
 export async function loadOwnedAmplifiedEvent(eventId: string, ownerUserId: string) {
