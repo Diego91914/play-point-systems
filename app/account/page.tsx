@@ -26,7 +26,9 @@ export default async function AccountPage({
     cookieStore.get(GAMES_SESSION_COOKIE)?.value,
   );
 
-  if (claims) {
+  // An existing Builder test session must not prevent the Founder from
+  // upgrading to their verified Play Amplified account.
+  if (claims && claims.role !== "builder") {
     redirect(destination);
   }
 
