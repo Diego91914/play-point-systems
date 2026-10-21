@@ -44,8 +44,10 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
       }
 
       if (!cancelled) {
-        const target = new URL("/builder-access", window.location.origin);
-        target.searchParams.set("next", destination);
+        // Play Amplified identity is primary; preserve Builder test access
+        // as an explicit alternative on the account page.
+        const target = new URL("/account", window.location.origin);
+        target.searchParams.set("returnTo", destination);
         window.location.replace(target.toString());
       }
     }
@@ -83,7 +85,7 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
         Opening Play Amplified…
       </h1>
       <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-white/66">
-        Private test access is checked first. If it is not active yet, Play Amplified will ask for the builder password—not an email account.
+        Existing private access is checked first. Otherwise use your verified Play Amplified account. Builder access stays available as a separate test-only option.
       </p>
 
       {error ? (
@@ -108,7 +110,7 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
       )}
 
       <p className="mt-6 text-xs leading-6 text-white/42">
-        Builder access is separate from customer accounts, email sign-in, purchases, and Founder account ownership.
+        Invited guests join without an account; hosting remains role- and entitlement-protected.
       </p>
     </div>
   );
