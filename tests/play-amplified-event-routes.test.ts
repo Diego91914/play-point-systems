@@ -8,25 +8,30 @@ vi.mock("@/lib/play-point-core/play-amplified-event-server", async importOrigina
   loadOwnedAmplifiedEvent: mocks.load,
   generateUniqueAmplifiedEventJoinCode: async () => "ABCDEF",
 }));
+vi.mock("@/lib/play-point-core/play-amplified-event-hub-server", () => ({ loadOwnedAmplifiedEventHub: mocks.load }));
 
 import { POST as create } from "@/app/api/events/route";
 import { PATCH as save } from "@/app/api/events/[id]/route";
 import { POST as publish } from "@/app/api/events/[id]/publish/route";
 import { POST as start } from "@/app/api/events/[id]/start/route";
 import { POST as join } from "@/app/api/events/join/[code]/route";
+import { POST as score } from "@/app/api/events/[id]/results/route";
+import { POST as complete } from "@/app/api/events/[id]/complete/route";
 
 const organizerRoutes = [
   { action: "create", handler: create }, { action: "save", handler: save },
   { action: "publish", handler: publish }, { action: "start", handler: start },
+  { action: "score", handler: score }, { action: "complete", handler: complete },
 ];
-const body = { owner_user_id: "spoofed-owner", teams: [{ name: "Gold", participantIds: ["player"] }] };
+const body = { owner_user_id: "spoofed-owner", teams: [{ name: "Gold", participantIds: ["player"] }],
+  activityId: "activity", entries: [{ entityType: "participant", entityId: "player", placement: 1 }] };
 const request = () => new Request("https://example.test/api/events", { method: "POST", body: JSON.stringify(body) });
 const context = () => ({ params: Promise.resolve({ id: "event" }) });
 
 beforeEach(() => {
   vi.resetAllMocks();
   mocks.account.mockResolvedValue({ sub: "signed-owner" });
-  mocks.rpc.mockResolvedValue({ data: { id: "event" }, error: null });
+  mocks.rpc.mockResolvedValue({ data: { id: "event", resultVersion: 1 }, error: null });
   mocks.load.mockResolvedValue({ id: "event" });
 });
 
@@ -40,7 +45,8 @@ describe("Play Amplified transactional route boundary", () => {
   it.each(organizerRoutes)("routes $action through one atomic RPC using the signed owner", async ({ action, handler }) => {
     const response = await handler(request(), context());
     expect(response.status).toBe(action === "create" ? 201 : 200);
-    expect(mocks.rpc).toHaveBeenCalledExactlyOnceWith("ppl_amplified_event_mutate", expect.objectContaining({
+    const rpc = ["score", "complete"].includes(action) ? "ppl_amplified_event_score" : "ppl_amplified_event_mutate";
+    expect(mocks.rpc).toHaveBeenCalledExactlyOnceWith(rpc, expect.objectContaining({
       p_action: action, p_owner_user_id: "signed-owner", p_event_id: action === "create" ? null : "event",
     }));
   });
