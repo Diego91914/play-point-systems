@@ -99,7 +99,7 @@ export async function resolveLinkedShotCaddySessionInput(
   externalAccountId: string,
   handoffEmail: string,
 ): Promise<Awaited<ReturnType<typeof buildGamesSessionInput>> | null> {
-  if (!/^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(externalAccountId) || !handoffEmail.trim()) return null;
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(externalAccountId) || !handoffEmail.trim()) return null;
   const supabase = getSupabaseServerClient();
   const { data: link, error: linkError } = await supabase
     .from("ppl_external_account_links")
