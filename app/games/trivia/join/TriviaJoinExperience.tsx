@@ -32,6 +32,7 @@ type JoinSnapshot = {
   serverTimeMs: number;
   player: JoinPlayer;
   currentCard: RuntimePublicDeckCard | null;
+  upcomingTopicLabel?: string | null;
   questionOpenedAtMs: number | null;
   questionTimerSeconds: number | null;
   pacingMode: TriviaPacingMode;
@@ -502,6 +503,7 @@ export function TriviaJoinExperience() {
             ) : snapshot.phase === "question-countdown" ? (
               <div className="rounded-[28px] border border-cyan-300/25 bg-[linear-gradient(180deg,rgba(45,139,190,0.26),rgba(255,255,255,0.03))] p-7 text-center">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-cyan-100/70">Get ready</div>
+                <div className="mt-4 text-xl font-black text-cyan-100">Topic: {snapshot.upcomingTopicLabel ?? "Trivia"}</div>
                 <div className="mt-5 text-8xl font-black text-white">{questionStartCountdown || "Go"}</div>
                 <p className="mt-5 text-sm leading-6 text-white/68">The next question and choices will appear for everyone together.</p>
               </div>
@@ -515,6 +517,7 @@ export function TriviaJoinExperience() {
                     {snapshot.player.teamId ? <span className="text-cyan-100/70">{getTriviaTeamLabel(snapshot.player.teamId)}</span> : null}
                   </span>
                 </div>
+                <div className="mt-3 text-xs font-black uppercase tracking-[0.15em] text-cyan-200">Topic: {snapshot.currentCard.topicLabel ?? "Trivia"}</div>
                 <h3 className="mt-2 text-2xl font-black text-white sm:mt-3 sm:text-4xl">{snapshot.currentCard.prompt}</h3>
                   <p className="mt-3 text-xs leading-5 text-white/64 sm:text-sm sm:leading-7">
                     {TRIVIA_PACING_OPTIONS[snapshot.pacingMode].label} | {snapshot.questionTimerSeconds}s | {isFinalQuestion ? "Your private wager is at stake" : formatTriviaScoringSummary(snapshot.currentCard.scoring, snapshot.questionTimerSeconds ?? 10)}

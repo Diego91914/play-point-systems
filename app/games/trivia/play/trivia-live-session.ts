@@ -103,6 +103,7 @@ export type TriviaLiveHostSnapshot = {
   cardIndex: number;
   deck: RuntimeDeck;
   currentCard: RuntimeDeckCard | null;
+  upcomingTopicLabel?: string | null;
   questionOpenedAtMs: number | null;
   questionTimerSeconds: number | null;
   pacingMode: TriviaPacingMode;
@@ -131,6 +132,7 @@ export type TriviaLivePlayerSnapshot = {
   serverTimeMs: number;
   player: TriviaLivePlayer;
   currentCard: RuntimePublicDeckCard | null;
+  upcomingTopicLabel?: string | null;
   questionOpenedAtMs: number | null;
   questionTimerSeconds: number | null;
   pacingMode: TriviaPacingMode;
@@ -298,6 +300,7 @@ function toPublicCard(card: RuntimeDeckCard | null): RuntimePublicDeckCard | nul
 
   return {
     category: card.category,
+    topicLabel: card.topicLabel,
     difficulty: card.difficulty,
     prompt: card.prompt,
     choices: card.choices.map(({ slot, text }) => ({ slot, text })),
@@ -658,6 +661,9 @@ export function buildTriviaLiveHostSnapshot(sessionId: string, origin: string, h
     cardIndex: session.cardIndex,
     deck: session.deck,
     currentCard,
+    upcomingTopicLabel: session.phase === "question-countdown"
+      ? (storedCard?.topicLabel ?? session.deck.categoryLabel)
+      : null,
     questionOpenedAtMs: session.openedAtMs,
     questionTimerSeconds: currentCard ? getTriviaTimerSeconds(session.pacingMode) : null,
     pacingMode: session.pacingMode,
@@ -695,6 +701,9 @@ export function buildTriviaLivePlayerSnapshot(sessionId: string, playerId: strin
     serverTimeMs: now(),
     player: toPublicPlayer(player),
     currentCard: toPublicCard(currentCard),
+    upcomingTopicLabel: session.phase === "question-countdown"
+      ? (getCurrentCard(session)?.topicLabel ?? session.deck.categoryLabel)
+      : null,
     questionOpenedAtMs: session.openedAtMs,
     questionTimerSeconds: currentCard ? getTriviaTimerSeconds(session.pacingMode) : null,
     pacingMode: session.pacingMode,

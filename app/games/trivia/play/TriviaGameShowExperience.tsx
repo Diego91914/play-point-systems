@@ -58,6 +58,7 @@ type HostSnapshot = {
   cardIndex: number;
   deck: RuntimeDeck;
   currentCard: RuntimeDeckCard | null;
+  upcomingTopicLabel?: string | null;
   questionOpenedAtMs: number | null;
   questionTimerSeconds: number | null;
   pacingMode: TriviaPacingMode;
@@ -315,7 +316,7 @@ export function TriviaGameShowExperience() {
   }
 
   if (snapshot.phase === "question-countdown") {
-    return <section className="grid min-h-[60vh] place-items-center px-4 text-center"><div><div className="text-sm font-black uppercase tracking-[.3em] text-cyan-200/55">Get ready</div><div className="mt-4 text-[7rem] font-black leading-none text-white">3</div></div></section>;
+    return <section className="grid min-h-[60vh] place-items-center px-4 text-center"><div><div className="text-sm font-black uppercase tracking-[.3em] text-cyan-200/55">Get ready</div><div className="mt-4 text-2xl font-black text-cyan-100">Topic: {snapshot.upcomingTopicLabel ?? snapshot.deck.categoryLabel}</div><div className="mt-4 text-[7rem] font-black leading-none text-white">3</div></div></section>;
   }
 
   const card = snapshot.currentCard;
@@ -341,6 +342,7 @@ export function TriviaGameShowExperience() {
     <section className="mx-auto max-w-5xl px-4 py-6 sm:px-6">
       <div className="rounded-[34px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(66,162,255,.13),transparent_40%),rgba(4,9,18,.92)] p-6 shadow-2xl sm:p-9">
         <div className="flex items-center justify-between gap-4"><div><div className="text-xs font-black uppercase tracking-[.22em] text-cyan-200/55">{card.roundLabel}</div><div className="mt-1 text-sm font-bold text-white/45">Question {card.questionNumberInRound} of {card.totalQuestionsInRound}</div></div>{secondsLeft !== null ? <div className={`text-4xl font-black ${secondsLeft <= 3 ? "text-rose-300" : "text-white"}`}>{secondsLeft}</div> : null}</div>
+        <div className="mt-6 text-center text-sm font-black uppercase tracking-[.18em] text-cyan-200">Topic: {card.topicLabel ?? snapshot.deck.categoryLabel}</div>
         <h2 className="mx-auto mt-8 max-w-4xl text-center text-3xl font-black leading-tight text-white sm:text-5xl">{card.prompt}</h2>
         <div className="mx-auto mt-8 grid max-w-4xl gap-3 sm:grid-cols-2">{card.choices.map((choice) => <div key={choice.slot} className="rounded-2xl border border-white/10 bg-white/[.05] p-5"><span className="mr-3 inline-grid h-8 w-8 place-items-center rounded-lg bg-cyan-300 font-black text-slate-950">{choice.slot}</span><span className="font-bold text-white">{choice.text}</span></div>)}</div>
         <div className="mt-7 text-center text-sm font-bold text-white/50">{snapshot.submittedCount} answered · {snapshot.waitingForCount} waiting</div>
