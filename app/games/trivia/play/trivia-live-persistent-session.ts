@@ -133,6 +133,7 @@ function toPublicCard(card: RuntimeDeckCard | null): RuntimePublicDeckCard | nul
 
   return {
     category: card.category,
+    topicLabel: card.topicLabel,
     difficulty: card.difficulty,
     prompt: card.prompt,
     choices: card.choices.map(({ slot, text }) => ({ slot, text })),
@@ -340,6 +341,9 @@ export async function buildPersistentTriviaLiveHostSnapshot(
     cardIndex: session.card_index,
     deck: session.deck,
     currentCard,
+    upcomingTopicLabel: session.phase === "question-countdown"
+      ? (storedCard?.topicLabel ?? session.deck.categoryLabel)
+      : null,
     questionOpenedAtMs: session.opened_at ? Date.parse(session.opened_at) : null,
     questionTimerSeconds: currentCard ? getTriviaTimerSeconds(session.pacing_mode) : null,
     pacingMode: session.pacing_mode,
@@ -383,6 +387,9 @@ export async function buildPersistentTriviaLivePlayerSnapshot(
     serverTimeMs: Date.now(),
     player: toPublicPlayer(player),
     currentCard: toPublicCard(currentCard),
+    upcomingTopicLabel: bundle.session.phase === "question-countdown"
+      ? (getCurrentCard(bundle.session)?.topicLabel ?? bundle.session.deck.categoryLabel)
+      : null,
     questionOpenedAtMs: bundle.session.opened_at ? Date.parse(bundle.session.opened_at) : null,
     questionTimerSeconds: currentCard ? getTriviaTimerSeconds(bundle.session.pacing_mode) : null,
     pacingMode: bundle.session.pacing_mode,

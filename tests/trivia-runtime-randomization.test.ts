@@ -6,6 +6,7 @@ import {
 import {
   buildRuntimeDeck,
   buildRuntimeDeckFromCategory,
+  listRuntimeCatalogCategories,
   getRuntimeCatalogValidationReport,
   summarizeRuntimeCatalogCategory,
   type RuntimeSourceCatalogCategory,
@@ -171,7 +172,21 @@ describe("topic-aware published catalog decks", () => {
     expect(deck.questionsAvailable).toBe(4);
     expect(deck.cards).toHaveLength(4);
     expect(deck.cards.every((card) => card.sourceId.startsWith("world-"))).toBe(true);
+    expect(deck.cards.every((card) => card.topicLabel === "World Facts")).toBe(true);
     expect(deck.cards.every((card) => card.choices.filter((choice) => choice.isCorrect).length === 1)).toBe(true);
+  });
+});
+
+describe("Bible host topic selection", () => {
+  it("exposes broad, safe-to-preview testament topics and filters Bible questions", () => {
+    const bible = listRuntimeCatalogCategories().find((category) => category.category === "bible");
+    expect(bible?.topics.map((topic) => topic.topic)).toContain("old-testament");
+    const deck = buildRuntimeDeck("bible", "mixed", {
+      seed: "bible-old-testament-topic",
+      topicIds: ["old-testament"],
+    });
+    expect(deck.cards.length).toBeGreaterThan(0);
+    expect(deck.cards.every((card) => card.topicLabel === "Old Testament")).toBe(true);
   });
 });
 

@@ -33,6 +33,7 @@ type ProjectorSnapshot = {
   cardIndex: number;
   deck: RuntimeDeck;
   currentCard: RuntimeDeckCard | null;
+  upcomingTopicLabel?: string | null;
   questionTimerSeconds: number | null;
   pacingMode: TriviaPacingMode;
   gameMode: TriviaGameMode;
@@ -213,6 +214,7 @@ export function TriviaProjectorMode({
           ) : isStartingQuestion ? (
             <div className="mx-auto w-full max-w-5xl text-center">
               <div className="text-sm font-semibold uppercase tracking-[0.34em] text-cyan-100/68">Next question</div>
+              <div className="mt-5 text-4xl font-black text-cyan-100">Topic: {snapshot.upcomingTopicLabel ?? snapshot.deck.categoryLabel}</div>
               <div className="mt-8 text-[11rem] font-black leading-none text-white sm:text-[15rem]">{questionStartCountdown || "Go"}</div>
               <p className="mt-8 text-3xl font-black text-white/72">Get ready</p>
             </div>
@@ -225,6 +227,7 @@ export function TriviaProjectorMode({
                   </div>
                   <div className="text-base font-black text-white/64">{snapshot.submittedCount} answered · {snapshot.waitingForCount} waiting</div>
                 </div>
+                <div className="mt-5 text-xl font-black uppercase tracking-[0.18em] text-cyan-200">Topic: {currentCard.topicLabel ?? snapshot.deck.categoryLabel}</div>
                 <h1 className="mt-7 max-w-6xl text-4xl font-black leading-tight text-white sm:text-6xl lg:text-7xl">{currentCard.prompt}</h1>
                 <p className="mt-4 text-lg font-semibold text-emerald-100/70">
                   {snapshot.cardIndex === snapshot.deck.cards.length - 1
