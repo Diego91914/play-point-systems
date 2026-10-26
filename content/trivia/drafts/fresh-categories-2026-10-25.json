@@ -11477,6 +11477,2301 @@
         "history-makers",
         "content-review"
       ]
+    },
+    {
+      "source_id": "WTR-H-000016",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "hard",
+      "question": "Which marine arthropod has blue blood used in medical safety testing?",
+      "choices": [
+        "Horseshoe crab",
+        "Sea urchin",
+        "Sea star",
+        "Sea cucumber"
+      ],
+      "correct_choice": "A",
+      "explanation": "Horseshoe crab blood contains a substance useful for endotoxin testing.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000017",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "medium",
+      "question": "Which marsupial is native to much of eastern North America?",
+      "choices": [
+        "Virginia opossum",
+        "Koala",
+        "Wallaby",
+        "Wombat"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Virginia opossum is a North American marsupial.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000018",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "medium",
+      "question": "Which living land animal is the fastest over short distances?",
+      "choices": [
+        "Cheetah",
+        "Pronghorn",
+        "Lion",
+        "Greyhound"
+      ],
+      "correct_choice": "A",
+      "explanation": "The cheetah has the fastest measured sprint speed among living land animals.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000019",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "easy",
+      "question": "Which living bird has the greatest recorded wingspan?",
+      "choices": [
+        "Wandering albatross",
+        "Bald eagle",
+        "Andean condor",
+        "Mute swan"
+      ],
+      "correct_choice": "A",
+      "explanation": "Wandering albatrosses have some of the largest recorded wingspans.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000020",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "medium",
+      "question": "Which tiny Cuban species is the smallest living bird?",
+      "choices": [
+        "Bee hummingbird",
+        "Ruby-throated hummingbird",
+        "Goldcrest",
+        "Kingfisher"
+      ],
+      "correct_choice": "A",
+      "explanation": "The bee hummingbird is the world's smallest bird species.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000021",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "hard",
+      "question": "Which mammal is famous for hanging upside down in large cave colonies?",
+      "choices": [
+        "Bat",
+        "Meerkat",
+        "Marmot",
+        "Mole"
+      ],
+      "correct_choice": "A",
+      "explanation": "Many bats roost upside down in caves and other shelters.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000022",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "easy",
+      "question": "Which shark species is the largest living fish?",
+      "choices": [
+        "Whale shark",
+        "Great white shark",
+        "Hammerhead shark",
+        "Tiger shark"
+      ],
+      "correct_choice": "A",
+      "explanation": "Whale sharks are the largest living fish.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000023",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "medium",
+      "question": "Which desert-adapted mammal has three stomach compartments rather than four?",
+      "choices": [
+        "Camel",
+        "Cow",
+        "Sheep",
+        "Goat"
+      ],
+      "correct_choice": "A",
+      "explanation": "Camels have three forestomach compartments rather than the four compartments of true ruminants.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000024",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "medium",
+      "question": "Which animal carries its developing young in a pouch and often moves by hopping?",
+      "choices": [
+        "Kangaroo",
+        "Antelope",
+        "Leopard",
+        "Gazelle"
+      ],
+      "correct_choice": "A",
+      "explanation": "Kangaroos are marsupials that carry joeys in a pouch.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000025",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "easy",
+      "question": "Which bird catches fish using a stretchable pouch beneath its bill?",
+      "choices": [
+        "Pelican",
+        "Heron",
+        "Seagull",
+        "Cormorant"
+      ],
+      "correct_choice": "A",
+      "explanation": "Pelicans have distinctive throat pouches for catching fish.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000026",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "hard",
+      "question": "Which reptile uses skin-color changes to communicate with other members of its species?",
+      "choices": [
+        "Chameleon",
+        "Crocodile",
+        "Tortoise",
+        "Komodo dragon"
+      ],
+      "correct_choice": "A",
+      "explanation": "Chameleons can change colors for communication and temperature regulation.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000027",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "medium",
+      "question": "Which penguin species lives naturally close to the equator on the Galápagos Islands?",
+      "choices": [
+        "Galápagos penguin",
+        "Emperor penguin",
+        "King penguin",
+        "Adélie penguin"
+      ],
+      "correct_choice": "A",
+      "explanation": "Galápagos penguins are native to the equatorial Galápagos region.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000028",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "easy",
+      "question": "Which living land mammal is known for having the longest neck?",
+      "choices": [
+        "Giraffe",
+        "Okapi",
+        "Moose",
+        "Camel"
+      ],
+      "correct_choice": "A",
+      "explanation": "Giraffes have exceptionally long necks.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000029",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "medium",
+      "question": "Which beetle relative produces flashes of light to communicate?",
+      "choices": [
+        "Firefly",
+        "Ladybug",
+        "Weevil",
+        "Stag beetle"
+      ],
+      "correct_choice": "A",
+      "explanation": "Fireflies are beetles that use bioluminescent light for signaling.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000030",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "medium",
+      "question": "Which whale has a long spiral tusk extending from its upper jaw?",
+      "choices": [
+        "Narwhal",
+        "Beluga",
+        "Orca",
+        "Humpback whale"
+      ],
+      "correct_choice": "A",
+      "explanation": "A narwhal's tusk is an elongated tooth.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000031",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "hard",
+      "question": "Which fish can inflate its body to look much larger when threatened?",
+      "choices": [
+        "Pufferfish",
+        "Swordfish",
+        "Tuna",
+        "Barracuda"
+      ],
+      "correct_choice": "A",
+      "explanation": "Pufferfish inflate themselves as a defense.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000032",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "medium",
+      "question": "Which semiaquatic South American animal is the largest living rodent?",
+      "choices": [
+        "Capybara",
+        "Beaver",
+        "Porcupine",
+        "Marmot"
+      ],
+      "correct_choice": "A",
+      "explanation": "Capybaras are the largest rodents alive.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000033",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "hard",
+      "question": "Which planet has a giant, long-lasting storm called the Great Red Spot?",
+      "choices": [
+        "Jupiter",
+        "Saturn",
+        "Neptune",
+        "Mars"
+      ],
+      "correct_choice": "A",
+      "explanation": "Jupiter's Great Red Spot is a huge atmospheric storm.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000034",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "medium",
+      "question": "Which planet is best known for its broad rings made mostly of icy particles?",
+      "choices": [
+        "Saturn",
+        "Mars",
+        "Venus",
+        "Mercury"
+      ],
+      "correct_choice": "A",
+      "explanation": "Saturn's spectacular rings contain many icy particles.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000035",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "medium",
+      "question": "Which planet rotates nearly on its side because of its extreme axial tilt?",
+      "choices": [
+        "Uranus",
+        "Jupiter",
+        "Earth",
+        "Mercury"
+      ],
+      "correct_choice": "A",
+      "explanation": "Uranus has an axial tilt of about 98 degrees.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000036",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "easy",
+      "question": "On which planet would you find Olympus Mons, the solar system's largest volcano?",
+      "choices": [
+        "Mars",
+        "Earth",
+        "Venus",
+        "Mercury"
+      ],
+      "correct_choice": "A",
+      "explanation": "Olympus Mons is an enormous shield volcano on Mars.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000037",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "medium",
+      "question": "Which planet orbits farthest from the Sun among the eight recognized planets?",
+      "choices": [
+        "Neptune",
+        "Uranus",
+        "Saturn",
+        "Jupiter"
+      ],
+      "correct_choice": "A",
+      "explanation": "Neptune is the most distant of the eight planets.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000038",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "hard",
+      "question": "Which is the smallest planet among the eight planets in our solar system?",
+      "choices": [
+        "Mercury",
+        "Mars",
+        "Venus",
+        "Earth"
+      ],
+      "correct_choice": "A",
+      "explanation": "Mercury is the smallest of the eight planets.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000039",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "easy",
+      "question": "Which moon is the largest moon in our solar system?",
+      "choices": [
+        "Ganymede",
+        "Titan",
+        "Callisto",
+        "Europa"
+      ],
+      "correct_choice": "A",
+      "explanation": "Jupiter's Ganymede is the largest natural satellite.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000040",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "medium",
+      "question": "Which icy moon of Jupiter is a leading target in the search for a subsurface ocean?",
+      "choices": [
+        "Europa",
+        "Io",
+        "Phobos",
+        "Deimos"
+      ],
+      "correct_choice": "A",
+      "explanation": "Europa has strong evidence of a global ocean below its ice.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000041",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "medium",
+      "question": "Which icy moon of Saturn sprays plumes from cracks near its south pole?",
+      "choices": [
+        "Enceladus",
+        "Mimas",
+        "Titan",
+        "Iapetus"
+      ],
+      "correct_choice": "A",
+      "explanation": "Enceladus ejects water-rich plumes into space.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000042",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "easy",
+      "question": "Which planet rotates in the opposite direction to most planets, making its Sun rise in the west?",
+      "choices": [
+        "Venus",
+        "Earth",
+        "Mars",
+        "Jupiter"
+      ],
+      "correct_choice": "A",
+      "explanation": "Venus spins in a retrograde direction.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000043",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "hard",
+      "question": "What is the star at the center of our solar system?",
+      "choices": [
+        "The Sun",
+        "Sirius",
+        "Polaris",
+        "Betelgeuse"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Sun is the central star of our solar system.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000044",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "medium",
+      "question": "Which moon of Jupiter is the most volcanically active known world?",
+      "choices": [
+        "Io",
+        "Europa",
+        "Ganymede",
+        "Callisto"
+      ],
+      "correct_choice": "A",
+      "explanation": "Io has extensive active volcanism.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000045",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "easy",
+      "question": "What is Pluto classified as by the International Astronomical Union?",
+      "choices": [
+        "Dwarf planet",
+        "Gas giant",
+        "Moon",
+        "Asteroid"
+      ],
+      "correct_choice": "A",
+      "explanation": "Pluto was classified as a dwarf planet in 2006.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000046",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "medium",
+      "question": "What is the largest object in the main asteroid belt between Mars and Jupiter?",
+      "choices": [
+        "Ceres",
+        "Vesta",
+        "Pallas",
+        "Eros"
+      ],
+      "correct_choice": "A",
+      "explanation": "Ceres is a dwarf planet within the asteroid belt.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000047",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "medium",
+      "question": "Which large moon of Neptune travels in a retrograde orbit?",
+      "choices": [
+        "Triton",
+        "Titan",
+        "Europa",
+        "Phobos"
+      ],
+      "correct_choice": "A",
+      "explanation": "Triton orbits Neptune in the reverse direction to Neptune's rotation.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000048",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "hard",
+      "question": "Which Apollo mission first landed humans on the Moon?",
+      "choices": [
+        "Apollo 11",
+        "Apollo 8",
+        "Apollo 13",
+        "Apollo 17"
+      ],
+      "correct_choice": "A",
+      "explanation": "Apollo 11 made the first crewed lunar landing in 1969.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000049",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "medium",
+      "question": "Which space telescope launched in late 2021 observes primarily in infrared light?",
+      "choices": [
+        "James Webb Space Telescope",
+        "Hubble Space Telescope",
+        "Chandra X-ray Observatory",
+        "Kepler Space Telescope"
+      ],
+      "correct_choice": "A",
+      "explanation": "The James Webb Space Telescope launched in December 2021.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000050",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "hard",
+      "question": "Which organ is the largest by surface area and weight in the human body?",
+      "choices": [
+        "Skin",
+        "Liver",
+        "Brain",
+        "Heart"
+      ],
+      "correct_choice": "A",
+      "explanation": "The skin is the body's largest organ.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000051",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "medium",
+      "question": "What is the longest bone in the human body?",
+      "choices": [
+        "Femur",
+        "Tibia",
+        "Humerus",
+        "Radius"
+      ],
+      "correct_choice": "A",
+      "explanation": "The femur is the thigh bone and the body's longest bone.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000052",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "medium",
+      "question": "What is the name of the tiny stirrup-shaped bone in the human middle ear?",
+      "choices": [
+        "Stapes",
+        "Patella",
+        "Ulna",
+        "Clavicle"
+      ],
+      "correct_choice": "A",
+      "explanation": "The stapes transmits sound vibrations and is the smallest human bone.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000053",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "easy",
+      "question": "What is the anatomical name for the kneecap?",
+      "choices": [
+        "Patella",
+        "Scapula",
+        "Fibula",
+        "Sternum"
+      ],
+      "correct_choice": "A",
+      "explanation": "The patella protects the knee joint.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000054",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "medium",
+      "question": "How many chambers does a typical human heart have?",
+      "choices": [
+        "Four",
+        "Two",
+        "Three",
+        "Five"
+      ],
+      "correct_choice": "A",
+      "explanation": "A human heart has two atria and two ventricles.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000055",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "hard",
+      "question": "Which cells help the immune system fight infections?",
+      "choices": [
+        "White blood cells",
+        "Red blood cells",
+        "Platelets",
+        "Fat cells"
+      ],
+      "correct_choice": "A",
+      "explanation": "White blood cells are central to immune defense.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000056",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "easy",
+      "question": "Which blood cells contain hemoglobin that transports oxygen?",
+      "choices": [
+        "Red blood cells",
+        "Platelets",
+        "White blood cells",
+        "Bone cells"
+      ],
+      "correct_choice": "A",
+      "explanation": "Red blood cells carry oxygen using hemoglobin.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000057",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "medium",
+      "question": "Which blood component helps the blood clot after an injury?",
+      "choices": [
+        "Platelets",
+        "Plasma proteins only",
+        "Red blood cells",
+        "Neurons"
+      ],
+      "correct_choice": "A",
+      "explanation": "Platelets help initiate clotting at damaged vessels.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000058",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "medium",
+      "question": "What colored part of the eye changes pupil size?",
+      "choices": [
+        "Iris",
+        "Retina",
+        "Cornea",
+        "Lens"
+      ],
+      "correct_choice": "A",
+      "explanation": "The iris has muscles that change the size of the pupil.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000059",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "easy",
+      "question": "What is the hard outer covering of the crown of a tooth?",
+      "choices": [
+        "Enamel",
+        "Dentin",
+        "Pulp",
+        "Cementum"
+      ],
+      "correct_choice": "A",
+      "explanation": "Enamel covers the tooth's crown and is highly mineralized.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000060",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "hard",
+      "question": "What are the tiny air sacs where oxygen enters the blood from the lungs?",
+      "choices": [
+        "Alveoli",
+        "Bronchi",
+        "Tracheae",
+        "Sinuses"
+      ],
+      "correct_choice": "A",
+      "explanation": "Gas exchange occurs across alveolar walls.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000061",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "medium",
+      "question": "Which organ produces bile to help digest fats?",
+      "choices": [
+        "Liver",
+        "Pancreas",
+        "Stomach",
+        "Spleen"
+      ],
+      "correct_choice": "A",
+      "explanation": "The liver makes bile, which is stored in the gallbladder.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000062",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "easy",
+      "question": "Which organs filter blood to remove wastes and make urine?",
+      "choices": [
+        "Kidneys",
+        "Lungs",
+        "Adrenal glands",
+        "Tonsils"
+      ],
+      "correct_choice": "A",
+      "explanation": "The kidneys remove waste products from blood.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000063",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "medium",
+      "question": "Where are most nutrients absorbed during digestion?",
+      "choices": [
+        "Small intestine",
+        "Stomach",
+        "Large intestine",
+        "Esophagus"
+      ],
+      "correct_choice": "A",
+      "explanation": "Most nutrient absorption takes place in the small intestine.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000064",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "medium",
+      "question": "Which flap of tissue helps prevent food from entering the windpipe during swallowing?",
+      "choices": [
+        "Epiglottis",
+        "Uvula",
+        "Tongue",
+        "Diaphragm"
+      ],
+      "correct_choice": "A",
+      "explanation": "The epiglottis helps guard the airway during swallowing.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000065",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "hard",
+      "question": "Which part of the brain is especially important for balance and coordination?",
+      "choices": [
+        "Cerebellum",
+        "Hypothalamus",
+        "Medulla",
+        "Hippocampus"
+      ],
+      "correct_choice": "A",
+      "explanation": "The cerebellum helps coordinate movements and balance.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000066",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "medium",
+      "question": "Approximately how many bones are in a typical adult human skeleton?",
+      "choices": [
+        "206",
+        "106",
+        "306",
+        "406"
+      ],
+      "correct_choice": "A",
+      "explanation": "Most adults have 206 bones, although anatomy can vary.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000067",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "hard",
+      "question": "What happens to water's volume when it freezes into ordinary ice?",
+      "choices": [
+        "It expands",
+        "It stays exactly the same",
+        "It halves",
+        "It becomes zero"
+      ],
+      "correct_choice": "A",
+      "explanation": "Ordinary ice is less dense than liquid water.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000068",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "medium",
+      "question": "Which towering cloud type is strongly associated with thunderstorms?",
+      "choices": [
+        "Cumulonimbus",
+        "Cirrus",
+        "Stratus",
+        "Altocumulus"
+      ],
+      "correct_choice": "A",
+      "explanation": "Cumulonimbus clouds can produce heavy rain and lightning.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000069",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "medium",
+      "question": "What causes a rainbow when sunlight passes through raindrops?",
+      "choices": [
+        "Light refraction, reflection, and dispersion",
+        "Only cloud shadows",
+        "Only wind speed",
+        "Moon phases"
+      ],
+      "correct_choice": "A",
+      "explanation": "Raindrops bend, reflect and separate sunlight into colors.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000070",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "easy",
+      "question": "Which natural light display is caused by charged particles interacting with Earth's atmosphere?",
+      "choices": [
+        "Aurora",
+        "Mirage",
+        "Earthquake",
+        "Eclipse"
+      ],
+      "correct_choice": "A",
+      "explanation": "Charged particles help produce auroras near the poles.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000071",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "medium",
+      "question": "What structures do many reef-building corals secrete to form coral reefs?",
+      "choices": [
+        "Calcium carbonate skeletons",
+        "Wood fibers",
+        "Granite crystals",
+        "Iron sheets"
+      ],
+      "correct_choice": "A",
+      "explanation": "Coral polyps build calcium carbonate skeletons.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000072",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "hard",
+      "question": "Which fossil fuel forms largely from ancient plant material buried over time?",
+      "choices": [
+        "Coal",
+        "Natural gas only",
+        "Petroleum only",
+        "Uranium"
+      ],
+      "correct_choice": "A",
+      "explanation": "Coal forms largely from accumulated ancient plant matter.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000073",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "easy",
+      "question": "What feature of a tree trunk can often provide an estimate of its age?",
+      "choices": [
+        "Annual growth rings",
+        "Bark color alone",
+        "Leaf length",
+        "Root direction"
+      ],
+      "correct_choice": "A",
+      "explanation": "Temperate trees commonly add identifiable annual growth rings.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000074",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "medium",
+      "question": "Which carnivorous plant has hinged traps that close after trigger hairs are stimulated?",
+      "choices": [
+        "Venus flytrap",
+        "Sundew",
+        "Pitcher plant",
+        "Cactus"
+      ],
+      "correct_choice": "A",
+      "explanation": "Venus flytraps have leaf traps triggered by sensitive hairs.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000075",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "medium",
+      "question": "Which tree, native to parts of Africa and Madagascar, is known for a massive trunk that can store water?",
+      "choices": [
+        "Baobab",
+        "Pine",
+        "Spruce",
+        "Birch"
+      ],
+      "correct_choice": "A",
+      "explanation": "Baobab trees can store substantial water in their trunks.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000076",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "easy",
+      "question": "Which soil-dwelling animal creates tunnels that help aerate the soil?",
+      "choices": [
+        "Earthworm",
+        "Grasshopper",
+        "Butterfly",
+        "Dragonfly"
+      ],
+      "correct_choice": "A",
+      "explanation": "Earthworm burrows help soil aeration and drainage.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000077",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "hard",
+      "question": "Which plant provides essential food for monarch butterfly caterpillars?",
+      "choices": [
+        "Milkweed",
+        "Oak",
+        "Daisy",
+        "Pine"
+      ],
+      "correct_choice": "A",
+      "explanation": "Monarch larvae depend on milkweed plants.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000078",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "medium",
+      "question": "Which process allows green plants to turn sunlight into chemical energy?",
+      "choices": [
+        "Photosynthesis",
+        "Fermentation",
+        "Condensation",
+        "Erosion"
+      ],
+      "correct_choice": "A",
+      "explanation": "Plants use light energy to produce sugars through photosynthesis.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000079",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "easy",
+      "question": "What are the small pores on leaves used for gas exchange called?",
+      "choices": [
+        "Stomata",
+        "Roots",
+        "Sepals",
+        "Rhizomes"
+      ],
+      "correct_choice": "A",
+      "explanation": "Stomata allow gases and water vapor to move through leaf surfaces.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000080",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "medium",
+      "question": "Why is the Dead Sea unusually buoyant to swimmers?",
+      "choices": [
+        "Very high salinity",
+        "Strong tides",
+        "Hot springs",
+        "Shallow waves"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Dead Sea's salt concentration increases water density.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000081",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "medium",
+      "question": "Which tree species includes some of the tallest living trees in the world?",
+      "choices": [
+        "Coast redwood",
+        "Olive",
+        "Baobab",
+        "Apple"
+      ],
+      "correct_choice": "A",
+      "explanation": "Coast redwoods are among the world's tallest trees.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000082",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "hard",
+      "question": "What movement do honeybees perform to communicate the direction of a food source?",
+      "choices": [
+        "Waggle dance",
+        "Spiral walk",
+        "Wing clap",
+        "Tail stamp"
+      ],
+      "correct_choice": "A",
+      "explanation": "The waggle dance conveys distance and direction information.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000083",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "medium",
+      "question": "Mushrooms are classified as which kind of organism?",
+      "choices": [
+        "Fungi",
+        "Plants",
+        "Animals",
+        "Algae"
+      ],
+      "correct_choice": "A",
+      "explanation": "Mushrooms are fruiting bodies of fungi.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000084",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "hard",
+      "question": "Which appliance grew from Percy Spencer noticing candy melting near radar equipment?",
+      "choices": [
+        "Microwave oven",
+        "Toaster",
+        "Refrigerator",
+        "Blender"
+      ],
+      "correct_choice": "A",
+      "explanation": "Spencer's magnetron work helped inspire microwave cooking.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000085",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "medium",
+      "question": "Which paper office product uses the weak reusable adhesive developed at 3M?",
+      "choices": [
+        "Post-it Notes",
+        "Index cards",
+        "Carbon paper",
+        "Masking tape"
+      ],
+      "correct_choice": "A",
+      "explanation": "A low-tack adhesive became useful for repositionable notes.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000086",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "medium",
+      "question": "Which nonstick fluoropolymer was accidentally discovered by Roy Plunkett in 1938?",
+      "choices": [
+        "Teflon",
+        "Nylon",
+        "Acrylic",
+        "Polyester"
+      ],
+      "correct_choice": "A",
+      "explanation": "Plunkett unexpectedly found the PTFE fluoropolymer.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000087",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "easy",
+      "question": "Which adhesive emerged from Harry Coover's work on exceptionally sticky cyanoacrylates?",
+      "choices": [
+        "Super Glue",
+        "School paste",
+        "Rubber cement",
+        "Wallpaper glue"
+      ],
+      "correct_choice": "A",
+      "explanation": "Cyanoacrylate adhesives became known as Super Glue.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000088",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "medium",
+      "question": "Which artificial sweetener was discovered after Constantin Fahlberg noticed a sweet substance?",
+      "choices": [
+        "Saccharin",
+        "Sucrose",
+        "Stevia",
+        "Fructose"
+      ],
+      "correct_choice": "A",
+      "explanation": "Fahlberg's research led to saccharin in 1879.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000089",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "hard",
+      "question": "Which spring toy emerged from an engineer's observation of a spring that could walk?",
+      "choices": [
+        "Slinky",
+        "Yo-yo",
+        "Hula-Hoop",
+        "Rubik's Cube"
+      ],
+      "correct_choice": "A",
+      "explanation": "Richard James developed the Slinky spring toy.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000090",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "easy",
+      "question": "Which medical imaging discovery was made by Wilhelm Röntgen in 1895?",
+      "choices": [
+        "X-rays",
+        "MRI",
+        "Ultrasound",
+        "PET scans"
+      ],
+      "correct_choice": "A",
+      "explanation": "Röntgen observed previously unknown penetrating radiation.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000091",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "medium",
+      "question": "Which frozen treat traces its origin to Frank Epperson leaving a flavored drink outside to freeze?",
+      "choices": [
+        "Popsicle",
+        "Snow cone",
+        "Milkshake",
+        "Gelato"
+      ],
+      "correct_choice": "A",
+      "explanation": "Epperson's childhood frozen-drink experiment led to the Popsicle.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000092",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "medium",
+      "question": "Which water-repellent fabric treatment resulted from an unexpected fluorochemical spill at 3M?",
+      "choices": [
+        "Scotchgard",
+        "Teflon",
+        "Gore-Tex",
+        "Kevlar"
+      ],
+      "correct_choice": "A",
+      "explanation": "Patsy Sherman's team developed Scotchgard after an accidental spill.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000093",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "easy",
+      "question": "Which purple synthetic dye did William Henry Perkin discover while researching a malaria treatment?",
+      "choices": [
+        "Mauveine",
+        "Indigo",
+        "Carmine",
+        "Ultramarine"
+      ],
+      "correct_choice": "A",
+      "explanation": "Perkin discovered mauveine during quinine research in 1856.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000094",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "hard",
+      "question": "Which device did Wilson Greatbatch develop after using the wrong resistor in a circuit?",
+      "choices": [
+        "Implantable pacemaker",
+        "Hearing aid",
+        "Artificial lung",
+        "Digital thermometer"
+      ],
+      "correct_choice": "A",
+      "explanation": "A mistakenly selected resistor produced pulses that inspired the pacemaker.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000095",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "medium",
+      "question": "Which method strengthened rubber after Charles Goodyear experimented with sulfur and heat?",
+      "choices": [
+        "Vulcanization",
+        "Distillation",
+        "Pasteurization",
+        "Electroplating"
+      ],
+      "correct_choice": "A",
+      "explanation": "Sulfur and heat improved rubber's durability.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000096",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "easy",
+      "question": "Which material was inspired when a glass flask did not shatter because a plastic film held it together?",
+      "choices": [
+        "Laminated safety glass",
+        "Fiberglass insulation",
+        "Acrylic glass",
+        "Tempered steel"
+      ],
+      "correct_choice": "A",
+      "explanation": "Édouard Bénédictus observed the value of an intact glass flask.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000097",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "medium",
+      "question": "Which artificial sweetener was noticed when chemist James Schlatter accidentally tasted residue on a finger?",
+      "choices": [
+        "Aspartame",
+        "Saccharin",
+        "Sucralose",
+        "Glucose"
+      ],
+      "correct_choice": "A",
+      "explanation": "Schlatter accidentally noticed the sweet taste during research.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000098",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "medium",
+      "question": "Which packaging material was first conceived as textured wallpaper?",
+      "choices": [
+        "Bubble Wrap",
+        "Packing peanuts",
+        "Cardboard",
+        "Shrink film"
+      ],
+      "correct_choice": "A",
+      "explanation": "Bubble Wrap originally began as an attempt at textured wallpaper.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000099",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "hard",
+      "question": "Which squishy toy material originated in research on synthetic rubber substitutes during World War II?",
+      "choices": [
+        "Silly Putty",
+        "Play-Doh",
+        "Modeling clay",
+        "Kinetic Sand"
+      ],
+      "correct_choice": "A",
+      "explanation": "The unusual silicone polymer later became the toy Silly Putty.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000100",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "medium",
+      "question": "Which breakfast cereal traces its origin to an accidental spill of bran gruel onto a hot stove?",
+      "choices": [
+        "Wheaties",
+        "Cheerios",
+        "Corn Pops",
+        "Frosted Flakes"
+      ],
+      "correct_choice": "A",
+      "explanation": "General Mills dates the accidental crispy-flake discovery to 1921.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "content-review"
+      ]
     }
   ],
   "lastExpandedAt": "2026-10-25"
