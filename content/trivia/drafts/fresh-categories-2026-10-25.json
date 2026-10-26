@@ -6887,6 +6887,2301 @@
         "landmark-hunt",
         "content-review"
       ]
+    },
+    {
+      "source_id": "BRN-H-000016",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "hard",
+      "question": "A $48 restaurant bill has a 25% tip added. How much is the tip?",
+      "choices": [
+        "$12",
+        "$8",
+        "$10",
+        "$16"
+      ],
+      "correct_choice": "A",
+      "explanation": "One fourth of forty-eight dollars is twelve dollars.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000017",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "medium",
+      "question": "What is 15 percent of 200?",
+      "choices": [
+        "30",
+        "20",
+        "25",
+        "35"
+      ],
+      "correct_choice": "A",
+      "explanation": "Ten percent of 200 is 20 and five percent is 10.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000018",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "medium",
+      "question": "Four friends split a $76 bill equally. How much does each pay?",
+      "choices": [
+        "$19",
+        "$17",
+        "$21",
+        "$24"
+      ],
+      "correct_choice": "A",
+      "explanation": "Seventy-six dollars divided by four is nineteen dollars.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000019",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "easy",
+      "question": "A $50 jacket is discounted by 20%. What is the sale price?",
+      "choices": [
+        "$40",
+        "$30",
+        "$45",
+        "$35"
+      ],
+      "correct_choice": "A",
+      "explanation": "Twenty percent of fifty is ten dollars, leaving forty dollars.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000020",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "medium",
+      "question": "What is three quarters of 64?",
+      "choices": [
+        "48",
+        "16",
+        "24",
+        "56"
+      ],
+      "correct_choice": "A",
+      "explanation": "Sixty-four times three-fourths equals forty-eight.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000021",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "hard",
+      "question": "A cyclist rides at 12 mph. How far does the cyclist go in 2.5 hours?",
+      "choices": [
+        "30 miles",
+        "24 miles",
+        "36 miles",
+        "28 miles"
+      ],
+      "correct_choice": "A",
+      "explanation": "Twelve times two and a half equals thirty miles.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000022",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "easy",
+      "question": "What is nine squared minus five squared?",
+      "choices": [
+        "56",
+        "46",
+        "66",
+        "106"
+      ],
+      "correct_choice": "A",
+      "explanation": "Eighty-one minus twenty-five equals fifty-six.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000023",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "medium",
+      "question": "If six cupcakes cost $15, how much do ten cupcakes cost at the same rate?",
+      "choices": [
+        "$25",
+        "$20",
+        "$30",
+        "$22.50"
+      ],
+      "correct_choice": "A",
+      "explanation": "Each cupcake costs two dollars and fifty cents.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000024",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "medium",
+      "question": "What is the average of 8, 12, 16, and 20?",
+      "choices": [
+        "14",
+        "12",
+        "16",
+        "15"
+      ],
+      "correct_choice": "A",
+      "explanation": "Those four numbers sum to 56; divide by four.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000025",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "easy",
+      "question": "A rectangle is 9 feet long and 4 feet wide. What is its area?",
+      "choices": [
+        "36 square feet",
+        "26 square feet",
+        "13 square feet",
+        "40 square feet"
+      ],
+      "correct_choice": "A",
+      "explanation": "Area is length times width, or thirty-six square feet.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000026",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "hard",
+      "question": "What is the remainder after dividing 58 by 7?",
+      "choices": [
+        "2",
+        "1",
+        "3",
+        "4"
+      ],
+      "correct_choice": "A",
+      "explanation": "Seven times eight is fifty-six, leaving two.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000027",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "medium",
+      "question": "A $120 item is half off and then 10% off the reduced price. What is the final price?",
+      "choices": [
+        "$54",
+        "$48",
+        "$60",
+        "$66"
+      ],
+      "correct_choice": "A",
+      "explanation": "Half off gives $60; another 10% discount makes $54.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000028",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "easy",
+      "question": "How many seconds are in three and a half minutes?",
+      "choices": [
+        "210",
+        "180",
+        "225",
+        "240"
+      ],
+      "correct_choice": "A",
+      "explanation": "Multiply 3.5 by 60 seconds.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000029",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "medium",
+      "question": "A train goes 180 miles in three hours. What is its average speed?",
+      "choices": [
+        "60 mph",
+        "45 mph",
+        "50 mph",
+        "90 mph"
+      ],
+      "correct_choice": "A",
+      "explanation": "Distance divided by time is 60 miles per hour.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000030",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "medium",
+      "question": "What is 7 times 8 plus 9?",
+      "choices": [
+        "65",
+        "63",
+        "72",
+        "80"
+      ],
+      "correct_choice": "A",
+      "explanation": "Multiply first, getting 56; then add nine.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000031",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "hard",
+      "question": "A recipe calls for 2 cups of flour for 8 servings. How many cups for 20 servings?",
+      "choices": [
+        "5 cups",
+        "4 cups",
+        "6 cups",
+        "3 cups"
+      ],
+      "correct_choice": "A",
+      "explanation": "Twenty is 2.5 times eight, so multiply two cups by 2.5.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000032",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "medium",
+      "question": "What is the sum of a triangle's three interior angles?",
+      "choices": [
+        "180 degrees",
+        "90 degrees",
+        "270 degrees",
+        "360 degrees"
+      ],
+      "correct_choice": "A",
+      "explanation": "All triangles have interior angles adding to 180 degrees.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000033",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "hard",
+      "question": "What comes next in the sequence 5, 10, 15, 20, ...?",
+      "choices": [
+        "25",
+        "30",
+        "24",
+        "22"
+      ],
+      "correct_choice": "A",
+      "explanation": "Every term increases by five.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000034",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "medium",
+      "question": "What comes next in the sequence 1, 8, 27, 64, ...?",
+      "choices": [
+        "125",
+        "100",
+        "81",
+        "216"
+      ],
+      "correct_choice": "A",
+      "explanation": "The next consecutive perfect cube is five cubed.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000035",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "medium",
+      "question": "What comes next in the sequence 2, 3, 5, 7, 11, ...?",
+      "choices": [
+        "13",
+        "12",
+        "15",
+        "17"
+      ],
+      "correct_choice": "A",
+      "explanation": "The next prime number is thirteen.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000036",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "easy",
+      "question": "What comes next in the sequence 1, 3, 6, 10, 15, ...?",
+      "choices": [
+        "21",
+        "20",
+        "22",
+        "25"
+      ],
+      "correct_choice": "A",
+      "explanation": "The increments are two, three, four, five, then six.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000037",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "medium",
+      "question": "What comes next in the sequence 100, 90, 81, 73, 66, ...?",
+      "choices": [
+        "60",
+        "59",
+        "58",
+        "61"
+      ],
+      "correct_choice": "A",
+      "explanation": "Subtract ten, nine, eight, seven, then six.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000038",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "hard",
+      "question": "What comes next in the sequence 2, 6, 12, 20, 30, ...?",
+      "choices": [
+        "42",
+        "40",
+        "44",
+        "36"
+      ],
+      "correct_choice": "A",
+      "explanation": "The terms are n times n plus one, from one onward.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000039",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "easy",
+      "question": "What comes next in the sequence 3, 9, 27, 81, ...?",
+      "choices": [
+        "243",
+        "162",
+        "108",
+        "729"
+      ],
+      "correct_choice": "A",
+      "explanation": "Every term is three times the preceding term.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000040",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "medium",
+      "question": "What comes next in the sequence 7, 14, 28, 56, ...?",
+      "choices": [
+        "112",
+        "96",
+        "98",
+        "120"
+      ],
+      "correct_choice": "A",
+      "explanation": "Each term is doubled.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000041",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "medium",
+      "question": "What comes next in the sequence 1, 2, 6, 24, 120, ...?",
+      "choices": [
+        "720",
+        "240",
+        "360",
+        "600"
+      ],
+      "correct_choice": "A",
+      "explanation": "These are factorials; the next is six factorial.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000042",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "easy",
+      "question": "What comes next in the sequence 81, 27, 9, 3, ...?",
+      "choices": [
+        "1",
+        "0",
+        "2",
+        "6"
+      ],
+      "correct_choice": "A",
+      "explanation": "Each term is divided by three.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000043",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "hard",
+      "question": "What comes next in the sequence 4, 7, 13, 22, 34, ...?",
+      "choices": [
+        "49",
+        "45",
+        "46",
+        "52"
+      ],
+      "correct_choice": "A",
+      "explanation": "Add three, six, nine, twelve, then fifteen.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000044",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "medium",
+      "question": "What comes next in the sequence 2, 5, 10, 17, 26, ...?",
+      "choices": [
+        "37",
+        "35",
+        "36",
+        "39"
+      ],
+      "correct_choice": "A",
+      "explanation": "The numbers are consecutive squares plus one.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000045",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "easy",
+      "question": "What comes next in the sequence 64, 32, 16, 8, ...?",
+      "choices": [
+        "4",
+        "2",
+        "6",
+        "0"
+      ],
+      "correct_choice": "A",
+      "explanation": "Each term is halved.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000046",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "medium",
+      "question": "What comes next in the sequence 11, 22, 33, 44, ...?",
+      "choices": [
+        "55",
+        "50",
+        "66",
+        "54"
+      ],
+      "correct_choice": "A",
+      "explanation": "Each term goes up by eleven.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000047",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "medium",
+      "question": "What comes next in the sequence 1, 4, 7, 10, 13, ...?",
+      "choices": [
+        "16",
+        "15",
+        "17",
+        "19"
+      ],
+      "correct_choice": "A",
+      "explanation": "Add three each time.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000048",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "hard",
+      "question": "What comes next in the sequence 2, 4, 7, 11, 16, ...?",
+      "choices": [
+        "22",
+        "20",
+        "21",
+        "23"
+      ],
+      "correct_choice": "A",
+      "explanation": "The jumps increase by one, ending with a jump of six.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000049",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "medium",
+      "question": "What comes next in the sequence 13, 12, 10, 7, 3, ...?",
+      "choices": [
+        "-2",
+        "-1",
+        "0",
+        "1"
+      ],
+      "correct_choice": "A",
+      "explanation": "Subtract one, two, three, four, then five.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000050",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "hard",
+      "question": "Which word means both a riverbank and a place that holds money?",
+      "choices": [
+        "Bank",
+        "Port",
+        "Mint",
+        "Vault"
+      ],
+      "correct_choice": "A",
+      "explanation": "Bank refers to a river edge or a financial institution.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000051",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "medium",
+      "question": "Which word refers to both a baseball throw and the tone of a musical sound?",
+      "choices": [
+        "Pitch",
+        "Catch",
+        "Scale",
+        "Chord"
+      ],
+      "correct_choice": "A",
+      "explanation": "Pitch has meanings in sports and sound.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000052",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "medium",
+      "question": "Which word is the opposite of scarce?",
+      "choices": [
+        "Abundant",
+        "Limited",
+        "Rare",
+        "Sparse"
+      ],
+      "correct_choice": "A",
+      "explanation": "Abundant means plentiful.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000053",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "easy",
+      "question": "Which of these words is a palindrome?",
+      "choices": [
+        "Level",
+        "Lever",
+        "Label",
+        "Lemon"
+      ],
+      "correct_choice": "A",
+      "explanation": "Level reads the same forward and backward.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000054",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "medium",
+      "question": "Which word can be formed by rearranging the letters of EARTH?",
+      "choices": [
+        "Heart",
+        "Hater",
+        "Hearth",
+        "Heat"
+      ],
+      "correct_choice": "A",
+      "explanation": "Heart contains exactly the letters of earth.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000055",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "hard",
+      "question": "Which word describes both a season and an elastic metal coil?",
+      "choices": [
+        "Spring",
+        "Summer",
+        "Winter",
+        "Autumn"
+      ],
+      "correct_choice": "A",
+      "explanation": "Spring is a season and an elastic device.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000056",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "easy",
+      "question": "Which five-letter word means both a fruit and a shade of orange-pink?",
+      "choices": [
+        "Peach",
+        "Apple",
+        "Grape",
+        "Mango"
+      ],
+      "correct_choice": "A",
+      "explanation": "Peach is a fruit and a color.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000057",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "medium",
+      "question": "Which word has the five vowels A E I O U in that order?",
+      "choices": [
+        "Facetious",
+        "Education",
+        "Adventurous",
+        "Question"
+      ],
+      "correct_choice": "A",
+      "explanation": "Facetious contains a, e, i, o and u in order.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000058",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "medium",
+      "question": "What is the opposite of visible?",
+      "choices": [
+        "Invisible",
+        "Inspected",
+        "Illegible",
+        "Uncertain"
+      ],
+      "correct_choice": "A",
+      "explanation": "Invisible means unable to be seen.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000059",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "easy",
+      "question": "Which word can be an upper room of a barn or an apartment space under a roof?",
+      "choices": [
+        "Loft",
+        "Cellar",
+        "Kitchen",
+        "Porch"
+      ],
+      "correct_choice": "A",
+      "explanation": "A loft is elevated space in a building.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000060",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "hard",
+      "question": "Complete the analogy: Bird is to nest as bee is to what?",
+      "choices": [
+        "Hive",
+        "Pond",
+        "Burrow",
+        "Cave"
+      ],
+      "correct_choice": "A",
+      "explanation": "A beehive shelters a bee colony.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000061",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "medium",
+      "question": "What do you call a word made by rearranging the letters of another word?",
+      "choices": [
+        "Anagram",
+        "Acronym",
+        "Synonym",
+        "Homophone"
+      ],
+      "correct_choice": "A",
+      "explanation": "An anagram rearranges the source word's letters.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000062",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "easy",
+      "question": "Which word means a written story AND an official report of an event?",
+      "choices": [
+        "Account",
+        "Bicycle",
+        "Latitude",
+        "Compass"
+      ],
+      "correct_choice": "A",
+      "explanation": "Account can mean a narrative or a report.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000063",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "medium",
+      "question": "Which word sounds the same as 'sea' but means to look?",
+      "choices": [
+        "See",
+        "Say",
+        "Sigh",
+        "Sew"
+      ],
+      "correct_choice": "A",
+      "explanation": "See and sea are homophones.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000064",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "medium",
+      "question": "Which adjective is the opposite of ancient?",
+      "choices": [
+        "Modern",
+        "Distant",
+        "Fragile",
+        "Hidden"
+      ],
+      "correct_choice": "A",
+      "explanation": "Modern means relating to recent times.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000065",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "hard",
+      "question": "Which word can mean a tree covering and the sound a dog makes?",
+      "choices": [
+        "Bark",
+        "Branch",
+        "Growl",
+        "Leaf"
+      ],
+      "correct_choice": "A",
+      "explanation": "Bark is both the outer tree layer and a dog's sound.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000066",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "medium",
+      "question": "Which word means two words with opposite meanings, such as hot and cold?",
+      "choices": [
+        "Antonyms",
+        "Synonyms",
+        "Homonyms",
+        "Acronyms"
+      ],
+      "correct_choice": "A",
+      "explanation": "Antonyms are words with opposite meanings.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000067",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "hard",
+      "question": "Four people split 12 eggs evenly. How many eggs does each person get?",
+      "choices": [
+        "3",
+        "4",
+        "2",
+        "6"
+      ],
+      "correct_choice": "A",
+      "explanation": "Twelve eggs divided by four people is three eggs each.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000068",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "medium",
+      "question": "Ten riders are on a bus. Three leave and five board. How many riders now?",
+      "choices": [
+        "12",
+        "8",
+        "15",
+        "10"
+      ],
+      "correct_choice": "A",
+      "explanation": "Ten minus three plus five equals twelve.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000069",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "medium",
+      "question": "If yesterday was Monday, what day is tomorrow?",
+      "choices": [
+        "Wednesday",
+        "Tuesday",
+        "Thursday",
+        "Sunday"
+      ],
+      "correct_choice": "A",
+      "explanation": "Today is Tuesday, so tomorrow is Wednesday.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000070",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "easy",
+      "question": "Two ice cubes completely melt in a glass. How many remain solid?",
+      "choices": [
+        "0",
+        "1",
+        "2",
+        "4"
+      ],
+      "correct_choice": "A",
+      "explanation": "There are no solid cubes left after both melt.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000071",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "medium",
+      "question": "A mother has three sons, all of whom share one sister. How many children does she have?",
+      "choices": [
+        "4",
+        "6",
+        "3",
+        "5"
+      ],
+      "correct_choice": "A",
+      "explanation": "Three boys and one girl total four children.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000072",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "hard",
+      "question": "How many times must you subtract 6 from 30 to reach zero, starting at 30?",
+      "choices": [
+        "5",
+        "4",
+        "6",
+        "3"
+      ],
+      "correct_choice": "A",
+      "explanation": "Five subtractions of six total thirty.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000073",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "easy",
+      "question": "Two people fit in each canoe. How many canoes do nine people need?",
+      "choices": [
+        "5",
+        "4",
+        "6",
+        "9"
+      ],
+      "correct_choice": "A",
+      "explanation": "Four canoes fit eight; the ninth person needs a fifth.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000074",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "medium",
+      "question": "Five lamps are switched on. Three are turned off. How many remain on?",
+      "choices": [
+        "2",
+        "3",
+        "5",
+        "8"
+      ],
+      "correct_choice": "A",
+      "explanation": "Five minus three leaves two lamps on.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000075",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "medium",
+      "question": "An elevator starts on floor 2, rises six floors, then descends three. Where is it?",
+      "choices": [
+        "Floor 5",
+        "Floor 4",
+        "Floor 6",
+        "Floor 7"
+      ],
+      "correct_choice": "A",
+      "explanation": "Two plus six minus three equals five.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000076",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "easy",
+      "question": "A 10-minute timer starts at 8:15. When does it ring?",
+      "choices": [
+        "8:25",
+        "8:20",
+        "8:30",
+        "8:35"
+      ],
+      "correct_choice": "A",
+      "explanation": "Add ten minutes to 8:15.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000077",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "hard",
+      "question": "Four people all shake hands once with everyone else. How many handshakes happen?",
+      "choices": [
+        "6",
+        "4",
+        "8",
+        "12"
+      ],
+      "correct_choice": "A",
+      "explanation": "Four people make six distinct pairs.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000078",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "medium",
+      "question": "A bag has red and blue marbles only. How many blind draws guarantee a matching-color pair?",
+      "choices": [
+        "3",
+        "2",
+        "4",
+        "5"
+      ],
+      "correct_choice": "A",
+      "explanation": "The third draw guarantees a repeat among two colors.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000079",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "easy",
+      "question": "Five houses stand in a row, numbered 1 to 5. Which house is the middle one?",
+      "choices": [
+        "House 3",
+        "House 2",
+        "House 4",
+        "House 5"
+      ],
+      "correct_choice": "A",
+      "explanation": "Two houses stand on either side of house three.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000080",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "medium",
+      "question": "In a five-person group, everyone shakes every other person's hand once. How many shakes?",
+      "choices": [
+        "10",
+        "5",
+        "15",
+        "20"
+      ],
+      "correct_choice": "A",
+      "explanation": "Five times four divided by two gives ten distinct pairs.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000081",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "medium",
+      "question": "How many pieces does a straight rope have after three separate cuts?",
+      "choices": [
+        "4",
+        "3",
+        "5",
+        "6"
+      ],
+      "correct_choice": "A",
+      "explanation": "Each cut adds one piece to the original rope.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000082",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "hard",
+      "question": "A clock reads 6:00. What is the smaller angle between the hands?",
+      "choices": [
+        "180 degrees",
+        "90 degrees",
+        "120 degrees",
+        "60 degrees"
+      ],
+      "correct_choice": "A",
+      "explanation": "At six o'clock the hands point in opposite directions.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000083",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "medium",
+      "question": "A family has two parents and their four children. How many people are in the family?",
+      "choices": [
+        "6",
+        "4",
+        "5",
+        "8"
+      ],
+      "correct_choice": "A",
+      "explanation": "Two plus four equals six.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000084",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "hard",
+      "question": "Which lasts longer, 90 seconds or 2 minutes?",
+      "choices": [
+        "2 minutes",
+        "90 seconds",
+        "They are equal",
+        "Neither"
+      ],
+      "correct_choice": "A",
+      "explanation": "Two minutes equals 120 seconds.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000085",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "medium",
+      "question": "At 60 mph, how far does a car drive in 30 minutes at a constant speed?",
+      "choices": [
+        "30 miles",
+        "20 miles",
+        "45 miles",
+        "60 miles"
+      ],
+      "correct_choice": "A",
+      "explanation": "Half an hour at 60 mph is thirty miles.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000086",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "medium",
+      "question": "How many sides do three separate triangles have in total?",
+      "choices": [
+        "9",
+        "6",
+        "12",
+        "3"
+      ],
+      "correct_choice": "A",
+      "explanation": "Three triangles each have three sides.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000087",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "easy",
+      "question": "A fair coin is flipped twice. How many distinct ordered outcomes exist?",
+      "choices": [
+        "4",
+        "2",
+        "3",
+        "6"
+      ],
+      "correct_choice": "A",
+      "explanation": "The outcomes are heads-heads, heads-tails, tails-heads and tails-tails.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000088",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "medium",
+      "question": "A pizza has eight slices and you eat three. How many slices remain?",
+      "choices": [
+        "5",
+        "3",
+        "4",
+        "6"
+      ],
+      "correct_choice": "A",
+      "explanation": "Eight minus three equals five.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000089",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "hard",
+      "question": "If today is Thursday, what day will it be one week from now?",
+      "choices": [
+        "Thursday",
+        "Wednesday",
+        "Friday",
+        "Saturday"
+      ],
+      "correct_choice": "A",
+      "explanation": "Seven days from Thursday is Thursday.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000090",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "easy",
+      "question": "How many days are in a leap year?",
+      "choices": [
+        "366",
+        "365",
+        "364",
+        "367"
+      ],
+      "correct_choice": "A",
+      "explanation": "A leap year contains 366 days.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000091",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "medium",
+      "question": "What is the greatest whole number below 100?",
+      "choices": [
+        "99",
+        "100",
+        "98",
+        "101"
+      ],
+      "correct_choice": "A",
+      "explanation": "The greatest whole number less than one hundred is 99.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000092",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "medium",
+      "question": "Two packs each have 24 cards. How many cards are there altogether?",
+      "choices": [
+        "48",
+        "36",
+        "46",
+        "52"
+      ],
+      "correct_choice": "A",
+      "explanation": "Two groups of twenty-four make forty-eight.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000093",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "easy",
+      "question": "How many even-numbered faces does a standard six-sided die have?",
+      "choices": [
+        "3",
+        "2",
+        "4",
+        "6"
+      ],
+      "correct_choice": "A",
+      "explanation": "The even faces are 2, 4 and 6.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000094",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "hard",
+      "question": "How many distinct pairs can be selected from three people?",
+      "choices": [
+        "3",
+        "2",
+        "4",
+        "6"
+      ],
+      "correct_choice": "A",
+      "explanation": "The possible pairs are AB, AC and BC.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000095",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "medium",
+      "question": "How many vertices, or corners, does a cube have?",
+      "choices": [
+        "8",
+        "6",
+        "12",
+        "4"
+      ],
+      "correct_choice": "A",
+      "explanation": "A cube has eight corners.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000096",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "easy",
+      "question": "How many twenty-dollar bills equal exactly $100?",
+      "choices": [
+        "5",
+        "4",
+        "10",
+        "20"
+      ],
+      "correct_choice": "A",
+      "explanation": "One hundred divided by twenty is five.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000097",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "medium",
+      "question": "How many wheels are on seven ordinary four-wheeled cars, excluding spare tires?",
+      "choices": [
+        "28",
+        "24",
+        "21",
+        "32"
+      ],
+      "correct_choice": "A",
+      "explanation": "Seven cars times four wheels is twenty-eight.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000098",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "medium",
+      "question": "What is 100 minus five times 12?",
+      "choices": [
+        "40",
+        "60",
+        "50",
+        "48"
+      ],
+      "correct_choice": "A",
+      "explanation": "Five times twelve is sixty; one hundred minus sixty is forty.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000099",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "hard",
+      "question": "What is the smallest prime number?",
+      "choices": [
+        "2",
+        "1",
+        "3",
+        "0"
+      ],
+      "correct_choice": "A",
+      "explanation": "Two is the smallest number with exactly two positive divisors.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000100",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "medium",
+      "question": "How many quarter-hour intervals fit exactly in one hour?",
+      "choices": [
+        "4",
+        "3",
+        "5",
+        "6"
+      ],
+      "correct_choice": "A",
+      "explanation": "Sixty minutes divided by fifteen gives four intervals.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "content-review"
+      ]
     }
   ],
   "lastExpandedAt": "2026-10-25"
