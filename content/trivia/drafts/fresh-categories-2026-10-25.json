@@ -9220,15 +9220,15 @@
       "topic_slug": "world-changing-minds",
       "topic_name": "World-Changing Minds",
       "difficulty": "medium",
-      "question": "Who am I? My book Principia set out laws of motion and universal gravitation.",
+      "question": "Who am I? I proved the first incompleteness theorem, showing limits of certain formal systems.",
       "choices": [
-        "Isaac Newton",
-        "Alexander Graham Bell",
-        "Katherine Johnson",
-        "Ada Lovelace"
+        "Kurt Gödel",
+        "Alan Turing",
+        "Bertrand Russell",
+        "David Hilbert"
       ],
       "correct_choice": "A",
-      "explanation": "Newton published his laws of motion in Principia in 1687.",
+      "explanation": "Kurt Gödel published the incompleteness theorems in 1931.",
       "reference": "Encyclopaedia Britannica biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -9652,15 +9652,15 @@
       "topic_slug": "entertainment-icons",
       "topic_name": "Entertainment Icons",
       "difficulty": "hard",
-      "question": "Who am I? I starred as Lucy Ricardo in the television comedy I Love Lucy.",
+      "question": "Who am I? I played Mary Richards in a groundbreaking 1970s workplace sitcom.",
       "choices": [
+        "Mary Tyler Moore",
+        "Carol Burnett",
         "Lucille Ball",
-        "Elvis Presley",
-        "Morgan Freeman",
-        "Jim Henson"
+        "Betty White"
       ],
       "correct_choice": "A",
-      "explanation": "Ball became a television comedy icon as Lucy Ricardo.",
+      "explanation": "Mary Tyler Moore played Mary Richards in The Mary Tyler Moore Show.",
       "reference": "Entertainment biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -9733,15 +9733,15 @@
       "topic_slug": "entertainment-icons",
       "topic_name": "Entertainment Icons",
       "difficulty": "easy",
-      "question": "Who am I? I recorded Jailhouse Rock and Heartbreak Hotel and was nicknamed the King of Rock and Roll.",
+      "question": "Who am I? I released the early rock-and-roll hit Tutti Frutti in 1955.",
       "choices": [
+        "Little Richard",
+        "Chuck Berry",
         "Elvis Presley",
-        "Walt Disney",
-        "David Bowie",
-        "Dolly Parton"
+        "Fats Domino"
       ],
       "correct_choice": "A",
-      "explanation": "Elvis Presley recorded the hits Jailhouse Rock and Heartbreak Hotel.",
+      "explanation": "Little Richard recorded Tutti Frutti in 1955.",
       "reference": "Entertainment biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -9949,15 +9949,15 @@
       "topic_slug": "entertainment-icons",
       "topic_name": "Entertainment Icons",
       "difficulty": "medium",
-      "question": "Who am I? I was the lead singer of Queen and performed at Live Aid in 1985.",
+      "question": "Who am I? I was the lead singer of the rock band The Doors.",
       "choices": [
-        "Freddie Mercury",
-        "Stevie Wonder",
-        "Whitney Houston",
-        "Morgan Freeman"
+        "Jim Morrison",
+        "Robert Plant",
+        "Mick Jagger",
+        "David Bowie"
       ],
       "correct_choice": "A",
-      "explanation": "Mercury fronted the rock band Queen.",
+      "explanation": "Jim Morrison was the lead singer of The Doors.",
       "reference": "Entertainment biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -10570,15 +10570,15 @@
       "topic_slug": "creative-giants",
       "topic_name": "Creative Giants",
       "difficulty": "hard",
-      "question": "Who am I? I wrote the plays Hamlet and Macbeth.",
+      "question": "Who am I? I wrote the play A Raisin in the Sun, which premiered on Broadway in 1959.",
       "choices": [
-        "William Shakespeare",
-        "J.R.R. Tolkien",
-        "Louis Armstrong",
-        "Ansel Adams"
+        "Lorraine Hansberry",
+        "Alice Walker",
+        "Toni Morrison",
+        "Zora Neale Hurston"
       ],
       "correct_choice": "A",
-      "explanation": "Shakespeare wrote both tragedies.",
+      "explanation": "Lorraine Hansberry wrote A Raisin in the Sun.",
       "reference": "Encyclopaedia Britannica biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -10732,15 +10732,15 @@
       "topic_slug": "creative-giants",
       "topic_name": "Creative Giants",
       "difficulty": "easy",
-      "question": "Who am I? I painted The Starry Night while staying in Saint-Rémy.",
+      "question": "Who am I? I painted Nighthawks, a scene of people seated inside a brightly lit diner.",
       "choices": [
-        "Vincent van Gogh",
-        "Wolfgang Amadeus Mozart",
-        "Ansel Adams",
-        "Pablo Picasso"
+        "Edward Hopper",
+        "Andrew Wyeth",
+        "Grant Wood",
+        "Jackson Pollock"
       ],
       "correct_choice": "A",
-      "explanation": "Van Gogh painted The Starry Night in 1889.",
+      "explanation": "Edward Hopper painted Nighthawks in 1942.",
       "reference": "Encyclopaedia Britannica biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -11029,15 +11029,15 @@
       "topic_slug": "history-makers",
       "topic_name": "History Makers",
       "difficulty": "hard",
-      "question": "Who am I? My 1955 refusal to surrender my bus seat became a civil-rights milestone.",
+      "question": "Who am I? I helped found the Student Nonviolent Coordinating Committee and encouraged young civil-rights organizers.",
       "choices": [
-        "Rosa Parks",
-        "Abraham Lincoln",
-        "Eleanor Roosevelt",
-        "Florence Nightingale"
+        "Ella Baker",
+        "Dorothy Height",
+        "Coretta Scott King",
+        "Fannie Lou Hamer"
       ],
       "correct_choice": "A",
-      "explanation": "Parks' arrest led to the Montgomery bus boycott.",
+      "explanation": "Ella Baker helped establish SNCC in 1960.",
       "reference": "Encyclopaedia Britannica biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -11083,15 +11083,15 @@
       "topic_slug": "history-makers",
       "topic_name": "History Makers",
       "difficulty": "medium",
-      "question": "Who am I? I led people escaping slavery through the Underground Railroad.",
+      "question": "Who am I? I worked as a journalist and led an anti-lynching campaign in the United States.",
       "choices": [
+        "Ida B. Wells",
         "Harriet Tubman",
-        "Martin Luther King Jr.",
-        "Queen Victoria",
-        "Frederick Douglass"
+        "Sojourner Truth",
+        "Jane Addams"
       ],
       "correct_choice": "A",
-      "explanation": "Tubman helped many enslaved people escape to freedom.",
+      "explanation": "Ida B. Wells investigated and campaigned against lynching.",
       "reference": "Encyclopaedia Britannica biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
