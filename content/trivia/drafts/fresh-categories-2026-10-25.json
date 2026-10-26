@@ -1493,15 +1493,15 @@
       "topic_slug": "world-changing-minds",
       "topic_name": "World-Changing Minds",
       "difficulty": "medium",
-      "question": "Who am I? With my brother Wilbur, I made the first controlled powered airplane flights in 1903.",
+      "question": "Who am I? I patented a practical mechanical dishwasher in 1886.",
       "choices": [
-        "Orville Wright",
-        "Charles Lindbergh",
-        "Amelia Earhart",
-        "Howard Hughes"
+        "Josephine Cochrane",
+        "Ada Lovelace",
+        "Grace Hopper",
+        "Hedy Lamarr"
       ],
       "correct_choice": "A",
-      "explanation": "Orville piloted the first powered flight of the Wright brothers' 1903 tests.",
+      "explanation": "Josephine Cochrane patented a commercially successful mechanical dishwasher.",
       "reference": "Encyclopaedia Britannica biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -9193,15 +9193,15 @@
       "topic_slug": "world-changing-minds",
       "topic_name": "World-Changing Minds",
       "difficulty": "hard",
-      "question": "Who am I? I wrote notes on Charles Babbage's Analytical Engine that described an algorithm.",
+      "question": "Who am I? I conducted long-term research on mountain gorillas in Rwanda.",
       "choices": [
-        "Ada Lovelace",
-        "Louis Pasteur",
-        "George Washington Carver",
-        "Dmitri Mendeleev"
+        "Dian Fossey",
+        "Jane Goodall",
+        "Biruté Galdikas",
+        "Sylvia Earle"
       ],
       "correct_choice": "A",
-      "explanation": "Lovelace is regarded as a pioneer of computer programming.",
+      "explanation": "Dian Fossey studied mountain gorillas in Rwanda for many years.",
       "reference": "Encyclopaedia Britannica biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -10705,15 +10705,15 @@
       "topic_slug": "creative-giants",
       "topic_name": "Creative Giants",
       "difficulty": "hard",
-      "question": "Who am I? I painted the antiwar masterpiece Guernica.",
+      "question": "Who am I? I designed the Guggenheim Museum Bilbao in Spain.",
       "choices": [
-        "Pablo Picasso",
-        "Ludwig van Beethoven",
-        "Toni Morrison",
-        "J.K. Rowling"
+        "Frank Gehry",
+        "Frank Lloyd Wright",
+        "Zaha Hadid",
+        "Louis Kahn"
       ],
       "correct_choice": "A",
-      "explanation": "Picasso painted Guernica in 1937.",
+      "explanation": "Architect Frank Gehry designed the Guggenheim Museum Bilbao.",
       "reference": "Encyclopaedia Britannica biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
