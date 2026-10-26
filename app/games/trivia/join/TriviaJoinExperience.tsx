@@ -214,21 +214,48 @@ export function TriviaJoinExperience() {
   }, []);
 
   useEffect(() => {
-    if (!snapshot?.sessionId || !snapshot?.player.id || !hasPlayerCredential || streamConnected) {
+    if (!snapshot?.sessionId || !snapshot?.player.id || !hasPlayerCredential) {
       return;
     }
 
-    const handle = window.setInterval(async () => {
+    // A connected SSE stream is not proof that database change notifications
+    // are reaching this device. Always keep a slower snapshot poll as a safety
+    // net so a missed host-start event cannot strand a guest in the lobby.
+    let stopped = false;
+    let refreshInFlight = false;
+    const sessionId = snapshot.sessionId;
+    const playerId = snapshot.player.id;
+    const refresh = async () => {
+      if (stopped || refreshInFlight || document.visibilityState === "hidden") return;
+      refreshInFlight = true;
       try {
-        const nextSnapshot = await requestJson<JoinSnapshot>(`/api/trivia/sessions/${snapshot.sessionId}/players/${snapshot.player.id}`, undefined, playerToken);
-        setSnapshot(nextSnapshot);
+        const nextSnapshot = await requestJson<JoinSnapshot>(
+          `/api/trivia/sessions/${sessionId}/players/${playerId}`,
+          undefined,
+          playerToken,
+        );
+        if (!stopped) {
+          setSnapshot(nextSnapshot);
+          setJoinError(null);
+        }
       } catch (error) {
-        setJoinError(error instanceof Error ? error.message : "Unable to refresh the join session.");
+        if (!stopped) {
+          setJoinError(error instanceof Error ? error.message : "Unable to refresh the join session.");
+        }
+      } finally {
+        refreshInFlight = false;
       }
-    }, 1200);
+    };
 
+    const handle = window.setInterval(() => void refresh(), streamConnected ? 2500 : 1200);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") void refresh();
+    };
+    document.addEventListener("visibilitychange", onVisible);
     return () => {
+      stopped = true;
       window.clearInterval(handle);
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, [hasPlayerCredential, playerToken, snapshot?.player.id, snapshot?.sessionId, streamConnected]);
 
