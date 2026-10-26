@@ -1,7 +1,7 @@
 {
   "date": "2026-10-25",
   "status": "draft",
-  "notice": "75 NEW draft questions in 5 NEW categories. Compared against 1,210 starter questions and 800 database questions, with semantic near-duplicates removed. Further source fact-check and expansion to 100 questions per category needed before production importer.",
+  "notice": "DRAFT question bank expansion. Sources are topic-level pending question-by-question fact verification. Duplicate review and database staging required before publication.",
   "baseline": {
     "sourceFile": "app/games/trivia/play/trivia-runtime-catalog.json",
     "baselineQuestions": 1210,
@@ -2297,6 +2297,2302 @@
         "fresh-category",
         "content-review"
       ]
+    },
+    {
+      "source_id": "DEC-H-000016",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "hard",
+      "question": "In which decade was the first YouTube video uploaded?",
+      "choices": [
+        "2000s",
+        "1990s",
+        "2010s",
+        "1980s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The first YouTube upload was Me at the zoo in 2005",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000017",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "medium",
+      "question": "In which decade did Google begin as a company?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Google was founded in 1998",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000018",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "medium",
+      "question": "In which decade did Wikipedia launch?",
+      "choices": [
+        "2000s",
+        "1990s",
+        "2010s",
+        "1980s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Wikipedia launched in January 2001",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000019",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "easy",
+      "question": "In which decade did the original Macintosh computer debut?",
+      "choices": [
+        "1980s",
+        "1970s",
+        "1990s",
+        "1960s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Apple introduced the Macintosh in 1984",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000020",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "medium",
+      "question": "In which decade was the first iPad unveiled?",
+      "choices": [
+        "2010s",
+        "2000s",
+        "2020s",
+        "1990s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Apple unveiled the iPad in 2010",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000021",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "hard",
+      "question": "In which decade did the original Sony PlayStation launch in Japan?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Sony released the first PlayStation in Japan in 1994",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000022",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "easy",
+      "question": "In which decade did the Intel 4004 microprocessor launch?",
+      "choices": [
+        "1970s",
+        "1960s",
+        "1980s",
+        "1950s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Intel introduced the 4004 microprocessor in 1971",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000023",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "medium",
+      "question": "In which decade did the Hubble Space Telescope launch?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Hubble Space Telescope was launched in 1990",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000024",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "medium",
+      "question": "In which decade did Apple unveil the first iPod?",
+      "choices": [
+        "2000s",
+        "1990s",
+        "2010s",
+        "1980s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Apple introduced its first iPod in 2001",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000025",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "easy",
+      "question": "In which decade did Instagram launch?",
+      "choices": [
+        "2010s",
+        "2000s",
+        "2020s",
+        "1990s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Instagram launched in 2010",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000026",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "hard",
+      "question": "In which decade was the first SMS text message sent?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The first SMS message was sent in 1992",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000027",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "medium",
+      "question": "In which decade was the Mosaic web browser released?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Mosaic web browser became available in 1993",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000028",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "easy",
+      "question": "In which decade did Nintendo release the original Game Boy in Japan?",
+      "choices": [
+        "1980s",
+        "1970s",
+        "1990s",
+        "1960s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Nintendo released the Game Boy in Japan in 1989",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000029",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "medium",
+      "question": "In which decade did Netflix launch its DVD-by-mail service?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Netflix began DVD rentals in 1998",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000030",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "medium",
+      "question": "In which decade did the first Android smartphone, the HTC Dream, go on sale?",
+      "choices": [
+        "2000s",
+        "1990s",
+        "2010s",
+        "1980s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The HTC Dream was released in 2008",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000031",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "hard",
+      "question": "In which decade did the World Wide Web become publicly available through CERN?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "CERN made World Wide Web software available to a broader community in 1991",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000032",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "medium",
+      "question": "In which decade did the first commercial CD player reach stores in Japan?",
+      "choices": [
+        "1980s",
+        "1970s",
+        "1990s",
+        "1960s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Sony introduced the CDP-101 compact disc player in Japan in 1982",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000033",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "hard",
+      "question": "In which decade did the film Casablanca premiere?",
+      "choices": [
+        "1940s",
+        "1930s",
+        "1950s",
+        "1920s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Casablanca premiered in 1942",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000034",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "medium",
+      "question": "In which decade was The Wizard of Oz released in theaters?",
+      "choices": [
+        "1930s",
+        "1920s",
+        "1940s",
+        "1910s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Wizard of Oz opened in 1939",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000035",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "medium",
+      "question": "In which decade did Steven Spielberg's E.T. the Extra-Terrestrial premiere?",
+      "choices": [
+        "1980s",
+        "1970s",
+        "1990s",
+        "1960s"
+      ],
+      "correct_choice": "A",
+      "explanation": "E.T. was released in 1982",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000036",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "easy",
+      "question": "In which decade did Back to the Future first reach theaters?",
+      "choices": [
+        "1980s",
+        "1970s",
+        "1990s",
+        "1960s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Back to the Future opened in 1985",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000037",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "medium",
+      "question": "In which decade did The Matrix first reach theaters?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Matrix opened in 1999",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000038",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "hard",
+      "question": "In which decade did The Dark Knight first reach theaters?",
+      "choices": [
+        "2000s",
+        "1990s",
+        "2010s",
+        "1980s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Dark Knight opened in 2008",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000039",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "easy",
+      "question": "In which decade did James Cameron's Avatar first reach theaters?",
+      "choices": [
+        "2000s",
+        "1990s",
+        "2010s",
+        "1980s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Avatar opened in 2009",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000040",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "medium",
+      "question": "In which decade did Marvel's Black Panther first reach theaters?",
+      "choices": [
+        "2010s",
+        "2000s",
+        "2020s",
+        "1990s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Black Panther opened in 2018",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000041",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "medium",
+      "question": "In which decade did Disney's original animated Frozen premiere?",
+      "choices": [
+        "2010s",
+        "2000s",
+        "2020s",
+        "1990s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Frozen premiered in 2013",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000042",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "easy",
+      "question": "In which decade did Disney's original animated The Lion King premiere?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Lion King premiered in 1994",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000043",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "hard",
+      "question": "In which decade did the first Shrek movie premiere?",
+      "choices": [
+        "2000s",
+        "1990s",
+        "2010s",
+        "1980s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Shrek opened in 2001",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000044",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "medium",
+      "question": "In which decade did Francis Ford Coppola's The Godfather premiere?",
+      "choices": [
+        "1970s",
+        "1960s",
+        "1980s",
+        "1950s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Godfather was released in 1972",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000045",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "easy",
+      "question": "In which decade did Quentin Tarantino's Pulp Fiction first reach theaters?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Pulp Fiction opened in 1994",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000046",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "medium",
+      "question": "In which decade did the first Rocky movie premiere?",
+      "choices": [
+        "1970s",
+        "1960s",
+        "1980s",
+        "1950s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Rocky premiered in 1976",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000047",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "medium",
+      "question": "In which decade did the original Top Gun movie premiere?",
+      "choices": [
+        "1980s",
+        "1970s",
+        "1990s",
+        "1960s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Top Gun premiered in 1986",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000048",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "hard",
+      "question": "In which decade did the original Raiders of the Lost Ark premiere?",
+      "choices": [
+        "1980s",
+        "1970s",
+        "1990s",
+        "1960s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Raiders of the Lost Ark opened in 1981",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000049",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "medium",
+      "question": "In which decade did the movie Oppenheimer first reach theaters?",
+      "choices": [
+        "2020s",
+        "2010s",
+        "2030s",
+        "2000s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Oppenheimer premiered in 2023",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000050",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "hard",
+      "question": "In which decade did Aretha Franklin release her version of Respect?",
+      "choices": [
+        "1960s",
+        "1950s",
+        "1970s",
+        "1940s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Aretha Franklin released Respect in 1967",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000051",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "medium",
+      "question": "In which decade did the Woodstock music festival take place?",
+      "choices": [
+        "1960s",
+        "1950s",
+        "1970s",
+        "1940s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Woodstock festival was held in 1969",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000052",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "medium",
+      "question": "In which decade did Queen release Bohemian Rhapsody?",
+      "choices": [
+        "1970s",
+        "1960s",
+        "1980s",
+        "1950s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Queen released Bohemian Rhapsody in 1975",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000053",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "easy",
+      "question": "In which decade did Fleetwood Mac release Rumours?",
+      "choices": [
+        "1970s",
+        "1960s",
+        "1980s",
+        "1950s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Rumours was released in 1977",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000054",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "medium",
+      "question": "In which decade did Madonna release her hit Like a Virgin?",
+      "choices": [
+        "1980s",
+        "1970s",
+        "1990s",
+        "1960s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Madonna released Like a Virgin in 1984",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000055",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "hard",
+      "question": "In which decade did Whitney Houston release I Wanna Dance with Somebody?",
+      "choices": [
+        "1980s",
+        "1970s",
+        "1990s",
+        "1960s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The single was released in 1987",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000056",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "easy",
+      "question": "In which decade did U2 release The Joshua Tree?",
+      "choices": [
+        "1980s",
+        "1970s",
+        "1990s",
+        "1960s"
+      ],
+      "correct_choice": "A",
+      "explanation": "U2 released The Joshua Tree in 1987",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000057",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "medium",
+      "question": "In which decade did Oasis release Wonderwall?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Oasis released Wonderwall in 1995",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000058",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "medium",
+      "question": "In which decade did Britney Spears release ...Baby One More Time?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Britney Spears released ...Baby One More Time in 1998",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000059",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "easy",
+      "question": "In which decade did NSYNC release Bye Bye Bye?",
+      "choices": [
+        "2000s",
+        "1990s",
+        "2010s",
+        "1980s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Bye Bye Bye was released in 2000",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000060",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "hard",
+      "question": "In which decade did Beyoncé release Crazy in Love?",
+      "choices": [
+        "2000s",
+        "1990s",
+        "2010s",
+        "1980s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Beyoncé released Crazy in Love in 2003",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000061",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "medium",
+      "question": "In which decade did Adele release the album 21?",
+      "choices": [
+        "2010s",
+        "2000s",
+        "2020s",
+        "1990s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Adele's album 21 was released in 2011",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000062",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "easy",
+      "question": "In which decade did Taylor Swift release the album 1989?",
+      "choices": [
+        "2010s",
+        "2000s",
+        "2020s",
+        "1990s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Taylor Swift released 1989 in 2014",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000063",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "medium",
+      "question": "In which decade did Billie Eilish release bad guy?",
+      "choices": [
+        "2010s",
+        "2000s",
+        "2020s",
+        "1990s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Billie Eilish released bad guy in 2019",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000064",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "medium",
+      "question": "In which decade did Olivia Rodrigo release drivers license?",
+      "choices": [
+        "2020s",
+        "2010s",
+        "2030s",
+        "2000s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Olivia Rodrigo released drivers license in 2021",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000065",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "hard",
+      "question": "In which decade did Amy Winehouse release Back to Black?",
+      "choices": [
+        "2000s",
+        "1990s",
+        "2010s",
+        "1980s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Back to Black was released in 2006",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000066",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "medium",
+      "question": "In which decade did Johnny Cash record and release Folsom Prison Blues?",
+      "choices": [
+        "1950s",
+        "1940s",
+        "1960s",
+        "1930s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Johnny Cash first recorded and released Folsom Prison Blues in 1955",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000067",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "hard",
+      "question": "In which decade was the first Super Bowl played?",
+      "choices": [
+        "1960s",
+        "1950s",
+        "1970s",
+        "1940s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The first AFL-NFL World Championship Game was played in January 1967",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000068",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "medium",
+      "question": "In which decade did Jackie Robinson make his Brooklyn Dodgers debut?",
+      "choices": [
+        "1940s",
+        "1930s",
+        "1950s",
+        "1920s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Jackie Robinson made his Dodgers debut in 1947",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000069",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "medium",
+      "question": "In which decade did Serena Williams win her first Grand Slam singles title?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Serena Williams won the US Open singles title in 1999",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000070",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "easy",
+      "question": "In which decade did the US men's basketball Dream Team win Olympic gold?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The original Dream Team won Olympic gold in 1992",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000071",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "medium",
+      "question": "In which decade did Tiger Woods win his first Masters Tournament?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Tiger Woods won his first Masters in 1997",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000072",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "hard",
+      "question": "In which decade did the US women's soccer team win the home World Cup final on penalties against China?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The United States beat China in the 1999 Women's World Cup final",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000073",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "easy",
+      "question": "In which decade did Pelé win his first FIFA Men's World Cup with Brazil?",
+      "choices": [
+        "1950s",
+        "1940s",
+        "1960s",
+        "1930s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Brazil and Pelé won the World Cup in 1958",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000074",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "medium",
+      "question": "In which decade did Michael Jordan win his first NBA championship?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Chicago Bulls won Jordan's first NBA title in 1991",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000075",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "medium",
+      "question": "In which decade did Simone Biles make her Olympic debut?",
+      "choices": [
+        "2010s",
+        "2000s",
+        "2020s",
+        "1990s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Simone Biles competed in her first Olympics at Rio in 2016",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000076",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "easy",
+      "question": "In which decade did Usain Bolt set the men's 100-meter world record of 9.58 seconds?",
+      "choices": [
+        "2000s",
+        "1990s",
+        "2010s",
+        "1980s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Bolt ran 9.58 seconds at the 2009 World Championships",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000077",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "hard",
+      "question": "In which decade were the first Winter Olympic Games held in Chamonix?",
+      "choices": [
+        "1920s",
+        "1910s",
+        "1930s",
+        "1900s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The first Winter Olympics were held in 1924",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000078",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "medium",
+      "question": "In which decade was the first FIFA Women's World Cup held?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The inaugural Women's World Cup took place in 1991",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000079",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "easy",
+      "question": "In which decade did Lewis Hamilton win his first Formula One drivers' championship?",
+      "choices": [
+        "2000s",
+        "1990s",
+        "2010s",
+        "1980s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Hamilton won his first F1 title in 2008",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000080",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "medium",
+      "question": "In which decade did Babe Ruth hit 60 home runs in one Major League Baseball season?",
+      "choices": [
+        "1920s",
+        "1910s",
+        "1930s",
+        "1900s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Babe Ruth hit 60 home runs in the 1927 season",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000081",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "medium",
+      "question": "In which decade did Jesse Owens win four gold medals at the Berlin Olympics?",
+      "choices": [
+        "1930s",
+        "1920s",
+        "1940s",
+        "1910s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Owens won four gold medals in Berlin in 1936",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000082",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "hard",
+      "question": "In which decade did Cleveland's Cavaliers win their first NBA championship?",
+      "choices": [
+        "2010s",
+        "2000s",
+        "2020s",
+        "1990s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Cleveland won its first NBA title in 2016",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000083",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "medium",
+      "question": "In which decade was the first Men's FIFA World Cup held on African soil?",
+      "choices": [
+        "2010s",
+        "2000s",
+        "2020s",
+        "1990s"
+      ],
+      "correct_choice": "A",
+      "explanation": "South Africa hosted the 2010 Men's World Cup",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000084",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "hard",
+      "question": "In which decade did the Wright brothers make their first successful powered flight?",
+      "choices": [
+        "1900s",
+        "1890s",
+        "1910s",
+        "1880s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Wright brothers flew at Kitty Hawk in 1903",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000085",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "medium",
+      "question": "In which decade did the Panama Canal officially open?",
+      "choices": [
+        "1910s",
+        "1900s",
+        "1920s",
+        "1890s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Panama Canal opened to traffic in 1914",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000086",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "medium",
+      "question": "In which decade did the US stock market crash that helped trigger the Great Depression occur?",
+      "choices": [
+        "1920s",
+        "1910s",
+        "1930s",
+        "1900s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The stock market crash began in October 1929",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000087",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "easy",
+      "question": "In which decade did World War II end?",
+      "choices": [
+        "1940s",
+        "1930s",
+        "1950s",
+        "1920s"
+      ],
+      "correct_choice": "A",
+      "explanation": "World War II ended in 1945",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000088",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "medium",
+      "question": "In which decade did India gain independence from British rule?",
+      "choices": [
+        "1940s",
+        "1930s",
+        "1950s",
+        "1920s"
+      ],
+      "correct_choice": "A",
+      "explanation": "India became independent in 1947",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000089",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "hard",
+      "question": "In which decade was Queen Elizabeth II crowned?",
+      "choices": [
+        "1950s",
+        "1940s",
+        "1960s",
+        "1930s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Elizabeth II's coronation took place in 1953",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000090",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "easy",
+      "question": "In which decade did the Cuban Missile Crisis take place?",
+      "choices": [
+        "1960s",
+        "1950s",
+        "1970s",
+        "1940s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Cuban Missile Crisis occurred in October 1962",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000091",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "medium",
+      "question": "In which decade did the Montgomery bus boycott begin?",
+      "choices": [
+        "1950s",
+        "1940s",
+        "1960s",
+        "1930s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Montgomery bus boycott began in December 1955",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000092",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "medium",
+      "question": "In which decade did Apollo 13's crew return safely after a major in-flight emergency?",
+      "choices": [
+        "1970s",
+        "1960s",
+        "1980s",
+        "1950s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Apollo 13 returned safely to Earth in April 1970",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000093",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "easy",
+      "question": "In which decade did the Chernobyl nuclear disaster occur?",
+      "choices": [
+        "1980s",
+        "1970s",
+        "1990s",
+        "1960s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Chernobyl disaster occurred in April 1986",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000094",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "hard",
+      "question": "In which decade did the Soviet Union formally dissolve?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Soviet Union formally dissolved in December 1991",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000095",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "medium",
+      "question": "In which decade did euro notes and coins enter circulation?",
+      "choices": [
+        "2000s",
+        "1990s",
+        "2010s",
+        "1980s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Euro cash was introduced in 2002",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000096",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "easy",
+      "question": "In which decade was Nelson Mandela released from prison?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Mandela was released from prison in February 1990",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000097",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "medium",
+      "question": "In which decade did South Africa hold its first national democratic election with universal adult suffrage?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "South Africa held its landmark election in April 1994",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000098",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "medium",
+      "question": "In which decade was Hong Kong handed over from Britain to China?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Hong Kong's handover took place in 1997",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000099",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "hard",
+      "question": "In which decade did the French Revolution begin?",
+      "choices": [
+        "1780s",
+        "1770s",
+        "1790s",
+        "1760s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The French Revolution began in 1789",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000100",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "medium",
+      "question": "In which decade was the Nineteenth Amendment granting US women the constitutional right to vote ratified?",
+      "choices": [
+        "1920s",
+        "1910s",
+        "1930s",
+        "1900s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Nineteenth Amendment was ratified in 1920",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "content-review"
+      ]
     }
-  ]
+  ],
+  "lastExpandedAt": "2026-10-25"
 }
