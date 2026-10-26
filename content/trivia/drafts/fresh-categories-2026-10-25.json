@@ -5602,7 +5602,7 @@
       "topic_slug": "famous-streets",
       "topic_name": "Famous Streets",
       "difficulty": "easy",
-      "question": "Which Nevada city is known for the Las Vegas Strip?",
+      "question": "Which Nevada city is famous for a resort-lined road district called the Strip?",
       "choices": [
         "Las Vegas",
         "Washington, D.C.",
@@ -5845,7 +5845,7 @@
       "topic_slug": "famous-streets",
       "topic_name": "Famous Streets",
       "difficulty": "easy",
-      "question": "Which Georgia city has River Street along the Savannah River?",
+      "question": "Which Georgia city has a historic River Street along its waterfront?",
       "choices": [
         "Savannah",
         "Los Angeles",
@@ -6007,7 +6007,7 @@
       "topic_slug": "local-bites",
       "topic_name": "Local Bites",
       "difficulty": "medium",
-      "question": "Which New York city gave its name to Buffalo wings?",
+      "question": "Which western New York city is credited as the birthplace of sauced chicken wings?",
       "choices": [
         "Buffalo",
         "Kansas City",
@@ -6655,7 +6655,7 @@
       "topic_slug": "landmark-hunt",
       "topic_name": "Landmark Hunt",
       "difficulty": "medium",
-      "question": "Which Texas city hosts Space Center Houston?",
+      "question": "Which Texas city is home to the visitor attraction for NASA's Johnson Space Center?",
       "choices": [
         "Houston",
         "Charleston",
@@ -9733,7 +9733,7 @@
       "topic_slug": "entertainment-icons",
       "topic_name": "Entertainment Icons",
       "difficulty": "easy",
-      "question": "Who am I? Fans call me the King of Rock and Roll, and my home was Graceland.",
+      "question": "Who am I? I recorded Jailhouse Rock and Heartbreak Hotel and was nicknamed the King of Rock and Roll.",
       "choices": [
         "Elvis Presley",
         "Walt Disney",
@@ -9741,7 +9741,7 @@
         "Dolly Parton"
       ],
       "correct_choice": "A",
-      "explanation": "Elvis Presley lived at Graceland in Memphis.",
+      "explanation": "Elvis Presley recorded the hits Jailhouse Rock and Heartbreak Hotel.",
       "reference": "Entertainment biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -9976,7 +9976,7 @@
       "topic_slug": "entertainment-icons",
       "topic_name": "Entertainment Icons",
       "difficulty": "easy",
-      "question": "Who am I? I released The Miseducation of Lauryn Hill in 1998.",
+      "question": "Who am I? I performed with the Fugees before releasing a Grammy-winning solo album in 1998?",
       "choices": [
         "Lauryn Hill",
         "Erykah Badu",
