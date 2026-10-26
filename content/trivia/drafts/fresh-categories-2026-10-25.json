@@ -1,0 +1,2299 @@
+{
+  "date": "2026-10-25",
+  "status": "draft",
+  "notice": "75 NEW questions in 5 NEW categories. Needs fact-check and expansion to 100 questions per pack before the production importer can publish.",
+  "baseline": {
+    "sourceFile": "app/games/trivia/play/trivia-runtime-catalog.json",
+    "baselineQuestions": 1210,
+    "baselineSha": "db8a26245298433bbb560d5e17c3ba1487a5aa97"
+  },
+  "categories": [
+    {
+      "slug": "name-that-decade",
+      "name": "Name That Decade",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topics": [
+        {
+          "slug": "technology",
+          "name": "Technology",
+          "reference": "Computer History Museum timeline",
+          "source_url": "https://www.computerhistory.org/timeline/"
+        },
+        {
+          "slug": "movies",
+          "name": "Movies",
+          "reference": "Britannica film history",
+          "source_url": "https://www.britannica.com/art/history-of-the-motion-picture"
+        },
+        {
+          "slug": "music",
+          "name": "Music",
+          "reference": "Rock and Roll Hall of Fame",
+          "source_url": "https://rockhall.com/"
+        },
+        {
+          "slug": "sports",
+          "name": "Sports",
+          "reference": "Olympic history",
+          "source_url": "https://www.olympics.com/en/olympic-games"
+        },
+        {
+          "slug": "world-events",
+          "name": "World Events",
+          "reference": "Britannica On This Day",
+          "source_url": "https://www.britannica.com/on-this-day"
+        }
+      ]
+    },
+    {
+      "slug": "brain-benders",
+      "name": "Brain Benders",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topics": [
+        {
+          "slug": "quick-math",
+          "name": "Quick Math",
+          "reference": "Original Play Point math puzzles",
+          "source_url": "https://playpointsystems.com/"
+        },
+        {
+          "slug": "patterns",
+          "name": "Number Patterns",
+          "reference": "Original Play Point number puzzles",
+          "source_url": "https://playpointsystems.com/"
+        },
+        {
+          "slug": "word-riddles",
+          "name": "Word Riddles",
+          "reference": "Original Play Point word puzzles",
+          "source_url": "https://playpointsystems.com/"
+        },
+        {
+          "slug": "clever-questions",
+          "name": "Clever Questions",
+          "reference": "Original Play Point logic puzzles",
+          "source_url": "https://playpointsystems.com/"
+        },
+        {
+          "slug": "think-fast",
+          "name": "Think Fast",
+          "reference": "Original Play Point thinking puzzles",
+          "source_url": "https://playpointsystems.com/"
+        }
+      ]
+    },
+    {
+      "slug": "road-trip-usa",
+      "name": "Road Trip USA",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topics": [
+        {
+          "slug": "national-parks",
+          "name": "National Parks",
+          "reference": "US National Park Service",
+          "source_url": "https://www.nps.gov/"
+        },
+        {
+          "slug": "state-nicknames",
+          "name": "State Nicknames",
+          "reference": "US state reference",
+          "source_url": "https://www.usa.gov/states"
+        },
+        {
+          "slug": "famous-streets",
+          "name": "Famous Streets",
+          "reference": "National Park Service Route 66",
+          "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm"
+        },
+        {
+          "slug": "local-bites",
+          "name": "Local Bites",
+          "reference": "American regional cuisine",
+          "source_url": "https://www.britannica.com/topic/American-cuisine"
+        },
+        {
+          "slug": "landmark-hunt",
+          "name": "Landmark Hunt",
+          "reference": "US National Park Service landmarks",
+          "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm"
+        }
+      ]
+    },
+    {
+      "slug": "who-am-i",
+      "name": "Who Am I?",
+      "description": "Identify notable people using iconic achievements, not obscure birth dates.",
+      "topics": [
+        {
+          "slug": "world-changing-minds",
+          "name": "World-Changing Minds",
+          "reference": "Encyclopaedia Britannica biographies",
+          "source_url": "https://www.britannica.com/biographies"
+        },
+        {
+          "slug": "entertainment-icons",
+          "name": "Entertainment Icons",
+          "reference": "Entertainment biographies",
+          "source_url": "https://www.britannica.com/biographies"
+        },
+        {
+          "slug": "sports-legends",
+          "name": "Sports Legends",
+          "reference": "Sports history and biographies",
+          "source_url": "https://www.olympics.com/en/athletes"
+        },
+        {
+          "slug": "creative-giants",
+          "name": "Creative Giants",
+          "reference": "Encyclopaedia Britannica biographies",
+          "source_url": "https://www.britannica.com/biographies"
+        },
+        {
+          "slug": "history-makers",
+          "name": "History Makers",
+          "reference": "Encyclopaedia Britannica biographies",
+          "source_url": "https://www.britannica.com/biographies"
+        }
+      ]
+    },
+    {
+      "slug": "wait-thats-real",
+      "name": "Wait, That's Real?",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topics": [
+        {
+          "slug": "wild-animals",
+          "name": "Wild Animals",
+          "reference": "Smithsonian National Zoo",
+          "source_url": "https://nationalzoo.si.edu/animals"
+        },
+        {
+          "slug": "weird-space",
+          "name": "Weird Space",
+          "reference": "NASA planetary science",
+          "source_url": "https://science.nasa.gov/solar-system/"
+        },
+        {
+          "slug": "body-surprises",
+          "name": "Body Surprises",
+          "reference": "MedlinePlus health reference",
+          "source_url": "https://medlineplus.gov/"
+        },
+        {
+          "slug": "nature-secrets",
+          "name": "Nature Secrets",
+          "reference": "Britannica natural science",
+          "source_url": "https://www.britannica.com/science"
+        },
+        {
+          "slug": "accidental-discoveries",
+          "name": "Accidental Discoveries",
+          "reference": "Smithsonian American history",
+          "source_url": "https://americanhistory.si.edu/"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "source_id": "DEC-E-000001",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "easy",
+      "question": "In which decade was the first iPhone introduced?",
+      "choices": [
+        "2000s",
+        "1990s",
+        "2010s",
+        "1980s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Apple introduced the first iPhone in 2007.",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000002",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "medium",
+      "question": "In which decade did IBM introduce its model 5150 personal computer?",
+      "choices": [
+        "1980s",
+        "1970s",
+        "1990s",
+        "1960s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The IBM Personal Computer 5150 was introduced in 1981.",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000003",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "technology",
+      "topic_name": "Technology",
+      "difficulty": "hard",
+      "question": "In which decade did the Soviet Union launch Sputnik 1?",
+      "choices": [
+        "1950s",
+        "1940s",
+        "1960s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Sputnik 1 launched in October 1957.",
+      "reference": "Computer History Museum timeline",
+      "source_url": "https://www.computerhistory.org/timeline/",
+      "tags": [
+        "name-that-decade",
+        "technology",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000004",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "easy",
+      "question": "In which decade did the original Star Wars film reach theaters?",
+      "choices": [
+        "1970s",
+        "1960s",
+        "1980s",
+        "1990s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The first Star Wars film opened in 1977.",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000005",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "medium",
+      "question": "In which decade did Jurassic Park first reach theaters?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The movie Jurassic Park premiered in 1993.",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000006",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "movies",
+      "topic_name": "Movies",
+      "difficulty": "hard",
+      "question": "In which decade did Disney's Snow White and the Seven Dwarfs premiere?",
+      "choices": [
+        "1930s",
+        "1920s",
+        "1940s",
+        "1950s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The feature film debuted in 1937.",
+      "reference": "Britannica film history",
+      "source_url": "https://www.britannica.com/art/history-of-the-motion-picture",
+      "tags": [
+        "name-that-decade",
+        "movies",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000007",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "easy",
+      "question": "In which decade did Michael Jackson release Thriller?",
+      "choices": [
+        "1980s",
+        "1970s",
+        "1990s",
+        "2000s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Thriller album appeared in 1982.",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000008",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "medium",
+      "question": "In which decade did Nirvana release Nevermind?",
+      "choices": [
+        "1990s",
+        "1980s",
+        "2000s",
+        "1970s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Nevermind was released in 1991.",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000009",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "music",
+      "topic_name": "Music",
+      "difficulty": "hard",
+      "question": "In which decade did the Beatles make their first Ed Sullivan Show appearance?",
+      "choices": [
+        "1960s",
+        "1950s",
+        "1970s",
+        "1980s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Beatles first appeared on that program in February 1964.",
+      "reference": "Rock and Roll Hall of Fame",
+      "source_url": "https://rockhall.com/",
+      "tags": [
+        "name-that-decade",
+        "music",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000010",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "easy",
+      "question": "In which decade did the Miracle on Ice Olympic hockey upset occur?",
+      "choices": [
+        "1980s",
+        "1970s",
+        "1990s",
+        "1960s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The United States beat the Soviet Union in 1980.",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000011",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "medium",
+      "question": "In which decade did Muhammad Ali win Olympic gold under the name Cassius Clay?",
+      "choices": [
+        "1960s",
+        "1950s",
+        "1970s",
+        "1980s"
+      ],
+      "correct_choice": "A",
+      "explanation": "He won a boxing gold medal at Rome in 1960.",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000012",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "sports",
+      "topic_name": "Sports",
+      "difficulty": "hard",
+      "question": "In which decade were the first modern Olympic Games held in Athens?",
+      "choices": [
+        "1890s",
+        "1880s",
+        "1900s",
+        "1910s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The modern Olympic Games began in 1896.",
+      "reference": "Olympic history",
+      "source_url": "https://www.olympics.com/en/olympic-games",
+      "tags": [
+        "name-that-decade",
+        "sports",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-E-000013",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "easy",
+      "question": "In which decade did humans first walk on the Moon?",
+      "choices": [
+        "1960s",
+        "1950s",
+        "1970s",
+        "1980s"
+      ],
+      "correct_choice": "A",
+      "explanation": "Apollo 11 astronauts walked on the Moon in 1969.",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-M-000014",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "medium",
+      "question": "In which decade did the Berlin Wall open, marking its fall?",
+      "choices": [
+        "1980s",
+        "1970s",
+        "1990s",
+        "1960s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Berlin Wall opened in November 1989.",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "DEC-H-000015",
+      "category_slug": "name-that-decade",
+      "category_name": "Name That Decade",
+      "pack_slug": "name-that-decade-v1",
+      "pack_title": "Name That Decade Volume 1",
+      "description": "Nostalgic dates from music, movies, technology, sports and world history.",
+      "topic_slug": "world-events",
+      "topic_name": "World Events",
+      "difficulty": "hard",
+      "question": "In which decade was the Statue of Liberty dedicated?",
+      "choices": [
+        "1880s",
+        "1870s",
+        "1890s",
+        "1900s"
+      ],
+      "correct_choice": "A",
+      "explanation": "The dedication ceremony took place in 1886.",
+      "reference": "Britannica On This Day",
+      "source_url": "https://www.britannica.com/on-this-day",
+      "tags": [
+        "name-that-decade",
+        "world-events",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000001",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "easy",
+      "question": "What is one quarter of 80?",
+      "choices": [
+        "20",
+        "10",
+        "25",
+        "40"
+      ],
+      "correct_choice": "A",
+      "explanation": "Dividing 80 by four gives 20.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000002",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "medium",
+      "question": "If three pencils together cost $1.50 and each costs the same, what does one cost?",
+      "choices": [
+        "50 cents",
+        "25 cents",
+        "75 cents",
+        "60 cents"
+      ],
+      "correct_choice": "A",
+      "explanation": "One dollar and fifty cents divided by three is fifty cents.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000003",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "quick-math",
+      "topic_name": "Quick Math",
+      "difficulty": "hard",
+      "question": "A brick weighs 2 pounds plus half its own weight. What does the brick weigh?",
+      "choices": [
+        "4 pounds",
+        "3 pounds",
+        "5 pounds",
+        "6 pounds"
+      ],
+      "correct_choice": "A",
+      "explanation": "If the weight is x, x equals 2 plus x divided by 2, so x is 4.",
+      "reference": "Original Play Point math puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "quick-math",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000004",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "easy",
+      "question": "What comes next in the sequence 2, 4, 8, 16, ...?",
+      "choices": [
+        "32",
+        "24",
+        "30",
+        "64"
+      ],
+      "correct_choice": "A",
+      "explanation": "Each number doubles to form the next number.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000005",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "medium",
+      "question": "What comes next in the sequence 1, 1, 2, 3, 5, ...?",
+      "choices": [
+        "8",
+        "6",
+        "7",
+        "10"
+      ],
+      "correct_choice": "A",
+      "explanation": "Each number is the sum of the two previous numbers.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000006",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "patterns",
+      "topic_name": "Number Patterns",
+      "difficulty": "hard",
+      "question": "What comes next in the sequence 1, 4, 9, 16, 25, ...?",
+      "choices": [
+        "36",
+        "30",
+        "35",
+        "49"
+      ],
+      "correct_choice": "A",
+      "explanation": "The terms are consecutive perfect squares, ending with six squared.",
+      "reference": "Original Play Point number puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "patterns",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000007",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "easy",
+      "question": "Which five-letter word becomes 'shorter' when you add two letters?",
+      "choices": [
+        "Short",
+        "Small",
+        "Brief",
+        "Little"
+      ],
+      "correct_choice": "A",
+      "explanation": "Adding e and r to short spells shorter.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000008",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "medium",
+      "question": "What begins and ends with E and can contain one letter?",
+      "choices": [
+        "Envelope",
+        "Eagle",
+        "Engine",
+        "Eclipse"
+      ],
+      "correct_choice": "A",
+      "explanation": "An envelope starts and ends with e and may contain a letter.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000009",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "word-riddles",
+      "topic_name": "Word Riddles",
+      "difficulty": "hard",
+      "question": "Which English word contains three consecutive pairs of doubled letters?",
+      "choices": [
+        "Bookkeeper",
+        "Balloon",
+        "Committee",
+        "Mississippi"
+      ],
+      "correct_choice": "A",
+      "explanation": "Bookkeeper contains oo, kk and ee in consecutive positions.",
+      "reference": "Original Play Point word puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "word-riddles",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000010",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "easy",
+      "question": "If you pass the runner in second place, what place are you now in?",
+      "choices": [
+        "Second",
+        "First",
+        "Third",
+        "Fourth"
+      ],
+      "correct_choice": "A",
+      "explanation": "Passing the runner in second moves you into second place.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000011",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "medium",
+      "question": "Five identical machines make five items in five minutes. How long do 100 machines take to make 100 items?",
+      "choices": [
+        "5 minutes",
+        "20 minutes",
+        "100 minutes",
+        "1 minute"
+      ],
+      "correct_choice": "A",
+      "explanation": "Each machine makes one item in five minutes, working simultaneously.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000012",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "clever-questions",
+      "topic_name": "Clever Questions",
+      "difficulty": "hard",
+      "question": "Three sisters each have one brother, and they share that brother. How many children are there in total?",
+      "choices": [
+        "4",
+        "6",
+        "5",
+        "3"
+      ],
+      "correct_choice": "A",
+      "explanation": "There are three sisters and just one shared brother.",
+      "reference": "Original Play Point logic puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "clever-questions",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-E-000013",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "easy",
+      "question": "How many months of a calendar year have at least 28 days?",
+      "choices": [
+        "12",
+        "1",
+        "2",
+        "11"
+      ],
+      "correct_choice": "A",
+      "explanation": "Every month contains at least 28 days.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-M-000014",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "medium",
+      "question": "Two US coins total 30 cents, and one of the coins is not a nickel. Which coins are they?",
+      "choices": [
+        "A quarter and a nickel",
+        "Two dimes and a nickel",
+        "Three dimes",
+        "A quarter and a dime"
+      ],
+      "correct_choice": "A",
+      "explanation": "One coin is a quarter, which is not a nickel; the other is a nickel.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "BRN-H-000015",
+      "category_slug": "brain-benders",
+      "category_name": "Brain Benders",
+      "pack_slug": "brain-benders-v1",
+      "pack_title": "Brain Benders Volume 1",
+      "description": "Fast math, logic, patterns and playful word puzzles with unambiguous answers.",
+      "topic_slug": "think-fast",
+      "topic_name": "Think Fast",
+      "difficulty": "hard",
+      "question": "If a clock shows exactly 3:00, what is the smaller angle between its hands?",
+      "choices": [
+        "90 degrees",
+        "45 degrees",
+        "60 degrees",
+        "120 degrees"
+      ],
+      "correct_choice": "A",
+      "explanation": "At 3:00, the hands are three hour-marks apart; each mark spans 30 degrees.",
+      "reference": "Original Play Point thinking puzzles",
+      "source_url": "https://playpointsystems.com/",
+      "tags": [
+        "brain-benders",
+        "think-fast",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000001",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "easy",
+      "question": "In which national park can you see the Old Faithful geyser?",
+      "choices": [
+        "Yellowstone",
+        "Yosemite",
+        "Zion",
+        "Acadia"
+      ],
+      "correct_choice": "A",
+      "explanation": "Old Faithful is one of Yellowstone National Park's famous geysers.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000002",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "medium",
+      "question": "In which state is the Grand Canyon's South Rim located?",
+      "choices": [
+        "Arizona",
+        "Utah",
+        "Nevada",
+        "Colorado"
+      ],
+      "correct_choice": "A",
+      "explanation": "Grand Canyon National Park is in northern Arizona.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000003",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "hard",
+      "question": "Half Dome is a landmark in which national park?",
+      "choices": [
+        "Yosemite",
+        "Grand Teton",
+        "Glacier",
+        "Rocky Mountain"
+      ],
+      "correct_choice": "A",
+      "explanation": "Half Dome is an iconic granite formation in Yosemite National Park.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000004",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "easy",
+      "question": "Which US state is nicknamed the Sunshine State?",
+      "choices": [
+        "Florida",
+        "California",
+        "Arizona",
+        "Hawaii"
+      ],
+      "correct_choice": "A",
+      "explanation": "Florida's well-known nickname is the Sunshine State.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000005",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "medium",
+      "question": "Which US state is nicknamed the Land of Enchantment?",
+      "choices": [
+        "New Mexico",
+        "Nevada",
+        "Colorado",
+        "Utah"
+      ],
+      "correct_choice": "A",
+      "explanation": "New Mexico uses the nickname Land of Enchantment.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000006",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "hard",
+      "question": "Which US state is nicknamed the Beehive State?",
+      "choices": [
+        "Utah",
+        "Idaho",
+        "Montana",
+        "Wyoming"
+      ],
+      "correct_choice": "A",
+      "explanation": "Utah's official state nickname is the Beehive State.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000007",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "easy",
+      "question": "Which city is famous for Bourbon Street in the French Quarter?",
+      "choices": [
+        "New Orleans",
+        "Charleston",
+        "Savannah",
+        "Memphis"
+      ],
+      "correct_choice": "A",
+      "explanation": "Bourbon Street runs through New Orleans' French Quarter.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000008",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "medium",
+      "question": "Which city is the eastern starting point of historic Route 66?",
+      "choices": [
+        "Chicago",
+        "St. Louis",
+        "Kansas City",
+        "Oklahoma City"
+      ],
+      "correct_choice": "A",
+      "explanation": "Historic Route 66 began at Chicago's Grant Park.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000009",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "hard",
+      "question": "Which US city is famous for the steep, winding Lombard Street?",
+      "choices": [
+        "San Francisco",
+        "Seattle",
+        "Portland",
+        "Denver"
+      ],
+      "correct_choice": "A",
+      "explanation": "A block of Lombard Street in San Francisco is known for its sharp hairpin turns.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000010",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "easy",
+      "question": "Which city is most associated with the classic cheesesteak sandwich?",
+      "choices": [
+        "Philadelphia",
+        "Detroit",
+        "Cleveland",
+        "Boston"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Philly cheesesteak is associated with Philadelphia.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000011",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "medium",
+      "question": "Which city is especially known for its deep-dish pizza?",
+      "choices": [
+        "Chicago",
+        "Miami",
+        "Atlanta",
+        "Dallas"
+      ],
+      "correct_choice": "A",
+      "explanation": "Chicago-style deep-dish pizza is a signature of the city.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000012",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "hard",
+      "question": "Key lime pie is especially associated with which Florida region?",
+      "choices": [
+        "The Florida Keys",
+        "The Panhandle",
+        "Space Coast",
+        "The Everglades"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Florida Keys popularized the tart dessert made with Key limes.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000013",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "easy",
+      "question": "Which city is home to the Space Needle?",
+      "choices": [
+        "Seattle",
+        "Portland",
+        "Denver",
+        "San Diego"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Space Needle stands in Seattle, Washington.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000014",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "medium",
+      "question": "Mount Rushmore is in which US state?",
+      "choices": [
+        "South Dakota",
+        "North Dakota",
+        "Wyoming",
+        "Montana"
+      ],
+      "correct_choice": "A",
+      "explanation": "The presidential sculpture is in South Dakota's Black Hills.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000015",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "hard",
+      "question": "Which city contains the historic Alamo mission?",
+      "choices": [
+        "San Antonio",
+        "El Paso",
+        "Austin",
+        "Houston"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Alamo is a historic landmark in San Antonio, Texas.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WHO-E-000001",
+      "category_slug": "who-am-i",
+      "category_name": "Who Am I?",
+      "pack_slug": "who-am-i-v1",
+      "pack_title": "Who Am I? Volume 1",
+      "description": "Identify notable people using iconic achievements, not obscure birth dates.",
+      "topic_slug": "world-changing-minds",
+      "topic_name": "World-Changing Minds",
+      "difficulty": "easy",
+      "question": "Who am I? I developed the theory of relativity and won the 1921 Nobel Prize in Physics.",
+      "choices": [
+        "Albert Einstein",
+        "Isaac Newton",
+        "Galileo Galilei",
+        "Nikola Tesla"
+      ],
+      "correct_choice": "A",
+      "explanation": "Einstein is associated with relativity and received the Nobel for explaining the photoelectric effect.",
+      "reference": "Encyclopaedia Britannica biographies",
+      "source_url": "https://www.britannica.com/biographies",
+      "tags": [
+        "who-am-i",
+        "world-changing-minds",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WHO-M-000002",
+      "category_slug": "who-am-i",
+      "category_name": "Who Am I?",
+      "pack_slug": "who-am-i-v1",
+      "pack_title": "Who Am I? Volume 1",
+      "description": "Identify notable people using iconic achievements, not obscure birth dates.",
+      "topic_slug": "world-changing-minds",
+      "topic_name": "World-Changing Minds",
+      "difficulty": "medium",
+      "question": "Who am I? With my brother Wilbur, I made the first controlled powered airplane flights in 1903.",
+      "choices": [
+        "Orville Wright",
+        "Charles Lindbergh",
+        "Amelia Earhart",
+        "Howard Hughes"
+      ],
+      "correct_choice": "A",
+      "explanation": "Orville piloted the first powered flight of the Wright brothers' 1903 tests.",
+      "reference": "Encyclopaedia Britannica biographies",
+      "source_url": "https://www.britannica.com/biographies",
+      "tags": [
+        "who-am-i",
+        "world-changing-minds",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WHO-H-000003",
+      "category_slug": "who-am-i",
+      "category_name": "Who Am I?",
+      "pack_slug": "who-am-i-v1",
+      "pack_title": "Who Am I? Volume 1",
+      "description": "Identify notable people using iconic achievements, not obscure birth dates.",
+      "topic_slug": "world-changing-minds",
+      "topic_name": "World-Changing Minds",
+      "difficulty": "hard",
+      "question": "Who am I? I was the first person to receive Nobel Prizes in two different scientific fields.",
+      "choices": [
+        "Marie Curie",
+        "Ada Lovelace",
+        "Rosalind Franklin",
+        "Dorothy Hodgkin"
+      ],
+      "correct_choice": "A",
+      "explanation": "Curie won Nobel Prizes in Physics and Chemistry.",
+      "reference": "Encyclopaedia Britannica biographies",
+      "source_url": "https://www.britannica.com/biographies",
+      "tags": [
+        "who-am-i",
+        "world-changing-minds",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WHO-E-000004",
+      "category_slug": "who-am-i",
+      "category_name": "Who Am I?",
+      "pack_slug": "who-am-i-v1",
+      "pack_title": "Who Am I? Volume 1",
+      "description": "Identify notable people using iconic achievements, not obscure birth dates.",
+      "topic_slug": "entertainment-icons",
+      "topic_name": "Entertainment Icons",
+      "difficulty": "easy",
+      "question": "Who am I? I portrayed Mary Poppins in the 1964 Disney film.",
+      "choices": [
+        "Julie Andrews",
+        "Judy Garland",
+        "Audrey Hepburn",
+        "Angela Lansbury"
+      ],
+      "correct_choice": "A",
+      "explanation": "Julie Andrews starred as Mary Poppins in the original film.",
+      "reference": "Entertainment biographies",
+      "source_url": "https://www.britannica.com/biographies",
+      "tags": [
+        "who-am-i",
+        "entertainment-icons",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WHO-M-000005",
+      "category_slug": "who-am-i",
+      "category_name": "Who Am I?",
+      "pack_slug": "who-am-i-v1",
+      "pack_title": "Who Am I? Volume 1",
+      "description": "Identify notable people using iconic achievements, not obscure birth dates.",
+      "topic_slug": "entertainment-icons",
+      "topic_name": "Entertainment Icons",
+      "difficulty": "medium",
+      "question": "Who am I? I recorded Purple Rain and headlined the 2007 Super Bowl halftime show.",
+      "choices": [
+        "Prince",
+        "David Bowie",
+        "Stevie Wonder",
+        "Lionel Richie"
+      ],
+      "correct_choice": "A",
+      "explanation": "Prince performed a famously rainy Super Bowl XLI halftime show.",
+      "reference": "Entertainment biographies",
+      "source_url": "https://www.britannica.com/biographies",
+      "tags": [
+        "who-am-i",
+        "entertainment-icons",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WHO-H-000006",
+      "category_slug": "who-am-i",
+      "category_name": "Who Am I?",
+      "pack_slug": "who-am-i-v1",
+      "pack_title": "Who Am I? Volume 1",
+      "description": "Identify notable people using iconic achievements, not obscure birth dates.",
+      "topic_slug": "entertainment-icons",
+      "topic_name": "Entertainment Icons",
+      "difficulty": "hard",
+      "question": "Who am I? I supplied the voice of the Genie in Disney's 1992 Aladdin.",
+      "choices": [
+        "Robin Williams",
+        "Eddie Murphy",
+        "Jim Carrey",
+        "Billy Crystal"
+      ],
+      "correct_choice": "A",
+      "explanation": "Robin Williams voiced the Genie in the original animated Aladdin.",
+      "reference": "Entertainment biographies",
+      "source_url": "https://www.britannica.com/biographies",
+      "tags": [
+        "who-am-i",
+        "entertainment-icons",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WHO-E-000007",
+      "category_slug": "who-am-i",
+      "category_name": "Who Am I?",
+      "pack_slug": "who-am-i-v1",
+      "pack_title": "Who Am I? Volume 1",
+      "description": "Identify notable people using iconic achievements, not obscure birth dates.",
+      "topic_slug": "sports-legends",
+      "topic_name": "Sports Legends",
+      "difficulty": "easy",
+      "question": "Who am I? I am the swimmer who won eight gold medals at the 2008 Beijing Olympics.",
+      "choices": [
+        "Michael Phelps",
+        "Mark Spitz",
+        "Ryan Lochte",
+        "Ian Thorpe"
+      ],
+      "correct_choice": "A",
+      "explanation": "Phelps won eight Olympic gold medals in Beijing in 2008.",
+      "reference": "Sports history and biographies",
+      "source_url": "https://www.olympics.com/en/athletes",
+      "tags": [
+        "who-am-i",
+        "sports-legends",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WHO-M-000008",
+      "category_slug": "who-am-i",
+      "category_name": "Who Am I?",
+      "pack_slug": "who-am-i-v1",
+      "pack_title": "Who Am I? Volume 1",
+      "description": "Identify notable people using iconic achievements, not obscure birth dates.",
+      "topic_slug": "sports-legends",
+      "topic_name": "Sports Legends",
+      "difficulty": "medium",
+      "question": "Who am I? I broke the four-minute mile barrier in 1954.",
+      "choices": [
+        "Roger Bannister",
+        "Jesse Owens",
+        "Emil Zatopek",
+        "Sebastian Coe"
+      ],
+      "correct_choice": "A",
+      "explanation": "Bannister ran the mile in 3 minutes 59.4 seconds.",
+      "reference": "Sports history and biographies",
+      "source_url": "https://www.olympics.com/en/athletes",
+      "tags": [
+        "who-am-i",
+        "sports-legends",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WHO-H-000009",
+      "category_slug": "who-am-i",
+      "category_name": "Who Am I?",
+      "pack_slug": "who-am-i-v1",
+      "pack_title": "Who Am I? Volume 1",
+      "description": "Identify notable people using iconic achievements, not obscure birth dates.",
+      "topic_slug": "sports-legends",
+      "topic_name": "Sports Legends",
+      "difficulty": "hard",
+      "question": "Who am I? I earned 23 Grand Slam singles titles during the tennis Open Era.",
+      "choices": [
+        "Serena Williams",
+        "Venus Williams",
+        "Steffi Graf",
+        "Chris Evert"
+      ],
+      "correct_choice": "A",
+      "explanation": "Serena Williams won 23 major singles titles in the Open Era.",
+      "reference": "Sports history and biographies",
+      "source_url": "https://www.olympics.com/en/athletes",
+      "tags": [
+        "who-am-i",
+        "sports-legends",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WHO-E-000010",
+      "category_slug": "who-am-i",
+      "category_name": "Who Am I?",
+      "pack_slug": "who-am-i-v1",
+      "pack_title": "Who Am I? Volume 1",
+      "description": "Identify notable people using iconic achievements, not obscure birth dates.",
+      "topic_slug": "creative-giants",
+      "topic_name": "Creative Giants",
+      "difficulty": "easy",
+      "question": "Who am I? I wrote the novel Pride and Prejudice.",
+      "choices": [
+        "Jane Austen",
+        "Charlotte Bronte",
+        "Emily Dickinson",
+        "Mary Shelley"
+      ],
+      "correct_choice": "A",
+      "explanation": "Jane Austen published Pride and Prejudice in 1813.",
+      "reference": "Encyclopaedia Britannica biographies",
+      "source_url": "https://www.britannica.com/biographies",
+      "tags": [
+        "who-am-i",
+        "creative-giants",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WHO-M-000011",
+      "category_slug": "who-am-i",
+      "category_name": "Who Am I?",
+      "pack_slug": "who-am-i-v1",
+      "pack_title": "Who Am I? Volume 1",
+      "description": "Identify notable people using iconic achievements, not obscure birth dates.",
+      "topic_slug": "creative-giants",
+      "topic_name": "Creative Giants",
+      "difficulty": "medium",
+      "question": "Who am I? I created the detective Sherlock Holmes.",
+      "choices": [
+        "Arthur Conan Doyle",
+        "Agatha Christie",
+        "Edgar Allan Poe",
+        "Charles Dickens"
+      ],
+      "correct_choice": "A",
+      "explanation": "Conan Doyle introduced Sherlock Holmes in 1887.",
+      "reference": "Encyclopaedia Britannica biographies",
+      "source_url": "https://www.britannica.com/biographies",
+      "tags": [
+        "who-am-i",
+        "creative-giants",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WHO-H-000012",
+      "category_slug": "who-am-i",
+      "category_name": "Who Am I?",
+      "pack_slug": "who-am-i-v1",
+      "pack_title": "Who Am I? Volume 1",
+      "description": "Identify notable people using iconic achievements, not obscure birth dates.",
+      "topic_slug": "creative-giants",
+      "topic_name": "Creative Giants",
+      "difficulty": "hard",
+      "question": "Who am I? I painted much of the ceiling of the Sistine Chapel.",
+      "choices": [
+        "Michelangelo",
+        "Raphael",
+        "Leonardo da Vinci",
+        "Donatello"
+      ],
+      "correct_choice": "A",
+      "explanation": "Michelangelo painted the Sistine Chapel ceiling between 1508 and 1512.",
+      "reference": "Encyclopaedia Britannica biographies",
+      "source_url": "https://www.britannica.com/biographies",
+      "tags": [
+        "who-am-i",
+        "creative-giants",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WHO-E-000013",
+      "category_slug": "who-am-i",
+      "category_name": "Who Am I?",
+      "pack_slug": "who-am-i-v1",
+      "pack_title": "Who Am I? Volume 1",
+      "description": "Identify notable people using iconic achievements, not obscure birth dates.",
+      "topic_slug": "history-makers",
+      "topic_name": "History Makers",
+      "difficulty": "easy",
+      "question": "Who am I? I was the first human to step onto the Moon.",
+      "choices": [
+        "Neil Armstrong",
+        "Buzz Aldrin",
+        "Yuri Gagarin",
+        "John Glenn"
+      ],
+      "correct_choice": "A",
+      "explanation": "Neil Armstrong stepped onto the Moon in July 1969.",
+      "reference": "Encyclopaedia Britannica biographies",
+      "source_url": "https://www.britannica.com/biographies",
+      "tags": [
+        "who-am-i",
+        "history-makers",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WHO-M-000014",
+      "category_slug": "who-am-i",
+      "category_name": "Who Am I?",
+      "pack_slug": "who-am-i-v1",
+      "pack_title": "Who Am I? Volume 1",
+      "description": "Identify notable people using iconic achievements, not obscure birth dates.",
+      "topic_slug": "history-makers",
+      "topic_name": "History Makers",
+      "difficulty": "medium",
+      "question": "Who am I? I led India's Salt March in 1930 as an act of nonviolent protest.",
+      "choices": [
+        "Mahatma Gandhi",
+        "Jawaharlal Nehru",
+        "Nelson Mandela",
+        "Subhas Chandra Bose"
+      ],
+      "correct_choice": "A",
+      "explanation": "Gandhi led the Salt March against British salt laws.",
+      "reference": "Encyclopaedia Britannica biographies",
+      "source_url": "https://www.britannica.com/biographies",
+      "tags": [
+        "who-am-i",
+        "history-makers",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WHO-H-000015",
+      "category_slug": "who-am-i",
+      "category_name": "Who Am I?",
+      "pack_slug": "who-am-i-v1",
+      "pack_title": "Who Am I? Volume 1",
+      "description": "Identify notable people using iconic achievements, not obscure birth dates.",
+      "topic_slug": "history-makers",
+      "topic_name": "History Makers",
+      "difficulty": "hard",
+      "question": "Who am I? I became the first woman to fly solo nonstop across the Atlantic Ocean.",
+      "choices": [
+        "Amelia Earhart",
+        "Bessie Coleman",
+        "Harriet Quimby",
+        "Jacqueline Cochran"
+      ],
+      "correct_choice": "A",
+      "explanation": "Earhart completed the solo transatlantic flight in 1932.",
+      "reference": "Encyclopaedia Britannica biographies",
+      "source_url": "https://www.britannica.com/biographies",
+      "tags": [
+        "who-am-i",
+        "history-makers",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000001",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "easy",
+      "question": "How many hearts does an octopus have?",
+      "choices": [
+        "Three",
+        "One",
+        "Two",
+        "Four"
+      ],
+      "correct_choice": "A",
+      "explanation": "An octopus has two hearts for its gills and one for its body.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000002",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "medium",
+      "question": "Which of these mammals naturally lays eggs?",
+      "choices": [
+        "Platypus",
+        "Otter",
+        "Beaver",
+        "Manatee"
+      ],
+      "correct_choice": "A",
+      "explanation": "Platypuses and echidnas are egg-laying mammals called monotremes.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000003",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "wild-animals",
+      "topic_name": "Wild Animals",
+      "difficulty": "hard",
+      "question": "Which bird can sustain backward flight by beating its wings in a figure-eight pattern?",
+      "choices": [
+        "Hummingbird",
+        "Swift",
+        "Peregrine falcon",
+        "Albatross"
+      ],
+      "correct_choice": "A",
+      "explanation": "Hummingbirds can hover and fly backward using specialized wing motion.",
+      "reference": "Smithsonian National Zoo",
+      "source_url": "https://nationalzoo.si.edu/animals",
+      "tags": [
+        "wait-thats-real",
+        "wild-animals",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000004",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "easy",
+      "question": "Which planet is the hottest on average in our solar system?",
+      "choices": [
+        "Venus",
+        "Mercury",
+        "Mars",
+        "Jupiter"
+      ],
+      "correct_choice": "A",
+      "explanation": "Venus is hottest because its thick atmosphere traps heat.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000005",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "medium",
+      "question": "Which planet has the shortest rotation period, taking about 10 hours for one spin?",
+      "choices": [
+        "Jupiter",
+        "Saturn",
+        "Earth",
+        "Neptune"
+      ],
+      "correct_choice": "A",
+      "explanation": "Jupiter rotates in roughly 9.9 hours.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000006",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "weird-space",
+      "topic_name": "Weird Space",
+      "difficulty": "hard",
+      "question": "Which moon has surface lakes and seas of liquid methane and ethane?",
+      "choices": [
+        "Titan",
+        "Europa",
+        "Io",
+        "Ganymede"
+      ],
+      "correct_choice": "A",
+      "explanation": "Saturn's moon Titan has hydrocarbon lakes and seas.",
+      "reference": "NASA planetary science",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "tags": [
+        "wait-thats-real",
+        "weird-space",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000007",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "easy",
+      "question": "Which organ pumps blood throughout the human body?",
+      "choices": [
+        "Heart",
+        "Liver",
+        "Kidney",
+        "Pancreas"
+      ],
+      "correct_choice": "A",
+      "explanation": "The heart pumps blood through the circulatory system.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000008",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "medium",
+      "question": "Where are the three smallest bones in a human body located?",
+      "choices": [
+        "Middle ear",
+        "Hand",
+        "Foot",
+        "Nose"
+      ],
+      "correct_choice": "A",
+      "explanation": "The malleus, incus and stapes are in the middle ear.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000009",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "body-surprises",
+      "topic_name": "Body Surprises",
+      "difficulty": "hard",
+      "question": "Which organ releases insulin into the bloodstream?",
+      "choices": [
+        "Pancreas",
+        "Spleen",
+        "Gallbladder",
+        "Thyroid"
+      ],
+      "correct_choice": "A",
+      "explanation": "Insulin is made by beta cells in the pancreas.",
+      "reference": "MedlinePlus health reference",
+      "source_url": "https://medlineplus.gov/",
+      "tags": [
+        "wait-thats-real",
+        "body-surprises",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000010",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "easy",
+      "question": "Which of these foods is made by bees from flower nectar?",
+      "choices": [
+        "Honey",
+        "Maple syrup",
+        "Molasses",
+        "Agave nectar"
+      ],
+      "correct_choice": "A",
+      "explanation": "Honeybees process flower nectar into honey.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000011",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "medium",
+      "question": "What primarily gives flamingos their pink coloring?",
+      "choices": [
+        "Pigments from food",
+        "Pink-colored water",
+        "Sunlight on feathers",
+        "Salt crystals"
+      ],
+      "correct_choice": "A",
+      "explanation": "Carotenoid pigments in their diet produce their pink coloration.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000012",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "nature-secrets",
+      "topic_name": "Nature Secrets",
+      "difficulty": "hard",
+      "question": "What type of rock forms when molten lava cools and hardens?",
+      "choices": [
+        "Igneous",
+        "Sedimentary",
+        "Metamorphic",
+        "Fossiliferous limestone"
+      ],
+      "correct_choice": "A",
+      "explanation": "Cooling and solidification of molten rock produce igneous rock.",
+      "reference": "Britannica natural science",
+      "source_url": "https://www.britannica.com/science",
+      "tags": [
+        "wait-thats-real",
+        "nature-secrets",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-E-000013",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "easy",
+      "question": "Which familiar toy modeling compound began as a wallpaper-cleaning product?",
+      "choices": [
+        "Play-Doh",
+        "LEGO",
+        "Silly Putty",
+        "Slinky"
+      ],
+      "correct_choice": "A",
+      "explanation": "The material later sold as Play-Doh was first used as wallpaper cleaner.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-M-000014",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "medium",
+      "question": "Which antibiotic did Alexander Fleming discover after noticing mold affecting bacteria?",
+      "choices": [
+        "Penicillin",
+        "Amoxicillin",
+        "Streptomycin",
+        "Tetracycline"
+      ],
+      "correct_choice": "A",
+      "explanation": "Fleming's mold observation in 1928 helped lead to penicillin.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "fresh-category",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "WTR-H-000015",
+      "category_slug": "wait-thats-real",
+      "category_name": "Wait, That's Real?",
+      "pack_slug": "wait-thats-real-v1",
+      "pack_title": "Wait, That's Real? Volume 1",
+      "description": "Surprising but verifiable answers from wildlife, space, anatomy, natural science and inventions.",
+      "topic_slug": "accidental-discoveries",
+      "topic_name": "Accidental Discoveries",
+      "difficulty": "hard",
+      "question": "Which fastener was inspired by the way plant burrs stuck to fabric and animal fur?",
+      "choices": [
+        "Velcro hook-and-loop",
+        "Zipper",
+        "Safety pin",
+        "Snap button"
+      ],
+      "correct_choice": "A",
+      "explanation": "Burr hooks inspired the hook-and-loop fastener developed by George de Mestral.",
+      "reference": "Smithsonian American history",
+      "source_url": "https://americanhistory.si.edu/",
+      "tags": [
+        "wait-thats-real",
+        "accidental-discoveries",
+        "fresh-category",
+        "content-review"
+      ]
+    }
+  ]
+}
