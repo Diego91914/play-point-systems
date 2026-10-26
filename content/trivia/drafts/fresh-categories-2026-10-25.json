@@ -1,7 +1,7 @@
 {
   "date": "2026-10-25",
   "status": "draft",
-  "notice": "DRAFT question bank expansion. Sources are topic-level pending question-by-question fact verification. Duplicate review and database staging required before publication.",
+  "notice": "500 draft questions, 5 categories, 25 topics, 100 per category. Needs item-level source review and publication validation; not live.",
   "baseline": {
     "sourceFile": "app/games/trivia/play/trivia-runtime-catalog.json",
     "baselineQuestions": 1210,
@@ -2749,8 +2749,8 @@
       ],
       "correct_choice": "A",
       "explanation": "Sony introduced the CDP-101 compact disc player in Japan in 1982",
-      "reference": "Computer History Museum timeline",
-      "source_url": "https://www.computerhistory.org/timeline/",
+      "reference": "Sony, CDP-101",
+      "source_url": "https://www.sony.com/en/SonyInfo/CorporateInfo/History/SonyHistory/2-07.html",
       "tags": [
         "name-that-decade",
         "technology",
@@ -4603,7 +4603,7 @@
       "topic_slug": "national-parks",
       "topic_name": "National Parks",
       "difficulty": "hard",
-      "question": "Which national park straddles Tennessee and North Carolina and contains Clingmans Dome?",
+      "question": "Which national park straddles Tennessee and North Carolina and contains Kuwohi?",
       "choices": [
         "Great Smoky Mountains",
         "Olympic",
@@ -4611,9 +4611,9 @@
         "Acadia"
       ],
       "correct_choice": "A",
-      "explanation": "This park straddles Tennessee and North Carolina.",
-      "reference": "US National Park Service",
-      "source_url": "https://www.nps.gov/",
+      "explanation": "Kuwohi, formerly called Clingmans Dome, is the highest peak in Great Smoky Mountains National Park.",
+      "reference": "National Park Service, Kuwohi",
+      "source_url": "https://www.nps.gov/grsm/planyourvisit/kuwohi-nfg.htm",
       "tags": [
         "road-trip-usa",
         "national-parks",
@@ -6847,9 +6847,9 @@
       "question": "Which New York City borough is home to the famed Coney Island boardwalk?",
       "choices": [
         "Brooklyn",
-        "Philadelphia",
-        "Cooperstown",
-        "San Francisco"
+        "Queens",
+        "The Bronx",
+        "Staten Island"
       ],
       "correct_choice": "A",
       "explanation": "Coney Island is in Brooklyn.",
@@ -7897,15 +7897,15 @@
       "topic_slug": "word-riddles",
       "topic_name": "Word Riddles",
       "difficulty": "easy",
-      "question": "Which of these words is a palindrome?",
+      "question": "Which of these words contains no repeated letters?",
       "choices": [
-        "Level",
-        "Lever",
-        "Label",
-        "Lemon"
+        "Planet",
+        "Pepper",
+        "Letter",
+        "Balloon"
       ],
       "correct_choice": "A",
-      "explanation": "Level reads the same forward and backward.",
+      "explanation": "Planet has six different letters; each distractor repeats at least one.",
       "reference": "Original Play Point word puzzles",
       "source_url": "https://playpointsystems.com/",
       "tags": [
@@ -7927,7 +7927,7 @@
       "question": "Which word can be formed by rearranging the letters of EARTH?",
       "choices": [
         "Heart",
-        "Hater",
+        "Haste",
         "Hearth",
         "Heat"
       ],
@@ -9301,15 +9301,15 @@
       "topic_slug": "world-changing-minds",
       "topic_name": "World-Changing Minds",
       "difficulty": "medium",
-      "question": "Who am I? I received the first US patent for the telephone in 1876.",
+      "question": "Who am I? I shared the 1909 Nobel Prize in Physics for work in wireless telegraphy.",
       "choices": [
-        "Alexander Graham Bell",
-        "Rosalind Franklin",
-        "Johannes Gutenberg",
-        "Louis Pasteur"
+        "Guglielmo Marconi",
+        "Nikola Tesla",
+        "Heinrich Hertz",
+        "Thomas Edison"
       ],
       "correct_choice": "A",
-      "explanation": "Bell received the influential telephone patent in 1876.",
+      "explanation": "Marconi shared the 1909 physics Nobel with Karl Ferdinand Braun.",
       "reference": "Encyclopaedia Britannica biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -9517,15 +9517,15 @@
       "topic_slug": "world-changing-minds",
       "topic_name": "World-Changing Minds",
       "difficulty": "easy",
-      "question": "Who am I? I proposed the World Wide Web while working at CERN.",
+      "question": "Who am I? I helped develop Unix at Bell Labs with Dennis Ritchie.",
       "choices": [
-        "Tim Berners-Lee",
-        "Carl Linnaeus",
-        "Thomas Edison",
-        "Katherine Johnson"
+        "Ken Thompson",
+        "Linus Torvalds",
+        "Brian Kernighan",
+        "Steve Wozniak"
       ],
       "correct_choice": "A",
-      "explanation": "Berners-Lee proposed the Web in 1989.",
+      "explanation": "Ken Thompson and Dennis Ritchie were key developers of Unix.",
       "reference": "Encyclopaedia Britannica biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -9976,15 +9976,15 @@
       "topic_slug": "entertainment-icons",
       "topic_name": "Entertainment Icons",
       "difficulty": "easy",
-      "question": "Who am I? I released the visual album Lemonade in 2016.",
+      "question": "Who am I? I released The Miseducation of Lauryn Hill in 1998.",
       "choices": [
-        "Beyoncé",
-        "Judy Garland",
-        "Jennifer Hudson",
-        "Freddie Mercury"
+        "Lauryn Hill",
+        "Erykah Badu",
+        "Alicia Keys",
+        "Mary J. Blige"
       ],
       "correct_choice": "A",
-      "explanation": "Beyoncé released Lemonade in 2016.",
+      "explanation": "Lauryn Hill's debut solo album was released in 1998.",
       "reference": "Entertainment biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -10057,15 +10057,15 @@
       "topic_slug": "entertainment-icons",
       "topic_name": "Entertainment Icons",
       "difficulty": "hard",
-      "question": "Who am I? I played Dorothy in the 1939 film The Wizard of Oz.",
+      "question": "Who am I? I co-created Sesame Street and helped pioneer educational children's television.",
       "choices": [
-        "Judy Garland",
-        "Charlie Chaplin",
-        "Betty White",
-        "Stevie Wonder"
+        "Joan Ganz Cooney",
+        "Shari Lewis",
+        "Carol Burnett",
+        "Betty White"
       ],
       "correct_choice": "A",
-      "explanation": "Garland starred as Dorothy Gale.",
+      "explanation": "Joan Ganz Cooney co-created Sesame Street.",
       "reference": "Entertainment biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -10165,15 +10165,15 @@
       "topic_slug": "sports-legends",
       "topic_name": "Sports Legends",
       "difficulty": "medium",
-      "question": "Who am I? I broke Major League Baseball's color barrier with Brooklyn in 1947.",
+      "question": "Who am I? I became the first Black manager in Major League Baseball in 1975.",
       "choices": [
+        "Frank Robinson",
         "Jackie Robinson",
-        "LeBron James",
-        "Martina Navratilova",
-        "Babe Ruth"
+        "Hank Aaron",
+        "Willie Mays"
       ],
       "correct_choice": "A",
-      "explanation": "Robinson debuted for the Brooklyn Dodgers in 1947.",
+      "explanation": "Frank Robinson became MLB's first Black manager with Cleveland.",
       "reference": "Sports history and biographies",
       "source_url": "https://www.olympics.com/en/athletes",
       "tags": [
@@ -10624,15 +10624,15 @@
       "topic_slug": "creative-giants",
       "topic_name": "Creative Giants",
       "difficulty": "medium",
-      "question": "Who am I? I wrote the dystopian novel Nineteen Eighty-Four.",
+      "question": "Who am I? I wrote the novel A Wrinkle in Time.",
       "choices": [
+        "Madeleine L'Engle",
+        "Ursula K. Le Guin",
         "George Orwell",
-        "Pablo Picasso",
-        "Georgia O'Keeffe",
-        "Maya Angelou"
+        "Ray Bradbury"
       ],
       "correct_choice": "A",
-      "explanation": "Orwell published Nineteen Eighty-Four in 1949.",
+      "explanation": "Madeleine L'Engle wrote A Wrinkle in Time.",
       "reference": "Encyclopaedia Britannica biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -11164,15 +11164,15 @@
       "topic_slug": "history-makers",
       "topic_name": "History Makers",
       "difficulty": "hard",
-      "question": "Who am I? I delivered the I Have a Dream speech at the 1963 March on Washington.",
+      "question": "Who am I? I was the chief organizer of the 1963 March on Washington.",
       "choices": [
-        "Martin Luther King Jr.",
-        "Napoleon Bonaparte",
-        "Malala Yousafzai",
-        "Susan B. Anthony"
+        "Bayard Rustin",
+        "John Lewis",
+        "Ralph Abernathy",
+        "Medgar Evers"
       ],
       "correct_choice": "A",
-      "explanation": "King delivered the speech during the March on Washington.",
+      "explanation": "Bayard Rustin was chief organizer of the March on Washington.",
       "reference": "Encyclopaedia Britannica biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -11191,15 +11191,15 @@
       "topic_slug": "history-makers",
       "topic_name": "History Makers",
       "difficulty": "easy",
-      "question": "Who am I? I became South Africa's first Black president in 1994.",
+      "question": "Who am I? I led resistance to French colonial rule during the Haitian Revolution.",
       "choices": [
-        "Nelson Mandela",
-        "Cleopatra VII",
-        "Florence Nightingale",
-        "Martin Luther King Jr."
+        "Toussaint Louverture",
+        "Jean-Jacques Dessalines",
+        "Simón Bolívar",
+        "Napoleon Bonaparte"
       ],
       "correct_choice": "A",
-      "explanation": "Mandela became president after the country's first democratic national election.",
+      "explanation": "Toussaint Louverture was a leading figure in the Haitian Revolution.",
       "reference": "Encyclopaedia Britannica biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -11218,15 +11218,15 @@
       "topic_slug": "history-makers",
       "topic_name": "History Makers",
       "difficulty": "medium",
-      "question": "Who am I? I served as Britain's prime minister during much of World War II.",
+      "question": "Who am I? I was Britain's prime minister when the National Health Service began in 1948.",
       "choices": [
+        "Clement Attlee",
         "Winston Churchill",
-        "Eleanor Roosevelt",
-        "Rosa Parks",
-        "Nelson Mandela"
+        "Harold Macmillan",
+        "Neville Chamberlain"
       ],
       "correct_choice": "A",
-      "explanation": "Churchill led Britain from 1940 to 1945.",
+      "explanation": "Clement Attlee was British prime minister when the NHS launched.",
       "reference": "Encyclopaedia Britannica biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -12352,15 +12352,15 @@
       "topic_slug": "weird-space",
       "topic_name": "Weird Space",
       "difficulty": "hard",
-      "question": "Which Apollo mission first landed humans on the Moon?",
+      "question": "Which Apollo mission first carried astronauts around the far side of the Moon?",
       "choices": [
-        "Apollo 11",
         "Apollo 8",
-        "Apollo 13",
-        "Apollo 17"
+        "Apollo 7",
+        "Apollo 10",
+        "Apollo 11"
       ],
       "correct_choice": "A",
-      "explanation": "Apollo 11 made the first crewed lunar landing in 1969.",
+      "explanation": "Apollo 8 was the first crewed mission to orbit the Moon in 1968.",
       "reference": "NASA planetary science",
       "source_url": "https://science.nasa.gov/solar-system/",
       "tags": [
@@ -13603,8 +13603,8 @@
       ],
       "correct_choice": "A",
       "explanation": "A mistakenly selected resistor produced pulses that inspired the pacemaker.",
-      "reference": "Smithsonian American history",
-      "source_url": "https://americanhistory.si.edu/",
+      "reference": "Smithsonian, Wilson Greatbatch",
+      "source_url": "https://invention.si.edu/invention-stories/innovative-lives-making-hearts-beat-wilson-greatbatch",
       "tags": [
         "wait-thats-real",
         "accidental-discoveries",
@@ -13765,8 +13765,8 @@
       ],
       "correct_choice": "A",
       "explanation": "General Mills dates the accidental crispy-flake discovery to 1921.",
-      "reference": "Smithsonian American history",
-      "source_url": "https://americanhistory.si.edu/",
+      "reference": "General Mills, Wheaties history",
+      "source_url": "https://www.generalmills.com/our-food/brands/wheaties",
       "tags": [
         "wait-thats-real",
         "accidental-discoveries",
@@ -13774,5 +13774,6 @@
       ]
     }
   ],
-  "lastExpandedAt": "2026-10-25"
+  "lastExpandedAt": "2026-10-25",
+  "expandedQuestions": 500
 }
