@@ -4592,6 +4592,2301 @@
         "world-events",
         "content-review"
       ]
+    },
+    {
+      "source_id": "RTP-H-000016",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "hard",
+      "question": "Which national park straddles Tennessee and North Carolina and contains Clingmans Dome?",
+      "choices": [
+        "Great Smoky Mountains",
+        "Olympic",
+        "Joshua Tree",
+        "Acadia"
+      ],
+      "correct_choice": "A",
+      "explanation": "This park straddles Tennessee and North Carolina.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000017",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "medium",
+      "question": "Which national park in Utah features the famous hiking route through the Narrows?",
+      "choices": [
+        "Zion",
+        "Everglades",
+        "Denali",
+        "Glacier"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Narrows is the Zion Canyon river hike.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000018",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "medium",
+      "question": "Which Maine national park includes Cadillac Mountain?",
+      "choices": [
+        "Acadia",
+        "Arches",
+        "Crater Lake",
+        "Olympic"
+      ],
+      "correct_choice": "A",
+      "explanation": "Cadillac Mountain is within Acadia National Park.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000019",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "easy",
+      "question": "Which Montana national park is known for the Going-to-the-Sun Road?",
+      "choices": [
+        "Glacier",
+        "Bryce Canyon",
+        "Petrified Forest",
+        "Everglades"
+      ],
+      "correct_choice": "A",
+      "explanation": "Going-to-the-Sun Road crosses Glacier National Park.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000020",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "medium",
+      "question": "Which Washington national park contains temperate rainforests and Hurricane Ridge?",
+      "choices": [
+        "Olympic",
+        "Death Valley",
+        "Hawai'i Volcanoes",
+        "Arches"
+      ],
+      "correct_choice": "A",
+      "explanation": "Olympic National Park protects mountains, beaches and rainforests.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000021",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "hard",
+      "question": "Which Florida national park protects a vast subtropical wetland?",
+      "choices": [
+        "Everglades",
+        "Rocky Mountain",
+        "Shenandoah",
+        "Bryce Canyon"
+      ],
+      "correct_choice": "A",
+      "explanation": "Everglades National Park protects a unique wetland ecosystem.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000022",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "easy",
+      "question": "Delicate Arch is a landmark in which Utah national park?",
+      "choices": [
+        "Arches",
+        "Grand Teton",
+        "Great Smoky Mountains",
+        "Death Valley"
+      ],
+      "correct_choice": "A",
+      "explanation": "Delicate Arch is in Arches National Park.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000023",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "medium",
+      "question": "Which Utah national park is famous for its colorful hoodoo rock formations?",
+      "choices": [
+        "Bryce Canyon",
+        "Joshua Tree",
+        "Zion",
+        "Rocky Mountain"
+      ],
+      "correct_choice": "A",
+      "explanation": "Bryce Canyon National Park is famous for hoodoos.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000024",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "medium",
+      "question": "Which national park contains Badwater Basin, the lowest point in North America?",
+      "choices": [
+        "Death Valley",
+        "Denali",
+        "Acadia",
+        "Grand Teton"
+      ],
+      "correct_choice": "A",
+      "explanation": "Badwater Basin is part of Death Valley National Park.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000025",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "easy",
+      "question": "Which Colorado national park contains Trail Ridge Road?",
+      "choices": [
+        "Rocky Mountain",
+        "Crater Lake",
+        "Glacier",
+        "Joshua Tree"
+      ],
+      "correct_choice": "A",
+      "explanation": "Trail Ridge Road crosses Rocky Mountain National Park.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000026",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "hard",
+      "question": "Which Wyoming national park protects the jagged Teton Range?",
+      "choices": [
+        "Grand Teton",
+        "Petrified Forest",
+        "Olympic",
+        "Denali"
+      ],
+      "correct_choice": "A",
+      "explanation": "Grand Teton National Park protects the Teton mountain peaks.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000027",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "medium",
+      "question": "Which California national park takes its name from a distinctive desert yucca?",
+      "choices": [
+        "Joshua Tree",
+        "Hawai'i Volcanoes",
+        "Everglades",
+        "Crater Lake"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Joshua tree plant inspired the park's name.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000028",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "easy",
+      "question": "Which Alaska national park contains North America's highest mountain?",
+      "choices": [
+        "Denali",
+        "Shenandoah",
+        "Arches",
+        "Petrified Forest"
+      ],
+      "correct_choice": "A",
+      "explanation": "Denali is the highest mountain in North America.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000029",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "medium",
+      "question": "Which Oregon national park contains a deep blue lake inside a collapsed volcano?",
+      "choices": [
+        "Crater Lake",
+        "Great Smoky Mountains",
+        "Bryce Canyon",
+        "Hawai'i Volcanoes"
+      ],
+      "correct_choice": "A",
+      "explanation": "Crater Lake sits in a volcanic caldera.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000030",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "medium",
+      "question": "Which Arizona national park is known for ancient logs transformed into stone?",
+      "choices": [
+        "Petrified Forest",
+        "Zion",
+        "Death Valley",
+        "Shenandoah"
+      ],
+      "correct_choice": "A",
+      "explanation": "The park preserves extensive deposits of petrified wood.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000031",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "hard",
+      "question": "Which Hawaii national park protects the Kilauea and Mauna Loa volcanoes?",
+      "choices": [
+        "Hawai'i Volcanoes",
+        "Acadia",
+        "Rocky Mountain",
+        "Great Smoky Mountains"
+      ],
+      "correct_choice": "A",
+      "explanation": "Hawai'i Volcanoes National Park includes Kilauea and Mauna Loa.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000032",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "national-parks",
+      "topic_name": "National Parks",
+      "difficulty": "medium",
+      "question": "Which Virginia national park is traversed by Skyline Drive?",
+      "choices": [
+        "Shenandoah",
+        "Glacier",
+        "Grand Teton",
+        "Zion"
+      ],
+      "correct_choice": "A",
+      "explanation": "Skyline Drive runs through Shenandoah National Park.",
+      "reference": "US National Park Service",
+      "source_url": "https://www.nps.gov/",
+      "tags": [
+        "road-trip-usa",
+        "national-parks",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000033",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "hard",
+      "question": "Which US state is known as the Pine Tree State?",
+      "choices": [
+        "Maine",
+        "Texas",
+        "Georgia",
+        "Kentucky"
+      ],
+      "correct_choice": "A",
+      "explanation": "Maine's Pine Tree State nickname reflects its forests.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000034",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "medium",
+      "question": "Which US state is the Green Mountain State?",
+      "choices": [
+        "Vermont",
+        "California",
+        "Idaho",
+        "Tennessee"
+      ],
+      "correct_choice": "A",
+      "explanation": "Vermont's name and nickname refer to green mountains.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000035",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "medium",
+      "question": "Which US state is the Bluegrass State?",
+      "choices": [
+        "Kentucky",
+        "New York",
+        "Delaware",
+        "Texas"
+      ],
+      "correct_choice": "A",
+      "explanation": "Kentucky is commonly called the Bluegrass State.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000036",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "easy",
+      "question": "Which US state is the Volunteer State?",
+      "choices": [
+        "Tennessee",
+        "Alabama",
+        "Oklahoma",
+        "California"
+      ],
+      "correct_choice": "A",
+      "explanation": "Tennessee's nickname honors its historical volunteer military service.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000037",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "medium",
+      "question": "Which US state is the Lone Star State?",
+      "choices": [
+        "Texas",
+        "Alaska",
+        "Maryland",
+        "New York"
+      ],
+      "correct_choice": "A",
+      "explanation": "Texas is famously nicknamed the Lone Star State.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000038",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "hard",
+      "question": "Which US state is the Golden State?",
+      "choices": [
+        "California",
+        "Massachusetts",
+        "Oregon",
+        "Alabama"
+      ],
+      "correct_choice": "A",
+      "explanation": "California is commonly known as the Golden State.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000039",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "easy",
+      "question": "Which US state is the Empire State?",
+      "choices": [
+        "New York",
+        "Louisiana",
+        "Maine",
+        "Alaska"
+      ],
+      "correct_choice": "A",
+      "explanation": "New York's nickname is the Empire State.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000040",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "medium",
+      "question": "Which US state is the Yellowhammer State?",
+      "choices": [
+        "Alabama",
+        "Georgia",
+        "Vermont",
+        "Massachusetts"
+      ],
+      "correct_choice": "A",
+      "explanation": "Alabama's nickname is the Yellowhammer State.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000041",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "medium",
+      "question": "Which US state is the Last Frontier?",
+      "choices": [
+        "Alaska",
+        "Idaho",
+        "Kentucky",
+        "Louisiana"
+      ],
+      "correct_choice": "A",
+      "explanation": "Alaska is widely called the Last Frontier.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000042",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "easy",
+      "question": "Which US state is nicknamed the Bay State?",
+      "choices": [
+        "Massachusetts",
+        "Delaware",
+        "Tennessee",
+        "Georgia"
+      ],
+      "correct_choice": "A",
+      "explanation": "Massachusetts is nicknamed the Bay State.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000043",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "hard",
+      "question": "Which US state is the Pelican State?",
+      "choices": [
+        "Louisiana",
+        "Oklahoma",
+        "Texas",
+        "Idaho"
+      ],
+      "correct_choice": "A",
+      "explanation": "Louisiana's state nickname refers to the pelican.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000044",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "medium",
+      "question": "Which US state is the Peach State?",
+      "choices": [
+        "Georgia",
+        "Maryland",
+        "California",
+        "Delaware"
+      ],
+      "correct_choice": "A",
+      "explanation": "Georgia is called the Peach State.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000045",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "easy",
+      "question": "Which US state is the Gem State?",
+      "choices": [
+        "Idaho",
+        "Oregon",
+        "New York",
+        "Oklahoma"
+      ],
+      "correct_choice": "A",
+      "explanation": "Idaho's nickname is the Gem State.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000046",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "medium",
+      "question": "Which US state is the First State?",
+      "choices": [
+        "Delaware",
+        "Maine",
+        "Alabama",
+        "Maryland"
+      ],
+      "correct_choice": "A",
+      "explanation": "Delaware was the first state to ratify the US Constitution.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000047",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "medium",
+      "question": "Which US state is the Sooner State?",
+      "choices": [
+        "Oklahoma",
+        "Vermont",
+        "Alaska",
+        "Oregon"
+      ],
+      "correct_choice": "A",
+      "explanation": "Oklahoma is nicknamed the Sooner State.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000048",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "hard",
+      "question": "Which US state is the Old Line State?",
+      "choices": [
+        "Maryland",
+        "Kentucky",
+        "Massachusetts",
+        "Maine"
+      ],
+      "correct_choice": "A",
+      "explanation": "Maryland is traditionally called the Old Line State.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000049",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "state-nicknames",
+      "topic_name": "State Nicknames",
+      "difficulty": "medium",
+      "question": "Which US state is the Beaver State?",
+      "choices": [
+        "Oregon",
+        "Tennessee",
+        "Louisiana",
+        "Vermont"
+      ],
+      "correct_choice": "A",
+      "explanation": "Oregon uses the nickname Beaver State.",
+      "reference": "US state reference",
+      "source_url": "https://www.usa.gov/states",
+      "tags": [
+        "road-trip-usa",
+        "state-nicknames",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000050",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "hard",
+      "question": "In which city would you visit the blues clubs on Beale Street?",
+      "choices": [
+        "Memphis",
+        "Miami Beach",
+        "Denver",
+        "New York City"
+      ],
+      "correct_choice": "A",
+      "explanation": "Beale Street is an iconic music destination in Memphis.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000051",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "medium",
+      "question": "Which city is famous for Broadway's live country music honky-tonks?",
+      "choices": [
+        "Nashville",
+        "Beverly Hills",
+        "Savannah",
+        "Las Vegas"
+      ],
+      "correct_choice": "A",
+      "explanation": "Lower Broadway is famous for live music in Nashville.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000052",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "medium",
+      "question": "Which city has a famous theater district along Broadway?",
+      "choices": [
+        "New York City",
+        "Chicago",
+        "Austin",
+        "Miami Beach"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Broadway theater district is in Manhattan.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000053",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "easy",
+      "question": "Which Nevada city is known for the Las Vegas Strip?",
+      "choices": [
+        "Las Vegas",
+        "Washington, D.C.",
+        "Charleston",
+        "Beverly Hills"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Las Vegas Strip is the city's world-famous casino corridor.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000054",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "medium",
+      "question": "Which Florida city is known for Ocean Drive and its Art Deco buildings?",
+      "choices": [
+        "Miami Beach",
+        "Atlanta",
+        "New Orleans",
+        "Chicago"
+      ],
+      "correct_choice": "A",
+      "explanation": "Ocean Drive runs through Miami Beach's Art Deco district.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000055",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "hard",
+      "question": "Which California city is famous for upscale Rodeo Drive shopping?",
+      "choices": [
+        "Beverly Hills",
+        "Key West",
+        "Los Angeles",
+        "Washington, D.C."
+      ],
+      "correct_choice": "A",
+      "explanation": "Rodeo Drive is a shopping destination in Beverly Hills.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000056",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "easy",
+      "question": "Which Illinois city has the Magnificent Mile on Michigan Avenue?",
+      "choices": [
+        "Chicago",
+        "Seattle",
+        "Memphis",
+        "Atlanta"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Magnificent Mile is a section of Michigan Avenue in Chicago.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000057",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "medium",
+      "question": "Which US capital has Pennsylvania Avenue connecting the White House and Capitol?",
+      "choices": [
+        "Washington, D.C.",
+        "Denver",
+        "Nashville",
+        "Key West"
+      ],
+      "correct_choice": "A",
+      "explanation": "Pennsylvania Avenue runs between the White House and the US Capitol.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000058",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "medium",
+      "question": "Which Georgia city is especially associated with Peachtree Street?",
+      "choices": [
+        "Atlanta",
+        "Savannah",
+        "New York City",
+        "Seattle"
+      ],
+      "correct_choice": "A",
+      "explanation": "Peachtree Street is one of Atlanta's best-known roads.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000059",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "easy",
+      "question": "Which Florida city is famous for Duval Street?",
+      "choices": [
+        "Key West",
+        "Austin",
+        "Las Vegas",
+        "Denver"
+      ],
+      "correct_choice": "A",
+      "explanation": "Duval Street runs through Key West.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000060",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "hard",
+      "question": "Which Washington city has the market and historic street known as Pike Place?",
+      "choices": [
+        "Seattle",
+        "Charleston",
+        "Miami Beach",
+        "Savannah"
+      ],
+      "correct_choice": "A",
+      "explanation": "Pike Place Market is a landmark near downtown Seattle.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000061",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "medium",
+      "question": "Which Colorado city has the pedestrian-focused 16th Street corridor?",
+      "choices": [
+        "Denver",
+        "New Orleans",
+        "Beverly Hills",
+        "Austin"
+      ],
+      "correct_choice": "A",
+      "explanation": "Denver's 16th Street is a central downtown corridor.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000062",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "easy",
+      "question": "Which Georgia city has River Street along the Savannah River?",
+      "choices": [
+        "Savannah",
+        "Los Angeles",
+        "Chicago",
+        "Charleston"
+      ],
+      "correct_choice": "A",
+      "explanation": "Savannah's River Street is on the waterfront.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000063",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "medium",
+      "question": "Which Texas city is famous for live music along Sixth Street?",
+      "choices": [
+        "Austin",
+        "Memphis",
+        "Washington, D.C.",
+        "New Orleans"
+      ],
+      "correct_choice": "A",
+      "explanation": "Sixth Street is a well-known nightlife street in Austin.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000064",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "medium",
+      "question": "Which South Carolina city is associated with its historic King Street shopping district?",
+      "choices": [
+        "Charleston",
+        "Nashville",
+        "Atlanta",
+        "Los Angeles"
+      ],
+      "correct_choice": "A",
+      "explanation": "King Street is a major historic street in Charleston.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000065",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "hard",
+      "question": "Which Louisiana city has Frenchmen Street, known for live jazz?",
+      "choices": [
+        "New Orleans",
+        "New York City",
+        "Key West",
+        "Memphis"
+      ],
+      "correct_choice": "A",
+      "explanation": "Frenchmen Street is a popular New Orleans music district.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000066",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "famous-streets",
+      "topic_name": "Famous Streets",
+      "difficulty": "medium",
+      "question": "Which California city is known for the famous Hollywood Boulevard Walk of Fame?",
+      "choices": [
+        "Los Angeles",
+        "Las Vegas",
+        "Seattle",
+        "Nashville"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Hollywood Walk of Fame stretches along Hollywood Boulevard and Vine Street.",
+      "reference": "National Park Service Route 66",
+      "source_url": "https://www.nps.gov/articles/000/route-66-illinois.htm",
+      "tags": [
+        "road-trip-usa",
+        "famous-streets",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000067",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "hard",
+      "question": "Which city is particularly known for chili served over spaghetti?",
+      "choices": [
+        "Cincinnati",
+        "Texas",
+        "Detroit",
+        "Nashville"
+      ],
+      "correct_choice": "A",
+      "explanation": "Cincinnati-style chili is often served over spaghetti.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000068",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "medium",
+      "question": "Which New York city gave its name to Buffalo wings?",
+      "choices": [
+        "Buffalo",
+        "Kansas City",
+        "New York City",
+        "Memphis"
+      ],
+      "correct_choice": "A",
+      "explanation": "Buffalo wings originated in Buffalo, New York.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000069",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "medium",
+      "question": "Which Tennessee city is famous for extra-spicy hot chicken?",
+      "choices": [
+        "Nashville",
+        "New Orleans",
+        "North Carolina",
+        "Texas"
+      ],
+      "correct_choice": "A",
+      "explanation": "Nashville hot chicken is a signature city specialty.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000070",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "easy",
+      "question": "Which Tennessee city is famous for dry-rub pork ribs?",
+      "choices": [
+        "Memphis",
+        "Maryland",
+        "New Mexico",
+        "Kansas City"
+      ],
+      "correct_choice": "A",
+      "explanation": "Memphis barbecue is well known for dry-rub ribs.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000071",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "medium",
+      "question": "Which state is especially associated with slow-smoked beef brisket?",
+      "choices": [
+        "Texas",
+        "Maine",
+        "Wisconsin",
+        "New Orleans"
+      ],
+      "correct_choice": "A",
+      "explanation": "Texas barbecue is known for smoked brisket.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000072",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "hard",
+      "question": "Which Missouri city is known for its barbecue burnt ends?",
+      "choices": [
+        "Kansas City",
+        "Hawaii",
+        "San Diego",
+        "Maryland"
+      ],
+      "correct_choice": "A",
+      "explanation": "Kansas City barbecue is famous for burnt ends.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000073",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "easy",
+      "question": "Which Louisiana city is famous for beignets and café au lait?",
+      "choices": [
+        "New Orleans",
+        "San Francisco",
+        "Cincinnati",
+        "Maine"
+      ],
+      "correct_choice": "A",
+      "explanation": "New Orleans is well known for powdered-sugar beignets.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000074",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "medium",
+      "question": "Which US state is famous for its Chesapeake Bay blue crab cakes?",
+      "choices": [
+        "Maryland",
+        "Detroit",
+        "Buffalo",
+        "Hawaii"
+      ],
+      "correct_choice": "A",
+      "explanation": "Maryland crab cakes are a regional specialty.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000075",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "medium",
+      "question": "Which northeastern US state is most famous for lobster rolls?",
+      "choices": [
+        "Maine",
+        "New York City",
+        "Nashville",
+        "San Francisco"
+      ],
+      "correct_choice": "A",
+      "explanation": "Maine's coastal cuisine is associated with lobster rolls.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000076",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "easy",
+      "question": "Which Pacific state is associated with the dish poke?",
+      "choices": [
+        "Hawaii",
+        "North Carolina",
+        "Memphis",
+        "Detroit"
+      ],
+      "correct_choice": "A",
+      "explanation": "Poke is a traditional dish strongly associated with Hawaii.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000077",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "hard",
+      "question": "Which California city is strongly associated with sourdough bread?",
+      "choices": [
+        "San Francisco",
+        "New Mexico",
+        "Texas",
+        "New York City"
+      ],
+      "correct_choice": "A",
+      "explanation": "San Francisco is celebrated for its sourdough bread.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000078",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "medium",
+      "question": "Which Michigan city is famous for its square, thick-crust style of pizza?",
+      "choices": [
+        "Detroit",
+        "Wisconsin",
+        "Kansas City",
+        "North Carolina"
+      ],
+      "correct_choice": "A",
+      "explanation": "Detroit-style pizza has a thick rectangular crust.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000079",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "easy",
+      "question": "Which US city is especially known for its bagel-and-lox tradition?",
+      "choices": [
+        "New York City",
+        "San Diego",
+        "New Orleans",
+        "New Mexico"
+      ],
+      "correct_choice": "A",
+      "explanation": "New York bagels with lox are a traditional deli favorite.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000080",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "medium",
+      "question": "Which state is associated with Eastern-style vinegar-based pulled pork barbecue?",
+      "choices": [
+        "North Carolina",
+        "Cincinnati",
+        "Maryland",
+        "Wisconsin"
+      ],
+      "correct_choice": "A",
+      "explanation": "Eastern North Carolina barbecue is known for vinegar-based sauce.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000081",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "medium",
+      "question": "Which southwestern US state is famous for its green chile dishes?",
+      "choices": [
+        "New Mexico",
+        "Buffalo",
+        "Maine",
+        "San Diego"
+      ],
+      "correct_choice": "A",
+      "explanation": "New Mexico cuisine frequently features green chile.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000082",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "hard",
+      "question": "Which Great Lakes state is especially associated with fried cheese curds?",
+      "choices": [
+        "Wisconsin",
+        "Nashville",
+        "Hawaii",
+        "Cincinnati"
+      ],
+      "correct_choice": "A",
+      "explanation": "Wisconsin is famous for cheese curds.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000083",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "local-bites",
+      "topic_name": "Local Bites",
+      "difficulty": "medium",
+      "question": "Which California city is known for Baja-style fish tacos near the Mexican border?",
+      "choices": [
+        "San Diego",
+        "Memphis",
+        "San Francisco",
+        "Buffalo"
+      ],
+      "correct_choice": "A",
+      "explanation": "San Diego is known for Baja-style fish tacos.",
+      "reference": "American regional cuisine",
+      "source_url": "https://www.britannica.com/topic/American-cuisine",
+      "tags": [
+        "road-trip-usa",
+        "local-bites",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000084",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "hard",
+      "question": "In which California city can you walk across the Golden Gate Bridge?",
+      "choices": [
+        "San Francisco",
+        "Asheville",
+        "Portland",
+        "Philadelphia"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Golden Gate Bridge connects San Francisco with Marin County.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000085",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "medium",
+      "question": "Which Missouri city is home to the Gateway Arch?",
+      "choices": [
+        "St. Louis",
+        "Memphis",
+        "Charleston",
+        "Chicago"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Gateway Arch is a landmark on the St. Louis riverfront.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000086",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "medium",
+      "question": "Which city is home to Independence Hall and the Liberty Bell?",
+      "choices": [
+        "Philadelphia",
+        "Cleveland",
+        "Boston",
+        "Asheville"
+      ],
+      "correct_choice": "A",
+      "explanation": "Both historic landmarks are in Philadelphia.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000087",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "easy",
+      "question": "Which city is home to the famous Cloud Gate sculpture nicknamed The Bean?",
+      "choices": [
+        "Chicago",
+        "Cape Canaveral",
+        "Atlanta",
+        "Memphis"
+      ],
+      "correct_choice": "A",
+      "explanation": "Cloud Gate is in Chicago's Millennium Park.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000088",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "medium",
+      "question": "Which North Carolina city is home to the Biltmore Estate?",
+      "choices": [
+        "Asheville",
+        "Houston",
+        "Brooklyn",
+        "Cleveland"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Biltmore Estate is in Asheville.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000089",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "hard",
+      "question": "Which Tennessee city is home to Elvis Presley's Graceland?",
+      "choices": [
+        "Memphis",
+        "Cooperstown",
+        "Los Angeles",
+        "Cape Canaveral"
+      ],
+      "correct_choice": "A",
+      "explanation": "Elvis Presley's Graceland is in Memphis.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000090",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "easy",
+      "question": "Which Ohio city hosts the Rock & Roll Hall of Fame?",
+      "choices": [
+        "Cleveland",
+        "Honolulu",
+        "San Francisco",
+        "Houston"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Rock & Roll Hall of Fame is in Cleveland.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000091",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "medium",
+      "question": "Near which Florida city is Kennedy Space Center?",
+      "choices": [
+        "Cape Canaveral",
+        "Portland",
+        "St. Louis",
+        "Cooperstown"
+      ],
+      "correct_choice": "A",
+      "explanation": "Kennedy Space Center is on Merritt Island near Cape Canaveral.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000092",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "medium",
+      "question": "Which Texas city hosts Space Center Houston?",
+      "choices": [
+        "Houston",
+        "Charleston",
+        "Philadelphia",
+        "Honolulu"
+      ],
+      "correct_choice": "A",
+      "explanation": "Space Center Houston is the visitor center for NASA's Johnson Space Center.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000093",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "easy",
+      "question": "Which New York village hosts the National Baseball Hall of Fame?",
+      "choices": [
+        "Cooperstown",
+        "Boston",
+        "Chicago",
+        "Portland"
+      ],
+      "correct_choice": "A",
+      "explanation": "The National Baseball Hall of Fame is located in Cooperstown.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000094",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "hard",
+      "question": "In which Hawaiian city is the USS Arizona Memorial at Pearl Harbor?",
+      "choices": [
+        "Honolulu",
+        "Atlanta",
+        "Asheville",
+        "Charleston"
+      ],
+      "correct_choice": "A",
+      "explanation": "The USS Arizona Memorial is in Pearl Harbor at Honolulu.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000095",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "medium",
+      "question": "Which Oregon city is home to the International Rose Test Garden?",
+      "choices": [
+        "Portland",
+        "Brooklyn",
+        "Memphis",
+        "Boston"
+      ],
+      "correct_choice": "A",
+      "explanation": "Portland's International Rose Test Garden is in Washington Park.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-E-000096",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "easy",
+      "question": "Which South Carolina city is near historic Fort Sumter?",
+      "choices": [
+        "Charleston",
+        "Los Angeles",
+        "Cleveland",
+        "Atlanta"
+      ],
+      "correct_choice": "A",
+      "explanation": "Fort Sumter sits in Charleston Harbor.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000097",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "medium",
+      "question": "Which Massachusetts city is home to historic Fenway Park?",
+      "choices": [
+        "Boston",
+        "San Francisco",
+        "Cape Canaveral",
+        "Brooklyn"
+      ],
+      "correct_choice": "A",
+      "explanation": "Fenway Park has been the Red Sox home since 1912.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000098",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "medium",
+      "question": "Which Georgia city has the large aquarium known as Georgia Aquarium?",
+      "choices": [
+        "Atlanta",
+        "St. Louis",
+        "Houston",
+        "Los Angeles"
+      ],
+      "correct_choice": "A",
+      "explanation": "Georgia Aquarium is a major Atlanta attraction.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-H-000099",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "hard",
+      "question": "Which New York City borough is home to the famed Coney Island boardwalk?",
+      "choices": [
+        "Brooklyn",
+        "Philadelphia",
+        "Cooperstown",
+        "San Francisco"
+      ],
+      "correct_choice": "A",
+      "explanation": "Coney Island is in Brooklyn.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "content-review"
+      ]
+    },
+    {
+      "source_id": "RTP-M-000100",
+      "category_slug": "road-trip-usa",
+      "category_name": "Road Trip USA",
+      "pack_slug": "road-trip-usa-v1",
+      "pack_title": "Road Trip USA Volume 1",
+      "description": "An all-American ride through national parks, cities, local food, states and landmarks.",
+      "topic_slug": "landmark-hunt",
+      "topic_name": "Landmark Hunt",
+      "difficulty": "medium",
+      "question": "Which California city is home to the iconic Hollywood Sign?",
+      "choices": [
+        "Los Angeles",
+        "Chicago",
+        "Honolulu",
+        "St. Louis"
+      ],
+      "correct_choice": "A",
+      "explanation": "The Hollywood Sign stands in the Hollywood Hills of Los Angeles.",
+      "reference": "US National Park Service landmarks",
+      "source_url": "https://www.nps.gov/subjects/nationalhistoriclandmarks/index.htm",
+      "tags": [
+        "road-trip-usa",
+        "landmark-hunt",
+        "content-review"
+      ]
     }
   ],
   "lastExpandedAt": "2026-10-25"
