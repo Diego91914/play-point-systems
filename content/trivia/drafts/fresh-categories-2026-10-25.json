@@ -1,7 +1,7 @@
 {
   "date": "2026-10-25",
   "status": "draft",
-  "notice": "75 NEW questions in 5 NEW categories. Needs fact-check and expansion to 100 questions per pack before the production importer can publish.",
+  "notice": "75 NEW draft questions in 5 NEW categories. Compared against 1,210 starter questions and 800 database questions, with semantic near-duplicates removed. Further source fact-check and expansion to 100 questions per category needed before production importer.",
   "baseline": {
     "sourceFile": "app/games/trivia/play/trivia-runtime-catalog.json",
     "baselineQuestions": 1210,
@@ -1717,15 +1717,15 @@
       "topic_slug": "creative-giants",
       "topic_name": "Creative Giants",
       "difficulty": "easy",
-      "question": "Who am I? I wrote the novel Pride and Prejudice.",
+      "question": "Who am I? I wrote the 1818 novel Frankenstein.",
       "choices": [
+        "Mary Shelley",
         "Jane Austen",
-        "Charlotte Bronte",
-        "Emily Dickinson",
-        "Mary Shelley"
+        "Bram Stoker",
+        "Emily Bronte"
       ],
       "correct_choice": "A",
-      "explanation": "Jane Austen published Pride and Prejudice in 1813.",
+      "explanation": "Mary Shelley wrote Frankenstein, which was published anonymously in 1818.",
       "reference": "Encyclopaedia Britannica biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -1733,7 +1733,8 @@
         "creative-giants",
         "fresh-category",
         "content-review"
-      ]
+      ],
+      "answer": "Mary Shelley"
     },
     {
       "source_id": "WHO-M-000011",
@@ -1773,15 +1774,15 @@
       "topic_slug": "creative-giants",
       "topic_name": "Creative Giants",
       "difficulty": "hard",
-      "question": "Who am I? I painted much of the ceiling of the Sistine Chapel.",
+      "question": "Who am I? I sculpted The Thinker and The Kiss.",
       "choices": [
+        "Auguste Rodin",
         "Michelangelo",
-        "Raphael",
-        "Leonardo da Vinci",
-        "Donatello"
+        "Donatello",
+        "Henry Moore"
       ],
       "correct_choice": "A",
-      "explanation": "Michelangelo painted the Sistine Chapel ceiling between 1508 and 1512.",
+      "explanation": "Auguste Rodin created the celebrated sculptures The Thinker and The Kiss.",
       "reference": "Encyclopaedia Britannica biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -1789,7 +1790,8 @@
         "creative-giants",
         "fresh-category",
         "content-review"
-      ]
+      ],
+      "answer": "Auguste Rodin"
     },
     {
       "source_id": "WHO-E-000013",
@@ -1857,15 +1859,15 @@
       "topic_slug": "history-makers",
       "topic_name": "History Makers",
       "difficulty": "hard",
-      "question": "Who am I? I became the first woman to fly solo nonstop across the Atlantic Ocean.",
+      "question": "Who am I? I worked as a codebreaker at Bletchley Park and proposed the imitation game.",
       "choices": [
-        "Amelia Earhart",
-        "Bessie Coleman",
-        "Harriet Quimby",
-        "Jacqueline Cochran"
+        "Alan Turing",
+        "John von Neumann",
+        "Claude Shannon",
+        "Charles Babbage"
       ],
       "correct_choice": "A",
-      "explanation": "Earhart completed the solo transatlantic flight in 1932.",
+      "explanation": "Alan Turing contributed to wartime cryptanalysis and described the imitation game in 1950.",
       "reference": "Encyclopaedia Britannica biographies",
       "source_url": "https://www.britannica.com/biographies",
       "tags": [
@@ -1873,7 +1875,8 @@
         "history-makers",
         "fresh-category",
         "content-review"
-      ]
+      ],
+      "answer": "Alan Turing"
     },
     {
       "source_id": "WTR-E-000001",
