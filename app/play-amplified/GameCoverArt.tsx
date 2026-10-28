@@ -234,14 +234,14 @@ function CoverGlyph({ motif }: { motif: CoverMotif }) {
   return <svg aria-hidden="true" viewBox="0 0 180 120" className="h-full w-full" {...svgProps}><path d="M20 28h140v68H20z"/><path d="M20 45h140M53 28v68M127 28v68" opacity=".4"/><path d="M31 18 43 28M149 18l-12 10M90 12v16" strokeWidth="3"/><circle cx="44" cy="70" r="9"/><circle cx="136" cy="70" r="9"/><rect x="64" y="51" width="52" height="31" rx="7" fill="currentColor" stroke="none" opacity=".13"/><text x="84" y="72" fill="currentColor" stroke="none" fontSize="19" fontWeight="900">?</text><path d="M36 88h16M128 88h16" strokeWidth="4"/><circle cx="44" cy="88" r="3" fill="currentColor" stroke="none"/><circle cx="136" cy="88" r="3" fill="currentColor" stroke="none"/></svg>;
 }
 
-export function GameCoverArt({ gameId }: { gameId: string }) {
+export function GameCoverArt({ gameId, fill = false }: { gameId: string; fill?: boolean }) {
   const cover = covers[gameId];
   if (!cover) throw new Error(`Missing game cover identity: ${gameId}`);
 
   return (
     <div
       data-game-cover={gameId}
-      className={`relative aspect-[4/3] min-h-full overflow-hidden bg-gradient-to-br ${cover.frame} ${cover.ink}`}
+      className={`relative overflow-hidden bg-gradient-to-br ${fill ? "h-full w-full" : "aspect-[4/3] min-h-full"} ${cover.frame} ${cover.ink}`}
     >
       <div aria-hidden="true" className="absolute -right-5 -top-7 h-20 w-20 rounded-full border border-white/10 bg-white/10 blur-xl" />
       <div aria-hidden="true" className="absolute -bottom-8 -left-6 h-20 w-20 rounded-full border border-white/10 bg-black/20 blur-xl" />

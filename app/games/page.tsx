@@ -85,8 +85,8 @@ function GameCard({ game }: { game: LibraryEntry }) {
   return (
     <article className="group flex min-h-[168px] overflow-hidden rounded-[26px] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.065),rgba(255,255,255,0.022))] shadow-[0_18px_55px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-0.5 hover:border-white/20 sm:min-h-[190px]">
       <div className="relative w-[34%] min-w-[118px] max-w-[165px] shrink-0 overflow-hidden border-r border-white/10 bg-black/25 sm:w-[38%]">
-        <div className="absolute inset-0 scale-[1.18] transition duration-500 group-hover:scale-[1.23]">
-          <GameCoverArt gameId={game.id} />
+        <div className="absolute inset-0">
+          <GameCoverArt gameId={game.id} fill />
         </div>
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,transparent_58%,rgba(3,7,18,0.68)_100%)]" />
       </div>
