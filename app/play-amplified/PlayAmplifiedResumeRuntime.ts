@@ -5,6 +5,7 @@ export type ResumeCandidate = {
   code?: string;
   seenAt: number;
   clearKeys: string[];
+  connection: "online" | "offline" | "reconnect";
 };
 
 type SocialResumeGame = "chain-reaction" | "how-close" | "inside-man" | "on-my-list" | "all-about-you";
@@ -16,8 +17,6 @@ type SessionSource = {
   game?: SocialResumeGame;
   roomApiBase?: string;
 };
-
-const RESUME_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
 const SESSION_SOURCES: readonly SessionSource[] = [
   { key: "pps-mystery-session", title: "Last Call: Murder at Blackwood House", href: "/games/mystery", roomApiBase: "/api/games/mystery" },
@@ -38,22 +37,6 @@ function readJson(raw: string | null): Record<string, unknown> | null {
   }
 }
 
-function removeLocalKeys(keys: readonly string[]) {
-  try {
-    for (const key of keys) window.localStorage.removeItem(key);
-  } catch {}
-}
-
-function readRecentRetention(storageKey: string, code: string) {
-  const retentionKey = `${storageKey}:retention`;
-  const meta = readJson(window.localStorage.getItem(retentionKey));
-  const metaCode = typeof meta?.code === "string" ? meta.code.trim().toUpperCase() : "";
-  const firstSeenAt = typeof meta?.firstSeenAt === "number" ? meta.firstSeenAt : Number.NaN;
-  if (metaCode !== code || !Number.isFinite(firstSeenAt)) return null;
-  if (Date.now() - firstSeenAt > RESUME_MAX_AGE_MS) return null;
-  return firstSeenAt;
-}
-
 function terminalStatus(payload: Record<string, unknown> | null) {
   const nestedState = payload?.state && typeof payload.state === "object" ? payload.state as Record<string, unknown> : null;
   const status = typeof nestedState?.status === "string"
@@ -65,7 +48,7 @@ function terminalStatus(payload: Record<string, unknown> | null) {
 }
 
 async function validateSessionSource(source: SessionSource): Promise<ResumeCandidate | null> {
-  const clearKeys = [source.key, `${source.key}:retention`];
+  const clearKeys = [source.key];
   const parsed = readJson(window.localStorage.getItem(source.key));
   if (!parsed) return null;
 
@@ -73,15 +56,11 @@ async function validateSessionSource(source: SessionSource): Promise<ResumeCandi
   const playerId = typeof parsed.playerId === "string" ? parsed.playerId : "";
   const token = typeof parsed.token === "string" ? parsed.token : "";
   if (!/^[A-Z2-9]{6}$/.test(code) || !playerId || !token) {
-    removeLocalKeys(clearKeys);
     return null;
   }
 
-  const seenAt = readRecentRetention(source.key, code);
-  if (seenAt === null) {
-    removeLocalKeys(clearKeys);
-    return null;
-  }
+  const seenAt = typeof parsed.updatedAt === "number" ? parsed.updatedAt : 0;
+  let connection: ResumeCandidate["connection"] = "online";
 
   try {
     if (source.game) {
@@ -92,13 +71,10 @@ async function validateSessionSource(source: SessionSource): Promise<ResumeCandi
         body: JSON.stringify({ action: "status", game: source.game, code, playerId, token }),
       });
       if (!response.ok) {
-        if ([401, 403, 404, 410].includes(response.status)) removeLocalKeys(clearKeys);
-        return null;
-      }
-      const payload = await response.json().catch(() => ({}));
-      if (payload?.ended === true) {
-        removeLocalKeys(clearKeys);
-        return null;
+        connection = response.status >= 500 ? "offline" : "reconnect";
+      } else {
+        const payload = await response.json().catch(() => ({}));
+        if (payload?.ended === true) return null;
       }
     } else if (source.roomApiBase) {
       const response = await fetch(
@@ -106,17 +82,14 @@ async function validateSessionSource(source: SessionSource): Promise<ResumeCandi
         { cache: "no-store" },
       );
       if (!response.ok) {
-        if ([401, 403, 404, 410].includes(response.status)) removeLocalKeys(clearKeys);
-        return null;
-      }
-      const payload = await response.json().catch(() => ({})) as Record<string, unknown>;
-      if (terminalStatus(payload)) {
-        removeLocalKeys(clearKeys);
-        return null;
+        connection = response.status >= 500 ? "offline" : "reconnect";
+      } else {
+        const payload = await response.json().catch(() => ({})) as Record<string, unknown>;
+        if (terminalStatus(payload)) return null;
       }
     }
   } catch {
-    return null;
+    connection = "offline";
   }
 
   return {
@@ -126,6 +99,7 @@ async function validateSessionSource(source: SessionSource): Promise<ResumeCandi
     code,
     seenAt,
     clearKeys,
+    connection,
   };
 }
 
@@ -134,20 +108,16 @@ async function validateHoldemSession(storageKey: string): Promise<ResumeCandidat
   if (!match) return null;
 
   const code = match[1].toUpperCase();
-  const clearKeys = [storageKey, `${storageKey}:retention`];
+  const clearKeys = [storageKey];
   const parsed = readJson(window.localStorage.getItem(storageKey));
   const playerId = typeof parsed?.playerId === "string" ? parsed.playerId : "";
   const token = typeof parsed?.token === "string" ? parsed.token : "";
   if (!playerId || !token) {
-    removeLocalKeys(clearKeys);
     return null;
   }
 
-  const seenAt = readRecentRetention(storageKey, code);
-  if (seenAt === null) {
-    removeLocalKeys(clearKeys);
-    return null;
-  }
+  const seenAt = typeof parsed?.updatedAt === "number" ? parsed.updatedAt : 0;
+  let connection: ResumeCandidate["connection"] = "online";
 
   try {
     const response = await fetch("/api/games/social-room-control", {
@@ -157,16 +127,13 @@ async function validateHoldemSession(storageKey: string): Promise<ResumeCandidat
       body: JSON.stringify({ action: "status", game: "holdem", code, playerId, token }),
     });
     if (!response.ok) {
-      if ([401, 403, 404, 410].includes(response.status)) removeLocalKeys(clearKeys);
-      return null;
-    }
-    const payload = await response.json().catch(() => ({}));
-    if (payload?.ended === true) {
-      removeLocalKeys(clearKeys);
-      return null;
+      connection = response.status >= 500 ? "offline" : "reconnect";
+    } else {
+      const payload = await response.json().catch(() => ({}));
+      if (payload?.ended === true) return null;
     }
   } catch {
-    return null;
+    connection = "offline";
   }
 
   return {
@@ -176,6 +143,7 @@ async function validateHoldemSession(storageKey: string): Promise<ResumeCandidat
     code,
     seenAt,
     clearKeys,
+    connection,
   };
 }
 
@@ -184,24 +152,21 @@ async function validateTriviaResume(): Promise<ResumeCandidate | null> {
   const host = readJson(window.localStorage.getItem(hostKey));
   const hostSessionId = typeof host?.sessionId === "string" ? host.sessionId : "";
   if (hostSessionId) {
+    let connection: ResumeCandidate["connection"] = "offline";
     try {
       const response = await fetch(`/api/trivia/sessions/${encodeURIComponent(hostSessionId)}`, { cache: "no-store" });
       if (response.ok) {
+        connection = "online";
         const payload = await response.json().catch(() => ({})) as Record<string, unknown>;
-        if (!terminalStatus(payload)) {
-          return {
-            key: hostKey,
-            title: "Play Point Trivia",
-            href: "/games/trivia/builder",
-            seenAt: 0,
-            clearKeys: [hostKey],
-          };
-        }
-        removeLocalKeys([hostKey]);
-      } else if ([401, 403, 404, 410].includes(response.status)) {
-        removeLocalKeys([hostKey]);
+        if (terminalStatus(payload)) return null;
+        return { key: hostKey, title: "Play Point Trivia", href: "/games/trivia/builder", seenAt: 0, clearKeys: [hostKey], connection };
+      } else {
+        connection = response.status >= 500 ? "offline" : "reconnect";
       }
     } catch {}
+    // The server or connection may be unavailable while the local credential is
+    // still valid. Keep it and offer the saved route so the game can retry.
+    if (hostSessionId) return { key: hostKey, title: "Play Point Trivia", href: "/games/trivia/builder", seenAt: 0, clearKeys: [hostKey], connection };
   }
 
   const playerKey = "play-point-trivia-player-connection-v2";
@@ -210,7 +175,6 @@ async function validateTriviaResume(): Promise<ResumeCandidate | null> {
   const playerId = typeof player?.playerId === "string" ? player.playerId : "";
   const roomCode = typeof player?.roomCode === "string" ? player.roomCode.trim().toUpperCase() : "";
   if (!sessionId || !playerId || !/^[A-Z2-9]{6}$/.test(roomCode)) {
-    if (player) removeLocalKeys([playerKey]);
     return null;
   }
 
@@ -220,16 +184,12 @@ async function validateTriviaResume(): Promise<ResumeCandidate | null> {
       { cache: "no-store" },
     );
     if (!response.ok) {
-      if ([401, 403, 404, 410].includes(response.status)) removeLocalKeys([playerKey]);
-      return null;
+      return { key: playerKey, title: "Play Point Trivia", href: `/games/trivia/join?code=${encodeURIComponent(roomCode)}`, code: roomCode, seenAt: 0, clearKeys: [playerKey], connection: response.status >= 500 ? "offline" : "reconnect" };
     }
     const payload = await response.json().catch(() => ({})) as Record<string, unknown>;
-    if (terminalStatus(payload)) {
-      removeLocalKeys([playerKey]);
-      return null;
-    }
+    if (terminalStatus(payload)) return null;
   } catch {
-    return null;
+    return { key: playerKey, title: "Play Point Trivia", href: `/games/trivia/join?code=${encodeURIComponent(roomCode)}`, code: roomCode, seenAt: 0, clearKeys: [playerKey], connection: "offline" };
   }
 
   return {
@@ -239,6 +199,7 @@ async function validateTriviaResume(): Promise<ResumeCandidate | null> {
     code: roomCode,
     seenAt: 0,
     clearKeys: [playerKey],
+    connection: "online",
   };
 }
 
