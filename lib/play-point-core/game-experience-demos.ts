@@ -127,10 +127,10 @@ const demos: Record<string, GameExperienceDemo> = {
     ],
   },
   "redemption-wolf": {
-    hook: "Wolf, but the trailing player keeps getting a way back into the fight.", payoff: "Being behind creates pressure and opportunity instead of making the rest of the round feel decided.", facts: ["Wolf strategy", "Comeback pressure", "3–6 players", "Disc + ball golf"],
+    hook: "The trailing player becomes Wolf, watches every other drive, and chooses before teeing last.", payoff: "Being behind creates pressure and opportunity while each player keeps their own score.", facts: ["Wolf tees last", "All other drives observed", "Decision locked before tee shot", "3–6 players"],
     steps: [
-      { eyebrow: "Trailing player", headline: "You get the next opening", detail: "Redemption shifts the strategic initiative toward the player who needs it most.", phoneLabel: "REDEMPTION", phoneBody: "YOUR TURN", accent: "rose" },
-      { eyebrow: "Big choice", headline: "Partner up or chase the swing?", detail: "A comeback opportunity still requires a real golf decision.", phoneLabel: "RISK", phoneBody: "GO ALONE", accent: "amber" },
+      { eyebrow: "Tee order", headline: "Everyone else drives first", detail: "The Wolf watches every other player’s drive, then makes the partner decision before their own tee shot.", phoneLabel: "WOLF", phoneBody: "TEES LAST", accent: "rose" },
+      { eyebrow: "Lock it in", headline: "Choose a partner or go Lone Wolf", detail: "After observing every other drive, the Wolf confirms one eligible partner or Lone Wolf. The choice locks before the Wolf throws.", phoneLabel: "DECISION", phoneBody: "LOCKED", accent: "amber" },
       { eyebrow: "Back in it", headline: "The gap just closed", detail: "The round gets tighter without handing anyone free points.", phoneLabel: "STANDINGS", phoneBody: "-1 BACK", accent: "emerald" },
     ],
   },
