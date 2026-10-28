@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ResumeCandidate } from "./PlayAmplifiedResumeRuntime";
 
 type BeforeInstallPromptEvent = Event & {
@@ -17,6 +17,7 @@ export function PlayAmplifiedPwa() {
   const [installDismissed, setInstallDismissed] = useState(false);
   const [installCardOpen, setInstallCardOpen] = useState(false);
   const [installHelpOpen, setInstallHelpOpen] = useState(false);
+  const launchRedirected = useRef(false);
 
   useEffect(() => {
     const hostname = window.location.hostname.toLowerCase();
@@ -24,12 +25,19 @@ export function PlayAmplifiedPwa() {
     if (!isPlayAmplified) return;
 
     let cancelled = false;
-    queueMicrotask(() => {
-      void (async () => {
+    const refreshCandidates = async () => {
+      try {
         const { readResumeCandidates } = await import("./PlayAmplifiedResumeRuntime");
         const nextCandidates = await readResumeCandidates();
+        if (!cancelled) setCandidates(nextCandidates);
+      } catch {
+        // A discovery failure must not clear an existing resume prompt.
+      }
+    };
+    queueMicrotask(() => {
+      void (async () => {
+        await refreshCandidates();
         if (cancelled) return;
-        setCandidates(nextCandidates);
         const inStandalone = window.matchMedia?.("(display-mode: standalone)").matches || (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
         setStandalone(inStandalone);
         setIsIos(/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
@@ -59,6 +67,12 @@ export function PlayAmplifiedPwa() {
       void serviceWorkerRegistration.update().catch(() => undefined);
     };
 
+    const refreshOnForeground = () => {
+      if (document.visibilityState === "visible") void refreshCandidates();
+    };
+    window.addEventListener("pageshow", refreshCandidates);
+    document.addEventListener("visibilitychange", refreshOnForeground);
+
     if ("serviceWorker" in navigator) {
       hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
       navigator.serviceWorker.addEventListener("controllerchange", onControllerChange);
@@ -79,10 +93,20 @@ export function PlayAmplifiedPwa() {
       if ("serviceWorker" in navigator) navigator.serviceWorker.removeEventListener("controllerchange", onControllerChange);
       document.removeEventListener("visibilitychange", updateServiceWorker);
       window.removeEventListener("pageshow", updateServiceWorker);
+      window.removeEventListener("pageshow", refreshCandidates);
+      document.removeEventListener("visibilitychange", refreshOnForeground);
     };
   }, []);
 
   const primary = useMemo(() => candidates[0] ?? null, [candidates]);
+
+  useEffect(() => {
+    if (!clientReady || !primary || launchRedirected.current) return;
+    const path = window.location.pathname;
+    if (path !== "/" && path !== "/play-amplified") return;
+    launchRedirected.current = true;
+    window.location.replace(primary.href);
+  }, [clientReady, primary]);
 
   const dismissInstall = () => {
     window.sessionStorage.setItem("play-amplified-install-dismissed", "1");
@@ -108,10 +132,10 @@ export function PlayAmplifiedPwa() {
           <div className="min-w-0 flex-1">
             <div className="text-[9px] font-black uppercase tracking-[0.18em] text-cyan-100/55">{standalone ? "Play Amplified" : "Return to active game"}</div>
             <div className="mt-1 truncate text-sm font-black sm:text-base">{primary.title}</div>
-            <div className="mt-0.5 truncate text-[11px] text-white/55">{primary.code ? `Room ${primary.code} · recent on this device` : "Active session on this device"}</div>
+            <div className="mt-0.5 truncate text-[11px] text-white/55">{primary.connection === "offline" ? "Saved session · connection unavailable; retry when online" : primary.connection === "reconnect" ? "Saved session · reconnect required" : primary.code ? `Room ${primary.code} · active on this device` : "Active session on this device"}</div>
           </div>
           <div className="flex w-full gap-2 sm:w-auto sm:shrink-0">
-            <a href={primary.href} className="flex-1 rounded-xl bg-cyan-300 px-4 py-2.5 text-center text-xs font-black text-slate-950 transition hover:bg-cyan-200 sm:flex-none sm:text-sm">RESUME</a>
+            <a href={primary.href} className="flex-1 rounded-xl bg-cyan-300 px-4 py-2.5 text-center text-xs font-black text-slate-950 transition hover:bg-cyan-200 sm:flex-none sm:text-sm">RETURN TO GAME</a>
 
           </div>
         </div>
