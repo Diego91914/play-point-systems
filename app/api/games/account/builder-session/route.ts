@@ -3,6 +3,7 @@ import {
   BUILDER_GAMES_SESSION_TTL_SECONDS,
   createGamesSessionToken,
   GAMES_SESSION_COOKIE,
+  verifyGamesSessionToken,
 } from "@/lib/play-point-core/games-session";
 
 const SHOT_CADDY_PRIVATE_ACCESS_URL =
@@ -31,7 +32,9 @@ export async function POST(request: NextRequest) {
         cache: "no-store",
       });
       const payload = await verification.json().catch(() => ({}));
-      builderActive = verification.ok && payload?.builderActive === true;
+      // Shot Caddy POST validates the password with { success: true };
+      // GET validates an existing cookie with { builderActive: true }.
+      builderActive = verification.ok && payload?.success === true;
     } else {
       // Keep the cookie path for existing sessions/backward compatibility.
       const privateAccessCookie = request.cookies.get("sc_private_access")?.value ?? "";
@@ -48,6 +51,18 @@ export async function POST(request: NextRequest) {
 
     if (!builderActive) {
       return noStoreJson({ builderActive: false, error: "Invalid builder access password." }, 401);
+    }
+
+    // Never replace a real Founder account identity with a generic builder session.
+    const existingClaims = await verifyGamesSessionToken(
+      request.cookies.get(GAMES_SESSION_COOKIE)?.value,
+    );
+    if (existingClaims?.role === "founder") {
+      return noStoreJson({
+        success: true,
+        builderActive: true,
+        account: { role: "founder", founder: true },
+      });
     }
 
     const sessionToken = await createGamesSessionToken(
