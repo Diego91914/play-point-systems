@@ -58,7 +58,7 @@ test("the mobile brand mark and company name remain fully visible", async ({ pag
 test("private game hosting routes offer account and builder access to unsigned hosts", async ({ page }) => {
   for (const route of ["/games", "/games/trivia/builder"]) {
     await page.goto(route);
-    await expect(page).toHaveURL(/\\/games\\/sign-in\\?next=/);
+    await expect(page).toHaveURL(/\/games\/sign-in\?next=/);
     await expect(page.getByRole("link", { name: "Sign in to my Play Amplified account" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Use private builder access" })).toBeVisible();
   }
@@ -82,7 +82,7 @@ test("guest-capable game APIs reject unusable room access without requiring a cu
 
 test("Games sign-in offers account and builder options rather than forcing a password loop", async ({ page }) => {
   await page.goto("/games/sign-in");
-  await expect(page).toHaveURL(/\\/games\\/sign-in/);
+  await expect(page).toHaveURL(/\/games\/sign-in/);
   await expect(page.getByRole("link", { name: "Sign in to my Play Amplified account" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Use private builder access" })).toBeVisible();
   await expect(page.getByPlaceholder("you@example.com")).toHaveCount(0);
