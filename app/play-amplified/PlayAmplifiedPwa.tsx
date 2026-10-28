@@ -8,12 +8,6 @@ type BeforeInstallPromptEvent = Event & {
   userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
 };
 
-function removeLocalKeys(keys: readonly string[]) {
-  try {
-    for (const key of keys) window.localStorage.removeItem(key);
-  } catch {}
-}
-
 export function PlayAmplifiedPwa() {
   const [candidates, setCandidates] = useState<ResumeCandidate[]>([]);
   const [standalone, setStandalone] = useState(false);
@@ -23,7 +17,6 @@ export function PlayAmplifiedPwa() {
   const [installDismissed, setInstallDismissed] = useState(false);
   const [installCardOpen, setInstallCardOpen] = useState(false);
   const [installHelpOpen, setInstallHelpOpen] = useState(false);
-  const [resumeDismissed, setResumeDismissed] = useState(false);
 
   useEffect(() => {
     const hostname = window.location.hostname.toLowerCase();
@@ -41,7 +34,6 @@ export function PlayAmplifiedPwa() {
         setStandalone(inStandalone);
         setIsIos(/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
         setInstallDismissed(window.sessionStorage.getItem("play-amplified-install-dismissed") === "1");
-        setResumeDismissed(window.sessionStorage.getItem("play-amplified-resume-dismissed") === "1");
         setClientReady(true);
       })();
     });
@@ -92,19 +84,6 @@ export function PlayAmplifiedPwa() {
 
   const primary = useMemo(() => candidates[0] ?? null, [candidates]);
 
-  const saveResumeForLater = () => {
-    window.sessionStorage.setItem("play-amplified-resume-dismissed", "1");
-    setResumeDismissed(true);
-  };
-
-  const exitResume = () => {
-    if (!primary) return;
-    removeLocalKeys(primary.clearKeys);
-    setCandidates((current) => current.filter((candidate) => candidate.key !== primary.key));
-    window.sessionStorage.setItem("play-amplified-resume-dismissed", "1");
-    setResumeDismissed(true);
-  };
-
   const dismissInstall = () => {
     window.sessionStorage.setItem("play-amplified-install-dismissed", "1");
     setInstallDismissed(true);
@@ -122,26 +101,25 @@ export function PlayAmplifiedPwa() {
 
   if (!clientReady) return null;
 
-  if (primary && !resumeDismissed) {
+  if (primary) {
     return (
       <div className="fixed inset-x-3 bottom-3 z-[100] mx-auto max-w-2xl rounded-[20px] border border-cyan-200/25 bg-[#07111d]/95 p-3 text-white shadow-2xl backdrop-blur-xl sm:bottom-5 sm:p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="min-w-0 flex-1">
-            <div className="text-[9px] font-black uppercase tracking-[0.18em] text-cyan-100/55">{standalone ? "Play Amplified" : "Active game"}</div>
+            <div className="text-[9px] font-black uppercase tracking-[0.18em] text-cyan-100/55">{standalone ? "Play Amplified" : "Return to active game"}</div>
             <div className="mt-1 truncate text-sm font-black sm:text-base">{primary.title}</div>
             <div className="mt-0.5 truncate text-[11px] text-white/55">{primary.code ? `Room ${primary.code} · recent on this device` : "Active session on this device"}</div>
           </div>
           <div className="flex w-full gap-2 sm:w-auto sm:shrink-0">
             <a href={primary.href} className="flex-1 rounded-xl bg-cyan-300 px-4 py-2.5 text-center text-xs font-black text-slate-950 transition hover:bg-cyan-200 sm:flex-none sm:text-sm">RESUME</a>
-            <button type="button" onClick={saveResumeForLater} title="Keep this active game and ask again next time" className="rounded-xl border border-white/12 bg-white/[0.06] px-3 py-2.5 text-[10px] font-black text-white/75 transition hover:bg-white/10 hover:text-white sm:text-xs">SAVE FOR LATER</button>
-            <button type="button" onClick={exitResume} title="Remove this remembered game from this device" className="rounded-xl border border-rose-200/15 bg-rose-300/[0.06] px-3 py-2.5 text-xs font-black text-rose-100/80 transition hover:bg-rose-300/10 hover:text-rose-50">EXIT</button>
+
           </div>
         </div>
       </div>
     );
   }
 
-  if (primary || resumeDismissed || standalone || installDismissed) return null;
+  if (standalone || installDismissed) return null;
 
   if (!installCardOpen) {
     return (
