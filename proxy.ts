@@ -7,6 +7,7 @@ import {
 
 const ACCOUNT_SESSION_PATH = "/api/games/account/session";
 const BUILDER_SESSION_PATH = "/api/games/account/builder-session";
+const SHOT_CADDY_ACCESS_PATH = "/api/games/account/shot-caddy-access";
 const SHOT_CADDY_HANDOFF_PATH = "/api/games/account/shot-caddy-handoff";
 const SOCIAL_ROOM_CONTROL_PATH = "/api/games/social-room-control";
 const CLEAR_STACK_JOIN_PREFIX = "/games/clear-the-stack/join/";
@@ -76,7 +77,7 @@ export async function proxy(request: NextRequest) {
   const triviaGuestJoin = pathname === TRIVIA_GUEST_JOIN_PAGE || pathname === TRIVIA_GUEST_JOIN_API;
   const triviaVenueGuestJoin = pathname.startsWith(TRIVIA_VENUE_JOIN_PREFIX) && /^\/games\/trivia\/venue\/[^/]+\/join$/.test(pathname);
 
-  if (pathname === "/games/sign-in" || pathname.startsWith("/games/sign-in/") || pathname === ACCOUNT_SESSION_PATH || pathname === BUILDER_SESSION_PATH || pathname === SHOT_CADDY_HANDOFF_PATH || pathname === SOCIAL_ROOM_CONTROL_PATH || pathname.endsWith("/opengraph-image") || guestJoinPage || guestRoomApi || clearStackGuestJoin || triviaGuestJoin || triviaVenueGuestJoin) {
+  if (pathname === "/games/sign-in" || pathname.startsWith("/games/sign-in/") || pathname === ACCOUNT_SESSION_PATH || pathname === BUILDER_SESSION_PATH || pathname === SHOT_CADDY_HANDOFF_PATH || pathname === SHOT_CADDY_ACCESS_PATH || pathname === SOCIAL_ROOM_CONTROL_PATH || pathname.endsWith("/opengraph-image") || guestJoinPage || guestRoomApi || clearStackGuestJoin || triviaGuestJoin || triviaVenueGuestJoin) {
     const response=NextResponse.next();response.headers.set("Cache-Control","private, no-store");return response;
   }
 
