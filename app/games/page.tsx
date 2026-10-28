@@ -8,6 +8,7 @@ import { loadGamesLibraryForClaims } from "@/lib/play-point-core/games-access-se
 import {
   GAMES_SESSION_COOKIE,
   verifyGamesSessionToken,
+  isPrivilegedGamesSession,
 } from "@/lib/play-point-core/games-session";
 import {
   MASTER_GAME_CATALOG,
@@ -126,13 +127,14 @@ export default async function GamesPage({
   ]);
 
   const founder = claims.role === "founder";
+  const fullAccess = isPrivilegedGamesSession(claims);
   const ownedProductSkus = new Set(productLibrary.filter((game) => game.owned).map((game) => game.sku));
 
   const shelf: LibraryEntry[] = MASTER_GAME_CATALOG.map((game) => {
     const productSku = MASTER_TO_PRODUCT_SKU[game.id] ?? null;
     return {
       ...game,
-      owned: founder || Boolean(productSku && ownedProductSkus.has(productSku)),
+      owned: fullAccess || Boolean(productSku && ownedProductSkus.has(productSku)),
     };
   });
 
@@ -175,7 +177,7 @@ export default async function GamesPage({
 
               <aside className="rounded-[26px] border border-cyan-300/15 bg-cyan-300/[0.06] p-5 backdrop-blur-sm">
                 <div className="text-[11px] font-black uppercase tracking-[0.2em] text-cyan-100/60">Your library</div>
-                <div className="mt-2 text-2xl font-black text-white sm:text-3xl">{founder ? "Founder · All Access" : `${ownedGames.length} owned ${ownedGames.length === 1 ? "game" : "games"}`}</div>
+                <div className="mt-2 text-2xl font-black text-white sm:text-3xl">{fullAccess ? `${founder ? "Founder" : "Builder"} · All Access` : `${ownedGames.length} owned ${ownedGames.length === 1 ? "game" : "games"}`}</div>
                 <p className="mt-2 text-sm leading-6 text-white/55">Visual covers identify each game at a glance. Every owned title has one direct Play Now action.</p>
               </aside>
             </div>
