@@ -41,6 +41,17 @@ describe("Play Amplified navigation roles", () => {
     expect(library).not.toContain("Explore & buy");
   });
 
+  it("uses compact, readable My Games cards at phone widths", () => {
+    expect(library).toContain('h-24 w-24 shrink-0');
+    expect(library).toContain("line-clamp-2");
+    expect(library).toContain("min-w-0 flex-col");
+    expect(library).toContain('href={game.launchHref}');
+    expect(library).toContain("Play now →");
+    expect(library).not.toContain("scale-[1.18]");
+    expect(library).not.toContain("min-[430px]:block");
+    expect(library).not.toContain(">Your game library</div>");
+  });
+
   it("offers every catalog format through its own hosting mode", () => {
     expect(host).toContain("MASTER_GAME_CATALOG.filter((game) => game.lane === lane.id)");
     expect(host).toContain('data-host-game={game.id}');
