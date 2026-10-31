@@ -27,7 +27,8 @@ describe("Play Amplified navigation roles", () => {
   });
 
   it("keeps /games focused on owned access, Founder recognition, and visual covers", () => {
-    expect(library).toContain("Founder · All Access");
+    expect(library).toContain('founder ? "Founder" : "Builder"');
+    expect(library).toContain(" · All Access");
     expect(library).toContain("Play now →");
     expect(library).toContain("MASTER_TO_PRODUCT_SKU");
     expect(library).toContain('"clear-the-stack": "game.clear_the_stack"');
@@ -39,6 +40,17 @@ describe("Play Amplified navigation roles", () => {
     expect(library).not.toContain("StorefrontLane");
     expect(library).not.toContain("getStorefrontOffer");
     expect(library).not.toContain("Explore & buy");
+  });
+
+  it("uses compact, readable My Games cards at phone widths", () => {
+    expect(library).toContain('h-24 w-24 shrink-0');
+    expect(library).toContain("line-clamp-2");
+    expect(library).toContain("min-w-0 flex-col");
+    expect(library).toContain('href={game.launchHref}');
+    expect(library).toContain("Play now →");
+    expect(library).not.toContain("scale-[1.18]");
+    expect(library).not.toContain("min-[430px]:block");
+    expect(library).not.toContain(">Your game library</div>");
   });
 
   it("offers every catalog format through its own hosting mode", () => {

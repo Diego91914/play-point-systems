@@ -83,31 +83,32 @@ const LIBRARY_GROUP_BY_MEMBER = new Map<string, LibraryProductGroup>(
 
 function GameCard({ game }: { game: LibraryEntry }) {
   return (
-    <article className="group flex min-h-[168px] overflow-hidden rounded-[26px] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.065),rgba(255,255,255,0.022))] shadow-[0_18px_55px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-0.5 hover:border-white/20 sm:min-h-[190px]">
-      <div className="relative w-[34%] min-w-[118px] max-w-[165px] shrink-0 overflow-hidden border-r border-white/10 bg-black/25 sm:w-[38%]">
-        <div className="absolute inset-0 scale-[1.18] transition duration-500 group-hover:scale-[1.23]">
+    <article className="group flex h-full min-w-0 flex-col overflow-hidden rounded-[24px] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.065),rgba(255,255,255,0.022))] p-4 shadow-[0_18px_55px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-0.5 hover:border-white/20 sm:p-5">
+      <div className="flex min-w-0 items-start gap-4">
+        <div className="h-24 w-24 shrink-0 overflow-hidden rounded-[18px] border border-white/10 bg-black/25 sm:h-28 sm:w-28">
           <GameCoverArt gameId={game.id} />
         </div>
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,transparent_58%,rgba(3,7,18,0.68)_100%)]" />
-      </div>
 
-      <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0 text-[9px] font-black uppercase tracking-[0.16em] text-cyan-100/48 sm:text-[10px]">
+        <div className="flex min-w-0 flex-1 flex-col items-start">
+          <div className="text-[10px] font-black uppercase leading-4 tracking-[0.13em] text-cyan-100/70">
             {game.parentTitle ?? game.family}
           </div>
-          <span className="shrink-0 rounded-full border border-emerald-200/25 bg-emerald-300/10 px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.12em] text-emerald-100 sm:text-[9px]">Owned</span>
-        </div>
-
-        <h3 className="mt-2 text-xl font-black leading-[1.08] tracking-tight text-white sm:text-2xl">{game.title}</h3>
-        <p className="mt-2 hidden text-sm leading-6 text-white/52 min-[430px]:block">{game.description}</p>
-
-        <div className="mt-auto pt-4">
-          <a href={game.launchHref} className="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-emerald-300/22 bg-emerald-400/10 px-4 py-2.5 text-center text-sm font-black text-emerald-50 transition hover:border-emerald-200/35 hover:bg-emerald-400/16">
-            Play now →
-          </a>
+          <h3 className="mt-2 max-w-full break-words text-xl font-black leading-tight tracking-tight text-white">
+            {game.title}
+          </h3>
+          <span className="mt-2 rounded-full border border-emerald-200/25 bg-emerald-300/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.12em] text-emerald-100">
+            Owned
+          </span>
         </div>
       </div>
+
+      <p className="mt-3 line-clamp-2 text-sm leading-5 text-white/70">
+        {game.description}
+      </p>
+
+      <a href={game.launchHref} className="mt-auto mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-emerald-300/30 bg-emerald-400/12 px-4 py-2.5 text-center text-sm font-black text-emerald-50 transition hover:border-emerald-200/50 hover:bg-emerald-400/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300">
+        Play now →
+      </a>
     </article>
   );
 }
@@ -202,7 +203,7 @@ export default async function GamesPage({
                 <div className="text-[11px] font-black uppercase tracking-[0.2em] text-emerald-100/55">Your games</div>
                 <h2 className="mt-2 text-3xl font-black text-white">Ready to play</h2>
               </div>
-              <div className="rounded-full border border-emerald-200/15 bg-emerald-300/[0.06] px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-emerald-100/70">Your game library</div>
+              <div className="text-sm font-semibold text-white/60">{ownedGames.length} {ownedGames.length === 1 ? "game" : "games"} in your library</div>
             </div>
 
             {ownedGames.length ? (
