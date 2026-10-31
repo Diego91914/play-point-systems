@@ -45,8 +45,20 @@ type RawState = {
 };
 type RawRow = { code: string; state: RawState; version: number };
 
-type ProjectedState = Record<string, any>;
-type ProjectedResult = { state: ProjectedState; [key: string]: any };
+type ProjectedState = {
+  [key: string]: unknown;
+  me?: { role?: { memory?: string[]; isMurderer?: boolean } };
+  questions?: { id: string; label: string }[];
+  pendingQuestion?: { isTarget: boolean; questionId: string; answerPrompt: MysteryPromptAnswer | null; questionLabel: string };
+  caseFile?: {
+    evidence?: { index: number; title: string; text: string }[];
+    privateClues?: { index: number; text: string }[];
+    interruptions?: { label: string; title: string; text: string }[];
+  };
+  evidence?: { index: number; total: number; title: string; publicText: string; privateText: string | null; interruption: null | { label: string; title: string; text: string } };
+  reveal?: { murderer: { id: string; name: string; role: string } };
+};
+type ProjectedResult = { state: ProjectedState; [key: string]: unknown };
 
 const QUESTION_ANSWER_KEYS: Record<string, MysteryAnswerKey> = {
   where: "where",
@@ -243,12 +255,14 @@ async function enhanceResult<T extends ProjectedResult>(result: T, code: string,
   return result;
 }
 
-async function patchRecordedAnswer(code: string, expected: MysteryPromptAnswer | null, before: RawState) {
-  for (let attempt = 0; attempt < 2; attempt++) {
-    const row = await readRaw(code);
-    if (!row?.state.asked?.length) return;
-    const asked = [...row.state.asked];
-    const last = asked[asked.length - 1];
+function finalizeAnsweredState(state: RawState, before: RawState, expected: MysteryPromptAnswer | null) {
+  const asked = state.asked ?? [];
+  const last = asked[asked.length - 1];
+  if (last) {
+    const pending = before.pendingQuestion;
+    if (!pending || last.questionerId !== pending.questionerId || last.targetId !== pending.targetId || last.questionId !== pending.questionId) {
+      throw new Error("The interview changed before your answer was saved. Refresh and try again.");
+    }
     const targetRoleId = before.players.find(player => player.id === last.targetId)?.roleId;
     const questionLabel = followupLabelForQuestion(last.questionId, last.questionLabel, {
       viewerId: last.questionerId,
@@ -258,57 +272,42 @@ async function patchRecordedAnswer(code: string, expected: MysteryPromptAnswer |
       variantId: before.caseVariantId,
       asked: before.asked ?? [],
     });
-    const answer = expected?.mustReveal ?? last.answer;
-    if (last.answer === answer && last.questionLabel === questionLabel) return;
-    asked[asked.length - 1] = { ...last, answer, questionLabel };
-    const saved = await saveRaw(row, { ...row.state, asked });
-    if (saved) return;
+    asked[asked.length - 1] = { ...last, answer: expected?.mustReveal ?? last.answer, questionLabel };
+    state.asked = asked;
   }
-  throw new Error("The interview record changed while the answer was being saved. Try again.");
-}
 
-async function applyScalablePacing(code: string, before: RawState) {
-  for (let attempt = 0; attempt < 3; attempt++) {
-    const row = await readRaw(code);
-    if (!row) return;
-    const state = { ...row.state };
-    const target = roundTarget(state);
-    const count = (before.pacingQuestionCount ?? 0) + 1;
-    const v2Transitioned = before.status === "interrogation" && state.status === "evidence";
-    const due = count >= target;
-    const nextEvidenceIndex = before.evidenceIndex + 1;
-    const branchMustLock = due && nextEvidenceIndex >= 1 && !state.caseVariantId;
+  const target = roundTarget(state);
+  const count = (before.pacingQuestionCount ?? 0) + 1;
+  const v2Transitioned = before.status === "interrogation" && state.status === "evidence";
+  const due = count >= target;
+  const nextEvidenceIndex = before.evidenceIndex + 1;
+  const branchMustLock = due && nextEvidenceIndex >= 1 && !state.caseVariantId;
 
-    if (branchMustLock) {
-      if (v2Transitioned) {
-        state.status = "interrogation";
-        state.evidenceIndex = before.evidenceIndex;
-        state.evidenceAcknowledged = [];
-      }
-      state.pacingQuestionCount = target;
-      state.message = "A new development is being resolved. Check your phones before the next question.";
-    } else if (due) {
-      state.pacingQuestionCount = 0;
-      if (!v2Transitioned) {
-        state.status = "evidence";
-        state.evidenceIndex = nextEvidenceIndex;
-        state.evidenceAcknowledged = [];
-        state.message = "New information has interrupted the investigation. Everyone read it before questioning resumes.";
-      }
-    } else {
-      state.pacingQuestionCount = count;
-      if (v2Transitioned) {
-        state.status = "interrogation";
-        state.evidenceIndex = before.evidenceIndex;
-        state.evidenceAcknowledged = [];
-        state.message = "Continue the investigation.";
-      }
+  if (branchMustLock) {
+    if (v2Transitioned) {
+      state.status = "interrogation";
+      state.evidenceIndex = before.evidenceIndex;
+      state.evidenceAcknowledged = [];
     }
-
-    const saved = await saveRaw(row, state);
-    if (saved) return;
+    state.pacingQuestionCount = target;
+    state.message = "A new development is being resolved. Check your phones before the next question.";
+  } else if (due) {
+    state.pacingQuestionCount = 0;
+    if (!v2Transitioned) {
+      state.status = "evidence";
+      state.evidenceIndex = nextEvidenceIndex;
+      state.evidenceAcknowledged = [];
+      state.message = "New information has interrupted the investigation. Everyone read it before questioning resumes.";
+    }
+  } else {
+    state.pacingQuestionCount = count;
+    if (v2Transitioned) {
+      state.status = "interrogation";
+      state.evidenceIndex = before.evidenceIndex;
+      state.evidenceAcknowledged = [];
+      state.message = "Continue the investigation.";
+    }
   }
-  throw new Error("The investigation changed while pacing was being updated. Try again.");
 }
 
 async function advanceDueEvidenceAfterBranch(code: string) {
@@ -383,7 +382,15 @@ export async function actMysteryRoom(codeValue: unknown, playerId: string, token
     }
   }
 
-  const result = await actMysteryRoomV2(codeValue, playerId, token, action, payload) as ProjectedResult;
+  const beforeAnswered = action === "answered" && beforeAnswer ? structuredClone(beforeAnswer) : null;
+  const result = await actMysteryRoomV2(
+    codeValue,
+    playerId,
+    token,
+    action,
+    payload,
+    beforeAnswered ? state => finalizeAnsweredState(state, beforeAnswered, expectedRecordedAnswer) : undefined,
+  ) as ProjectedResult;
 
   if (action === "start") {
     const row = await readRaw(code);
@@ -393,10 +400,7 @@ export async function actMysteryRoom(codeValue: unknown, playerId: string, token
   }
 
   if (action === "answered" && beforeAnswer) {
-    await patchRecordedAnswer(code, expectedRecordedAnswer, beforeAnswer);
-    await applyScalablePacing(code, beforeAnswer);
-    const refreshed = await getMysteryRoomV2(codeValue, playerId, token) as ProjectedResult;
-    return enhanceResult(refreshed, code, playerId);
+    return enhanceResult(result, code, playerId);
   }
 
   if (action === "restart") {
