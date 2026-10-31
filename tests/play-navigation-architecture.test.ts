@@ -27,7 +27,8 @@ describe("Play Amplified navigation roles", () => {
   });
 
   it("keeps /games focused on owned access, Founder recognition, and visual covers", () => {
-    expect(library).toContain("Founder · All Access");
+    expect(library).toContain('founder ? "Founder" : "Builder"');
+    expect(library).toContain(" · All Access");
     expect(library).toContain("Play now →");
     expect(library).toContain("MASTER_TO_PRODUCT_SKU");
     expect(library).toContain('"clear-the-stack": "game.clear_the_stack"');
