@@ -7,7 +7,7 @@ describe("Clear the Stack host-owned scoring engine", () => {
     const initial = initialStackState(20, 10);
     expect(() => startStack(initial, ["Chan", ""], 20, 10)).toThrow(/unique name/);
     expect(() => startStack(initial, ["Tyler", "tyler"], 20, 10)).toThrow(/unique name/);
-    expect(() => startStack(initial, ["Chan", "Tyler"], 20, 10).players).toHaveLength(2);
+    expect(startStack(initial, ["Chan", "Tyler"], 20, 10).players).toHaveLength(2);
   });
 
   it("scores all three rounds correctly and takes the -2-per-left-disc penalty exactly once", () => {
