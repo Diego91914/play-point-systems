@@ -22,6 +22,18 @@ export function initialStackState(distance: number, stackSize: number): StackSta
  * Setup stays editable until the host begins playing, including after a watch
  * link has been shared. A newly configured setup is what spectators will see.
  */
+/**
+ * Retain hidden player names when switching between Solo and a larger roster.
+ * Only the visible/active player count changes, never the saved draft names.
+ */
+export function preserveDraftPlayerNames(names: string[], nextCount: number): string[] {
+  const count = Math.min(100, Math.max(1, Math.trunc(nextCount) || 1));
+  return Array.from(
+    { length: Math.max(names.length, count - 1) },
+    (_, index) => names[index] ?? "",
+  );
+}
+
 export function configureStack(previous: StackState, distance: number, stackSize: number): StackState {
   if (previous.phase !== "setup") throw new Error("Game settings are locked once play begins.");
   if (!Number.isInteger(distance) || distance < 1 || distance > 100)
