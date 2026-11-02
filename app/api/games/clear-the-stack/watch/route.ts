@@ -12,11 +12,14 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Invalid spectator link." }, { status: 404, headers });
   const supabase = getSupabaseServerClient();
   const { data, error } = await supabase.from("ppl_clear_stack_rooms")
-    .select("distance,stack_size,status,game_state,created_at")
+    .select("distance,stack_size,status,game_state")
     .eq("spectator_token", token).maybeSingle();
-  if (error || !data || data.status === "closed"
-    || Date.now() - new Date(data.created_at).getTime() > 24 * 60 * 60 * 1000)
-    return NextResponse.json({ error: "This spectator link has ended or expired." }, { status: 404, headers });
+  if (error || !data)
+    return NextResponse.json({ error: "Spectator session not found." }, { status: 404, headers });
+  // QR links stay usable across rounds and roster changes, even overnight.
+  // Only the host's explicit end-session action revokes them.
+  if (data.status === "closed")
+    return NextResponse.json({ error: "The host ended this live session.", ended: true }, { status: 410, headers });
 
   const state = data.game_state && typeof data.game_state === "object" && "phase" in data.game_state
     ? data.game_state as StackState
