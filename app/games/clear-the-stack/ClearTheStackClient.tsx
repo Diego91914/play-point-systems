@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { initialStackState, startStack, scoreStack, type StackState, type StackPlayer } from "@/lib/play-point-core/clear-stack-engine";
+import { initialStackState, startStack, scoreStack, preserveDraftPlayerNames, type StackState, type StackPlayer } from "@/lib/play-point-core/clear-stack-engine";
 
 type Phase = "setup" | "playing" | "finished";
 type Player = StackPlayer;
@@ -166,10 +166,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
     setPlayerCount(next);
     // Keep the full draft roster even if the host temporarily selects fewer
     // players (including Solo). Only the visible inputs and active roster change.
-    setManualNames((current) => Array.from(
-      { length: Math.max(current.length, next - 1) },
-      (_, i) => current[i] ?? "",
-    ));
+    setManualNames((current) => preserveDraftPlayerNames(current, next));
   }
 
   async function postRoomAction(action: "configure" | "start" | "makes" | "close", extra: Record<string, unknown> = {}) {
