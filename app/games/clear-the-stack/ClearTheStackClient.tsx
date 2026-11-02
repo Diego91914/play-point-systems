@@ -35,7 +35,9 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
   const current = players[turn];
   const roundValue = ROUND_VALUES[round] ?? 0;
   const maxScore = stackSize * 2;
-  const leader = useMemo(() => [...players].sort((a,b) => b.score-a.score)[0], [players]);
+  const leaderboard = useMemo(() => [...players].sort((a,b) => b.score-a.score), [players]);
+  const leader = leaderboard[0];
+  const tied = leaderboard.length > 1 && leaderboard[0].score === leaderboard[1].score;
   const watchUrl = room && origin ? `${origin}/games/clear-the-stack/join/${room.spectator_token}` : "";
   useEffect(() => { setOrigin(window.location.origin); }, []);
   function applyState(state: StackState) {
@@ -54,6 +56,19 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
 
   useEffect(() => {
     let cancelled = false;
+    const savedDraft = window.localStorage.getItem("pps-clear-stack-host-draft");
+    if (savedDraft) {
+      try {
+        const draft = JSON.parse(savedDraft);
+        if (Number.isInteger(draft.playerCount) && draft.playerCount >= 1 && draft.playerCount <= 100) {
+          setPlayerCount(draft.playerCount);
+          setHostName(typeof draft.hostName === "string" ? draft.hostName : "");
+          setManualNames(Array.isArray(draft.manualNames) ? draft.manualNames.filter((name: unknown) => typeof name === "string").slice(0, draft.playerCount - 1) : []);
+        }
+        if (Number.isInteger(draft.distance) && draft.distance >= 1 && draft.distance <= 100) setDistance(draft.distance);
+        if (Number.isInteger(draft.stackSize) && draft.stackSize >= 1 && draft.stackSize <= 100) setStackSize(draft.stackSize);
+      } catch { /* Ignore invalid local draft. */ }
+    }
     const id = window.localStorage.getItem("pps-clear-stack-host-room");
     if (!id) { setRestoring(false); return; }
     void (async () => {
@@ -75,6 +90,13 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
     })();
     return () => { cancelled = true; };
   }, []);
+
+  useEffect(() => {
+    if (restoring || phase !== "setup") return;
+    window.localStorage.setItem("pps-clear-stack-host-draft", JSON.stringify({
+      distance, stackSize, playerCount, hostName, manualNames,
+    }));
+  }, [restoring, phase, distance, stackSize, playerCount, hostName, manualNames]);
 
   useEffect(() => {
     if (!recordsEnabled) return;
@@ -265,7 +287,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
 
       {phase === "finished" ? (
         <section className="rounded-[30px] border border-white/10 bg-white/[0.045] p-5 sm:p-7">
-          <div className="text-center"><div className="text-xs font-black uppercase tracking-[0.2em] text-emerald-100/60">Stack complete</div><div className="mt-3 text-4xl font-black text-white">{players.length === 1 ? `${players[0]?.score ?? 0} POINTS` : `${leader?.name ?? "Winner"} WINS`}</div><div className="mt-2 text-sm text-white/50">{distance} FT · {stackSize} DISCS</div></div>
+          <div className="text-center"><div className="text-xs font-black uppercase tracking-[0.2em] text-emerald-100/60">Stack complete</div><div className="mt-3 text-4xl font-black text-white">{players.length === 1 ? `${players[0]?.score ?? 0} POINTS` : tied ? "TIE GAME" : `${leader?.name ?? "Winner"} WINS`}</div><div className="mt-2 text-sm text-white/50">{distance} FT · {stackSize} DISCS</div></div>
           <div className="mt-7 grid gap-3">
             {[...players].sort((a,b) => b.score-a.score).map((p,i) => (
               <div key={p.name} className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-black/20 p-4">
