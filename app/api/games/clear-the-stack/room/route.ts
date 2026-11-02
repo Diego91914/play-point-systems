@@ -5,7 +5,7 @@ import {
 } from "@/lib/play-point-core/games-session";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import {
-  configureStack, initialStackState, scoreStack, startStack, type StackState,
+  changeStackPlayers, configureStack, initialStackState, replayStack, scoreStack, startStack, type StackState,
 } from "@/lib/play-point-core/clear-stack-engine";
 
 const SKU = "game.clear_the_stack";
@@ -99,7 +99,13 @@ export async function PATCH(request: Request) {
       status = "playing";
     } else if (body.action === "makes") {
       next = scoreStack(state, Number(body.makes));
+      status = next.phase === "finished" ? "finished" : "playing";
+    } else if (body.action === "replay") {
+      next = replayStack(state);
       status = "playing";
+    } else if (body.action === "change_players") {
+      next = changeStackPlayers(state);
+      status = "open";
     } else if (body.action === "close") {
       status = "closed";
     } else {
