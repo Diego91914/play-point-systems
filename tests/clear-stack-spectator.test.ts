@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { initialStackState, scoreStack, startStack } from "@/lib/play-point-core/clear-stack-engine";
+import { configureStack, initialStackState, scoreStack, startStack } from "@/lib/play-point-core/clear-stack-engine";
 import { readFileSync } from "node:fs";
 
 describe("Clear the Stack host-owned scoring engine", () => {
@@ -35,6 +35,17 @@ describe("Clear the Stack host-owned scoring engine", () => {
     expect(game.players.map(player => player.score)).toEqual([10, 5]);
   });
 
+  it("allows host setup edits after the spectator room is created but not after play starts", () => {
+    const draft = initialStackState(20, 10);
+    const configured = configureStack(draft, 30, 15);
+    expect(configured.distance).toBe(30);
+    expect(configured.stackSize).toBe(15);
+    expect(configured.phase).toBe("setup");
+    const started = startStack(configured, ["Chan", "Tyler"], 30, 15);
+    expect(started.players.every(player => player.remaining === 15)).toBe(true);
+    expect(() => configureStack(started, 10, 5)).toThrow(/locked/);
+  });
+
   it("rejects a makes count larger than the remaining stack", () => {
     const game = startStack(initialStackState(10, 5), ["Chan"], 10, 5);
     expect(() => scoreStack(game, 6)).toThrow(/Makes/);
@@ -63,6 +74,18 @@ describe("Clear the Stack spectator-only access contract", () => {
     expect(api).not.toContain("host_session_id");
     expect(room).toContain("state_version");
     expect(room).toContain('.eq("host_session_id", host)');
+  });
+
+  it("keeps the setup editable and player-name draft intact across count changes", () => {
+    expect(host).not.toContain('if (!room) setDistance(value)');
+    expect(host).not.toContain('if (!room) setStackSize(value)');
+    expect(host).toContain('onChange={setDistance}');
+    expect(host).toContain('onChange={setStackSize}');
+    expect(host).toContain('Math.max(current.length, next - 1)');
+    expect(host).toContain('manualNames.slice(0, playerCount - 1)');
+    expect(host).not.toContain('setHostName("");');
+    expect(room).toContain('body.action === "configure"');
+    expect(room).toContain('configureStack(state, Number(body.distance), Number(body.stackSize))');
   });
 
   it("keeps host score writes protected while guests only read", () => {
