@@ -132,6 +132,31 @@ describe("Clear the Stack spectator-only access contract", () => {
     expect(room).toContain('configureStack(state, Number(body.distance), Number(body.stackSize))');
   });
 
+  it("automatically creates a spectator room on Start New Game for Solo and multiplayer", () => {
+    const startSection = host.slice(host.indexOf("  async function start()"), host.indexOf("  async function toggleJoin()"));
+    expect(startSection).toContain('startStack(initialStackState(distance, stackSize), names, distance, stackSize)');
+    expect(startSection).toContain('if (!hostRoom)');
+    expect(startSection).toContain('await createOrResumeRoom()');
+    expect(startSection).toContain('await postRoomAction("start", { names, distance, stackSize }, hostRoom)');
+    expect(startSection).toContain("setShowJoin(true)");
+    expect(startSection).not.toContain('else applyState(next)');
+    // Solo and multiplayer are passed to the exact same server-authoritative
+    // start action, so the QR exists in both paths.
+    expect(startSection).toContain('playerCount === 1 ? ["You"]');
+    expect(startSection).toContain("names, distance, stackSize");
+    expect(startSection).toContain('if (result.reused && hostRoom.game_state.phase !== "setup")');
+  });
+
+  it("does not silently run a local-only stack if spectator-room creation fails", () => {
+    const startSection = host.slice(host.indexOf("  async function start()"), host.indexOf("  async function toggleJoin()"));
+    expect(startSection).not.toContain("else applyState(");
+    expect(startSection).toContain("catch (e)");
+    expect(startSection).toContain("setJoinStatus(");
+    const helper = host.slice(host.indexOf("  async function createOrResumeRoom()"), host.indexOf("  async function postRoomAction("));
+    expect(helper).toContain('method: "POST"');
+    expect(helper).toContain('window.localStorage.setItem("pps-clear-stack-host-room"');
+  });
+
   it("keeps one host session and QR across new games, and ends only on explicit close", () => {
     expect(host).toContain('postRoomAction("replay")');
     expect(host).toContain('postRoomAction("change_players")');
