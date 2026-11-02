@@ -216,9 +216,10 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
       if (!response.ok) throw new Error(data.error || "Unable to create spectator link.");
       const created = data.room as HostRoom;
       setRoom(created);
+      if (data.reused) applyState(created.game_state);
       window.localStorage.setItem("pps-clear-stack-host-room", created.id);
       setShowJoin(true);
-      setJoinStatus("");
+      setJoinStatus(data.reused ? "Resumed your existing live session. No second session was created." : "");
     } catch (e) {
       setJoinStatus(e instanceof Error ? e.message : "Could not create spectator QR.");
     } finally { setBusy(false); }
@@ -276,11 +277,14 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
   }
 
   async function endSession() {
-    if (busy || restoring || !room) return;
-    if (!window.confirm("End this entire Clear the Stack session? Everyone watching with this QR code will be disconnected. This cannot be undone.")) return;
+    if (busy || restoring) return;
+    if (!window.confirm(room
+      ? "END GAME: This closes the entire live session and disconnects all spectators. To play again with the same QR, choose Start New Game instead. End this session?"
+      : "End this game and return to setup?"
+    )) return;
     setBusy(true);
     try {
-      await postRoomAction("close");
+      if (room) await postRoomAction("close");
       setRoom(null);
       setShowJoin(false);
       window.localStorage.removeItem("pps-clear-stack-host-room");
@@ -335,8 +339,8 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
             <div className="rounded-xl bg-violet-300/10 p-3 text-violet-100">R3<br/>+0.5</div>
             <div className="rounded-xl bg-rose-300/10 p-3 text-rose-100">LEFT<br/>−2</div>
           </div>
-          <button type="button" onClick={start} disabled={busy || restoring} className="mt-7 min-h-14 w-full rounded-2xl bg-cyan-300 px-5 text-base font-black text-slate-950">START STACK</button>
-          {room ? <button type="button" disabled={busy || restoring} onClick={() => void endSession()} className="mt-3 min-h-11 w-full rounded-xl border border-rose-300/20 bg-rose-200/5 px-4 text-xs font-black uppercase text-rose-100">END LIVE SESSION</button> : null}
+          <button type="button" onClick={start} disabled={busy || restoring} className="mt-7 min-h-14 w-full rounded-2xl bg-cyan-300 px-5 text-base font-black text-slate-950">START NEW GAME</button>
+          {room ? <button type="button" disabled={busy || restoring} onClick={() => void endSession()} className="mt-3 min-h-12 w-full rounded-xl border border-rose-300/30 bg-rose-200/10 px-4 text-sm font-black uppercase text-rose-100">END GAME · CLOSE SESSION</button> : null}
           {recordsEnabled ? <div className="mt-7 border-t border-white/10 pt-5"><div className="text-xs font-black uppercase tracking-[0.18em] text-cyan-100/55">Your Top 10 · {distance} FT · {stackSize} DISCS</div><div className="mt-3 grid gap-2">{records.length ? records.map((r,i) => <div key={r.id} className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/20 px-4 py-3"><div><span className="font-black text-white">#{i+1} · {Number(r.score)} pts</span><div className="mt-1 text-xs text-white/40">{new Date(r.played_at).toLocaleDateString()}</div></div><div className="text-right text-xs text-white/45">R1 {r.details?.rounds?.[0] ?? 0} · R2 {r.details?.rounds?.[1] ?? 0} · R3 {r.details?.rounds?.[2] ?? 0}<br/>{r.details?.remaining ?? 0} left</div></div>) : <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4 text-sm text-white/40">{recordStatus === "loading" ? "Loading records…" : "Finish a solo stack to set your first record."}</div>}</div></div> : <div className="mt-5 text-center text-xs text-white/35">Sign in with an account that owns Clear the Stack to save your Top 10.</div>}
         </section>
       ) : null}
@@ -364,7 +368,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
         {showJoin && watchUrl ? <div className="mt-4"><div className="mx-auto w-fit rounded-2xl bg-white p-2"><QRCodeSVG value={watchUrl} size={176}/></div><p className="mt-2 text-xs text-white/55">Scan to watch live scores only</p></div> : null}
       </section> : null}
 
-      {phase === "playing" && room ? <button type="button" disabled={busy || restoring} onClick={() => void endSession()} className="mt-3 min-h-11 w-full rounded-xl border border-rose-300/20 bg-rose-200/5 px-4 text-xs font-black uppercase text-rose-100">END LIVE SESSION</button> : null}
+      {phase === "playing" ? <button type="button" disabled={busy || restoring} onClick={() => void endSession()} className="mt-3 min-h-12 w-full rounded-xl border border-rose-300/30 bg-rose-200/10 px-4 text-sm font-black uppercase text-rose-100">END GAME {room ? "· CLOSE SESSION" : "· RETURN TO SETUP"}</button> : null}
 
       {phase === "finished" ? (
         <section className="rounded-[30px] border border-white/10 bg-white/[0.045] p-5 sm:p-7">
@@ -378,9 +382,9 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
             ))}
           </div>
           {players.length === 1 && recordsEnabled ? <div className="mt-5 rounded-2xl border border-cyan-200/15 bg-cyan-300/[0.06] p-4 text-center text-sm text-white/65">{recordStatus === "saving" ? "Saving this round…" : recordStatus === "saved" ? "Saved to your account · Top 10 updated" : recordStatus === "error" ? "Record could not be saved. Your game result is still shown above." : "Your Top 10 are saved to your Play Amplified account."}</div> : null}
-          <button type="button" disabled={busy} onClick={() => void playAgain()} className="mt-7 min-h-14 w-full rounded-2xl bg-cyan-300 px-5 font-black text-slate-950">PLAY AGAIN · SAME PLAYERS</button>
-          <button type="button" disabled={busy} onClick={() => void changePlayers()} className="mt-3 min-h-12 w-full rounded-2xl border border-cyan-200/25 bg-cyan-200/10 px-5 text-sm font-black text-cyan-50">CHANGE PLAYERS / SETTINGS</button>
-          {room ? <button type="button" disabled={busy || restoring} onClick={() => void endSession()} className="mt-3 min-h-11 w-full rounded-xl border border-rose-300/20 bg-rose-200/5 px-4 text-xs font-black uppercase text-rose-100">END LIVE SESSION</button> : null}
+          <button type="button" disabled={busy} onClick={() => void playAgain()} className="mt-7 min-h-14 w-full rounded-2xl bg-cyan-300 px-5 font-black text-slate-950">START NEW GAME · SAME PLAYERS</button>
+          <button type="button" disabled={busy} onClick={() => void changePlayers()} className="mt-3 min-h-12 w-full rounded-2xl border border-cyan-200/25 bg-cyan-200/10 px-5 text-sm font-black text-cyan-50">NEW GAME · CHANGE PLAYERS / SETTINGS</button>
+          <button type="button" disabled={busy || restoring} onClick={() => void endSession()} className="mt-3 min-h-12 w-full rounded-xl border border-rose-300/30 bg-rose-200/10 px-4 text-sm font-black uppercase text-rose-100">END GAME {room ? "· CLOSE SESSION" : "· RETURN TO SETUP"}</button>
         </section>
       ) : null}
     </main>
