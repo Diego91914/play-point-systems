@@ -280,7 +280,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
         </section>
       ) : null}
 
-      {phase === "playing" && room ? <section className="mt-4 rounded-2xl border border-white/10 bg-white/[.045] p-4 text-center">
+      {phase !== "setup" && room ? <section className="mt-4 rounded-2xl border border-white/10 bg-white/[.045] p-4 text-center">
         <button type="button" onClick={() => setShowJoin(value => !value)} className="min-h-11 w-full rounded-xl border border-cyan-200/20 text-xs font-black uppercase text-cyan-100">{showJoin ? "HIDE WATCH QR" : "SHOW SPECTATOR QR"}</button>
         {showJoin && watchUrl ? <div className="mt-4"><div className="mx-auto w-fit rounded-2xl bg-white p-2"><QRCodeSVG value={watchUrl} size={176}/></div><p className="mt-2 text-xs text-white/55">Scan to watch live scores only</p></div> : null}
       </section> : null}
