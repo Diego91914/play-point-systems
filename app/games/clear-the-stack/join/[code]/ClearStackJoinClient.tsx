@@ -135,7 +135,7 @@ export function ClearStackJoinClient({ code }: { code: string }) {
               </div>
             </section>
           ) : null}
-          {(game.phase === "setup" || game.phase === "finished") ? <ClearStackArcadeBoard distance={game.distance} stackSize={game.stackSize} allowAccountViews={false} refreshKey={game.phase === "finished" ? game.players.reduce((sum,p)=>sum+p.score,0) : 0} /> : null}
+          {(game.phase === "setup" || game.phase === "finished") ? <ClearStackArcadeBoard distance={game.distance} stackSize={game.stackSize} allowAccountViews={false} refreshKey={game.phase === "finished" ? 1 : 0} /> : null}
         </>
       )}
     </main>
