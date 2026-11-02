@@ -7,12 +7,14 @@ export function ClearStackJoinClient({ code }: { code: string }) {
   const [game, setGame] = useState<StackState | null>(null);
   const [message, setMessage] = useState("Connecting to live game…");
   const [disconnected, setDisconnected] = useState(false);
+  const [ended, setEnded] = useState(false);
 
   useEffect(() => {
     let mounted = true;
     let inFlight = false;
+    let sessionEnded = false;
     const load = async () => {
-      if (inFlight || document.visibilityState === "hidden") return;
+      if (inFlight || sessionEnded || document.visibilityState === "hidden") return;
       inFlight = true;
       try {
         const response = await fetch(
@@ -20,11 +22,22 @@ export function ClearStackJoinClient({ code }: { code: string }) {
           { cache: "no-store" },
         );
         const payload = await response.json();
+        if (response.status === 410 && payload.ended === true) {
+          sessionEnded = true;
+          if (mounted) {
+            setEnded(true);
+            setDisconnected(false);
+            setGame(null);
+            setMessage("This live session has ended.");
+          }
+          return;
+        }
         if (!response.ok) throw new Error(payload.error || "Live view unavailable.");
         if (!mounted) return;
         setGame(payload.game as StackState);
         setMessage("");
         setDisconnected(false);
+        setEnded(false);
       } catch (e) {
         if (!mounted) return;
         if (game === null) setMessage(e instanceof Error ? e.message : "Unable to load live game.");
@@ -63,7 +76,10 @@ export function ClearStackJoinClient({ code }: { code: string }) {
           Reconnecting to the game… Last known scores are shown below.
         </p>
       ) : null}
-      {!game ? (
+      {ended ? <section role="status" className="mt-8 rounded-[28px] border border-white/10 bg-white/[.045] p-8 text-center">
+        <h2 className="text-2xl font-black text-white">SESSION ENDED</h2>
+        <p className="mt-3 text-sm text-white/60">The host has ended this session. Ask the host for a new QR code next time.</p>
+      </section> : !game ? (
         <section className="mt-8 rounded-[28px] border border-white/10 bg-white/[.045] p-8 text-center text-white/70">
           {message}
         </section>

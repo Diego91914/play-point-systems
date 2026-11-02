@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { configureStack, initialStackState, preserveDraftPlayerNames, scoreStack, startStack } from "@/lib/play-point-core/clear-stack-engine";
+import { changeStackPlayers, configureStack, initialStackState, preserveDraftPlayerNames, replayStack, scoreStack, startStack } from "@/lib/play-point-core/clear-stack-engine";
 import { readFileSync } from "node:fs";
 
 describe("Clear the Stack host-owned scoring engine", () => {
@@ -58,6 +58,37 @@ describe("Clear the Stack host-owned scoring engine", () => {
     expect(() => configureStack(started, 10, 5)).toThrow(/locked/);
   });
 
+  it("starts a new game with the same players, empty scores, and full stacks", () => {
+    let state = startStack(initialStackState(30, 20), ["Ty", "Chan"], 30, 20);
+    state = scoreStack(state, 20); // Player one clears the stack.
+    state = scoreStack(state, 20); // Player two clears and finishes.
+    expect(state.phase).toBe("finished");
+    const replay = replayStack(state);
+    expect(replay.phase).toBe("playing");
+    expect(replay.round).toBe(0);
+    expect(replay.turn).toBe(0);
+    expect(replay.distance).toBe(30);
+    expect(replay.stackSize).toBe(20);
+    expect(replay.players).toEqual([
+      { name: "Ty", score: 0, remaining: 20, rounds: [] },
+      { name: "Chan", score: 0, remaining: 20, rounds: [] },
+    ]);
+    expect(() => replayStack(replay)).toThrow(/Finish the current stack/);
+  });
+
+  it("changes the roster without creating a new spectator session", () => {
+    let state = startStack(initialStackState(20, 5), ["Ty", "Chan"], 20, 5);
+    state = scoreStack(state, 5);
+    state = scoreStack(state, 5);
+    expect(state.phase).toBe("finished");
+    const draft = changeStackPlayers(state);
+    expect(draft).toEqual(initialStackState(20, 5));
+    const next = startStack(draft, ["Judy", "Olivia", "Ty"], 25, 10);
+    expect(next.players.map(player => player.name)).toEqual(["Judy", "Olivia", "Ty"]);
+    expect(next.phase).toBe("playing");
+    expect(() => changeStackPlayers(next)).toThrow(/Finish the current stack/);
+  });
+
   it("rejects a makes count larger than the remaining stack", () => {
     const game = startStack(initialStackState(10, 5), ["Chan"], 10, 5);
     expect(() => scoreStack(game, 6)).toThrow(/Makes/);
@@ -71,6 +102,7 @@ describe("Clear the Stack spectator-only access contract", () => {
   const api = readFileSync("app/api/games/clear-the-stack/watch/route.ts", "utf8");
   const host = readFileSync("app/games/clear-the-stack/ClearTheStackClient.tsx", "utf8");
   const room = readFileSync("app/api/games/clear-the-stack/room/route.ts", "utf8");
+  const migration = readFileSync("supabase/migrations/20261102192000_clear_stack_single_live_host.sql", "utf8");
 
   it("renders a read-only viewer with no name-entry or scoring actions", () => {
     expect(client).toContain("Read-only live view");
@@ -98,6 +130,22 @@ describe("Clear the Stack spectator-only access contract", () => {
     expect(host).not.toContain('setHostName("");');
     expect(room).toContain('body.action === "configure"');
     expect(room).toContain('configureStack(state, Number(body.distance), Number(body.stackSize))');
+  });
+
+  it("keeps one host session and QR across new games, and ends only on explicit close", () => {
+    expect(host).toContain('postRoomAction("replay")');
+    expect(host).toContain('postRoomAction("change_players")');
+    expect(host).toContain('START NEW GAME · SAME PLAYERS');
+    expect(host).toContain('END GAME');
+    expect(room).toContain('body.action === "replay"');
+    expect(room).toContain('body.action === "change_players"');
+    expect(room).toContain('reused: true');
+    expect(room).toContain('existingHostRoom()');
+    expect(migration).toContain('ppl_clear_stack_single_live_host_idx');
+    expect(migration).toContain("status <> 'closed'");
+    expect(api).not.toContain("24 * 60 * 60 * 1000");
+    expect(api).toContain('data.status === "closed"');
+    expect(client).toContain("SESSION ENDED");
   });
 
   it("keeps host score writes protected while guests only read", () => {

@@ -5,7 +5,7 @@ import {
 } from "@/lib/play-point-core/games-session";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import {
-  configureStack, initialStackState, scoreStack, startStack, type StackState,
+  changeStackPlayers, configureStack, initialStackState, replayStack, scoreStack, startStack, type StackState,
 } from "@/lib/play-point-core/clear-stack-engine";
 
 const SKU = "game.clear_the_stack";
@@ -39,9 +39,24 @@ export async function POST(request: Request) {
     || !Number.isInteger(stackSize) || stackSize < 1 || stackSize > 100)
     return error("Choose a valid distance and number of discs.", 400);
 
+  const supabase = getSupabaseServerClient();
+  // Never create a second live Clear the Stack room for the same host.
+  // The database has an additional unique index to cover concurrent requests.
+  async function existingHostRoom() {
+    return supabase.from("ppl_clear_stack_rooms")
+      .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state")
+      .eq("host_session_id", host)
+      .not("spectator_token", "is", null)
+      .neq("status", "closed")
+      .order("created_at", { ascending: false })
+      .limit(1).maybeSingle();
+  }
+  const { data: activeRoom, error: lookupError } = await existingHostRoom();
+  if (lookupError) return error("Could not check for an existing active game.", 500);
+  if (activeRoom) return NextResponse.json({ room: viewRoom(activeRoom), reused: true }, { headers: noStore });
+
   const spectatorToken = Array.from(crypto.getRandomValues(new Uint8Array(32)),
     byte => byte.toString(16).padStart(2, "0")).join("");
-  const supabase = getSupabaseServerClient();
   const { data, error: dbError } = await supabase.from("ppl_clear_stack_rooms")
     .insert({
       host_session_id: host, distance, stack_size: stackSize,
@@ -50,8 +65,14 @@ export async function POST(request: Request) {
     })
     .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state")
     .single();
-  if (dbError || !data) return error("Could not create spectator link. Check that the spectator migration has been applied.", 500);
-  return NextResponse.json({ room: viewRoom(data) }, { headers: noStore });
+  if (dbError?.code === "23505") {
+    const { data: concurrent, error: conflictError } = await existingHostRoom();
+    if (!conflictError && concurrent)
+      return NextResponse.json({ room: viewRoom(concurrent), reused: true }, { headers: noStore });
+    return error("An active session was created elsewhere. Reload and resume it.", 409);
+  }
+  if (dbError || !data) return error("Could not create spectator link. Check the database connection and migration.", 500);
+  return NextResponse.json({ room: viewRoom(data), reused: false }, { headers: noStore });
 }
 
 export async function GET(request: Request) {
@@ -99,7 +120,13 @@ export async function PATCH(request: Request) {
       status = "playing";
     } else if (body.action === "makes") {
       next = scoreStack(state, Number(body.makes));
+      status = next.phase === "finished" ? "finished" : "playing";
+    } else if (body.action === "replay") {
+      next = replayStack(state);
       status = "playing";
+    } else if (body.action === "change_players") {
+      next = changeStackPlayers(state);
+      status = "open";
     } else if (body.action === "close") {
       status = "closed";
     } else {
