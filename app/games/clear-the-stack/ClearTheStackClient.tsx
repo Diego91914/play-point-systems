@@ -2,9 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
+import { initialStackState, startStack, scoreStack, type StackState, type StackPlayer } from "@/lib/play-point-core/clear-stack-engine";
 
 type Phase = "setup" | "playing" | "finished";
-type Player = { name: string; score: number; remaining: number; rounds: number[] };
+type Player = StackPlayer;
+type HostRoom = { id: string; code: string; spectator_token: string; state_version: number; game_state: StackState; };
 type RecordRow = { id: number; score: number; played_at: string; details: { rounds?: number[]; remaining?: number } };
 
 const DISTANCES = [10, 15, 20, 25, 30];
@@ -24,23 +26,77 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
   const [records, setRecords] = useState<RecordRow[]>([]);
   const [recordStatus, setRecordStatus] = useState<"idle" | "loading" | "saving" | "saved" | "error">("idle");
   const [showJoin, setShowJoin] = useState(false);
-  const [room, setRoom] = useState<{id:string;code:string}|null>(null);
-  const [joinedNames, setJoinedNames] = useState<string[]>([]);
+  const [room, setRoom] = useState<HostRoom | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [restoring, setRestoring] = useState(true);
   const [joinStatus, setJoinStatus] = useState("");
   const [origin, setOrigin] = useState("");
 
   const current = players[turn];
   const roundValue = ROUND_VALUES[round] ?? 0;
   const maxScore = stackSize * 2;
-  const leader = useMemo(() => [...players].sort((a,b) => b.score-a.score)[0], [players]);
-  const joinUrl = room && origin ? `${origin}/games/clear-the-stack/join/${room.code}` : "";
+  const leaderboard = useMemo(() => [...players].sort((a,b) => b.score-a.score), [players]);
+  const leader = leaderboard[0];
+  const tied = leaderboard.length > 1 && leaderboard[0].score === leaderboard[1].score;
+  const watchUrl = room && origin ? `${origin}/games/clear-the-stack/join/${room.spectator_token}` : "";
   useEffect(() => { setOrigin(window.location.origin); }, []);
+  function applyState(state: StackState) {
+    setPhase(state.phase);
+    setDistance(state.distance);
+    setStackSize(state.stackSize);
+    setPlayers(state.players);
+    setRound(state.round);
+    setTurn(state.turn);
+    if (state.players.length) {
+      setPlayerCount(state.players.length);
+      setHostName(state.players[0]?.name ?? "");
+      setManualNames(state.players.slice(1).map(p => p.name));
+    }
+  }
+
   useEffect(() => {
-    if (!room || !showJoin || phase !== "setup") return;
-    let stopped=false;
-    const load=async()=>{try{const r=await fetch("/api/games/clear-the-stack/room?id="+room.id,{cache:"no-store"});if(!r.ok)return;const d=await r.json();if(!stopped){const names=(d.players??[]).map((p:{display_name:string})=>p.display_name);setJoinedNames(names);}}catch{}};
-    void load(); const timer=setInterval(load,2000); return()=>{stopped=true;clearInterval(timer)};
-  }, [room,showJoin,phase]);
+    let cancelled = false;
+    const savedDraft = window.localStorage.getItem("pps-clear-stack-host-draft");
+    if (savedDraft) {
+      try {
+        const draft = JSON.parse(savedDraft);
+        if (Number.isInteger(draft.playerCount) && draft.playerCount >= 1 && draft.playerCount <= 100) {
+          setPlayerCount(draft.playerCount);
+          setHostName(typeof draft.hostName === "string" ? draft.hostName : "");
+          setManualNames(Array.isArray(draft.manualNames) ? draft.manualNames.filter((name: unknown) => typeof name === "string").slice(0, draft.playerCount - 1) : []);
+        }
+        if (Number.isInteger(draft.distance) && draft.distance >= 1 && draft.distance <= 100) setDistance(draft.distance);
+        if (Number.isInteger(draft.stackSize) && draft.stackSize >= 1 && draft.stackSize <= 100) setStackSize(draft.stackSize);
+      } catch { /* Ignore invalid local draft. */ }
+    }
+    const id = window.localStorage.getItem("pps-clear-stack-host-room");
+    if (!id) { setRestoring(false); return; }
+    void (async () => {
+      try {
+        const response = await fetch("/api/games/clear-the-stack/room?id=" + encodeURIComponent(id), { cache: "no-store" });
+        if (!response.ok) {
+          if ([401, 403, 404].includes(response.status)) window.localStorage.removeItem("pps-clear-stack-host-room");
+          throw new Error("Could not restore your hosted game. Refresh to retry.");
+        }
+        const data = await response.json();
+        if (cancelled) return;
+        setRoom(data.room as HostRoom);
+        applyState(data.room.game_state as StackState);
+      } catch (e) {
+        if (!cancelled) setJoinStatus(e instanceof Error ? e.message : "Could not restore game.");
+      } finally {
+        if (!cancelled) setRestoring(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (restoring || phase !== "setup") return;
+    window.localStorage.setItem("pps-clear-stack-host-draft", JSON.stringify({
+      distance, stackSize, playerCount, hostName, manualNames,
+    }));
+  }, [restoring, phase, distance, stackSize, playerCount, hostName, manualNames]);
 
   useEffect(() => {
     if (!recordsEnabled) return;
@@ -76,85 +132,91 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
     setManualNames((current) => Array.from({ length: Math.max(0, next - 1) }, (_, i) => current[i] ?? ""));
   }
 
-  function start() {
-    const names = playerCount === 1
-      ? ["You"]
-      : [
-          hostName.trim(),
-          ...manualNames.map((name) => name.trim()).filter(Boolean),
-          ...joinedNames.map((name) => name.trim()).filter(Boolean),
-        ].filter((name, index, all) => name && all.findIndex((other) => other.toLowerCase() === name.toLowerCase()) === index).slice(0, playerCount);
-    if (playerCount > 1 && !hostName.trim()) {
-      setJoinStatus("Enter the host name before starting.");
-      return;
-    }
-    if (names.length < playerCount) {
-      setJoinStatus(`Add ${playerCount - names.length} more player${playerCount - names.length === 1 ? "" : "s"} by name or QR before starting.`);
-      return;
-    }
-    setJoinStatus("");
-    setPlayers(names.map((name) => ({
-      name,
-      score: 0,
-      remaining: stackSize,
-      rounds: [],
-    })));
-    setRound(0);
-    setTurn(0);
-    setPhase("playing");
-    if (room) void fetch("/api/games/clear-the-stack/room",{method:"PATCH",headers:{"content-type":"application/json"},body:JSON.stringify({id:room.id,status:"playing"})});
+  async function postRoomAction(action: "start" | "makes" | "close", extra: Record<string, unknown> = {}) {
+    if (!room) throw new Error("No shared game is active.");
+    const response = await fetch("/api/games/clear-the-stack/room", {
+      method: "PATCH", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ id: room.id, version: room.state_version, action, ...extra }),
+    });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.error || "Could not save. Do not score again until reconnected.");
+    const updated = payload.room as HostRoom;
+    setRoom(updated);
+    applyState(updated.game_state);
+    return updated.game_state;
+  }
+
+  async function start() {
+    if (busy || restoring) return;
+    const names = playerCount === 1 ? ["You"] : [hostName.trim(), ...manualNames.map(name => name.trim())];
+    try {
+      const next = startStack(initialStackState(distance, stackSize), names, distance, stackSize);
+      setBusy(true);
+      setJoinStatus("");
+      if (room) await postRoomAction("start", { names, distance, stackSize });
+      else applyState(next);
+    } catch (e) {
+      setJoinStatus(e instanceof Error ? e.message : "Unable to start.");
+    } finally { setBusy(false); }
   }
 
   async function toggleJoin() {
+    if (busy || restoring) return;
     if (showJoin) { setShowJoin(false); return; }
     if (room) { setShowJoin(true); return; }
-    setJoinStatus("Creating QR…");
+    setJoinStatus("Creating spectator QR…");
+    setBusy(true);
     try {
-      const r=await fetch("/api/games/clear-the-stack/room",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({distance,stackSize})});
-      const d=await r.json();
-      if(!r.ok) throw new Error();
-      setRoom(d.room);
+      const response = await fetch("/api/games/clear-the-stack/room", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ distance, stackSize }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Unable to create spectator link.");
+      const created = data.room as HostRoom;
+      setRoom(created);
+      window.localStorage.setItem("pps-clear-stack-host-room", created.id);
       setShowJoin(true);
       setJoinStatus("");
-    } catch {
+    } catch (e) {
+      setJoinStatus(e instanceof Error ? e.message : "Could not create spectator QR.");
+    } finally { setBusy(false); }
+  }
+
+  async function recordMakes(makes: number) {
+    if (!current || busy) return;
+    setBusy(true);
+    try {
+      let next: StackState;
+      if (room) next = await postRoomAction("makes", { makes });
+      else {
+        next = scoreStack({ phase, distance, stackSize, players, round, turn }, makes);
+        applyState(next);
+      }
+      if (next.phase === "finished" && next.players.length === 1) void saveSoloRecord(next.players[0]);
+      setJoinStatus("");
+    } catch (e) {
+      setJoinStatus(e instanceof Error ? e.message : "Could not record makes.");
+    } finally { setBusy(false); }
+  }
+
+  async function reset() {
+    if (busy) return;
+    setBusy(true);
+    try {
+      if (room) await postRoomAction("close");
+      setRoom(null);
       setShowJoin(false);
-      setJoinStatus("Could not create the join QR. Try again.");
-    }
-  }
-
-  function recordMakes(makes: number) {
-    if (!current) return;
-    const safeMakes = Math.max(0, Math.min(current.remaining, makes));
-    const next = players.map((p, i) => i === turn ? {
-      ...p,
-      score: p.score + safeMakes * roundValue,
-      remaining: p.remaining - safeMakes,
-      rounds: [...p.rounds, safeMakes],
-    } : p);
-    setPlayers(next);
-
-    const nextActiveTurn = next.findIndex((p, i) => i > turn && p.remaining > 0);
-    if (nextActiveTurn >= 0) {
-      setTurn(nextActiveTurn);
-      return;
-    }
-
-    if (round < 2 && next.some(p => p.remaining > 0)) {
-      setRound(round + 1);
-      const firstActive = next.findIndex(p => p.remaining > 0);
-      setTurn(firstActive >= 0 ? firstActive : 0);
-      return;
-    }
-
-    setPlayers(next.map(p => ({ ...p, score: p.score - p.remaining * 2 })));
-    setPhase("finished");
-  }
-
-  function reset() {
-    setPhase("setup");
-    setPlayers([]);
-    setRound(0);
-    setTurn(0);
+      window.localStorage.removeItem("pps-clear-stack-host-room");
+      setPhase("setup");
+      setPlayers([]);
+      setRound(0);
+      setTurn(0);
+      setJoinStatus("");
+      setRecordStatus("idle");
+    } catch (e) {
+      setJoinStatus(e instanceof Error ? e.message : "Could not close this game.");
+    } finally { setBusy(false); }
   }
 
   return (
@@ -165,11 +227,13 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
         <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-white/58 sm:text-base">Three rounds. Clear every disc. Early makes pay more. Anything left costs you.</p>
       </header>
 
+      {restoring ? <p role="status" className="mb-4 text-center text-sm text-cyan-100">Restoring hosted game…</p> : null}
+      {joinStatus && phase !== "setup" ? <p role="alert" className="mb-4 rounded-xl border border-rose-300/20 bg-rose-300/10 p-3 text-center text-sm text-rose-100">{joinStatus}</p> : null}
       {phase === "setup" ? (
         <section className="rounded-[30px] border border-white/10 bg-white/[0.045] p-5 sm:p-7">
           <div className="grid gap-7">
-            <Choice label="Putting distance" value={distance} options={DISTANCES} suffix=" FT" onChange={setDistance} />
-            <Choice label="Number of discs" value={stackSize} options={STACKS} onChange={setStackSize} />
+            <Choice label="Putting distance" value={distance} options={DISTANCES} suffix=" FT" onChange={(value) => { if (!room) setDistance(value); }} />
+            <Choice label="Number of discs" value={stackSize} options={STACKS} onChange={(value) => { if (!room) setStackSize(value); }} />
             <div>
               <label htmlFor="cts-players" className="text-xs font-black uppercase tracking-[0.18em] text-white/55">Players</label>
               <div className="mt-3 grid grid-cols-4 gap-2">
@@ -179,11 +243,12 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
               {playerCount > 1 ? <div className="mt-4 rounded-2xl border border-white/10 bg-black/20 p-4">
                 <div className="text-[10px] font-black uppercase tracking-[.16em] text-cyan-100/55">Player roster</div>
                 <label className="mt-3 block text-xs font-bold text-white/60">Host<input value={hostName} onChange={e=>setHostName(e.target.value)} placeholder="Host name" className="mt-2 w-full rounded-xl border border-cyan-200/20 bg-black/25 px-3 py-3 text-base font-bold text-white outline-none focus:border-cyan-200/50"/></label>
-                <div className="mt-3 grid gap-2">{manualNames.map((name,i)=><input key={i} value={name} onChange={e=>setManualNames(current=>current.map((value,index)=>index===i?e.target.value:value))} placeholder={`Player ${i+2} name or join by QR`} className="w-full rounded-xl border border-white/10 bg-black/25 px-3 py-3 text-sm font-bold text-white outline-none focus:border-cyan-200/40"/>)}</div>
+                <div className="mt-3 grid gap-2">{manualNames.map((name,i)=><input key={i} value={name} onChange={e=>setManualNames(current=>current.map((value,index)=>index===i?e.target.value:value))} placeholder={`Player ${i+2} name`} className="w-full rounded-xl border border-white/10 bg-black/25 px-3 py-3 text-sm font-bold text-white outline-none focus:border-cyan-200/40"/>)}</div>
               </div> : null}
-              <button type="button" onClick={toggleJoin} className="mt-3 min-h-11 w-full rounded-2xl border border-cyan-200/20 bg-cyan-300/[.07] text-xs font-black uppercase tracking-[.14em] text-cyan-50">{showJoin ? "HIDE JOIN QR" : "SCAN TO JOIN"}</button>
-              {!showJoin && joinStatus ? <div className="mt-2 text-center text-xs font-bold text-rose-100">{joinStatus}</div> : null}
-              {showJoin ? <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-center">{joinUrl ? <><div className="mx-auto w-fit rounded-2xl bg-white p-2"><QRCodeSVG value={joinUrl} size={176} level="M" includeMargin={false}/></div><div className="mt-2 text-xs font-black text-white/45">CODE {room?.code}</div></> : <div className="text-sm text-white/45">{joinStatus || "Creating QR…"}</div>}{joinedNames.length ? <div className="mt-4 border-t border-white/10 pt-3"><div className="text-xs font-black uppercase tracking-[.14em] text-emerald-100/60">{joinedNames.length} joined</div><div className="mt-2 flex flex-wrap justify-center gap-2">{joinedNames.map(n=><span key={n} className="rounded-full bg-white/[.07] px-3 py-1 text-xs font-bold text-white/70">{n}</span>)}</div></div> : null}</div> : null}
+              <button type="button" onClick={toggleJoin} className="mt-3 min-h-11 w-full rounded-2xl border border-cyan-200/20 bg-cyan-300/[.07] text-xs font-black uppercase tracking-[.14em] text-cyan-50">{showJoin ? "HIDE WATCH QR" : "SCAN TO WATCH"}</button>
+              {joinStatus ? <div role="alert" className="mt-2 text-center text-xs font-bold text-rose-100">{joinStatus}</div> : null}
+              {room ? <p className="mt-2 text-center text-xs text-white/45">Distance and disc count are locked once the spectator link is shared.</p> : null}
+              {showJoin ? <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-center">{watchUrl ? <><div className="mx-auto w-fit rounded-2xl bg-white p-2"><QRCodeSVG value={watchUrl} size={176} level="M" includeMargin={false}/></div><div className="mt-2 text-xs text-white/60">Scan to watch the live game. No name entry or scoring access.</div></> : <div className="text-sm text-white/45">{joinStatus || "Creating QR…"}</div>}</div> : null}
             </div>
           </div>
           <div className="mt-7 grid grid-cols-4 gap-2 text-center text-xs font-black">
@@ -192,7 +257,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
             <div className="rounded-xl bg-violet-300/10 p-3 text-violet-100">R3<br/>+0.5</div>
             <div className="rounded-xl bg-rose-300/10 p-3 text-rose-100">LEFT<br/>−2</div>
           </div>
-          <button type="button" onClick={start} className="mt-7 min-h-14 w-full rounded-2xl bg-cyan-300 px-5 text-base font-black text-slate-950">START STACK</button>
+          <button type="button" onClick={start} disabled={busy || restoring} className="mt-7 min-h-14 w-full rounded-2xl bg-cyan-300 px-5 text-base font-black text-slate-950">START STACK</button>
           {recordsEnabled ? <div className="mt-7 border-t border-white/10 pt-5"><div className="text-xs font-black uppercase tracking-[0.18em] text-cyan-100/55">Your Top 10 · {distance} FT · {stackSize} DISCS</div><div className="mt-3 grid gap-2">{records.length ? records.map((r,i) => <div key={r.id} className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/20 px-4 py-3"><div><span className="font-black text-white">#{i+1} · {Number(r.score)} pts</span><div className="mt-1 text-xs text-white/40">{new Date(r.played_at).toLocaleDateString()}</div></div><div className="text-right text-xs text-white/45">R1 {r.details?.rounds?.[0] ?? 0} · R2 {r.details?.rounds?.[1] ?? 0} · R3 {r.details?.rounds?.[2] ?? 0}<br/>{r.details?.remaining ?? 0} left</div></div>) : <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4 text-sm text-white/40">{recordStatus === "loading" ? "Loading records…" : "Finish a solo stack to set your first record."}</div>}</div></div> : <div className="mt-5 text-center text-xs text-white/35">Sign in with an account that owns Clear the Stack to save your Top 10.</div>}
         </section>
       ) : null}
@@ -209,15 +274,20 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
             <p className="mt-3 text-sm text-white/55">Throw all {current.remaining}. Then tap how many you made.</p>
           </div>
           <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
-            {Array.from({length: current.remaining + 1}, (_, n) => <button key={n} type="button" onClick={() => recordMakes(n)} className="min-h-14 rounded-2xl border border-white/10 bg-black/25 text-lg font-black text-white transition hover:border-cyan-200/30 hover:bg-cyan-300/10">{n}</button>)}
+            {Array.from({length: current.remaining + 1}, (_, n) => <button key={n} type="button" disabled={busy} onClick={() => void recordMakes(n)} className="min-h-14 rounded-2xl border border-white/10 bg-black/25 text-lg font-black text-white transition hover:border-cyan-200/30 hover:bg-cyan-300/10">{n}</button>)}
           </div>
           <div className="mt-6 border-t border-white/10 pt-4 text-center text-sm text-white/50">Current score: <span className="font-black text-white">{current.score}</span> · Maximum possible: {maxScore}</div>
         </section>
       ) : null}
 
+      {phase !== "setup" && room ? <section className="mt-4 rounded-2xl border border-white/10 bg-white/[.045] p-4 text-center">
+        <button type="button" onClick={() => setShowJoin(value => !value)} className="min-h-11 w-full rounded-xl border border-cyan-200/20 text-xs font-black uppercase text-cyan-100">{showJoin ? "HIDE WATCH QR" : "SHOW SPECTATOR QR"}</button>
+        {showJoin && watchUrl ? <div className="mt-4"><div className="mx-auto w-fit rounded-2xl bg-white p-2"><QRCodeSVG value={watchUrl} size={176}/></div><p className="mt-2 text-xs text-white/55">Scan to watch live scores only</p></div> : null}
+      </section> : null}
+
       {phase === "finished" ? (
         <section className="rounded-[30px] border border-white/10 bg-white/[0.045] p-5 sm:p-7">
-          <div className="text-center"><div className="text-xs font-black uppercase tracking-[0.2em] text-emerald-100/60">Stack complete</div><div className="mt-3 text-4xl font-black text-white">{players.length === 1 ? `${players[0]?.score ?? 0} POINTS` : `${leader?.name ?? "Winner"} WINS`}</div><div className="mt-2 text-sm text-white/50">{distance} FT · {stackSize} DISCS</div></div>
+          <div className="text-center"><div className="text-xs font-black uppercase tracking-[0.2em] text-emerald-100/60">Stack complete</div><div className="mt-3 text-4xl font-black text-white">{players.length === 1 ? `${players[0]?.score ?? 0} POINTS` : tied ? "TIE GAME" : `${leader?.name ?? "Winner"} WINS`}</div><div className="mt-2 text-sm text-white/50">{distance} FT · {stackSize} DISCS</div></div>
           <div className="mt-7 grid gap-3">
             {[...players].sort((a,b) => b.score-a.score).map((p,i) => (
               <div key={p.name} className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-black/20 p-4">
@@ -227,7 +297,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
             ))}
           </div>
           {players.length === 1 && recordsEnabled ? <div className="mt-5 rounded-2xl border border-cyan-200/15 bg-cyan-300/[0.06] p-4 text-center text-sm text-white/65">{recordStatus === "saving" ? "Saving this round…" : recordStatus === "saved" ? "Saved to your account · Top 10 updated" : recordStatus === "error" ? "Record could not be saved. Your game result is still shown above." : "Your Top 10 are saved to your Play Amplified account."}</div> : null}
-          <button type="button" onClick={reset} className="mt-7 min-h-14 w-full rounded-2xl bg-cyan-300 px-5 font-black text-slate-950">PLAY AGAIN</button>
+          <button type="button" disabled={busy} onClick={() => void reset()} className="mt-7 min-h-14 w-full rounded-2xl bg-cyan-300 px-5 font-black text-slate-950">PLAY AGAIN</button>
         </section>
       ) : null}
     </main>
