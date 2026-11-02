@@ -8,7 +8,6 @@ import { changeStackPlayers, initialStackState, replayStack, startStack, scoreSt
 type Phase = "setup" | "playing" | "finished";
 type Player = StackPlayer;
 type HostRoom = { id: string; code: string; spectator_token: string; state_version: number; game_state: StackState; };
-type RecordRow = { id: number; score: number; played_at: string; details: { rounds?: number[]; remaining?: number } };
 
 const DISTANCES = [10, 15, 20, 25, 30];
 const STACKS = [5, 10, 15, 20];
@@ -24,7 +23,6 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
   const [players, setPlayers] = useState<Player[]>([]);
   const [round, setRound] = useState(0);
   const [turn, setTurn] = useState(0);
-  const [records, setRecords] = useState<RecordRow[]>([]);
   const [recordStatus, setRecordStatus] = useState<"idle" | "loading" | "saving" | "saved" | "error">("idle");
   const [leaderboardRevision, setLeaderboardRevision] = useState(0);
   const [showJoin, setShowJoin] = useState(false);
@@ -139,17 +137,6 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
       }
     };
   }, [restoring, phase, room, distance, stackSize, busy]);
-
-  useEffect(() => {
-    if (!recordsEnabled) return;
-    let cancelled = false;
-    setRecordStatus("loading");
-    fetch(`/api/games/clear-the-stack/records?distance=${distance}&stackSize=${stackSize}`, { cache: "no-store" })
-      .then(async r => { if (!r.ok) throw new Error("records"); return r.json(); })
-      .then(data => { if (!cancelled) { setRecords(data.records ?? []); setRecordStatus("idle"); } })
-      .catch(() => { if (!cancelled) setRecordStatus("error"); });
-    return () => { cancelled = true; };
-  }, [distance, stackSize, recordsEnabled]);
 
 
   function setCount(nextCount: number) {
