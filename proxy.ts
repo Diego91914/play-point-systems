@@ -13,6 +13,7 @@ const SOCIAL_ROOM_CONTROL_PATH = "/api/games/social-room-control";
 const CLEAR_STACK_JOIN_PREFIX = "/games/clear-the-stack/join/";
 const CLEAR_STACK_JOIN_API = "/api/games/clear-the-stack/join";
 const CLEAR_STACK_WATCH_API = "/api/games/clear-the-stack/watch";
+const CLEAR_STACK_LEADERBOARD_API = "/api/games/clear-the-stack/leaderboard";
 const TRIVIA_GUEST_JOIN_PAGE = "/games/trivia/join";
 const TRIVIA_GUEST_JOIN_API = "/api/trivia/rooms/join";
 const TRIVIA_VENUE_JOIN_PREFIX = "/games/trivia/venue/";
@@ -74,7 +75,7 @@ export async function proxy(request: NextRequest) {
   const hasRoomCode = Boolean(request.nextUrl.searchParams.get("code"));
   const guestJoinPage = isGuestRoomPage(pathname, hasRoomCode);
   const guestRoomApi = isGuestRoomApi(pathname);
-  const clearStackGuestJoin = pathname.startsWith(CLEAR_STACK_JOIN_PREFIX) || pathname === CLEAR_STACK_JOIN_API || pathname === CLEAR_STACK_WATCH_API;
+  const clearStackGuestJoin = pathname.startsWith(CLEAR_STACK_JOIN_PREFIX) || pathname === CLEAR_STACK_JOIN_API || pathname === CLEAR_STACK_WATCH_API || pathname === CLEAR_STACK_LEADERBOARD_API;
   const triviaGuestJoin = pathname === TRIVIA_GUEST_JOIN_PAGE || pathname === TRIVIA_GUEST_JOIN_API;
   const triviaVenueGuestJoin = pathname.startsWith(TRIVIA_VENUE_JOIN_PREFIX) && /^\/games\/trivia\/venue\/[^/]+\/join$/.test(pathname);
 
