@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { configureStack, initialStackState, scoreStack, startStack } from "@/lib/play-point-core/clear-stack-engine";
+import { configureStack, initialStackState, preserveDraftPlayerNames, scoreStack, startStack } from "@/lib/play-point-core/clear-stack-engine";
 import { readFileSync } from "node:fs";
 
 describe("Clear the Stack host-owned scoring engine", () => {
@@ -33,6 +33,18 @@ describe("Clear the Stack host-owned scoring engine", () => {
     game = scoreStack(game, 5);
     expect(game.phase).toBe("finished");
     expect(game.players.map(player => player.score)).toEqual([10, 5]);
+  });
+
+  it("preserves player names on 4 → 2 → Solo → 4 changes", () => {
+    const initial = ["Tyler", "Dave", "Olivia"];
+    const fewer = preserveDraftPlayerNames(initial, 2);
+    expect(fewer).toEqual(initial);
+    const solo = preserveDraftPlayerNames(fewer, 1);
+    expect(solo).toEqual(initial);
+    const restored = preserveDraftPlayerNames(solo, 4);
+    expect(restored).toEqual(initial);
+    expect(restored.slice(0, 3)).toEqual(["Tyler", "Dave", "Olivia"]);
+    expect(preserveDraftPlayerNames([], 4)).toEqual(["", "", ""]);
   });
 
   it("allows host setup edits after the spectator room is created but not after play starts", () => {
@@ -81,7 +93,7 @@ describe("Clear the Stack spectator-only access contract", () => {
     expect(host).not.toContain('if (!room) setStackSize(value)');
     expect(host).toContain('onChange={setDistance}');
     expect(host).toContain('onChange={setStackSize}');
-    expect(host).toContain('Math.max(current.length, next - 1)');
+    expect(host).toContain("preserveDraftPlayerNames(current, next)");
     expect(host).toContain('manualNames.slice(0, playerCount - 1)');
     expect(host).not.toContain('setHostName("");');
     expect(room).toContain('body.action === "configure"');
