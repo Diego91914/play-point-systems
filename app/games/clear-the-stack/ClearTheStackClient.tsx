@@ -151,17 +151,6 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
     return () => { cancelled = true; };
   }, [distance, stackSize, recordsEnabled]);
 
-  async function saveSoloRecord(player: Player) {
-    if (!recordsEnabled) return;
-    setRecordStatus("saving");
-    try {
-      const response = await fetch("/api/games/clear-the-stack/records", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ distance, stackSize, score: player.score, rounds: player.rounds, remaining: player.remaining }) });
-      if (!response.ok) throw new Error("save");
-      const data = await response.json();
-      setRecords(data.records ?? []);
-      setRecordStatus("saved");
-    } catch { setRecordStatus("error"); }
-  }
 
   function setCount(nextCount: number) {
     const next = Math.max(1, Math.min(100, nextCount));
@@ -373,7 +362,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
           </div>
           <button type="button" onClick={start} disabled={busy || restoring} className="mt-7 min-h-14 w-full rounded-2xl bg-cyan-300 px-5 text-base font-black text-slate-950">START NEW GAME</button>
           {room ? <button type="button" disabled={busy || restoring} onClick={() => void endSession()} className="mt-3 min-h-12 w-full rounded-xl border border-rose-300/30 bg-rose-200/10 px-4 text-sm font-black uppercase text-rose-100">END GAME · CLOSE SESSION</button> : null}
-          {recordsEnabled ? <div className="mt-7 border-t border-white/10 pt-5"><div className="text-xs font-black uppercase tracking-[0.18em] text-cyan-100/55">Your Top 10 · {distance} FT · {stackSize} DISCS</div><div className="mt-3 grid gap-2">{records.length ? records.map((r,i) => <div key={r.id} className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/20 px-4 py-3"><div><span className="font-black text-white">#{i+1} · {Number(r.score)} pts</span><div className="mt-1 text-xs text-white/40">{new Date(r.played_at).toLocaleDateString()}</div></div><div className="text-right text-xs text-white/45">R1 {r.details?.rounds?.[0] ?? 0} · R2 {r.details?.rounds?.[1] ?? 0} · R3 {r.details?.rounds?.[2] ?? 0}<br/>{r.details?.remaining ?? 0} left</div></div>) : <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4 text-sm text-white/40">{recordStatus === "loading" ? "Loading records…" : "Finish a solo stack to set your first record."}</div>}</div></div> : <div className="mt-5 text-center text-xs text-white/35">Sign in with an account that owns Clear the Stack to save your Top 10.</div>}
+          <p className="mt-5 text-center text-xs text-white/45">Arcade high scores are shown below. Daily and weekly boards are visible to everyone.</p>
         </section>
       ) : null}
 
