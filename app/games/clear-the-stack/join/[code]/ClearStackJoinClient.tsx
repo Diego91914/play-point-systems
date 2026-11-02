@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ClearStackArcadeBoard } from "../../ClearStackArcadeBoard";
 import { STACK_ROUND_VALUES, type StackState } from "@/lib/play-point-core/clear-stack-engine";
 
 export function ClearStackJoinClient({ code }: { code: string }) {
@@ -134,6 +135,7 @@ export function ClearStackJoinClient({ code }: { code: string }) {
               </div>
             </section>
           ) : null}
+          {(game.phase === "setup" || game.phase === "finished") ? <ClearStackArcadeBoard distance={game.distance} stackSize={game.stackSize} allowAccountViews={false} refreshKey={game.phase === "finished" ? 1 : 0} /> : null}
         </>
       )}
     </main>

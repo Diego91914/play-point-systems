@@ -2,12 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
+import { ClearStackArcadeBoard } from "./ClearStackArcadeBoard";
 import { changeStackPlayers, initialStackState, replayStack, startStack, scoreStack, preserveDraftPlayerNames, type StackState, type StackPlayer } from "@/lib/play-point-core/clear-stack-engine";
 
 type Phase = "setup" | "playing" | "finished";
 type Player = StackPlayer;
 type HostRoom = { id: string; code: string; spectator_token: string; state_version: number; game_state: StackState; };
-type RecordRow = { id: number; score: number; played_at: string; details: { rounds?: number[]; remaining?: number } };
 
 const DISTANCES = [10, 15, 20, 25, 30];
 const STACKS = [5, 10, 15, 20];
@@ -23,8 +23,8 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
   const [players, setPlayers] = useState<Player[]>([]);
   const [round, setRound] = useState(0);
   const [turn, setTurn] = useState(0);
-  const [records, setRecords] = useState<RecordRow[]>([]);
   const [recordStatus, setRecordStatus] = useState<"idle" | "loading" | "saving" | "saved" | "error">("idle");
+  const [leaderboardRevision, setLeaderboardRevision] = useState(0);
   const [showJoin, setShowJoin] = useState(false);
   const [room, setRoom] = useState<HostRoom | null>(null);
   const [busy, setBusy] = useState(false);
@@ -138,28 +138,6 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
     };
   }, [restoring, phase, room, distance, stackSize, busy]);
 
-  useEffect(() => {
-    if (!recordsEnabled) return;
-    let cancelled = false;
-    setRecordStatus("loading");
-    fetch(`/api/games/clear-the-stack/records?distance=${distance}&stackSize=${stackSize}`, { cache: "no-store" })
-      .then(async r => { if (!r.ok) throw new Error("records"); return r.json(); })
-      .then(data => { if (!cancelled) { setRecords(data.records ?? []); setRecordStatus("idle"); } })
-      .catch(() => { if (!cancelled) setRecordStatus("error"); });
-    return () => { cancelled = true; };
-  }, [distance, stackSize, recordsEnabled]);
-
-  async function saveSoloRecord(player: Player) {
-    if (!recordsEnabled) return;
-    setRecordStatus("saving");
-    try {
-      const response = await fetch("/api/games/clear-the-stack/records", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ distance, stackSize, score: player.score, rounds: player.rounds, remaining: player.remaining }) });
-      if (!response.ok) throw new Error("save");
-      const data = await response.json();
-      setRecords(data.records ?? []);
-      setRecordStatus("saved");
-    } catch { setRecordStatus("error"); }
-  }
 
   function setCount(nextCount: number) {
     const next = Math.max(1, Math.min(100, nextCount));
@@ -260,7 +238,12 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
         next = scoreStack({ phase, distance, stackSize, players, round, turn }, makes);
         applyState(next);
       }
-      if (next.phase === "finished" && next.players.length === 1) void saveSoloRecord(next.players[0]);
+      if (next.phase === "finished") {
+        // Records are committed atomically with the completed room update.
+        // Never send a second, potentially failing score POST from the browser.
+        setRecordStatus("saved");
+        setLeaderboardRevision(value => value + 1);
+      }
       setJoinStatus("");
     } catch (e) {
       setJoinStatus(e instanceof Error ? e.message : "Could not record makes.");
@@ -366,7 +349,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
           </div>
           <button type="button" onClick={start} disabled={busy || restoring} className="mt-7 min-h-14 w-full rounded-2xl bg-cyan-300 px-5 text-base font-black text-slate-950">START NEW GAME</button>
           {room ? <button type="button" disabled={busy || restoring} onClick={() => void endSession()} className="mt-3 min-h-12 w-full rounded-xl border border-rose-300/30 bg-rose-200/10 px-4 text-sm font-black uppercase text-rose-100">END GAME · CLOSE SESSION</button> : null}
-          {recordsEnabled ? <div className="mt-7 border-t border-white/10 pt-5"><div className="text-xs font-black uppercase tracking-[0.18em] text-cyan-100/55">Your Top 10 · {distance} FT · {stackSize} DISCS</div><div className="mt-3 grid gap-2">{records.length ? records.map((r,i) => <div key={r.id} className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/20 px-4 py-3"><div><span className="font-black text-white">#{i+1} · {Number(r.score)} pts</span><div className="mt-1 text-xs text-white/40">{new Date(r.played_at).toLocaleDateString()}</div></div><div className="text-right text-xs text-white/45">R1 {r.details?.rounds?.[0] ?? 0} · R2 {r.details?.rounds?.[1] ?? 0} · R3 {r.details?.rounds?.[2] ?? 0}<br/>{r.details?.remaining ?? 0} left</div></div>) : <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4 text-sm text-white/40">{recordStatus === "loading" ? "Loading records…" : "Finish a solo stack to set your first record."}</div>}</div></div> : <div className="mt-5 text-center text-xs text-white/35">Sign in with an account that owns Clear the Stack to save your Top 10.</div>}
+          <p className="mt-5 text-center text-xs text-white/45">Arcade high scores are shown below. Daily and weekly boards are visible to everyone.</p>
         </section>
       ) : null}
 
@@ -406,12 +389,13 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
               </div>
             ))}
           </div>
-          {players.length === 1 && recordsEnabled ? <div className="mt-5 rounded-2xl border border-cyan-200/15 bg-cyan-300/[0.06] p-4 text-center text-sm text-white/65">{recordStatus === "saving" ? "Saving this round…" : recordStatus === "saved" ? "Saved to your account · Top 10 updated" : recordStatus === "error" ? "Record could not be saved. Your game result is still shown above." : "Your Top 10 are saved to your Play Amplified account."}</div> : null}
+          {players.length === 1 && recordsEnabled ? <div className="mt-5 rounded-2xl border border-cyan-200/15 bg-cyan-300/[0.06] p-4 text-center text-sm text-white/65">{recordStatus === "saved" ? "Game finished · high score recorded on the host leaderboard" : "Your result is shown above; leaderboards appear below."}</div> : null}
           <button type="button" disabled={busy} onClick={() => void playAgain()} className="mt-7 min-h-14 w-full rounded-2xl bg-cyan-300 px-5 font-black text-slate-950">START NEW GAME · SAME PLAYERS</button>
           <button type="button" disabled={busy} onClick={() => void changePlayers()} className="mt-3 min-h-12 w-full rounded-2xl border border-cyan-200/25 bg-cyan-200/10 px-5 text-sm font-black text-cyan-50">NEW GAME · CHANGE PLAYERS / SETTINGS</button>
           <button type="button" disabled={busy || restoring} onClick={() => void endSession()} className="mt-3 min-h-12 w-full rounded-xl border border-rose-300/30 bg-rose-200/10 px-4 text-sm font-black uppercase text-rose-100">END GAME {room ? "· CLOSE SESSION" : "· RETURN TO SETUP"}</button>
         </section>
       ) : null}
+      {(phase === "setup" || phase === "finished") ? <ClearStackArcadeBoard distance={distance} stackSize={stackSize} allowAccountViews={recordsEnabled} refreshKey={leaderboardRevision} /> : null}
     </main>
   );
 }
