@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { initialStackState, startStack, scoreStack, type StackState, type StackPlayer } from "@/lib/play-point-core/clear-stack-engine";
 
@@ -28,6 +28,8 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
   const [showJoin, setShowJoin] = useState(false);
   const [room, setRoom] = useState<HostRoom | null>(null);
   const [busy, setBusy] = useState(false);
+  const [setupSync, setSetupSync] = useState<"idle" | "saving" | "error">("idle");
+  const setupTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [restoring, setRestoring] = useState(true);
   const [joinStatus, setJoinStatus] = useState("");
   const [origin, setOrigin] = useState("");
@@ -63,7 +65,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
         if (Number.isInteger(draft.playerCount) && draft.playerCount >= 1 && draft.playerCount <= 100) {
           setPlayerCount(draft.playerCount);
           setHostName(typeof draft.hostName === "string" ? draft.hostName : "");
-          setManualNames(Array.isArray(draft.manualNames) ? draft.manualNames.filter((name: unknown) => typeof name === "string").slice(0, draft.playerCount - 1) : []);
+          setManualNames(Array.isArray(draft.manualNames) ? draft.manualNames.filter((name: unknown) => typeof name === "string").slice(0, 99) : []);
         }
         if (Number.isInteger(draft.distance) && draft.distance >= 1 && draft.distance <= 100) setDistance(draft.distance);
         if (Number.isInteger(draft.stackSize) && draft.stackSize >= 1 && draft.stackSize <= 100) setStackSize(draft.stackSize);
@@ -98,6 +100,44 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
     }));
   }, [restoring, phase, distance, stackSize, playerCount, hostName, manualNames]);
 
+  // An existing spectator QR must not freeze setup. Publish changes only after
+  // a short idle period so custom numeric input can be edited naturally.
+  // Scoring and Start are held while an update is in flight to avoid version races.
+  useEffect(() => {
+    if (setupTimer.current) {
+      clearTimeout(setupTimer.current);
+      setupTimer.current = null;
+    }
+    if (restoring || phase !== "setup" || !room || busy) return;
+    if (room.game_state?.distance === distance && room.game_state?.stackSize === stackSize) {
+      setSetupSync("idle");
+      return;
+    }
+    setupTimer.current = setTimeout(() => {
+      setupTimer.current = null;
+      setBusy(true);
+      setSetupSync("saving");
+      void (async () => {
+        try {
+          await postRoomAction("configure", { distance, stackSize });
+          setJoinStatus("");
+          setSetupSync("idle");
+        } catch (e) {
+          setSetupSync("error");
+          setJoinStatus(e instanceof Error ? e.message : "Could not sync spectator settings.");
+        } finally {
+          setBusy(false);
+        }
+      })();
+    }, 500);
+    return () => {
+      if (setupTimer.current) {
+        clearTimeout(setupTimer.current);
+        setupTimer.current = null;
+      }
+    };
+  }, [restoring, phase, room, distance, stackSize, busy]);
+
   useEffect(() => {
     if (!recordsEnabled) return;
     let cancelled = false;
@@ -124,15 +164,15 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
   function setCount(nextCount: number) {
     const next = Math.max(1, Math.min(100, nextCount));
     setPlayerCount(next);
-    if (next === 1) {
-      setHostName("");
-      setManualNames([]);
-      return;
-    }
-    setManualNames((current) => Array.from({ length: Math.max(0, next - 1) }, (_, i) => current[i] ?? ""));
+    // Keep the full draft roster even if the host temporarily selects fewer
+    // players (including Solo). Only the visible inputs and active roster change.
+    setManualNames((current) => Array.from(
+      { length: Math.max(current.length, next - 1) },
+      (_, i) => current[i] ?? "",
+    ));
   }
 
-  async function postRoomAction(action: "start" | "makes" | "close", extra: Record<string, unknown> = {}) {
+  async function postRoomAction(action: "configure" | "start" | "makes" | "close", extra: Record<string, unknown> = {}) {
     if (!room) throw new Error("No shared game is active.");
     const response = await fetch("/api/games/clear-the-stack/room", {
       method: "PATCH", headers: { "content-type": "application/json" },
@@ -148,7 +188,11 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
 
   async function start() {
     if (busy || restoring) return;
-    const names = playerCount === 1 ? ["You"] : [hostName.trim(), ...manualNames.map(name => name.trim())];
+    if (setupTimer.current) {
+      clearTimeout(setupTimer.current);
+      setupTimer.current = null;
+    }
+    const names = playerCount === 1 ? ["You"] : [hostName.trim(), ...manualNames.slice(0, playerCount - 1).map(name => name.trim())];
     try {
       const next = startStack(initialStackState(distance, stackSize), names, distance, stackSize);
       setBusy(true);
@@ -232,8 +276,8 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
       {phase === "setup" ? (
         <section className="rounded-[30px] border border-white/10 bg-white/[0.045] p-5 sm:p-7">
           <div className="grid gap-7">
-            <Choice label="Putting distance" value={distance} options={DISTANCES} suffix=" FT" onChange={(value) => { if (!room) setDistance(value); }} />
-            <Choice label="Number of discs" value={stackSize} options={STACKS} onChange={(value) => { if (!room) setStackSize(value); }} />
+            <Choice label="Putting distance" value={distance} options={DISTANCES} suffix=" FT" disabled={busy || restoring} onChange={setDistance} />
+            <Choice label="Number of discs" value={stackSize} options={STACKS} disabled={busy || restoring} onChange={setStackSize} />
             <div>
               <label htmlFor="cts-players" className="text-xs font-black uppercase tracking-[0.18em] text-white/55">Players</label>
               <div className="mt-3 grid grid-cols-4 gap-2">
@@ -243,11 +287,13 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
               {playerCount > 1 ? <div className="mt-4 rounded-2xl border border-white/10 bg-black/20 p-4">
                 <div className="text-[10px] font-black uppercase tracking-[.16em] text-cyan-100/55">Player roster</div>
                 <label className="mt-3 block text-xs font-bold text-white/60">Host<input value={hostName} onChange={e=>setHostName(e.target.value)} placeholder="Host name" className="mt-2 w-full rounded-xl border border-cyan-200/20 bg-black/25 px-3 py-3 text-base font-bold text-white outline-none focus:border-cyan-200/50"/></label>
-                <div className="mt-3 grid gap-2">{manualNames.map((name,i)=><input key={i} value={name} onChange={e=>setManualNames(current=>current.map((value,index)=>index===i?e.target.value:value))} placeholder={`Player ${i+2} name`} className="w-full rounded-xl border border-white/10 bg-black/25 px-3 py-3 text-sm font-bold text-white outline-none focus:border-cyan-200/40"/>)}</div>
+                <div className="mt-3 grid gap-2">{manualNames.slice(0, Math.max(0, playerCount - 1)).map((name,i)=><input key={i} value={name} onChange={e=>setManualNames(current=>current.map((value,index)=>index===i?e.target.value:value))} placeholder={`Player ${i+2} name`} className="w-full rounded-xl border border-white/10 bg-black/25 px-3 py-3 text-sm font-bold text-white outline-none focus:border-cyan-200/40"/>)}</div>
               </div> : null}
               <button type="button" onClick={toggleJoin} className="mt-3 min-h-11 w-full rounded-2xl border border-cyan-200/20 bg-cyan-300/[.07] text-xs font-black uppercase tracking-[.14em] text-cyan-50">{showJoin ? "HIDE WATCH QR" : "SCAN TO WATCH"}</button>
               {joinStatus ? <div role="alert" className="mt-2 text-center text-xs font-bold text-rose-100">{joinStatus}</div> : null}
-              {room ? <p className="mt-2 text-center text-xs text-white/45">Distance and disc count are locked once the spectator link is shared.</p> : null}
+              {room ? <p role="status" className="mt-2 text-center text-xs text-white/55">
+                {setupSync === "saving" ? "Updating spectator settings…" : setupSync === "error" ? "Spectator settings did not sync. Try another selection or Start Stack." : "Settings may be changed until Start Stack. Spectators update automatically."}
+              </p> : null}
               {showJoin ? <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-center">{watchUrl ? <><div className="mx-auto w-fit rounded-2xl bg-white p-2"><QRCodeSVG value={watchUrl} size={176} level="M" includeMargin={false}/></div><div className="mt-2 text-xs text-white/60">Scan to watch the live game. No name entry or scoring access.</div></> : <div className="text-sm text-white/45">{joinStatus || "Creating QR…"}</div>}</div> : null}
             </div>
           </div>
@@ -304,6 +350,6 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
   );
 }
 
-function Choice({ label, value, options, suffix = "", onChange }: { label: string; value: number; options: number[]; suffix?: string; onChange: (n:number) => void }) {
-  return <div><div className="text-xs font-black uppercase tracking-[0.18em] text-white/55">{label}</div><div className="mt-3 grid grid-cols-5 gap-2">{options.map(n => <button key={n} type="button" onClick={() => onChange(n)} className={`min-h-12 rounded-2xl border text-sm font-black ${value === n ? "border-cyan-200/40 bg-cyan-300/15 text-cyan-50" : "border-white/10 bg-black/20 text-white/65"}`}>{n}{suffix}</button>)}</div><label className="mt-3 block text-[10px] font-black uppercase tracking-[0.16em] text-white/35">Custom<input type="number" min={1} max={100} value={value} onChange={e => onChange(Math.max(1, Math.min(100, Number(e.target.value) || 1)))} className="mt-2 w-full rounded-2xl border border-white/10 bg-black/25 px-4 py-3 text-base font-bold text-white outline-none focus:border-cyan-200/50" /></label></div>;
+function Choice({ label, value, options, suffix = "", disabled = false, onChange }: { label: string; value: number; options: number[]; suffix?: string; disabled?: boolean; onChange: (n:number) => void }) {
+  return <div><div className="text-xs font-black uppercase tracking-[0.18em] text-white/55">{label}</div><div className="mt-3 grid grid-cols-5 gap-2">{options.map(n => <button key={n} type="button" disabled={disabled} onClick={() => onChange(n)} className={`min-h-12 rounded-2xl border text-sm font-black ${value === n ? "border-cyan-200/40 bg-cyan-300/15 text-cyan-50" : "border-white/10 bg-black/20 text-white/65"}`}>{n}{suffix}</button>)}</div><label className="mt-3 block text-[10px] font-black uppercase tracking-[0.16em] text-white/35">Custom<input type="number" min={1} max={100} disabled={disabled} value={value} onChange={e => onChange(Math.max(1, Math.min(100, Number(e.target.value) || 1)))} className="mt-2 w-full rounded-2xl border border-white/10 bg-black/25 px-4 py-3 text-base font-bold text-white outline-none focus:border-cyan-200/50" /></label></div>;
 }
