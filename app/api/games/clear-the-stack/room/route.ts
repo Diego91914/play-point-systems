@@ -5,7 +5,7 @@ import {
 } from "@/lib/play-point-core/games-session";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import {
-  initialStackState, scoreStack, startStack, type StackState,
+  configureStack, initialStackState, scoreStack, startStack, type StackState,
 } from "@/lib/play-point-core/clear-stack-engine";
 
 const SKU = "game.clear_the_stack";
@@ -90,7 +90,11 @@ export async function PATCH(request: Request) {
   let next: StackState = state;
   let status = room.status as string;
   try {
-    if (body.action === "start") {
+    if (body.action === "configure") {
+      if (room.status !== "open") return error("Setup can only change before the game begins.", 409);
+      next = configureStack(state, Number(body.distance), Number(body.stackSize));
+      status = "open";
+    } else if (body.action === "start") {
       next = startStack(state, body.names, Number(body.distance), Number(body.stackSize));
       status = "playing";
     } else if (body.action === "makes") {
