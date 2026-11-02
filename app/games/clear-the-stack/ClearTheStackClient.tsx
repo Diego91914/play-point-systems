@@ -169,11 +169,30 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
     setManualNames((current) => preserveDraftPlayerNames(current, next));
   }
 
-  async function postRoomAction(action: "configure" | "start" | "makes" | "replay" | "change_players" | "close", extra: Record<string, unknown> = {}) {
-    if (!room) throw new Error("No shared game is active.");
+  async function createOrResumeRoom() {
+    const response = await fetch("/api/games/clear-the-stack/room", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ distance, stackSize }),
+    });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.error || "Unable to connect your live spectator session.");
+    const hostedRoom = payload.room as HostRoom;
+    if (!hostedRoom?.id || !hostedRoom?.spectator_token)
+      throw new Error("The live room could not be verified. Please retry.");
+    setRoom(hostedRoom);
+    window.localStorage.setItem("pps-clear-stack-host-room", hostedRoom.id);
+    return { hostedRoom, reused: payload.reused === true };
+  }
+
+  async function postRoomAction(
+    action: "configure" | "start" | "makes" | "replay" | "change_players" | "close",
+    extra: Record<string, unknown> = {},
+    targetRoom: HostRoom | null = room,
+  ) {
+    if (!targetRoom) throw new Error("No shared game is active.");
     const response = await fetch("/api/games/clear-the-stack/room", {
       method: "PATCH", headers: { "content-type": "application/json" },
-      body: JSON.stringify({ id: room.id, version: room.state_version, action, ...extra }),
+      body: JSON.stringify({ id: targetRoom.id, version: targetRoom.state_version, action, ...extra }),
     });
     const payload = await response.json();
     if (!response.ok) throw new Error(payload.error || "Could not save. Do not score again until reconnected.");
@@ -191,13 +210,27 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
     }
     const names = playerCount === 1 ? ["You"] : [hostName.trim(), ...manualNames.slice(0, playerCount - 1).map(name => name.trim())];
     try {
-      const next = startStack(initialStackState(distance, stackSize), names, distance, stackSize);
+      // Validate before creating a room; no silent local-only game with a missing QR.
+      startStack(initialStackState(distance, stackSize), names, distance, stackSize);
       setBusy(true);
       setJoinStatus("");
-      if (room) await postRoomAction("start", { names, distance, stackSize });
-      else applyState(next);
+      let hostRoom = room;
+      if (!hostRoom) {
+        const result = await createOrResumeRoom();
+        hostRoom = result.hostedRoom;
+        if (result.reused && hostRoom.game_state.phase !== "setup") {
+          // Another tab/device is already hosting: resume it, never start a second game.
+          applyState(hostRoom.game_state);
+          setShowJoin(true);
+          setJoinStatus("Resumed your existing live game. Your original spectator QR is still valid.");
+          return;
+        }
+      }
+      await postRoomAction("start", { names, distance, stackSize }, hostRoom);
+      // QR is now guaranteed by the host room, whether Solo or multiplayer.
+      setShowJoin(true);
     } catch (e) {
-      setJoinStatus(e instanceof Error ? e.message : "Unable to start.");
+      setJoinStatus(e instanceof Error ? e.message : "Could not start live game. Retry or sign in.");
     } finally { setBusy(false); }
   }
 
@@ -208,18 +241,10 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
     setJoinStatus("Creating spectator QR…");
     setBusy(true);
     try {
-      const response = await fetch("/api/games/clear-the-stack/room", {
-        method: "POST", headers: { "content-type": "application/json" },
-        body: JSON.stringify({ distance, stackSize }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Unable to create spectator link.");
-      const created = data.room as HostRoom;
-      setRoom(created);
-      if (data.reused) applyState(created.game_state);
-      window.localStorage.setItem("pps-clear-stack-host-room", created.id);
+      const { hostedRoom, reused } = await createOrResumeRoom();
+      if (reused) applyState(hostedRoom.game_state);
       setShowJoin(true);
-      setJoinStatus(data.reused ? "Resumed your existing live session. No second session was created." : "");
+      setJoinStatus(reused ? "Resumed your existing live session. No second session was created." : "");
     } catch (e) {
       setJoinStatus(e instanceof Error ? e.message : "Could not create spectator QR.");
     } finally { setBusy(false); }
