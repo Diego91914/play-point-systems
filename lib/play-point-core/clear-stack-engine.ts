@@ -63,6 +63,30 @@ export function startStack(
   };
 }
 
+/**
+ * Keep the same host session and spectator link for consecutive games.
+ * Rematches preserve players and setup, but clear every score and throw.
+ */
+export function replayStack(previous: StackState): StackState {
+  if (previous.phase !== "finished") throw new Error("Finish the current stack before replaying.");
+  if (!previous.players.length) throw new Error("No players to replay.");
+  return startStack(
+    initialStackState(previous.distance, previous.stackSize),
+    previous.players.map(player => player.name),
+    previous.distance,
+    previous.stackSize,
+  );
+}
+
+/**
+ * Open setup for another game or a new roster without closing the live session.
+ * Spectators wait on their original QR link until the host starts again.
+ */
+export function changeStackPlayers(previous: StackState): StackState {
+  if (previous.phase !== "finished") throw new Error("Finish the current stack before changing players.");
+  return initialStackState(previous.distance, previous.stackSize);
+}
+
 export function scoreStack(previous: StackState, makes: number): StackState {
   if (previous.phase !== "playing") throw new Error("Game is not in progress.");
   const active = previous.players[previous.turn];
