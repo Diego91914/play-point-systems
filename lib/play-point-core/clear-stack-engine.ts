@@ -18,6 +18,19 @@ export function initialStackState(distance: number, stackSize: number): StackSta
   return { phase: "setup", distance, stackSize, players: [], round: 0, turn: 0 };
 }
 
+/**
+ * Setup stays editable until the host begins playing, including after a watch
+ * link has been shared. A newly configured setup is what spectators will see.
+ */
+export function configureStack(previous: StackState, distance: number, stackSize: number): StackState {
+  if (previous.phase !== "setup") throw new Error("Game settings are locked once play begins.");
+  if (!Number.isInteger(distance) || distance < 1 || distance > 100)
+    throw new Error("Choose a distance between 1 and 100 feet.");
+  if (!Number.isInteger(stackSize) || stackSize < 1 || stackSize > 100)
+    throw new Error("Choose between 1 and 100 discs.");
+  return { ...previous, distance, stackSize };
+}
+
 export function startStack(
   previous: StackState,
   names: string[],
