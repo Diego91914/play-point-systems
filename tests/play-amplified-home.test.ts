@@ -100,6 +100,22 @@ describe("Play Amplified consumer home", () => {
     expect(pwa).not.toContain("candidates.length - 1");
   });
 
+
+  it("recovers current Shot Caddy rounds and presents safe centered host actions", () => {
+    expect(resumeRuntime).toContain("sc_active_round_resumes_v1");
+    expect(resumeRuntime).toContain("/shot-caddy/api/sessions/");
+    expect(resumeRuntime).toContain("endHref: isHost");
+    expect(resumeRuntime).toContain('params.set("dest", "summary")');
+    expect(resumeRuntime).toContain("clearKeys: []");
+    expect(pwa).toContain('pathname === "/play-amplified"');
+    expect(pwa).toContain('aria-label="Continue your active game"');
+    expect(pwa).toContain("RESUME GAME");
+    expect(pwa).toContain("END GAME");
+    expect(pwa).toContain("GO TO END GAME");
+    expect(pwa).toContain("Nothing is erased or ended until you confirm there.");
+    expect(pwa).toContain("primary.endHref");
+  });
+
   it("lets a player resume, save for later, or exit the remembered game explicitly", () => {
     expect(pwa).toContain("play-amplified-resume-dismissed");
     expect(pwa).toContain("max-w-2xl");
