@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
 import type { ResumeCandidate } from "./PlayAmplifiedResumeRuntime";
 
 type BeforeInstallPromptEvent = Event & {
@@ -15,6 +16,8 @@ function removeLocalKeys(keys: readonly string[]) {
 }
 
 export function PlayAmplifiedPwa() {
+  const pathname = usePathname();
+  const [endGameConfirmation, setEndGameConfirmation] = useState(false);
   const [candidates, setCandidates] = useState<ResumeCandidate[]>([]);
   const [standalone, setStandalone] = useState(false);
   const [isIos, setIsIos] = useState(false);
@@ -41,7 +44,10 @@ export function PlayAmplifiedPwa() {
         setStandalone(inStandalone);
         setIsIos(/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
         setInstallDismissed(window.sessionStorage.getItem("play-amplified-install-dismissed") === "1");
-        setResumeDismissed(window.sessionStorage.getItem("play-amplified-resume-dismissed") === "1");
+        setResumeDismissed(
+          window.sessionStorage.getItem("play-amplified-resume-dismissed") === "1"
+          && !nextCandidates.some((candidate) => candidate.key.startsWith("shot-caddy:")),
+        );
         setClientReady(true);
       })();
     });
@@ -121,6 +127,39 @@ export function PlayAmplifiedPwa() {
   };
 
   if (!clientReady) return null;
+
+  if (primary && !resumeDismissed && pathname === "/play-amplified") {
+    return (
+      <div className="fixed inset-0 z-[110] flex items-center justify-center overflow-y-auto bg-[#020711]/85 px-4 py-8 backdrop-blur-md" role="dialog" aria-modal="true" aria-label="Continue your active game">
+        <div className="w-full max-w-lg rounded-[28px] border border-cyan-300/35 bg-[#091827] p-6 text-center text-white shadow-[0_28px_100px_rgba(0,0,0,.75)] sm:p-9">
+          <div className="text-xs font-black uppercase tracking-[0.22em] text-cyan-200">Game in progress</div>
+          <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">{primary.title}</h2>
+          <p className="mt-2 text-base text-white/75">{primary.code ? `Session ${primary.code}` : "A game is waiting on this device."}</p>
+          <p className="mt-5 text-sm leading-6 text-white/75">Your round is still available. Resume where you left off, or choose the end-game flow after reviewing your scores.</p>
+          {endGameConfirmation && primary.endHref ? (
+            <div className="mt-6 rounded-2xl border border-amber-200/35 bg-amber-300/10 p-4 text-left" role="alertdialog" aria-label="Confirm end game">
+              <div className="text-base font-black text-amber-100">End this game?</div>
+              <p className="mt-2 text-sm leading-6 text-white/80">You will go to the Shot Caddy scorecard to review your saved scores and confirm Finish Round. Nothing is erased or ended until you confirm there.</p>
+              <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                <button type="button" onClick={() => setEndGameConfirmation(false)} className="min-h-12 flex-1 rounded-xl border border-white/25 px-4 py-3 text-sm font-black">KEEP PLAYING</button>
+                <a href={primary.endHref} className="flex min-h-12 flex-1 items-center justify-center rounded-xl bg-amber-300 px-4 py-3 text-sm font-black text-slate-950">GO TO END GAME</a>
+              </div>
+            </div>
+          ) : (
+            <div className="mt-7 grid gap-3">
+              <a href={primary.href} className="flex min-h-16 items-center justify-center rounded-2xl bg-cyan-300 px-6 py-4 text-xl font-black text-slate-950 hover:bg-cyan-200">RESUME GAME</a>
+              {primary.endHref ? (
+                <button type="button" onClick={() => setEndGameConfirmation(true)} className="min-h-14 rounded-2xl border border-rose-200/40 bg-rose-400/10 px-6 py-3 text-lg font-black text-rose-100 hover:bg-rose-400/15">END GAME</button>
+              ) : (
+                <button type="button" onClick={exitResume} className="min-h-12 rounded-2xl border border-white/20 px-4 py-3 text-sm font-black text-white/80">EXIT REMINDER ON THIS DEVICE</button>
+              )}
+            </div>
+          )}
+          <button type="button" onClick={saveResumeForLater} className="mt-5 min-h-11 px-4 text-sm font-bold text-white/70 underline underline-offset-4 hover:text-white">Save for later</button>
+        </div>
+      </div>
+    );
+  }
 
   if (primary && !resumeDismissed) {
     return (
