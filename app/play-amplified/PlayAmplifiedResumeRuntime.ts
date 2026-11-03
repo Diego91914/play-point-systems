@@ -5,6 +5,8 @@ export type ResumeCandidate = {
   code?: string;
   seenAt: number;
   clearKeys: string[];
+  /** End routes to the game’s own confirmation/scorecard; no history is erased here. */
+  endHref?: string;
 };
 
 type SocialResumeGame = "chain-reaction" | "how-close" | "inside-man" | "on-my-list" | "all-about-you";
@@ -242,6 +244,73 @@ async function validateTriviaResume(): Promise<ResumeCandidate | null> {
   };
 }
 
+
+/**
+ * Shot Caddy is served as a /shot-caddy zone on the very same Play Amplified
+ * origin. Its active-round resume record was previously ignored by the PWA.
+ * Validate the canonical round before offering Resume; do not delete local
+ * recovery state after network errors.
+ */
+async function validateShotCaddyResume(): Promise<ResumeCandidate | null> {
+  const resumeKey = "sc_active_round_resumes_v1";
+  const entries = readJson(window.localStorage.getItem(resumeKey));
+  const resumes = entries
+    ? Object.values(entries).filter((item): item is Record<string, unknown> =>
+        Boolean(item && typeof item === "object" && !Array.isArray(item)))
+    : [];
+  const legacyCode = window.localStorage.getItem("sc_last_session_code")?.trim().toUpperCase() ?? "";
+  if (legacyCode && !resumes.some((item) => item.sessionCode === legacyCode)) {
+    resumes.push({
+      sessionCode: legacyCode,
+      playerId: window.localStorage.getItem("sc_last_player_id") ?? "",
+      playerName: window.localStorage.getItem("sc_last_player_name") ?? "",
+      updatedAt: 0,
+      gameMode: "LEGACY_UNKNOWN",
+    });
+  }
+  const ranked = resumes
+    .filter((resume) => typeof resume.sessionCode === "string" && /^[A-Z0-9]{6,8}$/.test(resume.sessionCode))
+    .sort((a, b) => Number(b.updatedAt ?? 0) - Number(a.updatedAt ?? 0));
+
+  for (const saved of ranked) {
+    const code = String(saved.sessionCode);
+    try {
+      const response = await fetch(`/shot-caddy/api/sessions/${encodeURIComponent(code)}`, { cache: "no-store" });
+      if (!response.ok) continue;
+      const payload = await response.json().catch(() => null) as Record<string, unknown> | null;
+      const round = payload?.roundState as Record<string, unknown> | undefined;
+      if (!round || typeof round !== "object" || round.hostEndedAt || round.roundEndedAt) continue;
+      const mode = typeof round.gameMode === "string" ? round.gameMode : "";
+      if (typeof saved.gameMode === "string" && saved.gameMode !== "LEGACY_UNKNOWN" && saved.gameMode !== mode) continue;
+
+      const playerId = typeof saved.playerId === "string" ? saved.playerId : "";
+      const playerName = typeof saved.playerName === "string" ? saved.playerName : "";
+      const params = new URLSearchParams();
+      if (playerId) params.set("resumePlayerId", playerId);
+      if (playerName) params.set("resumePlayerName", playerName);
+      const resumeParams = params.toString();
+      const href = `/shot-caddy/join/${encodeURIComponent(code)}${resumeParams ? `?${resumeParams}` : ""}`;
+      const hostPlayerId = typeof round.hostPlayerId === "string" ? round.hostPlayerId : "";
+      const isHost = Boolean(playerId && hostPlayerId && playerId === hostPlayerId);
+      if (isHost) params.set("dest", "summary");
+
+      return {
+        key: `shot-caddy:${code}`,
+        title: mode === "CHALLENGE_SKINS_PRO" ? "Challenge Skins Pro" : "Shot Caddy",
+        href,
+        endHref: isHost ? `/shot-caddy/join/${encodeURIComponent(code)}?${params.toString()}` : undefined,
+        code,
+        seenAt: typeof saved.updatedAt === "number" ? saved.updatedAt : 0,
+        // This is a live round. Never delete its resume pointer from Play Amplified.
+        clearKeys: [],
+      };
+    } catch {
+      // Offline or temporarily unavailable server: leave recovery data intact.
+    }
+  }
+  return null;
+}
+
 export async function readResumeCandidates(): Promise<ResumeCandidate[]> {
   const localKeys: string[] = [];
   for (let index = 0; index < window.localStorage.length; index += 1) {
@@ -249,13 +318,14 @@ export async function readResumeCandidates(): Promise<ResumeCandidate[]> {
     if (key && /^pps-holdem-[A-Z2-9]{6}$/i.test(key)) localKeys.push(key);
   }
 
-  const [roomCandidates, holdemCandidates, triviaCandidate] = await Promise.all([
+  const [roomCandidates, holdemCandidates, triviaCandidate, shotCaddyCandidate] = await Promise.all([
     Promise.all(SESSION_SOURCES.map((source) => validateSessionSource(source))),
     Promise.all(localKeys.map((key) => validateHoldemSession(key))),
     validateTriviaResume(),
+    validateShotCaddyResume(),
   ]);
 
-  return [...roomCandidates, ...holdemCandidates, triviaCandidate]
+  return [...roomCandidates, ...holdemCandidates, triviaCandidate, shotCaddyCandidate]
     .filter((candidate): candidate is ResumeCandidate => candidate !== null)
     .sort((a, b) => b.seenAt - a.seenAt);
 }
