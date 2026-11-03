@@ -150,9 +150,9 @@ export function PlayAmplifiedPwa() {
               <a href={primary.href} className="flex min-h-16 items-center justify-center rounded-2xl bg-cyan-300 px-6 py-4 text-xl font-black text-slate-950 hover:bg-cyan-200">RESUME GAME</a>
               {primary.endHref ? (
                 <button type="button" onClick={() => setEndGameConfirmation(true)} className="min-h-14 rounded-2xl border border-rose-200/40 bg-rose-400/10 px-6 py-3 text-lg font-black text-rose-100 hover:bg-rose-400/15">END GAME</button>
-              ) : (
+              ) : !primary.key.startsWith("shot-caddy:") ? (
                 <button type="button" onClick={exitResume} className="min-h-12 rounded-2xl border border-white/20 px-4 py-3 text-sm font-black text-white/80">EXIT REMINDER ON THIS DEVICE</button>
-              )}
+              ) : null}
             </div>
           )}
           <button type="button" onClick={saveResumeForLater} className="mt-5 min-h-11 px-4 text-sm font-bold text-white/70 underline underline-offset-4 hover:text-white">Save for later</button>
@@ -173,7 +173,7 @@ export function PlayAmplifiedPwa() {
           <div className="flex w-full gap-2 sm:w-auto sm:shrink-0">
             <a href={primary.href} className="flex-1 rounded-xl bg-cyan-300 px-4 py-2.5 text-center text-xs font-black text-slate-950 transition hover:bg-cyan-200 sm:flex-none sm:text-sm">RESUME</a>
             <button type="button" onClick={saveResumeForLater} title="Keep this active game and ask again next time" className="rounded-xl border border-white/12 bg-white/[0.06] px-3 py-2.5 text-[10px] font-black text-white/75 transition hover:bg-white/10 hover:text-white sm:text-xs">SAVE FOR LATER</button>
-            <button type="button" onClick={exitResume} title="Remove this remembered game from this device" className="rounded-xl border border-rose-200/15 bg-rose-300/[0.06] px-3 py-2.5 text-xs font-black text-rose-100/80 transition hover:bg-rose-300/10 hover:text-rose-50">EXIT</button>
+{!primary.key.startsWith("shot-caddy:") ? (<button type="button" onClick={exitResume} title="Remove this remembered game from this device" className="rounded-xl border border-rose-200/15 bg-rose-300/[0.06] px-3 py-2.5 text-xs font-black text-rose-100/80 transition hover:bg-rose-300/10 hover:text-rose-50">EXIT</button>) : null}
           </div>
         </div>
       </div>
