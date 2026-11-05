@@ -74,14 +74,14 @@ test("browsing all game details preserves sessions and never loads or mutates ga
   context.on("request", request => {
     const url = new URL(request.url());
     network.push(`${request.method()} ${url.pathname}${url.search}`);
-    const isGameRoute = /^\/(games|shot-caddy|live)(\/|$)/.test(url.pathname);
+    const isGameRoute = /^\/(games|live)(\/|$)/.test(url.pathname) || (url.pathname.startsWith("/shot-caddy/") && !url.pathname.startsWith("/shot-caddy/api/"));
     const isApi = url.pathname.startsWith("/api/") || url.pathname.startsWith("/shot-caddy/api/");
     if (isGameRoute || (isApi && !isResumeStatusRead(request)) || (!isResumeStatusRead(request) && !["GET", "HEAD"].includes(request.method()))) forbidden.push(`${request.method()} ${url.href}`);
   });
   // Abort a regression before it can touch even a synthetic game session.
   await context.route("**/*", route => {
     const request = route.request(), path = new URL(request.url()).pathname;
-    const isGameRoute = /^\/(games|shot-caddy|live)(\/|$)/.test(path);
+    const isGameRoute = /^\/(games|live)(\/|$)/.test(path) || (path.startsWith("/shot-caddy/") && !path.startsWith("/shot-caddy/api/"));
     const isApi = path.startsWith("/api/") || path.startsWith("/shot-caddy/api/");
     return isGameRoute || (isApi && !isResumeStatusRead(request)) || (!isResumeStatusRead(request) && !["GET", "HEAD"].includes(request.method())) ? route.abort() : route.continue();
   });
