@@ -1,27 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useMysterySession } from "./useMysterySession";
 import { BlackwoodPortrait } from "./blackwood-cast";
 import styles from "./MysteryMoments.module.css";
 
-type Session = { code: string; playerId: string; token: string };
 type CastMember = { id: string; name: string; seat: number; roleId: string | null; roleTitle: string | null };
 type RevealState = { reveal?: { murderer?: { id: string; name: string; role: string } } | null };
 
-const KEY = "pps-mystery-session";
 
 export function MysteryRevealPortrait() {
-  const [session, setSession] = useState<Session | null>(null);
+  const session = useMysterySession();
   const [murderer, setMurderer] = useState<{ id: string; name: string; role: string; roleId: string } | null>(null);
   const [showSuspense, setShowSuspense] = useState(false);
-  const [revealedId, setRevealedId] = useState<string | null>(null);
+  const revealedId = useRef<string | null>(null);
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setSession(JSON.parse(raw));
-    } catch {}
-  }, []);
 
   useEffect(() => {
     if (!session) return;
@@ -40,7 +33,7 @@ export function MysteryRevealPortrait() {
           if (!cancelled) {
             setMurderer(null);
             setShowSuspense(false);
-            setRevealedId(null);
+            revealedId.current = null;
           }
           return;
         }
@@ -54,14 +47,14 @@ export function MysteryRevealPortrait() {
   }, [session]);
 
   useEffect(() => {
-    if (!murderer || murderer.id === revealedId) return;
-    setRevealedId(murderer.id);
+    if (!murderer || murderer.id === revealedId.current) return;
+    revealedId.current = murderer.id;
     const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
     if (reduceMotion) return;
-    setShowSuspense(true);
+    const start = window.setTimeout(() => setShowSuspense(true), 0);
     const timer = window.setTimeout(() => setShowSuspense(false), 1850);
-    return () => window.clearTimeout(timer);
-  }, [murderer, revealedId]);
+    return () => { window.clearTimeout(start); window.clearTimeout(timer); };
+  }, [murderer]);
 
   if (!murderer) return null;
 

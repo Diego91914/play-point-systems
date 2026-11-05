@@ -15,12 +15,17 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   webServer: {
+    env: { PLAY_POINT_GAMES_SESSION_SECRET: "playwright-local-only-session-signing-key" },
     command: "npm run dev -- --hostname 127.0.0.1 --port 3001",
     url: "http://127.0.0.1:3001",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
   projects: [
+    {
+      name: "desktop",
+      use: { viewport: { width: 1440, height: 900 } },
+    },
     {
       name: "mobile-320",
       use: { viewport: { width: 320, height: 700 }, deviceScaleFactor: 1, hasTouch: true, isMobile: true },

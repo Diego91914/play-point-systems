@@ -84,10 +84,10 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   }
 
   const runtime = await loadVenueTriviaRuntime(liveSession.id);
-  const livePlayer = (runtime.bundle.players ?? []).find((player: any) => player.id === livePlayerId) ?? null;
-  const answer = (runtime.bundle.answers ?? []).find((row: any) => row.player_id === livePlayerId) ?? null;
-  const wager = (runtime.bundle.wagers ?? []).find((row: any) => row.player_id === livePlayerId) ?? null;
-  const resolutionRow = runtime.session.resolution?.rows?.find((row: any) => row.playerId === livePlayerId) ?? null;
+  const livePlayer = (runtime.bundle.players ?? []).find((player) => player.id === livePlayerId) ?? null;
+  const answer = (runtime.bundle.answers ?? []).find((row) => row.player_id === livePlayerId) ?? null;
+  const wager = (runtime.bundle.wagers ?? []).find((row) => row.player_id === livePlayerId) ?? null;
+  const resolutionRow = runtime.session.resolution?.rows?.find((row) => row.playerId === livePlayerId) ?? null;
 
   return NextResponse.json({
     venue: { slug: venue.slug, displayName: venue.display_name },

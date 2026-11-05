@@ -3,6 +3,7 @@ import "server-only";
 import { createHash, timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import { blackwoodBranchProgress, resolveBlackwoodVariant, type MysteryBranchSignals } from "@/lib/play-point-core/mystery-case-variants";
+import { questionsPerEvidenceRound } from "@/lib/play-point-core/mystery-pacing";
 
 type Player = { id: string; name: string; tokenHash: string; seat: number; roleId?: string };
 type DormantChoice = { status: string; decidedAt?: string };
@@ -11,9 +12,12 @@ type State = {
   status: "lobby" | "interrogation" | "evidence" | "accusation" | "reveal";
   players: Player[];
   evidenceIndex: number;
+  evidenceAcknowledged?: string[];
   dormantEvidence?: Record<string, DormantChoice>;
   branchSignals?: MysteryBranchSignals;
   caseVariantId?: string;
+  pacingQuestionCount?: number;
+  message?: string;
 };
 type Row = { code: string; state: State; version: number };
 
@@ -161,6 +165,14 @@ export async function decideMysteryDormantEvidence(codeValue: unknown, playerId:
   if (progress.readyToResolve) {
     const variant = resolveBlackwoodVariant(row.state.branchSignals, row.state.caseVariantId);
     if (variant) row.state.caseVariantId = variant.id;
+    const roundTarget = questionsPerEvidenceRound(row.state.players.length);
+    if (row.state.caseVariantId && row.state.status === "interrogation" && (row.state.pacingQuestionCount ?? 0) >= roundTarget) {
+      row.state.status = "evidence";
+      row.state.evidenceIndex += 1;
+      row.state.evidenceAcknowledged = [];
+      row.state.pacingQuestionCount = 0;
+      row.state.message = "New information has interrupted the investigation. Everyone read it before questioning resumes.";
+    }
   }
 
   const saved = await save(row, row.state);

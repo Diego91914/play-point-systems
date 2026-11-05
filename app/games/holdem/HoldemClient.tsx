@@ -1,4 +1,5 @@
 "use client";
+import { saveBrowserGameSession } from "../_components/browser-session-store";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { RoomJoinPanel } from "@/app/games/_components/RoomJoinPanel";
@@ -212,7 +213,7 @@ export function HoldemClient() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error ?? "Unable to open table.");
       const next = { code: data.table.code, playerId: data.playerId, token: data.token };
-      localStorage.setItem(storageKey(next.code), JSON.stringify(next));
+      saveBrowserGameSession(storageKey(next.code), next);
       setCredentials(next);
       setTable(data.table);
       setRoomCode(next.code);

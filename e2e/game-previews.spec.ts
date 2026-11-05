@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { MASTER_GAME_CATALOG } from "../lib/play-point-core/master-game-catalog";
+import { FINISHED_GAME_FORMATS, MASTER_GAME_CATALOG } from "../lib/play-point-core/master-game-catalog";
 
 async function savedState(page: Page) {
   return page.evaluate(async () => {
@@ -79,10 +79,16 @@ test("browsing all game details preserves sessions and never loads or mutates ga
     }
   });
   await page.goto("/play-amplified");
-  // The storefront reserves bespoke art for its five signature games;
-  // the complete catalog uses linked covers to the same detail pages.
-  const featuredGameIds = ["shot-classic", "clear-the-stack", "phone-holdem", "live-craps", "quest-digital"] as const;
+  // Only released signature games appear as featured previews.
+  const signatureGameIds = ["shot-classic", "clear-the-stack", "phone-holdem", "live-craps", "quest-digital"];
+  const featuredGameIds = FINISHED_GAME_FORMATS
+    .filter((game) => signatureGameIds.includes(game.id))
+    .map((game) => game.id);
+  expect(featuredGameIds.length).toBeGreaterThan(0);
   await expect(page.locator("[data-game-preview]")).toHaveCount(featuredGameIds.length);
+  expect((await page.locator("[data-game-preview]").evaluateAll((elements) =>
+    elements.map((element) => element.getAttribute("data-game-preview")),
+  )).sort()).toEqual([...featuredGameIds].sort());
   for (const gameId of featuredGameIds) {
     const game = MASTER_GAME_CATALOG.find((entry) => entry.id === gameId);
     expect(game).toBeDefined();

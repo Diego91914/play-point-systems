@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+
+import { useBrowserGameSession } from "../_components/browser-session-store";
 
 const SESSION_KEY = "pps-all-about-you-session";
 const ROLE_COOKIE = "pps-all-about-you-entry-role";
@@ -10,18 +12,14 @@ type Role = "star" | "player";
 export function AllAboutYouEntryRole({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
 
-  useEffect(() => {
-    try {
-      if (localStorage.getItem(SESSION_KEY)) setReady(true);
-    } catch {}
-  }, []);
+  const session = useBrowserGameSession<unknown>(SESSION_KEY);
 
   function choose(role: Role) {
     document.cookie = `${ROLE_COOKIE}=${role}; Max-Age=86400; Path=/; SameSite=Lax`;
     setReady(true);
   }
 
-  if (ready) return <>{children}</>;
+  if (ready || session) return <>{children}</>;
 
   return (
     <main className="px-5 py-10 sm:px-8">

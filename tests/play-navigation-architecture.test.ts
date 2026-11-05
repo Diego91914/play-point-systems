@@ -58,9 +58,10 @@ describe("Play Amplified navigation roles", () => {
     expect(host).toContain('data-host-game={game.id}');
     expect(host).toContain('data-hosting-mode={getGameHostingMode(game.id)}');
     expect(host).toContain("game.launchHref");
-    expect(host).toContain("Shared room");
-    expect(host).toContain("Game engine");
-    expect(host).toContain("Preview labels describe release readiness");
+    expect(host).toContain("Guests join by code / QR");
+    expect(host).toContain("Dedicated game setup");
+    expect(host).toContain("Preview · Testing");
+    expect(host).toContain('aria-label="Jump to game category"');
     expect(host).not.toContain("ROOM_GAME_IDS");
     expect(host).not.toMatch(/\.filter\(\(game\) => game\.status === "live"\)/);
     expect(hosting).toContain("SHARED_ROOM_GAME_IDS");

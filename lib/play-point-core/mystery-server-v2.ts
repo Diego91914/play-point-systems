@@ -309,6 +309,9 @@ type State = {
   evidenceAcknowledged: string[];
   votes: Record<string, string>;
   message: string;
+  pacingQuestionCount?: number;
+  caseVariantId?: string;
+  branchSignals?: Record<string, string>;
 };
 type Row = { code: string; state: State; version: number };
 
@@ -416,7 +419,7 @@ export async function getMysteryRoom(codeValue: unknown, playerId: string, token
   return { state: projectWithTarget(row.state, playerId, targetId) };
 }
 
-export async function actMysteryRoom(codeValue: unknown, playerId: string, token: string, action: string, payload: Record<string, unknown> = {}) {
+export async function actMysteryRoom(codeValue: unknown, playerId: string, token: string, action: string, payload: Record<string, unknown> = {}, beforeSave?: (state: State) => void) {
   const code = cleanCode(codeValue), row = await read(code);
   if (!row) throw new Error("Mystery room not found.");
   const state = normalize(row.state);
@@ -460,6 +463,7 @@ export async function actMysteryRoom(codeValue: unknown, playerId: string, token
     state.status = "lobby"; state.players.forEach(player => { delete player.roleId; }); state.turnIndex = 0; state.interrogationCount = 0; state.pendingQuestion = null; state.asked = []; state.evidenceIndex = -1; state.evidenceAcknowledged = []; state.votes = {}; state.message = "Mystery reset. Invite players, then begin again.";
   } else throw new Error("Unknown mystery action.");
 
+  beforeSave?.(state);
   const saved = await save(row, state);
   const targetId = typeof payload.targetId === "string" ? payload.targetId : undefined;
   return { state: projectWithTarget(saved.state, playerId, targetId) };

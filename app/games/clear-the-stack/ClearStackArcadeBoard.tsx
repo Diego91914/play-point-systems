@@ -9,18 +9,19 @@ export function ClearStackArcadeBoard({distance,stackSize,allowAccountViews,refr
 }) {
  const [scope,setScope]=useState<Scope>("global");
  const [period,setPeriod]=useState<Period>("daily");
- const [entries,setEntries]=useState<Entry[]>([]);
- const [state,setState]=useState<"loading"|"ready"|"error">("loading");
+ const queryKey=JSON.stringify([distance,stackSize,scope,period,refreshKey]);
+ const [result,setResult]=useState<{key:string;entries:Entry[];state:"ready"|"error"}|null>(null);
+ const state=result?.key===queryKey?result.state:"loading";
+ const entries=result?.key===queryKey?result.entries:[];
  useEffect(()=>{
   let cancelled=false;
-  setState("loading");
   const params=new URLSearchParams({distance:String(distance),stackSize:String(stackSize),scope,period});
   void fetch("/api/games/clear-the-stack/leaderboard?"+params,{cache:"no-store"})
    .then(async response=>{const body=await response.json();if(!response.ok)throw Error(body.error||"Leaderboard unavailable");return body;})
-   .then(body=>{if(!cancelled){setEntries(body.entries||[]);setState("ready");}})
-   .catch(()=>{if(!cancelled)setState("error");});
+   .then(body=>{if(!cancelled){setResult({key:queryKey,entries:body.entries||[],state:"ready"});}})
+   .catch(()=>{if(!cancelled)setResult({key:queryKey,entries:[],state:"error"});});
   return ()=>{cancelled=true;};
- },[distance,stackSize,scope,period,refreshKey]);
+ },[distance,stackSize,scope,period,queryKey]);
  return <section className="mt-6 rounded-[28px] border border-cyan-200/15 bg-white/[.045] p-5 text-white sm:p-7" aria-label="Clear the Stack arcade high scores">
   <p className="text-center text-[10px] font-black uppercase tracking-[.23em] text-cyan-200/60">Play Amplified Arcade</p>
   <h2 className="mt-2 text-center text-2xl font-black">HIGH SCORES</h2>

@@ -39,8 +39,7 @@ jobs:
           proxy.ts
           tests/social-room-readiness.test.ts
 
-      - name: Full lint baseline audit
-        continue-on-error: true
+      - name: Full lint
         run: npm run lint
 
       - name: Unit tests
@@ -48,6 +47,9 @@ jobs:
 
       - name: Production build
         run: npm run build
+
+      - name: TypeScript validation
+        run: npx tsc --noEmit
 
       - name: Responsive and accessibility tests
         run: npm run test:e2e
