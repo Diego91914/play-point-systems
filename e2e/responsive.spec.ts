@@ -38,17 +38,20 @@ for (const route of marketingRoutes) {
   });
 }
 
-test("the mobile brand mark and company name remain fully visible", async ({ page }) => {
+test("the responsive brand mark and company name remain fully visible", async ({ page }) => {
   await page.goto("/");
 
-  const logo = page.locator('header img[src*="play-point-systems-emblem"]').first();
+  const desktopBrand = (page.viewportSize()?.width ?? 0) >= 640;
+  const logo = desktopBrand
+    ? page.locator('header img[alt="Play Point Systems"]').first()
+    : page.locator('header img[src*="play-point-systems-emblem"]').first();
   await expect(logo).toBeVisible();
   const logoBounds = await logo.boundingBox();
   expect(logoBounds).not.toBeNull();
   expect(logoBounds!.width).toBeGreaterThanOrEqual(32);
   expect(logoBounds!.height).toBeGreaterThanOrEqual(32);
 
-  const companyName = page.getByText("Play Point Systems", { exact: true }).first();
+  const companyName = desktopBrand ? logo : page.getByText("Play Point Systems", { exact: true }).first();
   await expect(companyName).toBeVisible();
   expect(
     await companyName.evaluate((element) => element.scrollWidth <= element.clientWidth + 1)
