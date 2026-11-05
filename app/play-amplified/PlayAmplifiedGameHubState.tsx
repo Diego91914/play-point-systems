@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { MASTER_GAME_CATALOG, type MasterGameEntry } from "@/lib/play-point-core/master-game-catalog";
-import { readResumeCandidates, type ResumeCandidate } from "./PlayAmplifiedResumeRuntime";
+import type { ResumeCandidate } from "./PlayAmplifiedResumeRuntime";
 
 type RecentGame = { id: string; playedAt: number };
 type GameHubState = {
@@ -42,6 +42,7 @@ export function PlayAmplifiedGameHubStateProvider({ children }: { children: Reac
 
   const refresh = useCallback(async () => {
     try {
+      const { readResumeCandidates } = await import("./PlayAmplifiedResumeRuntime");
       const candidates = await readResumeCandidates();
       setActiveGame(candidates[0] ?? null);
     } catch {
@@ -83,14 +84,8 @@ export function PlayAmplifiedGameHubStateProvider({ children }: { children: Reac
     const confirmed = window.confirm("End Clear the Stack? This closes the live game for everyone and disconnects its spectator link.");
     if (!confirmed) return false;
     try {
-      const response = await fetch("/api/games/clear-the-stack/room", {
-        method: "PATCH",
-        cache: "no-store",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ id: activeGame.endAction.roomId, version: activeGame.endAction.version, action: "close" }),
-      });
-      const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload.error || "Could not end the game. Reconnect and try again.");
+      const { closeClearStackGame } = await import("./PlayAmplifiedGameHubEndAction");
+      await closeClearStackGame(activeGame.endAction);
       const recent = { id: activeGame.gameId ?? "clear-the-stack", playedAt: Date.now() };
       try {
         window.localStorage.setItem(RECENT_GAME_STORAGE_KEY, JSON.stringify(recent));

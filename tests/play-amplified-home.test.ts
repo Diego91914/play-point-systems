@@ -87,7 +87,9 @@ describe("Play Amplified consumer home", () => {
   });
 
   it("keeps active game credentials available through outages and foregrounds the current session", () => {
+    expect(gameHub).toContain('await import("./PlayAmplifiedResumeRuntime")');
     expect(gameHub).toContain("await readResumeCandidates()");
+    expect(gameHub).toContain('await import("./PlayAmplifiedGameHubEndAction")');
     expect(pwa).not.toMatch(/\bfetch\s*\(/);
     expect(resumeRuntime).not.toContain("RESUME_MAX_AGE_MS");
     expect(resumeRuntime).not.toContain("removeLocalKeys");

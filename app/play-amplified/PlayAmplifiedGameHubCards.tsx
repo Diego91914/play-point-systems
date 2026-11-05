@@ -38,9 +38,9 @@ export function ActiveGameCard() {
           <p className="mt-1 text-xs leading-5 text-white/60">{activeGame.connection === "offline" ? "Saved game · connection unavailable; reconnect to continue or end." : activeGame.connection === "reconnect" ? "Saved game · reconnect to verify its status." : activeGame.code ? `Room ${activeGame.code} · end this game before starting another.` : "Return to your saved game or end it before starting another."}</p>
         </div>
         <div className="flex gap-2 sm:shrink-0">
-          <Link href={activeGame.href} className="flex-1 rounded-xl bg-cyan-200 px-4 py-3 text-center text-xs font-black text-slate-950 sm:flex-none">RETURN TO GAME</Link>
+          <Link prefetch={false} href={activeGame.href} className="flex-1 rounded-xl bg-cyan-200 px-4 py-3 text-center text-xs font-black text-slate-950 sm:flex-none">RETURN TO GAME</Link>
           {activeGame.endAction ? <button type="button" onClick={() => void endActiveGame()} className="flex-1 rounded-xl border border-rose-200/30 px-4 py-3 text-xs font-black text-rose-100 sm:flex-none">END GAME</button> : null}
-          {activeGame.endHref ? <Link href={activeGame.endHref} className="flex-1 rounded-xl border border-rose-200/30 px-4 py-3 text-center text-xs font-black text-rose-100 sm:flex-none">END GAME</Link> : null}
+          {activeGame.endHref ? <Link prefetch={false} href={activeGame.endHref} className="flex-1 rounded-xl border border-rose-200/30 px-4 py-3 text-center text-xs font-black text-rose-100 sm:flex-none">END GAME</Link> : null}
         </div>
       </div>
       {blockNotice ? <p role="alert" className="mt-3 text-sm text-rose-200">{blockNotice}</p> : null}
