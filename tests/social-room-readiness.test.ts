@@ -41,8 +41,11 @@ describe("Play Amplified social room readiness", () => {
 
   it("the Play Amplified return surface remembers every social title", () => {
     const pwa = read("app/play-amplified/PlayAmplifiedPwa.tsx");
+    const hubState = read("app/play-amplified/PlayAmplifiedGameHubState.tsx");
     const resumeRuntime = read("app/play-amplified/PlayAmplifiedResumeRuntime.ts");
-    expect(pwa).toContain('await import("./PlayAmplifiedResumeRuntime")');
+    expect(pwa).toContain("usePlayAmplifiedGameHub");
+    expect(hubState).toContain("await readResumeCandidates()");
+    expect(hubState).toContain("setActiveGame(candidates[0] ?? null)");
     for (const marker of ["pps-chain-reaction-session", "pps-how-close-session", "pps-inside-man-session", "pps-on-my-list-session", "pps-all-about-you-session", "pps-holdem-", "play-point-trivia-host-connection-v2", "play-point-trivia-player-connection-v2"]) expect(resumeRuntime).toContain(marker);
   });
 

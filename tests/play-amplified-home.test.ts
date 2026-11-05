@@ -3,10 +3,11 @@ import { describe, expect, it } from "vitest";
 
 const home = readFileSync("app/play-amplified/page.tsx", "utf8");
 const pwa = readFileSync("app/play-amplified/PlayAmplifiedPwa.tsx", "utf8");
+const gameHub = readFileSync("app/play-amplified/PlayAmplifiedGameHubState.tsx", "utf8");
+const gameCards = readFileSync("app/play-amplified/PlayAmplifiedGameHubCards.tsx", "utf8");
 const resumeRuntime = readFileSync("app/play-amplified/PlayAmplifiedResumeRuntime.ts", "utf8");
 const worker = readFileSync("public/play-amplified-sw.js", "utf8");
 const manifest = readFileSync("app/play-amplified-manifest.webmanifest/route.ts", "utf8");
-const featuredArt = readFileSync("app/play-amplified/FeaturedGameArt.tsx", "utf8");
 const editorialCoverArt = readFileSync("app/play-amplified/EditorialGameCoverArt.tsx", "utf8");
 const libraryCoverArt = readFileSync("app/play-amplified/GameCoverArt.tsx", "utf8");
 const games = readFileSync("app/games/page.tsx", "utf8");
@@ -14,20 +15,21 @@ const nextConfig = readFileSync("next.config.ts", "utf8");
 const proxy = readFileSync("proxy.ts", "utf8");
 
 describe("Play Amplified consumer home", () => {
-  it("keeps the four primary play actions on the front door", () => {
-    expect(home).toContain('href: "/play/host"');
-    expect(home).toContain('href: "/play/join"');
-    expect(home).toContain('href: "/games"');
-    expect(home).toContain('href: "/live/quick-score"');
+  it("introduces the platform with compact Host and Explore actions", () => {
+    expect(home).toContain("Play together.");
+    expect(home).toContain("Stay in the moment.");
+    expect(home).toContain("Explore games");
+    expect(home).toContain("Host a game");
+    expect(home).not.toContain("Last Call: Murder at Blackwood House</div>");
   });
 
-  it("keeps Play now compact so games remain the visual focus", () => {
-    expect(home).toContain('type QuickActionKind = "host" | "join" | "games" | "score"');
-    expect(home).toContain("Instant access");
-    expect(home).toContain("Play now");
-    expect(home).toContain("grid grid-cols-2 gap-2 sm:grid-cols-4");
-    expect(home).toContain("<QuickActionIcon kind={action.kind} />");
-    expect(home).not.toContain("min-h-40");
+  it("puts active and recently played games ahead of the catalog", () => {
+    expect(home.indexOf("<GameHubActivityCards />")).toBeLessThan(home.indexOf("Explore our games"));
+    expect(gameCards).toContain("Active game");
+    expect(gameCards).toContain("Recently played");
+    expect(gameCards).toContain("PLAY AGAIN");
+    expect(gameHub).toContain('"pa_recently_played_game_v1"');
+    expect(gameHub).toContain('localStorage.setItem(RECENT_GAME_STORAGE_KEY, JSON.stringify(recent))');
   });
 
   it("keeps storefront text at the navigation contrast floor", () => {
@@ -47,25 +49,24 @@ describe("Play Amplified consumer home", () => {
     expect(home).not.toContain("PREVIEW_GAME_FORMATS.map");
   });
 
-  it("uses editorial hierarchy instead of a uniform dashboard grid", () => {
-    expect(home).toContain("function LeadGameCard");
-    expect(home).toContain("function EditorialGameCard");
-    expect(home).toContain("Featured in this category");
-    expect(home).toContain("Games with their own world.");
-    expect(home).toContain("lg:grid-cols-2");
-    expect(home).toContain("md:grid-cols-3");
-    expect(home).not.toContain("xl:grid-cols-5");
-    expect(home).not.toContain("View game →");
+  it("shows a two-column category dashboard and square game tiles", () => {
+    expect(home).toContain("Disc Golf & Putting");
+    expect(home).toContain("Trivia");
+    expect(home).toContain("Social & Cards");
+    expect(home).toContain("Mystery & Adventure");
+    expect(home).toContain("grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4");
+    expect(gameCards).toContain("aspect-square");
+    expect(home).toContain("View all");
   });
 
-  it("gives the five signature games large editorial artwork", () => {
-    for (const id of ["shot-classic", "clear-the-stack", "phone-holdem", "live-craps", "quest-digital"]) {
-      expect(home).toContain(`"${id}"`);
-      expect(featuredArt).toContain(`gameId === "${id}"`);
-    }
-    expect(home).toContain("<FeaturedGameArt gameId={id} />");
-    expect(home).toContain("<div data-game-preview={id}>");
-    expect(home).toContain("min-h-[360px]");
+  it("keeps Last Call secondary among cross-category featured games", () => {
+    expect(home).toContain('const featuredIds = ["shot-classic", "clear-the-stack", "phone-holdem", "live-craps", "quest-digital"]');
+    expect(home.indexOf('aria-labelledby="featured-games-heading"')).toBeGreaterThan(home.indexOf('id="game-categories"'));
+    expect(home).toContain("Featured games");
+    expect(home).toContain('game.id === "last-call"');
+    expect(gameCards).toContain('data-game-preview={game.id}');
+    expect(gameCards).toContain('href={game.href}');
+    expect(home).not.toContain("min-h-[390px]");
   });
 
   it("uses immersive full-bleed game art for the full library", () => {
@@ -75,8 +76,8 @@ describe("Play Amplified consumer home", () => {
       "card-shark-classic", "card-shark-stud", "card-shark-draw", "atw-ladder", "atw-sprint", "atw-survival", "disc-warrior", "clear-the-stack",
       "quest-digital", "quest-disc-golf", "play-point-trivia",
     ];
-    expect(home).toContain('import { EditorialGameCoverArt } from "./EditorialGameCoverArt"');
-    expect(home).toContain("<EditorialGameCoverArt gameId={game.id} immersive />");
+    expect(gameCards).toContain('import { EditorialGameCoverArt } from "./EditorialGameCoverArt"');
+    expect(gameCards).toContain("<EditorialGameCoverArt gameId={game.id} immersive />");
     expect(editorialCoverArt).toContain("const covers: Record<string, CoverIdentity>");
     expect(editorialCoverArt).toContain("data-game-cover={gameId}");
     expect(editorialCoverArt).toContain("immersive = false");
@@ -89,7 +90,9 @@ describe("Play Amplified consumer home", () => {
   });
 
   it("keeps active game credentials available through outages and foregrounds the current session", () => {
-    expect(pwa).toContain('await import("./PlayAmplifiedResumeRuntime")');
+    expect(gameHub).toContain('await import("./PlayAmplifiedResumeRuntime")');
+    expect(gameHub).toContain("await readResumeCandidates()");
+    expect(gameHub).toContain('await import("./PlayAmplifiedGameHubEndAction")');
     expect(pwa).not.toMatch(/\bfetch\s*\(/);
     expect(resumeRuntime).not.toContain("RESUME_MAX_AGE_MS");
     expect(resumeRuntime).not.toContain("removeLocalKeys");
@@ -97,14 +100,14 @@ describe("Play Amplified consumer home", () => {
     expect(resumeRuntime).toContain("validateTriviaResume");
     expect(resumeRuntime).toContain("payload?.ended === true");
     expect(resumeRuntime).toContain('connection = "offline"');
-    expect(pwa).toContain('window.location.replace(primary.href)');
-    expect(pwa).toContain('addEventListener("pageshow", refreshCandidates)');
+    expect(pwa).not.toContain("window.location.replace");
+    expect(gameHub).toContain('addEventListener("pageshow", onResume)');
     expect(pwa).not.toContain("candidates.length - 1");
   });
 
   it("keeps a prominent Return to Game action without credential-clearing controls", () => {
-    expect(pwa).toContain("max-w-2xl");
-    expect(pwa).toContain("RETURN TO GAME");
+    expect(gameCards).toContain("RETURN TO GAME");
+    expect(gameCards).toContain("END GAME");
     expect(pwa).not.toContain("SAVE FOR LATER");
     expect(pwa).not.toContain("EXIT");
     expect(pwa).not.toContain("current.slice(1)");

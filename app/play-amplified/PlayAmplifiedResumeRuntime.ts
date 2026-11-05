@@ -2,6 +2,7 @@ export type ResumeCandidate = {
   key: string;
   title: string;
   href: string;
+  gameId?: string;
   code?: string;
   endHref?: string;
   endAction?: { type: "clear-stack"; roomId: string; version: number };
@@ -16,17 +17,18 @@ type SessionSource = {
   key: string;
   title: string;
   href: string;
+  gameId: string;
   game?: SocialResumeGame;
   roomApiBase?: string;
 };
 
 const SESSION_SOURCES: readonly SessionSource[] = [
-  { key: "pps-mystery-session", title: "Last Call: Murder at Blackwood House", href: "/games/mystery", roomApiBase: "/api/games/mystery" },
-  { key: "pps-chain-reaction-session", title: "Chain Reaction", href: "/games/chain-reaction", game: "chain-reaction" },
-  { key: "pps-how-close-session", title: "How Close Are We?", href: "/games/how-close", game: "how-close" },
-  { key: "pps-inside-man-session", title: "The Inside Man", href: "/games/inside-man", game: "inside-man" },
-  { key: "pps-on-my-list-session", title: "On My List", href: "/games/on-my-list", game: "on-my-list" },
-  { key: "pps-all-about-you-session", title: "All About You", href: "/games/all-about-you", game: "all-about-you" },
+  { key: "pps-mystery-session", title: "Last Call: Murder at Blackwood House", href: "/games/mystery", gameId: "last-call", roomApiBase: "/api/games/mystery" },
+  { key: "pps-chain-reaction-session", title: "Chain Reaction", href: "/games/chain-reaction", gameId: "chain-reaction", game: "chain-reaction" },
+  { key: "pps-how-close-session", title: "How Close Are We?", href: "/games/how-close", gameId: "how-close", game: "how-close" },
+  { key: "pps-inside-man-session", title: "The Inside Man", href: "/games/inside-man", gameId: "inside-man", game: "inside-man" },
+  { key: "pps-on-my-list-session", title: "On My List", href: "/games/on-my-list", gameId: "on-my-list", game: "on-my-list" },
+  { key: "pps-all-about-you-session", title: "All About You", href: "/games/all-about-you", gameId: "all-about-you", game: "all-about-you" },
 ];
 
 function readJson(raw: string | null): Record<string, unknown> | null {
@@ -98,6 +100,7 @@ async function validateSessionSource(source: SessionSource): Promise<ResumeCandi
     key: source.key,
     title: source.title,
     href: `${source.href}?code=${encodeURIComponent(code)}`,
+    gameId: source.gameId,
     code,
     seenAt,
     clearKeys,
@@ -142,6 +145,7 @@ async function validateHoldemSession(storageKey: string): Promise<ResumeCandidat
     key: storageKey,
     title: "Phone Hold'em",
     href: `/games/holdem?code=${encodeURIComponent(code)}`,
+    gameId: "phone-holdem",
     code,
     seenAt,
     clearKeys,
@@ -161,7 +165,7 @@ async function validateTriviaResume(): Promise<ResumeCandidate | null> {
         connection = "online";
         const payload = await response.json().catch(() => ({})) as Record<string, unknown>;
         if (terminalStatus(payload)) return null;
-        return { key: hostKey, title: "Play Point Trivia", href: "/games/trivia/builder", seenAt: 0, clearKeys: [hostKey], connection };
+        return { key: hostKey, title: "Play Point Trivia", href: "/games/trivia/builder", gameId: "play-point-trivia", seenAt: 0, clearKeys: [hostKey], connection };
       } else {
         connection = response.status >= 500 ? "offline" : "reconnect";
       }
@@ -186,18 +190,19 @@ async function validateTriviaResume(): Promise<ResumeCandidate | null> {
       { cache: "no-store" },
     );
     if (!response.ok) {
-      return { key: playerKey, title: "Play Point Trivia", href: `/games/trivia/join?code=${encodeURIComponent(roomCode)}`, code: roomCode, seenAt: 0, clearKeys: [playerKey], connection: response.status >= 500 ? "offline" : "reconnect" };
+      return { key: playerKey, title: "Play Point Trivia", href: `/games/trivia/join?code=${encodeURIComponent(roomCode)}`, gameId: "play-point-trivia", code: roomCode, seenAt: 0, clearKeys: [playerKey], connection: response.status >= 500 ? "offline" : "reconnect" };
     }
     const payload = await response.json().catch(() => ({})) as Record<string, unknown>;
     if (terminalStatus(payload)) return null;
   } catch {
-    return { key: playerKey, title: "Play Point Trivia", href: `/games/trivia/join?code=${encodeURIComponent(roomCode)}`, code: roomCode, seenAt: 0, clearKeys: [playerKey], connection: "offline" };
+    return { key: playerKey, title: "Play Point Trivia", href: `/games/trivia/join?code=${encodeURIComponent(roomCode)}`, gameId: "play-point-trivia", code: roomCode, seenAt: 0, clearKeys: [playerKey], connection: "offline" };
   }
 
   return {
     key: playerKey,
     title: "Play Point Trivia",
     href: `/games/trivia/join?code=${encodeURIComponent(roomCode)}`,
+    gameId: "play-point-trivia",
     code: roomCode,
     seenAt: 0,
     clearKeys: [playerKey],
@@ -210,7 +215,7 @@ async function validateClearStackResume(): Promise<ResumeCandidate | null> {
   let savedId: string | null = null;
   try { savedId = window.localStorage.getItem(key); } catch {}
   const fallback = (connection: ResumeCandidate["connection"]): ResumeCandidate | null => savedId
-    ? { key, title: "Clear the Stack", href: "/games/clear-the-stack", seenAt: 0, clearKeys: [key], connection }
+    ? { key, title: "Clear the Stack", href: "/games/clear-the-stack", gameId: "clear-the-stack", seenAt: 0, clearKeys: [key], connection }
     : null;
   try {
     const response = await fetch("/api/games/clear-the-stack/room", { cache: "no-store" });
@@ -220,7 +225,7 @@ async function validateClearStackResume(): Promise<ResumeCandidate | null> {
     if (room === null) return null;
     if (!room?.id || !room.game_state || !["setup", "playing", "finished"].includes(room.game_state.phase)) return fallback("reconnect");
     const updated = Date.parse(room.updated_at);
-    return { key, title: "Clear the Stack", href: "/games/clear-the-stack", code: room.code,
+    return { key, title: "Clear the Stack", href: "/games/clear-the-stack", gameId: "clear-the-stack", code: room.code,
       endAction: Number.isInteger(room.state_version) ? { type: "clear-stack", roomId: room.id, version: room.state_version } : undefined,
       seenAt: Number.isFinite(updated) ? updated : 0, clearKeys: [key], connection: "online" };
   } catch { return fallback("offline"); }
@@ -267,12 +272,25 @@ async function validateShotCaddyResume(): Promise<ResumeCandidate | null> {
       const href = `/shot-caddy/join/${encodeURIComponent(code)}${resumeParams ? `?${resumeParams}` : ""}`;
       const hostPlayerId = typeof round.hostPlayerId === "string" ? round.hostPlayerId : "";
       const isHost = Boolean(playerId && hostPlayerId && playerId === hostPlayerId);
+      const gameIdByMode: Record<string, string> = {
+        CLASSIC: "shot-classic",
+        CHALLENGE_SKINS_PRO: "challenge-skins-pro",
+        BATTLE: "battle-mode",
+        CALL_YOUR_SCORE: "call-your-score",
+        WOLF: "wolf",
+        REDEMPTION_WOLF: "redemption-wolf",
+        WOLF_PACK: "wolf-pack",
+        CARD_SHARK: "card-shark-classic",
+        AROUND_THE_WORLD: "atw-ladder",
+        DISC_WARRIOR: "disc-warrior",
+      };
       if (isHost) params.set("dest", "summary");
 
       return {
         key: `shot-caddy:${code}`,
         title: mode === "CHALLENGE_SKINS_PRO" ? "Challenge Skins Pro" : "Shot Caddy",
         href,
+        gameId: typeof saved.gameId === "string" ? saved.gameId : gameIdByMode[mode],
         endHref: isHost ? `/shot-caddy/join/${encodeURIComponent(code)}?${params.toString()}` : undefined,
         code,
         seenAt: typeof saved.updatedAt === "number" ? saved.updatedAt : 0,
