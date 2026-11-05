@@ -203,6 +203,26 @@ async function validateTriviaResume(): Promise<ResumeCandidate | null> {
   };
 }
 
+async function validateClearStackResume(): Promise<ResumeCandidate | null> {
+  const key = "pps-clear-stack-host-room";
+  let savedId: string | null = null;
+  try { savedId = window.localStorage.getItem(key); } catch {}
+  const fallback = (connection: ResumeCandidate["connection"]): ResumeCandidate | null => savedId
+    ? { key, title: "Clear the Stack", href: "/games/clear-the-stack", seenAt: 0, clearKeys: [key], connection }
+    : null;
+  try {
+    const response = await fetch("/api/games/clear-the-stack/room", { cache: "no-store" });
+    if (!response.ok) return fallback(response.status >= 500 ? "offline" : "reconnect");
+    const payload = await response.json();
+    const room = payload?.room;
+    if (room === null) return null;
+    if (!room?.id || !room.game_state || !["setup", "playing", "finished"].includes(room.game_state.phase)) return fallback("reconnect");
+    const updated = Date.parse(room.updated_at);
+    return { key, title: "Clear the Stack", href: "/games/clear-the-stack", code: room.code,
+      seenAt: Number.isFinite(updated) ? updated : 0, clearKeys: [key], connection: "online" };
+  } catch { return fallback("offline"); }
+}
+
 export async function readResumeCandidates(): Promise<ResumeCandidate[]> {
   const localKeys: string[] = [];
   for (let index = 0; index < window.localStorage.length; index += 1) {
@@ -210,13 +230,14 @@ export async function readResumeCandidates(): Promise<ResumeCandidate[]> {
     if (key && /^pps-holdem-[A-Z2-9]{6}$/i.test(key)) localKeys.push(key);
   }
 
-  const [roomCandidates, holdemCandidates, triviaCandidate] = await Promise.all([
+  const [roomCandidates, holdemCandidates, triviaCandidate, stackCandidate] = await Promise.all([
     Promise.all(SESSION_SOURCES.map((source) => validateSessionSource(source))),
     Promise.all(localKeys.map((key) => validateHoldemSession(key))),
     validateTriviaResume(),
+    validateClearStackResume(),
   ]);
 
-  return [...roomCandidates, ...holdemCandidates, triviaCandidate]
+  return [...roomCandidates, ...holdemCandidates, triviaCandidate, stackCandidate]
     .filter((candidate): candidate is ResumeCandidate => candidate !== null)
     .sort((a, b) => b.seenAt - a.seenAt);
 }

@@ -63,3 +63,33 @@ describe("Play Amplified resume recovery", () => {
     expect(localStorage.getItem("pps-chain-reaction-session")).toBe(JSON.stringify(stored));
   });
 });
+
+describe("Clear the Stack platform resume", () => {
+  it("discovers the account's authoritative room without local credentials", async () => {
+    vi.stubGlobal("window", { localStorage: new MemoryStorage() });
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(Response.json({ room: {
+      id: "host-room", code: "ABC234", updated_at: "2026-11-04T18:00:00Z", game_state: { phase: "playing" },
+    } })));
+    const { readResumeCandidates } = await import("../app/play-amplified/PlayAmplifiedResumeRuntime");
+    const candidates = await readResumeCandidates();
+    expect(candidates).toHaveLength(1);
+    expect(candidates[0]).toMatchObject({ title: "Clear the Stack", href: "/games/clear-the-stack", connection: "online" });
+  });
+  it.each([401, 503])("preserves the saved host route during HTTP %s", async status => {
+    const localStorage = new MemoryStorage();
+    localStorage.setItem("pps-clear-stack-host-room", "saved-room");
+    vi.stubGlobal("window", { localStorage });
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status })));
+    const { readResumeCandidates } = await import("../app/play-amplified/PlayAmplifiedResumeRuntime");
+    expect((await readResumeCandidates())[0]).toMatchObject({ title: "Clear the Stack", connection: status === 401 ? "reconnect" : "offline" });
+    expect(localStorage.getItem("pps-clear-stack-host-room")).toBe("saved-room");
+  });
+  it("does not restore a session when the account has no live room", async () => {
+    const localStorage = new MemoryStorage();
+    localStorage.setItem("pps-clear-stack-host-room", "old-room");
+    vi.stubGlobal("window", { localStorage });
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(Response.json({ room: null })));
+    const { readResumeCandidates } = await import("../app/play-amplified/PlayAmplifiedResumeRuntime");
+    expect(await readResumeCandidates()).toEqual([]);
+  });
+});

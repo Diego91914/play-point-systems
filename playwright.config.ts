@@ -15,6 +15,7 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   webServer: {
+    env: { PLAY_POINT_GAMES_SESSION_SECRET: "playwright-local-only-session-signing-key" },
     command: "npm run dev -- --hostname 127.0.0.1 --port 3001",
     url: "http://127.0.0.1:3001",
     reuseExistingServer: !process.env.CI,

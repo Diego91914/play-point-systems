@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { recoverClearStackHostRoom } from "@/lib/play-point-core/clear-stack-recovery";
 import { QRCodeSVG } from "qrcode.react";
 import { ClearStackArcadeBoard } from "./ClearStackArcadeBoard";
 import { changeStackPlayers, initialStackState, replayStack, startStack, scoreStack, preserveDraftPlayerNames, type StackState, type StackPlayer } from "@/lib/play-point-core/clear-stack-engine";
@@ -58,7 +59,8 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
 
   useEffect(() => {
     let cancelled = false;
-    const savedDraft = window.localStorage.getItem("pps-clear-stack-host-draft");
+    let savedDraft: string | null = null;
+    try { savedDraft = window.localStorage.getItem("pps-clear-stack-host-draft"); } catch {}
     if (savedDraft) {
       try {
         const draft = JSON.parse(savedDraft);
@@ -71,19 +73,14 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
         if (Number.isInteger(draft.stackSize) && draft.stackSize >= 1 && draft.stackSize <= 100) setStackSize(draft.stackSize);
       } catch { /* Ignore invalid local draft. */ }
     }
-    const id = window.localStorage.getItem("pps-clear-stack-host-room");
-    if (!id) { setRestoring(false); return; }
     void (async () => {
       try {
-        const response = await fetch("/api/games/clear-the-stack/room?id=" + encodeURIComponent(id), { cache: "no-store" });
-        if (!response.ok) {
-          if ([401, 403, 404].includes(response.status)) window.localStorage.removeItem("pps-clear-stack-host-room");
-          throw new Error("Could not restore your hosted game. Refresh to retry.");
-        }
-        const data = await response.json();
-        if (cancelled) return;
-        setRoom(data.room as HostRoom);
-        applyState(data.room.game_state as StackState);
+        let storage: Storage | null = null;
+        try { storage = window.localStorage; } catch {}
+        const result = await recoverClearStackHostRoom(storage, fetch);
+        if (cancelled || !result) return;
+        setRoom(result as HostRoom);
+        applyState(result.game_state);
       } catch (e) {
         if (!cancelled) setJoinStatus(e instanceof Error ? e.message : "Could not restore game.");
       } finally {
@@ -95,9 +92,11 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
 
   useEffect(() => {
     if (restoring || phase !== "setup") return;
-    window.localStorage.setItem("pps-clear-stack-host-draft", JSON.stringify({
-      distance, stackSize, playerCount, hostName, manualNames,
-    }));
+    try {
+      window.localStorage.setItem("pps-clear-stack-host-draft", JSON.stringify({
+        distance, stackSize, playerCount, hostName, manualNames,
+      }));
+    } catch { /* Server state remains authoritative when draft storage is unavailable. */ }
   }, [restoring, phase, distance, stackSize, playerCount, hostName, manualNames]);
 
   // An existing spectator QR must not freeze setup. Publish changes only after
@@ -158,7 +157,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
     if (!hostedRoom?.id || !hostedRoom?.spectator_token)
       throw new Error("The live room could not be verified. Please retry.");
     setRoom(hostedRoom);
-    window.localStorage.setItem("pps-clear-stack-host-room", hostedRoom.id);
+    try { window.localStorage.setItem("pps-clear-stack-host-room", hostedRoom.id); } catch {}
     return { hostedRoom, reused: payload.reused === true };
   }
 
