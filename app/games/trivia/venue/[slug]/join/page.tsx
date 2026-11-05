@@ -186,7 +186,7 @@ export default function TriviaVenueJoinPage() {
                 <div className="text-right"><div className="text-xs uppercase tracking-[0.18em] text-white/45">Score</div><div className="text-2xl font-black text-cyan-100">{(payload?.player.rollingScore ?? 0).toLocaleString()}</div></div>
               </div>
 
-              {payload?.waitingForMatch ? <div className="mt-6 rounded-[26px] border border-white/10 bg-white/[0.04] p-6 text-center"><div className="text-2xl font-black">You're in.</div><p className="mt-3 text-sm text-white/60">Watch the TV. The next game will begin here automatically.</p></div> : null}
+              {payload?.waitingForMatch ? <div className="mt-6 rounded-[26px] border border-white/10 bg-white/[0.04] p-6 text-center"><div className="text-2xl font-black">You’re in.</div><p className="mt-3 text-sm text-white/60">Watch the TV. The next game will begin here automatically.</p></div> : null}
 
               {game?.phase === "wager-open" ? (
                 <div className="mt-6 rounded-[26px] border border-amber-300/25 bg-amber-300/10 p-5">

@@ -53,7 +53,7 @@ describe("Live Craps unified settlement", () => {
       table: t,
       bankrolls: [{ playerId: "a", chips: 970 }, { playerId: "b", chips: 1000 }],
       comeBets: [{ id: "come-9", playerId: "a", kind: "come", amount: 10, point: 9 }],
-      odds: [{ id: "odds-9", playerId: "a", parentBetId: "come-9", parentKind: "come", side: "pass", point: 9, amount: 20, workingOverride: null }],
+      odds: [{ id: "odds-9", playerId: "a", parentBetId: "come-9", parentKind: "come", side: "pass", point: 9, amount: 20, workingOverride: "table-default" }],
     }), confirmed(3, 4));
     expect(result.comeSettlements[0]).toMatchObject({ betId: "come-9", status: "lost", profit: -10 });
     expect(result.oddsSettlements[0]).toMatchObject({ betId: "odds-9", status: "returned", credit: 20, profit: 0 });
@@ -66,7 +66,7 @@ describe("Live Craps unified settlement", () => {
       table: t,
       bankrolls: [{ playerId: "a", chips: 970 }, { playerId: "b", chips: 1000 }],
       comeBets: [{ id: "come-9", playerId: "a", kind: "come", amount: 10, point: 9 }],
-      odds: [{ id: "odds-9", playerId: "a", parentBetId: "come-9", parentKind: "come", side: "pass", point: 9, amount: 20, workingOverride: null }],
+      odds: [{ id: "odds-9", playerId: "a", parentBetId: "come-9", parentKind: "come", side: "pass", point: 9, amount: 20, workingOverride: "table-default" }],
     }), confirmed(4, 5));
     expect(result.comeSettlements[0]).toMatchObject({ status: "won", credit: 20, profit: 10 });
     expect(result.oddsSettlements[0]).toMatchObject({ status: "won", credit: 50, profit: 30 });

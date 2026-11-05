@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useMysterySession } from "./useMysterySession";
 
-type Session = { code: string; playerId: string; token: string };
 type Interview = { questioner: string; target: string; question: string; answer: string };
 type CaseFile = {
   evidence: { index: number; title: string; text: string }[];
@@ -20,7 +20,6 @@ type IntelligenceAlert = {
   caution: string;
 };
 
-const KEY = "pps-mystery-session";
 
 function hasEvidence(caseFile: CaseFile, title: string) {
   return caseFile.evidence.some(item => item.title.toLowerCase().includes(title.toLowerCase()));
@@ -210,18 +209,17 @@ export function buildMysteryCaseAlerts(caseFile?: CaseFile): IntelligenceAlert[]
 }
 
 export function MysteryCaseIntelligence() {
+  const session = useMysterySession();
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
 
   useEffect(() => {
+    if (!session) return;
     let active = true;
     let timer = 0;
 
     async function refresh() {
+      if (!session) return;
       try {
-        const raw = localStorage.getItem(KEY);
-        if (!raw) return;
-        const session = JSON.parse(raw) as Session;
-        if (!session.code || !session.playerId || !session.token) return;
         const response = await fetch(`/api/games/mystery/${session.code}?playerId=${encodeURIComponent(session.playerId)}&token=${encodeURIComponent(session.token)}`, { cache: "no-store" });
         if (!response.ok) return;
         const json = await response.json();
@@ -229,16 +227,17 @@ export function MysteryCaseIntelligence() {
       } catch {}
     }
 
-    void refresh();
+    const initial = window.setTimeout(() => void refresh(), 0);
     timer = window.setInterval(refresh, 1200);
     return () => {
       active = false;
+      window.clearTimeout(initial);
       window.clearInterval(timer);
     };
-  }, []);
+  }, [session]);
 
   const alerts = useMemo(() => buildMysteryCaseAlerts(snapshot?.caseFile), [snapshot]);
-  if (!snapshot || snapshot.status === "lobby" || alerts.length === 0) return null;
+  if (!session || !snapshot || snapshot.status === "lobby" || alerts.length === 0) return null;
 
   return (
     <section className="mx-auto mt-5 max-w-3xl px-4 pb-3 sm:px-8">

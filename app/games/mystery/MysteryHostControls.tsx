@@ -1,29 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-
-type Session = { code: string; playerId: string; token: string };
-const KEY = "pps-mystery-session";
-
-function getSession(): Session | null {
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return null;
-    const value = JSON.parse(raw) as Partial<Session>;
-    if (!value.code || !value.playerId || !value.token) return null;
-    return { code: value.code, playerId: value.playerId, token: value.token };
-  } catch {
-    return null;
-  }
-}
+import { clearMysterySession, useMysterySession } from "./useMysterySession";
 
 export function MysteryHostControls() {
+  const session = useMysterySession();
   const [isHost, setIsHost] = useState(false);
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
 
   const check = useCallback(async () => {
-    const session = getSession();
     if (!session) return setIsHost(false);
     try {
       const response = await fetch("/api/games/social-room-control", {
@@ -35,7 +21,7 @@ export function MysteryHostControls() {
       const json = await response.json();
       setIsHost(response.ok && Boolean(json.isHost));
     } catch {}
-  }, []);
+  }, [session]);
 
   useEffect(() => {
     void check();
@@ -44,7 +30,6 @@ export function MysteryHostControls() {
   }, [check]);
 
   async function startOver() {
-    const session = getSession();
     if (!session || !window.confirm("Start the mystery over and return everyone to the lobby?")) return;
     setBusy(true);
     try {
@@ -65,7 +50,6 @@ export function MysteryHostControls() {
   }
 
   async function quit() {
-    const session = getSession();
     if (!session || !window.confirm("End this mystery for everyone and close the room?")) return;
     setBusy(true);
     try {
@@ -77,7 +61,7 @@ export function MysteryHostControls() {
       });
       const json = await response.json();
       if (!response.ok) throw new Error(json.error || "Unable to end game.");
-      localStorage.removeItem(KEY);
+      clearMysterySession();
       window.location.href = "/play";
     } catch (error) {
       window.alert(error instanceof Error ? error.message : "Unable to end game.");

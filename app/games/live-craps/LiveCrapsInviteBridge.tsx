@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useBrowserLocationSearch } from "../_components/browser-session-store";
 import { QRCodeSVG } from "qrcode.react";
 
 function setControlledInputValue(input: HTMLInputElement, value: string) {
@@ -22,15 +23,20 @@ function findHostLobbyCode() {
   return roomLabel?.textContent?.trim().replace("LIVE CRAPS · ", "") ?? "";
 }
 
+function subscribeLobby(onChange: () => void) {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+  return () => observer.disconnect();
+}
+
 export function LiveCrapsInviteBridge() {
-  const [hostCode, setHostCode] = useState("");
-  const [inviteCode, setInviteCode] = useState("");
+  const hostCode = useSyncExternalStore(subscribeLobby, findHostLobbyCode, () => "");
+  const search = useBrowserLocationSearch();
+  const inviteCode = (new URLSearchParams(search).get("code") ?? "").trim().toUpperCase();
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const incoming = (params.get("code") ?? "").trim().toUpperCase();
-    if (incoming) setInviteCode(incoming);
+    const incoming = inviteCode;
 
     let stopped = false;
     let attempts = 0;
@@ -48,16 +54,8 @@ export function LiveCrapsInviteBridge() {
     };
     prefill();
 
-    const scan = () => setHostCode(findHostLobbyCode());
-    scan();
-    const observer = new MutationObserver(scan);
-    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
-
-    return () => {
-      stopped = true;
-      observer.disconnect();
-    };
-  }, []);
+    return () => { stopped = true; };
+  }, [inviteCode]);
 
   const joinUrl = useMemo(
     () => hostCode ? `https://www.playamplified.com/games/live-craps?code=${encodeURIComponent(hostCode)}&invite=1` : "",

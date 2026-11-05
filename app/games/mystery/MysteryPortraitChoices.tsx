@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useMysterySession } from "./useMysterySession";
 import "./MysteryPortraitChoices.module.css";
 
-type Session = { code: string; playerId: string; token: string };
 type CastMember = { id: string; name: string; seat: number; roleId: string | null; roleTitle: string | null };
 
-const KEY = "pps-mystery-session";
 const POSITION: Record<string, { x: string; y: string }> = {
   partner: { x: "0%", y: "0%" },
   sister: { x: "33.333%", y: "0%" },
@@ -19,15 +18,9 @@ const POSITION: Record<string, { x: string; y: string }> = {
 };
 
 export function MysteryPortraitChoices() {
-  const [session, setSession] = useState<Session | null>(null);
+  const session = useMysterySession();
   const [cast, setCast] = useState<CastMember[]>([]);
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setSession(JSON.parse(raw));
-    } catch {}
-  }, []);
 
   useEffect(() => {
     if (!session) return;

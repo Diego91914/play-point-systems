@@ -13,7 +13,7 @@ function isLocalDatabaseUrl(databaseUrl: string): boolean {
 }
 
 export function resolvePostgresSslConfig(
-  env: NodeJS.ProcessEnv,
+  env: Record<string, string | undefined>,
   databaseUrl: string
 ): PostgresSslConfig {
   const requested = env.PLAY_POINT_LIVE_DATABASE_SSL?.trim().toLowerCase();

@@ -1,23 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useMysterySession } from "./useMysterySession";
 
-type Session = { code: string; playerId: string; token: string };
 type GameState = { status?: string };
 
-const SESSION_KEY = "pps-mystery-session";
 const GUIDE_PREFIX = "pps-mystery-turn-guide:";
 
 export function MysteryTurnGuide() {
-  const [session, setSession] = useState<Session | null>(null);
+  const session = useMysterySession();
   const [visible, setVisible] = useState(false);
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(SESSION_KEY);
-      if (raw) setSession(JSON.parse(raw));
-    } catch {}
-  }, []);
 
   const check = useCallback(async () => {
     if (!session) return;
@@ -34,9 +27,9 @@ export function MysteryTurnGuide() {
 
   useEffect(() => {
     if (!session) return;
-    void check();
+    const initial = window.setTimeout(() => void check(), 0);
     const timer = window.setInterval(check, 900);
-    return () => window.clearInterval(timer);
+    return () => { window.clearTimeout(initial); window.clearInterval(timer); };
   }, [check, session]);
 
   function dismiss() {
@@ -59,7 +52,7 @@ export function MysteryTurnGuide() {
           <div className="rounded-2xl border border-amber-200/15 bg-amber-200/[.05] p-4"><b className="text-amber-100">3. The person questioned checks their phone.</b> They answer out loud using the MUST REVEAL / MAY HIDE instructions they receive.</div>
           <div className="rounded-2xl border border-white/10 bg-white/[.04] p-4"><b className="text-white">4. Everyone else listens and investigates.</b> Remember what was said, notice contradictions, defend yourself, bluff, and debate face-to-face.</div>
           <div className="rounded-2xl border border-white/10 bg-white/[.04] p-4"><b className="text-white">5. The next investigator is automatic.</b> You never have to decide whose turn comes next or when a round ends.</div>
-          <div className="rounded-2xl border border-rose-300/15 bg-rose-300/[.05] p-4"><b className="text-rose-100">6. When evidence appears, read it.</b> Keep anything labeled private to yourself, then tap I'VE SEEN THE EVIDENCE. Play continues when everyone is ready.</div>
+          <div className="rounded-2xl border border-rose-300/15 bg-rose-300/[.05] p-4"><b className="text-rose-100">6. When evidence appears, read it.</b> Keep anything labeled private to yourself, then tap I’VE SEEN THE EVIDENCE. Play continues when everyone is ready.</div>
         </div>
 
         <div className="mt-5 rounded-2xl border border-white/10 bg-black/30 p-4 text-center text-sm font-black leading-6 text-white">The phone runs the mystery. The people make it fun.</div>

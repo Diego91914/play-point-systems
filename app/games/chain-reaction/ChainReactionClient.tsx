@@ -1,4 +1,5 @@
 "use client";
+import { saveBrowserGameSession } from "../_components/browser-session-store";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { RoomJoinPanel } from "@/app/games/_components/RoomJoinPanel";
@@ -72,7 +73,7 @@ export function ChainReactionClient() {
   }, []);
 
   function store(nextSession: Session, nextGame: Game) {
-    localStorage.setItem(KEY, JSON.stringify(nextSession));
+    saveBrowserGameSession(KEY, nextSession);
     setSession(nextSession);
     setGame(nextGame);
   }

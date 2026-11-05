@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { settleLiveCrapsPropBet, validateLiveCrapsPropBet } from "../lib/play-point-core/live-craps-props";
 
-const bet = (kind: any, amount = 1) => ({ id: `b-${kind}`, playerId: "p1", kind, amount });
+const bet = (kind: Parameters<typeof settleLiveCrapsPropBet>[0]["kind"], amount = 1) => ({ id: `b-${kind}`, playerId: "p1", kind, amount });
 
 describe("Live Craps center propositions", () => {
   it("settles standard one-roll proposition payouts", () => {
@@ -38,6 +38,7 @@ describe("Live Craps center propositions", () => {
   });
 
   it("rejects World/Whirl because it is outside the Standard Table", () => {
+    // @ts-expect-error Deliberately invalid kind exercises runtime input validation.
     expect(() => validateLiveCrapsPropBet(bet("world", 5))).toThrow();
   });
 });

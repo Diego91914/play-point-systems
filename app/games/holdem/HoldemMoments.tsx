@@ -1,5 +1,6 @@
 "use client";
 
+import { useBrowserGameSession } from "../_components/browser-session-store";
 import { useEffect, useRef, useState } from "react";
 
 type Credentials = { code: string; playerId: string; token: string };
@@ -13,19 +14,15 @@ type Table = {
 };
 type Moment = { eyebrow: string; title: string; detail: string } | null;
 
+function currentSeatKey() {
+  const code = new URLSearchParams(location.search).get("code")?.toUpperCase();
+  return code ? `pps-holdem-${code}` : "";
+}
+
 export function HoldemMoments() {
-  const [creds, setCreds] = useState<Credentials | null>(null);
+  const creds = useBrowserGameSession<Credentials>(currentSeatKey);
   const [moment, setMoment] = useState<Moment>(null);
   const seen = useRef(new Set<string>());
-
-  useEffect(() => {
-    const code = new URLSearchParams(location.search).get("code")?.toUpperCase();
-    if (!code) return;
-    try {
-      const raw = localStorage.getItem(`pps-holdem-${code}`);
-      if (raw) setCreds(JSON.parse(raw));
-    } catch {}
-  }, []);
 
   useEffect(() => {
     if (!creds) return;

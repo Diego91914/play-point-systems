@@ -88,26 +88,25 @@ describe("Play Amplified consumer home", () => {
     }
   });
 
-  it("only offers recent server-valid rooms instead of every historical local session", () => {
+  it("keeps active game credentials available through outages and foregrounds the current session", () => {
     expect(pwa).toContain('await import("./PlayAmplifiedResumeRuntime")');
     expect(pwa).not.toMatch(/\bfetch\s*\(/);
-    expect(resumeRuntime).toContain("RESUME_MAX_AGE_MS = 24 * 60 * 60 * 1000");
-    expect(resumeRuntime).toContain("readRecentRetention");
+    expect(resumeRuntime).not.toContain("RESUME_MAX_AGE_MS");
+    expect(resumeRuntime).not.toContain("removeLocalKeys");
     expect(resumeRuntime).toContain('fetch("/api/games/social-room-control"');
     expect(resumeRuntime).toContain("validateTriviaResume");
     expect(resumeRuntime).toContain("payload?.ended === true");
-    expect(resumeRuntime).toContain("removeLocalKeys(clearKeys)");
+    expect(resumeRuntime).toContain('connection = "offline"');
+    expect(pwa).toContain('window.location.replace(primary.href)');
+    expect(pwa).toContain('addEventListener("pageshow", refreshCandidates)');
     expect(pwa).not.toContain("candidates.length - 1");
   });
 
-  it("lets a player resume, save for later, or exit the remembered game explicitly", () => {
-    expect(pwa).toContain("play-amplified-resume-dismissed");
+  it("keeps a prominent Return to Game action without credential-clearing controls", () => {
     expect(pwa).toContain("max-w-2xl");
-    expect(pwa).toContain("RESUME");
-    expect(pwa).toContain("SAVE FOR LATER");
-    expect(pwa).toContain("EXIT");
-    expect(pwa).toContain("const exitResume = () =>");
-    expect(pwa).toContain("removeLocalKeys(primary.clearKeys)");
+    expect(pwa).toContain("RETURN TO GAME");
+    expect(pwa).not.toContain("SAVE FOR LATER");
+    expect(pwa).not.toContain("EXIT");
     expect(pwa).not.toContain("current.slice(1)");
   });
 

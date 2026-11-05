@@ -1,3 +1,4 @@
+import type { PersistedSessionBundle } from "../play/trivia-live-persistent-session";
 import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import { getTriviaTimerSeconds } from "../play/trivia-live-timing";
@@ -209,12 +210,12 @@ export async function loadVenueTriviaRuntime(triviaSessionId: string) {
   const { data, error } = await supabase.rpc("ppl_trivia_load_session", { p_session_id: triviaSessionId });
   if (error) throw new Error(error.message);
   if (!data) throw new Error("The venue trivia match is unavailable.");
-  const bundle = data as any;
+  const bundle = data as PersistedSessionBundle;
   const session = bundle.session;
   const card = session.card_index < session.deck.cards.length ? session.deck.cards[session.card_index] : null;
   const publicCard = card ? {
     prompt: card.prompt,
-    choices: card.choices.map((choice: any) => ({ slot: choice.slot, text: choice.text })),
+    choices: card.choices.map((choice) => ({ slot: choice.slot, text: choice.text })),
     roundLabel: card.roundLabel,
     questionNumberInRound: card.questionNumberInRound,
     totalQuestionsInRound: card.totalQuestionsInRound,
@@ -231,8 +232,8 @@ export async function loadVenueTriviaRuntime(triviaSessionId: string) {
 
 export async function syncVenueScoresFromTrivia(venueSessionId: string, triviaSessionId: string) {
   const { bundle } = await loadVenueTriviaRuntime(triviaSessionId);
-  const answers = new Set((bundle.answers ?? []).map((answer: any) => answer.player_id));
-  const playerById = new Map((bundle.players ?? []).map((player: any) => [player.id, player]));
+  const answers = new Set((bundle.answers ?? []).map((answer) => answer.player_id));
+  const playerById = new Map((bundle.players ?? []).map((player) => [player.id, player]));
   const { data: venuePlayers, error } = await getSupabaseServerClient()
     .from("ppl_trivia_venue_players")
     .select("id, trivia_player_id, rolling_score, current_match_score, score_total, championship_score, consecutive_questions_missed, removed_at")
@@ -242,7 +243,7 @@ export async function syncVenueScoresFromTrivia(venueSessionId: string, triviaSe
   const now = new Date().toISOString();
   await Promise.all((venuePlayers ?? []).map(async (venuePlayer) => {
     if (!venuePlayer.trivia_player_id || venuePlayer.removed_at) return;
-    const livePlayer: any = playerById.get(venuePlayer.trivia_player_id);
+    const livePlayer = playerById.get(venuePlayer.trivia_player_id);
     if (!livePlayer) return;
     const answered = answers.has(venuePlayer.trivia_player_id);
     const nextMissed = answered ? 0 : (venuePlayer.consecutive_questions_missed ?? 0) + 1;

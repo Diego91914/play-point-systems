@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { RoomJoinPanel } from "@/app/games/_components/RoomJoinPanel";
+import { saveMysterySession, useMysterySession, type MysterySession } from "./useMysterySession";
 
 type Player = { id: string; name: string; seat: number };
 type Question = { id: string; label: string };
@@ -69,15 +70,12 @@ type CaseState = {
     solution: string;
   };
 };
-type Session = { code: string; playerId: string; token: string };
-
-const KEY = "pps-mystery-session";
 const ROUND_LABELS = ["Establish the Timeline", "Something Doesn't Fit", "Break the Alibis", "Last Chance to Build Your Case"];
 
 export function MysteryClient() {
   const [game, setGame] = useState<Game | null>(null);
   const [caseState, setCaseState] = useState<CaseState | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const session = useMysterySession();
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
   const [targetId, setTargetId] = useState("");
@@ -89,7 +87,9 @@ export function MysteryClient() {
   const [supportIds, setSupportIds] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [connectionError, setConnectionError] = useState("");
   const [briefingAccepted, setBriefingAccepted] = useState(false);
+  const refreshInFlight = useRef(false);
 
   const request = useCallback(async (url: string, init?: RequestInit) => {
     const response = await fetch(url, {
@@ -105,26 +105,28 @@ export function MysteryClient() {
   useEffect(() => {
     const invited = new URLSearchParams(location.search).get("code");
     if (invited) setCode(invited.toUpperCase());
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setSession(JSON.parse(raw));
-    } catch {}
   }, []);
 
-  const refreshCase = useCallback(async (activeSession: Session) => {
+  const refreshCase = useCallback(async (activeSession: MysterySession) => {
     const json = await request(`/api/games/mystery/${activeSession.code}/case?playerId=${encodeURIComponent(activeSession.playerId)}&token=${encodeURIComponent(activeSession.token)}`);
     setCaseState(json.state);
   }, [request]);
 
   const refresh = useCallback(async () => {
-    if (!session) return;
+    if (!session || refreshInFlight.current) return;
+    refreshInFlight.current = true;
     try {
       const targetQuery = targetId ? `&targetId=${encodeURIComponent(targetId)}` : "";
       const json = await request(`/api/games/mystery/${session.code}?playerId=${encodeURIComponent(session.playerId)}&token=${encodeURIComponent(session.token)}${targetQuery}`);
       setGame(json.state);
       if (json.state.status === "accusation" || json.state.status === "reveal") await refreshCase(session);
       else setCaseState(null);
-    } catch {}
+      setConnectionError("");
+    } catch {
+      setConnectionError("Connection interrupted. Your saved game is still here; retrying automatically. Check that you still have service or Wi‑Fi.");
+    } finally {
+      refreshInFlight.current = false;
+    }
   }, [request, session, targetId, refreshCase]);
 
   useEffect(() => {
@@ -140,8 +142,7 @@ export function MysteryClient() {
     try {
       const json = await request("/api/games/mystery", { method: "POST", body: JSON.stringify({ intent, name, code }) });
       const nextSession = { code: json.code, playerId: json.playerId, token: json.token };
-      localStorage.setItem(KEY, JSON.stringify(nextSession));
-      setSession(nextSession);
+      saveMysterySession(nextSession);
       setGame(json.state);
       setCaseState(null);
       setBriefingAccepted(false);
@@ -226,6 +227,7 @@ export function MysteryClient() {
           <p className="mt-3 text-lg font-bold text-white/80">Murder at Blackwood House</p>
           <p className="mt-4 leading-7 text-white/60">The phone is the brain and guide. You do the questioning, bluffing, accusing, and solving face-to-face.</p>
           <div className="mt-5 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm leading-6 text-white/55">4–8 players · No required note-taking · One host creates the room · Everyone else joins by code or QR</div>
+          <p className="mt-4 rounded-2xl border border-amber-200/15 bg-amber-200/[.04] p-4 text-sm leading-6 text-amber-100/75">Hosting requires a signed-in account authorized to host Last Call. Guests can join with a name and room code without creating an account.</p>
           <input className="mt-6 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-4 text-lg text-white" placeholder="Your first name" value={name} onChange={e => setName(e.target.value)} />
           {!validCode && <button disabled={busy} onClick={() => open("create")} className="mt-3 w-full rounded-2xl bg-rose-200 px-5 py-4 font-black text-slate-950 disabled:opacity-40">CREATE MYSTERY</button>}
           {!validCode && <div className="my-5 text-center text-xs font-black uppercase tracking-widest text-white/35">or join a room</div>}
@@ -247,6 +249,8 @@ export function MysteryClient() {
           </div>
           <div className="text-right text-xs font-black uppercase tracking-widest text-white/40">{game.status.replace("-", " ")}</div>
         </header>
+
+        {connectionError && <div role="status" className="mt-4 rounded-2xl border border-amber-200/25 bg-amber-200/[.07] px-4 py-3 text-sm leading-6 text-amber-100">{connectionError}</div>}
 
         {game.status !== "lobby" && game.status !== "accusation" && game.status !== "reveal" && (
           <div className="mt-5 rounded-2xl border border-white/10 bg-black/25 px-4 py-3">
@@ -338,7 +342,7 @@ export function MysteryClient() {
               </div>
               {game.pendingQuestion.answerPrompt.mayHide && <div className="mt-3 rounded-2xl border border-rose-300/20 bg-rose-300/[.07] p-4"><div className="text-[10px] font-black uppercase tracking-widest text-rose-200">You may keep this private</div><p className="mt-2 text-sm leading-6 text-white/65">{game.pendingQuestion.answerPrompt.mayHide}</p></div>}
               <button disabled={busy} onClick={() => act("answered")} className="mt-5 w-full rounded-2xl bg-amber-200 px-4 py-4 font-black text-slate-950 disabled:opacity-40">I ANSWERED OUT LOUD</button>
-            </> : <p className="mt-4 text-sm leading-6 text-white/55">{game.pendingQuestion.target}'s phone is prompting the information they know. Listen to their answer.</p>}
+            </> : <p className="mt-4 text-sm leading-6 text-white/55">The phone belonging to {game.pendingQuestion.target} is prompting the information they know. Listen to their answer.</p>}
           </section>
         )}
 
@@ -356,7 +360,7 @@ export function MysteryClient() {
         {!showBriefing && game.status === "accusation" && caseState && (
           <section className="mt-5 rounded-[30px] border border-amber-200/30 bg-[linear-gradient(145deg,rgba(251,191,36,.09),rgba(255,255,255,.025))] p-6 sm:p-7">
             <div className="text-xs font-black uppercase tracking-[.24em] text-amber-100">Finale · Build Your Case</div>
-            <h2 className="mt-2 text-4xl font-black tracking-tight text-white">Don't just name the killer. Prove it.</h2>
+            <h2 className="mt-2 text-4xl font-black tracking-tight text-white">Don’t just name the killer. Prove it.</h2>
             <p className="mt-3 text-sm leading-6 text-white/60">Your theory is private until everyone locks in. A correct suspect alone is not enough for a conviction.</p>
 
             {caseState.isMurderer && <div className="mt-5 rounded-2xl border border-rose-300/25 bg-rose-300/[.08] p-4 text-sm leading-6 text-rose-100"><b>Protect the cover.</b> Build the most believable alternate case you can from facts your phone actually gives you.</div>}

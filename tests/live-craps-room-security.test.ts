@@ -102,9 +102,10 @@ describe("Live Craps server-owned betting window",()=>{
     const revealing=projectStoredLiveCrapsRoom(CODE,HOST);
     expect(revealing.actionClock.phase).toBe("revealing");
     expect(revealing.virtualReveal).not.toBeNull();
-    const rollId=revealing.virtualReveal!.rollId;
-    const settleAtMs=revealing.virtualReveal!.settleAtMs;
-    expect(settleAtMs-revealing.virtualReveal!.revealAtMs).toBe(LIVE_CRAPS_VIRTUAL_REVEAL_MS);
+    if (!revealing.virtualReveal || revealing.virtualReveal.settleAtMs === null || revealing.virtualReveal.revealAtMs === null) throw new Error("Expected committed reveal timing");
+    const rollId=revealing.virtualReveal.rollId;
+    const settleAtMs=revealing.virtualReveal.settleAtMs;
+    expect(settleAtMs-revealing.virtualReveal.revealAtMs).toBe(LIVE_CRAPS_VIRTUAL_REVEAL_MS);
 
     applyLiveCrapsRoomCommand(CODE,"before-deadline",{type:"tick",nowMs:settleAtMs-1});
     expect(projectStoredLiveCrapsRoom(CODE,HOST).actionClock.phase).toBe("revealing");
@@ -116,6 +117,6 @@ describe("Live Craps server-owned betting window",()=>{
     expect(getStoredLiveCrapsRoom(CODE).room.game.processedRollIds).toContain(rollId);
 
     applyLiveCrapsRoomCommand(CODE,"after-settle",{type:"tick",nowMs:settleAtMs+500});
-    expect(getStoredLiveCrapsRoom(CODE).room.game.processedRollIds.filter(id=>id===rollId)).toHaveLength(1);
+    expect(getStoredLiveCrapsRoom(CODE).room.game.processedRollIds?.filter(id=>id===rollId)).toHaveLength(1);
   });
 });
