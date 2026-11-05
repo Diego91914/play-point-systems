@@ -39,3 +39,27 @@ test("auth interruption preserves the host pointer and displays a reconnect mess
   await expect(page.getByRole("alert")).toContainText("Your recovery link has been kept");
   expect(await page.evaluate(key => localStorage.getItem(key), ROOM_KEY)).toBe(room.id);
 });
+
+test("cancel keeps the recovered game intact and confirmed End Game closes only that room", async ({ page, context }) => {
+  await signIn(context);
+  const writes: unknown[] = [];
+  await page.route("**/api/games/clear-the-stack/room**", async route => {
+    if (route.request().method() === "GET") return route.fulfill({ json: { room } });
+    writes.push(route.request().postDataJSON());
+    return route.fulfill({ json: { room: { ...room, state_version: 5 } } });
+  });
+  await page.route("**/api/games/clear-the-stack/leaderboard**", route => route.fulfill({ json: { entries: [] } }));
+  await page.goto("/games/clear-the-stack");
+  const end = page.getByRole("button", { name: "END GAME · CLOSE SESSION", exact: true });
+  await expect(end).toBeVisible();
+  page.once("dialog", dialog => dialog.dismiss());
+  await end.click();
+  await expect(page.getByText("Guest fixture", { exact: true })).toBeVisible();
+  expect(writes).toEqual([]);
+  expect(await page.evaluate(key => localStorage.getItem(key), ROOM_KEY)).toBe(room.id);
+  page.once("dialog", dialog => dialog.accept());
+  await end.click();
+  await expect(page.getByRole("button", { name: "START NEW GAME", exact: true })).toBeVisible();
+  expect(writes).toEqual([{ id: room.id, version: room.state_version, action: "close" }]);
+  expect(await page.evaluate(key => localStorage.getItem(key), ROOM_KEY)).toBeNull();
+});

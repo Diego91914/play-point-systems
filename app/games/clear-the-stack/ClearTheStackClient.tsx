@@ -294,7 +294,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
       if (room) await postRoomAction("close");
       setRoom(null);
       setShowJoin(false);
-      window.localStorage.removeItem("pps-clear-stack-host-room");
+      try { window.localStorage.removeItem("pps-clear-stack-host-room"); } catch {}
       setPhase("setup");
       setPlayers([]);
       setRound(0);
