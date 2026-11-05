@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import type { ResumeCandidate } from "./PlayAmplifiedResumeRuntime";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { usePlayAmplifiedGameHub } from "./PlayAmplifiedGameHubState";
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -9,17 +10,15 @@ type BeforeInstallPromptEvent = Event & {
 };
 
 export function PlayAmplifiedPwa() {
-  const [candidates, setCandidates] = useState<ResumeCandidate[]>([]);
+  const { activeGame, endActiveGame, blockNotice } = usePlayAmplifiedGameHub();
+  const pathname = usePathname();
   const [standalone, setStandalone] = useState(false);
   const [isIos, setIsIos] = useState(false);
   const [clientReady, setClientReady] = useState(false);
-  const [pathname, setPathname] = useState("");
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [installDismissed, setInstallDismissed] = useState(false);
   const [installCardOpen, setInstallCardOpen] = useState(false);
   const [installHelpOpen, setInstallHelpOpen] = useState(false);
-  const [endingGame, setEndingGame] = useState(false);
-  const [endError, setEndError] = useState("");
 
   useEffect(() => {
     const hostname = window.location.hostname.toLowerCase();
@@ -27,21 +26,10 @@ export function PlayAmplifiedPwa() {
     if (!isPlayAmplified) return;
 
     let cancelled = false;
-    const refreshCandidates = async () => {
-      try {
-        const { readResumeCandidates } = await import("./PlayAmplifiedResumeRuntime");
-        const nextCandidates = await readResumeCandidates();
-        if (!cancelled) setCandidates(nextCandidates);
-      } catch {
-        // A discovery failure must not clear an existing resume prompt.
-      }
-    };
     queueMicrotask(() => {
       void (async () => {
-        await refreshCandidates();
         if (cancelled) return;
         const inStandalone = window.matchMedia?.("(display-mode: standalone)").matches || (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
-        setPathname(window.location.pathname);
         setStandalone(inStandalone);
         setIsIos(/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
         setInstallDismissed(window.sessionStorage.getItem("play-amplified-install-dismissed") === "1");
@@ -70,12 +58,6 @@ export function PlayAmplifiedPwa() {
       void serviceWorkerRegistration.update().catch(() => undefined);
     };
 
-    const refreshOnForeground = () => {
-      if (document.visibilityState === "visible") void refreshCandidates();
-    };
-    window.addEventListener("pageshow", refreshCandidates);
-    document.addEventListener("visibilitychange", refreshOnForeground);
-
     if ("serviceWorker" in navigator) {
       hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
       navigator.serviceWorker.addEventListener("controllerchange", onControllerChange);
@@ -96,38 +78,10 @@ export function PlayAmplifiedPwa() {
       if ("serviceWorker" in navigator) navigator.serviceWorker.removeEventListener("controllerchange", onControllerChange);
       document.removeEventListener("visibilitychange", updateServiceWorker);
       window.removeEventListener("pageshow", updateServiceWorker);
-      window.removeEventListener("pageshow", refreshCandidates);
-      document.removeEventListener("visibilitychange", refreshOnForeground);
     };
   }, []);
 
-  const primary = useMemo(() => candidates[0] ?? null, [candidates]);
-
   const onDiscover = ["/", "/play-amplified"].includes(pathname);
-
-  const endActiveGame = async () => {
-    if (!primary?.endAction || endingGame) return;
-    const confirmed = window.confirm("End Clear the Stack? This closes the live game for everyone and disconnects its spectator link.");
-    if (!confirmed) return;
-    setEndingGame(true);
-    setEndError("");
-    try {
-      const response = await fetch("/api/games/clear-the-stack/room", {
-        method: "PATCH",
-        cache: "no-store",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ id: primary.endAction.roomId, version: primary.endAction.version, action: "close" }),
-      });
-      const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload.error || "Could not end the game. Reconnect and try again.");
-      try { window.localStorage.removeItem("pps-clear-stack-host-room"); } catch {}
-      setCandidates((current) => current.filter((candidate) => candidate.key !== primary.key));
-    } catch (error) {
-      setEndError(error instanceof Error ? error.message : "Could not end the game. Reconnect and try again.");
-    } finally {
-      setEndingGame(false);
-    }
-  };
 
   const dismissInstall = () => {
     window.sessionStorage.setItem("play-amplified-install-dismissed", "1");
@@ -146,38 +100,24 @@ export function PlayAmplifiedPwa() {
 
   if (!clientReady) return null;
 
-  if (primary) {
+  if (activeGame && !onDiscover) {
     return (
-      <>
-      {onDiscover ? <div className="fixed inset-0 z-[99] flex items-center justify-center bg-[#030810]/95 p-5 text-white backdrop-blur-xl">
-        <section aria-labelledby="active-game-title" className="w-full max-w-lg rounded-[28px] border border-cyan-100/20 bg-[#0a1421] p-6 shadow-2xl sm:p-8">
-          <div className="text-xs font-black uppercase tracking-[0.2em] text-cyan-100/55">One live game at a time</div>
-          <h1 id="active-game-title" className="mt-3 text-3xl font-black">{primary.title} is still active</h1>
-          <p className="mt-3 text-sm leading-6 text-white/65">Return to this game or end it before opening another. Your saved game state stays on the server.</p>
-          <div className="mt-6 grid gap-3">
-            <a href={primary.href} className="rounded-xl bg-cyan-300 px-4 py-3 text-center text-sm font-black text-slate-950">RETURN TO {primary.title.toUpperCase()}</a>
-            {primary.endAction ? <button type="button" onClick={() => void endActiveGame()} disabled={endingGame} className="rounded-xl border border-rose-300/35 px-4 py-3 text-sm font-black text-rose-100 disabled:opacity-60">{endingGame ? "ENDING GAME…" : "END GAME AND DISCOVER"}</button> : null}
-            {primary.endHref ? <a href={primary.endHref} className="rounded-xl border border-rose-300/35 px-4 py-3 text-center text-sm font-black text-rose-100">END GAME</a> : null}
-            {endError ? <p role="alert" className="text-sm text-rose-200">{endError}</p> : null}
-          </div>
-        </section>
-      </div> : null}
-      {!onDiscover ? <div className="fixed inset-x-3 bottom-3 z-[100] mx-auto max-w-2xl rounded-[20px] border border-cyan-200/25 bg-[#07111d]/95 p-3 text-white shadow-2xl backdrop-blur-xl sm:bottom-5 sm:p-4">
+      <div className="fixed inset-x-3 bottom-3 z-[100] mx-auto max-w-2xl rounded-[20px] border border-cyan-200/25 bg-[#07111d]/95 p-3 text-white shadow-2xl backdrop-blur-xl sm:bottom-5 sm:p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="min-w-0 flex-1">
             <div className="text-[9px] font-black uppercase tracking-[0.18em] text-cyan-100/55">{standalone ? "Play Amplified" : "Return to active game"}</div>
-            <div className="mt-1 truncate text-sm font-black sm:text-base">{primary.title}</div>
-            <div className="mt-0.5 truncate text-[11px] text-white/55">{primary.connection === "offline" ? "Saved session · connection unavailable; retry when online" : primary.connection === "reconnect" ? "Saved session · reconnect required" : primary.code ? `Room ${primary.code} · active on this device` : "Active session on this device"}</div>
+            <div className="mt-1 truncate text-sm font-black sm:text-base">{activeGame.title}</div>
+            <div className="mt-0.5 truncate text-[11px] text-white/55">{activeGame.connection === "offline" ? "Saved session · connection unavailable; retry when online" : activeGame.connection === "reconnect" ? "Saved session · reconnect required" : activeGame.code ? `Room ${activeGame.code} · active on this device` : "Active session on this device"}</div>
           </div>
           <div className="flex w-full gap-2 sm:w-auto sm:shrink-0">
-            <a href={primary.href} className="flex-1 rounded-xl bg-cyan-300 px-4 py-2.5 text-center text-xs font-black text-slate-950 transition hover:bg-cyan-200 sm:flex-none sm:text-sm">RETURN TO GAME</a>
-            {primary.endAction ? <button type="button" onClick={() => void endActiveGame()} disabled={endingGame} className="flex-1 rounded-xl border border-rose-300/40 px-4 py-2.5 text-center text-xs font-black text-rose-100 disabled:opacity-60 sm:flex-none sm:text-sm">{endingGame ? "ENDING…" : "END GAME"}</button> : null}
-            {primary.endHref ? <a href={primary.endHref} className="flex-1 rounded-xl border border-rose-300/40 px-4 py-2.5 text-center text-xs font-black text-rose-100 sm:flex-none sm:text-sm">END GAME</a> : null}
+            <a href={activeGame.href} className="flex-1 rounded-xl bg-cyan-300 px-4 py-2.5 text-center text-xs font-black text-slate-950 transition hover:bg-cyan-200 sm:flex-none sm:text-sm">RETURN TO GAME</a>
+            {activeGame.endAction ? <button type="button" onClick={() => void endActiveGame()} className="flex-1 rounded-xl border border-rose-300/40 px-4 py-2.5 text-center text-xs font-black text-rose-100 sm:flex-none sm:text-sm">END GAME</button> : null}
+            {activeGame.endHref ? <a href={activeGame.endHref} className="flex-1 rounded-xl border border-rose-300/40 px-4 py-2.5 text-center text-xs font-black text-rose-100 sm:flex-none sm:text-sm">END GAME</a> : null}
 
           </div>
         </div>
-      </div> : null}
-      </>
+        {blockNotice ? <p role="alert" className="mt-2 text-sm text-rose-200">{blockNotice}</p> : null}
+      </div>
     );
   }
 

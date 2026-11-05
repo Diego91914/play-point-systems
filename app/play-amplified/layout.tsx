@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PlayAmplifiedPwa } from "./PlayAmplifiedPwa";
+import { PlayAmplifiedGameHubStateProvider } from "./PlayAmplifiedGameHubState";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://playamplified.com"),
@@ -34,9 +35,9 @@ export const metadata: Metadata = {
 
 export default function PlayAmplifiedLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <>
+    <PlayAmplifiedGameHubStateProvider>
       {children}
       <PlayAmplifiedPwa />
-    </>
+    </PlayAmplifiedGameHubStateProvider>
   );
 }
