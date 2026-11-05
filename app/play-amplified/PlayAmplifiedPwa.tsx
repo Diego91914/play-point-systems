@@ -105,7 +105,7 @@ export function PlayAmplifiedPwa() {
     const path = window.location.pathname;
     if (path !== "/" && path !== "/play-amplified") return;
     launchRedirected.current = true;
-    window.location.replace(primary.href);
+    if (!primary.key.startsWith("shot-caddy:")) window.location.replace(primary.href);
   }, [clientReady, primary]);
 
   const dismissInstall = () => {
@@ -136,6 +136,7 @@ export function PlayAmplifiedPwa() {
           </div>
           <div className="flex w-full gap-2 sm:w-auto sm:shrink-0">
             <a href={primary.href} className="flex-1 rounded-xl bg-cyan-300 px-4 py-2.5 text-center text-xs font-black text-slate-950 transition hover:bg-cyan-200 sm:flex-none sm:text-sm">RETURN TO GAME</a>
+            {primary.endHref ? <a href={primary.endHref} className="flex-1 rounded-xl border border-rose-300/40 px-4 py-2.5 text-center text-xs font-black text-rose-100 sm:flex-none sm:text-sm">END GAME</a> : null}
 
           </div>
         </div>

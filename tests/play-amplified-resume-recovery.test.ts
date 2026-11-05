@@ -93,3 +93,28 @@ describe("Clear the Stack platform resume", () => {
     expect(await readResumeCandidates()).toEqual([]);
   });
 });
+
+describe("Shot Caddy recovery", () => {
+  it.each([
+    ["host", false, true],
+    ["guest", false, false],
+    ["host", true, false],
+  ])("checks the round before offering actions for %s (ended: %s)", async (playerId, ended, canEnd) => {
+    const localStorage = new MemoryStorage();
+    const key = "sc_active_round_resumes_v1";
+    const saved = JSON.stringify({ CHALLENGE_SKINS_PRO: { sessionCode: "ABC234", playerId, gameMode: "CHALLENGE_SKINS_PRO" } });
+    localStorage.setItem(key, saved);
+    vi.stubGlobal("window", { localStorage });
+    vi.stubGlobal("fetch", vi.fn(async (url: string) => url.startsWith("/shot-caddy/api/sessions/")
+      ? Response.json({ roundState: { hostPlayerId: "host", gameMode: "CHALLENGE_SKINS_PRO", hostEndedAt: ended ? "ended" : null } })
+      : Response.json({ room: null })));
+    const { readResumeCandidates } = await import("../app/play-amplified/PlayAmplifiedResumeRuntime");
+    const [candidate] = await readResumeCandidates();
+    if (ended) expect(candidate).toBeUndefined();
+    else {
+      expect(candidate.href).toBe(`/shot-caddy/join/ABC234?resumePlayerId=${playerId}`);
+      expect(candidate.endHref).toBe(canEnd ? `${candidate.href}&dest=summary` : undefined);
+    }
+    expect(localStorage.getItem(key)).toBe(saved);
+  });
+});
