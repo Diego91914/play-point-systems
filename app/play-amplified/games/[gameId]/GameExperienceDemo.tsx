@@ -1,3 +1,6 @@
+"use client";
+
+import { GameLaunchLink, GuardedActionLink } from "../../PlayAmplifiedGameHubCards";
 import { MASTER_GAME_CATALOG } from "@/lib/play-point-core/master-game-catalog";
 import { getGameExperienceDemo } from "@/lib/play-point-core/game-experience-demos";
 
@@ -57,9 +60,11 @@ export function GameExperienceDemo({ gameId, title, launchHref }: { gameId: stri
             ))}
           </div>
         </div>
-        <a href={launchHref} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined} className="inline-flex shrink-0 items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">
-          Open full game →
-        </a>
+        {external ? (
+          <GuardedActionLink href={launchHref} className="inline-flex shrink-0 items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">Open full game →</GuardedActionLink>
+        ) : (
+          <GameLaunchLink game={game} className="inline-flex shrink-0 items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">Open full game →</GameLaunchLink>
+        )}
       </div>
     </div>
   );

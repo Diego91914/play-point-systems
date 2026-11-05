@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import { MASTER_GAME_CATALOG, type MasterGameEntry } from "@/lib/play-point-core/master-game-catalog";
 import type { ResumeCandidate } from "./PlayAmplifiedResumeRuntime";
 
@@ -36,6 +37,7 @@ function storedRecent(): RecentGame | null {
 }
 
 export function PlayAmplifiedGameHubStateProvider({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
   const [activeGame, setActiveGame] = useState<ResumeCandidate | null>(null);
   const [recentId, setRecentId] = useState<string | null>(null);
   const [blockNotice, setBlockNotice] = useState("");
@@ -51,6 +53,10 @@ export function PlayAmplifiedGameHubStateProvider({ children }: { children: Reac
   }, []);
 
   useEffect(() => {
+    if (pathname !== "/play-amplified") {
+      setActiveGame(null);
+      return;
+    }
     setRecentId(storedRecent()?.id ?? null);
     void refresh();
     const onResume = () => { if (document.visibilityState === "visible") void refresh(); };
@@ -60,7 +66,7 @@ export function PlayAmplifiedGameHubStateProvider({ children }: { children: Reac
       window.removeEventListener("pageshow", onResume);
       document.removeEventListener("visibilitychange", onResume);
     };
-  }, [refresh]);
+  }, [refresh, pathname]);
 
   const recentGame = useMemo(() => recentId ? MASTER_GAME_CATALOG.find((game) => game.id === recentId) ?? null : null, [recentId]);
 

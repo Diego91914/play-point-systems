@@ -7,7 +7,7 @@ import {
   type MasterGameEntry,
 } from "@/lib/play-point-core/master-game-catalog";
 import { FOUNDERS_BUNDLE_TIERS } from "@/lib/play-point-core/founders-bundle";
-import { GameGridCard, GameHubActivityCards, GuardedActionLink } from "./PlayAmplifiedGameHubCards";
+import { FeaturedGamePreviewCard, GameGridCard, GameHubActivityCards, GuardedActionLink } from "./PlayAmplifiedGameHubCards";
 
 const socialGames = getMasterGamesByLane("social").filter((game) => game.id !== "last-call");
 const courseGames = getMasterGamesByLane("course");
@@ -16,8 +16,9 @@ const adventureGames = getMasterGamesByLane("adventure");
 const discGolfGames = [...courseGames, ...backyardGames];
 const mysteryAdventureGames = [...MASTER_GAME_CATALOG.filter((game) => game.id === "last-call"), ...adventureGames];
 const triviaGames = getMasterGamesByLane("trivia");
-const featuredIds = ["last-call", "clear-the-stack", "shot-chaos", "play-point-trivia"] as const;
+const featuredIds = ["shot-classic", "clear-the-stack", "phone-holdem", "live-craps", "quest-digital"] as const;
 const featuredGames = featuredIds.map((id) => MASTER_GAME_CATALOG.find((game) => game.id === id)).filter((game): game is MasterGameEntry => Boolean(game));
+const lastCallGame = MASTER_GAME_CATALOG.find((game) => game.id === "last-call");
 
 const categoryLinks: readonly [string, string, string, PlayCategoryArtKind][] = [
   ["Disc Golf & Putting", "Course games, backyard play, and putting challenges", "#course-games", "course"],
@@ -110,8 +111,9 @@ export default function PlayAmplifiedPage() {
               <h2 id="featured-games-heading" className="mt-1 text-2xl font-black tracking-[-0.035em] text-white sm:text-3xl">Featured games</h2>
               <p className="mt-2 text-xs leading-5 text-white/55 sm:text-sm">A rotating mix from across the Play Amplified library.</p>
             </div>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {featuredGames.map((game) => <GameGridCard key={game.id} game={game} />)}
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+              {featuredGames.map((game) => <FeaturedGamePreviewCard key={game.id} game={game} />)}
+              {lastCallGame ? <GameGridCard key={lastCallGame.id} game={lastCallGame} /> : null}
             </div>
           </section>
 

@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page, type Request } from "@playwright/test";
 import { FINISHED_GAME_FORMATS, MASTER_GAME_CATALOG } from "../lib/play-point-core/master-game-catalog";
 
 async function savedState(page: Page) {
@@ -55,15 +55,35 @@ test("browsing all game details preserves sessions and never loads or mutates ga
   const beforeCookies = await context.cookies();
   const forbidden: string[] = [];
   const network: string[] = [];
+  const isResumeStatusRead = (request: Request) => {
+    const { pathname } = new URL(request.url());
+    if (request.method() === "GET" && (
+      pathname === "/api/games/clear-the-stack/room" ||
+      /^\/api\/games\/mystery\/[A-Z2-9]{6}$/.test(pathname) ||
+      /^\/api\/trivia\/sessions\/[A-Za-z0-9_-]+(?:\/players\/[A-Za-z0-9_-]+)?$/.test(pathname) ||
+      /^\/shot-caddy\/api\/sessions\/[A-Z0-9]{6,8}$/.test(pathname)
+    )) return true;
+    if (request.method() !== "POST" || pathname !== "/api/games/social-room-control") return false;
+    try {
+      const body = JSON.parse(request.postData() ?? "null");
+      return body?.action === "status" && ["chain-reaction", "how-close", "inside-man", "on-my-list", "all-about-you", "holdem"].includes(body.game);
+    } catch {
+      return false;
+    }
+  };
   context.on("request", request => {
     const url = new URL(request.url());
     network.push(`${request.method()} ${url.pathname}${url.search}`);
-    if (!["GET", "HEAD"].includes(request.method()) || /^\/(api|games|shot-caddy|live)(\/|$)/.test(url.pathname)) forbidden.push(`${request.method()} ${url.href}`);
+    const isGameRoute = /^\/(games|shot-caddy|live)(\/|$)/.test(url.pathname);
+    const isApi = url.pathname.startsWith("/api/") || url.pathname.startsWith("/shot-caddy/api/");
+    if (isGameRoute || (isApi && !isResumeStatusRead(request)) || (!isResumeStatusRead(request) && !["GET", "HEAD"].includes(request.method()))) forbidden.push(`${request.method()} ${url.href}`);
   });
   // Abort a regression before it can touch even a synthetic game session.
   await context.route("**/*", route => {
     const request = route.request(), path = new URL(request.url()).pathname;
-    return !["GET", "HEAD"].includes(request.method()) || /^\/(api|games|shot-caddy|live)(\/|$)/.test(path) ? route.abort() : route.continue();
+    const isGameRoute = /^\/(games|shot-caddy|live)(\/|$)/.test(path);
+    const isApi = path.startsWith("/api/") || path.startsWith("/shot-caddy/api/");
+    return isGameRoute || (isApi && !isResumeStatusRead(request)) || (!isResumeStatusRead(request) && !["GET", "HEAD"].includes(request.method())) ? route.abort() : route.continue();
   });
   const errors: string[] = [];
   page.on("pageerror", error => errors.push(error.message));

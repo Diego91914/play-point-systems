@@ -76,7 +76,7 @@ export function RecentlyPlayedCard({ game }: { game: MasterGameEntry | null }) {
 
 export function GameGridCard({ game }: { game: MasterGameEntry }) {
   return (
-    <GameLaunchLink game={game} className="group relative block aspect-square overflow-hidden rounded-[22px] border border-white/10 bg-[#10141d] shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:border-white/20">
+    <Link prefetch={false} href={game.href} className="group relative block aspect-square overflow-hidden rounded-[22px] border border-white/10 bg-[#10141d] shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:border-white/20">
       <div className="absolute inset-0"><EditorialGameCoverArt gameId={game.id} immersive /></div>
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/15 to-transparent" />
       <div className="absolute left-3 top-3 rounded-full bg-black/45 px-2 py-1 text-[7px] font-black uppercase tracking-[0.14em] text-white/75 backdrop-blur-sm">{game.status === "live" ? "Playable" : "Preview"}</div>
@@ -84,7 +84,20 @@ export function GameGridCard({ game }: { game: MasterGameEntry }) {
         {game.parentTitle ? <div className="text-[8px] font-black uppercase tracking-[0.13em] text-white/55">{game.parentTitle}</div> : null}
         <div className="mt-1 line-clamp-2 text-sm font-black leading-tight text-white sm:text-base">{game.title}</div>
       </div>
-    </GameLaunchLink>
+    </Link>
+  );
+}
+
+export function FeaturedGamePreviewCard({ game }: { game: MasterGameEntry }) {
+  return (
+    <figure data-game-preview={game.id} className="group relative aspect-square overflow-hidden rounded-[22px] border border-white/10 bg-[#10141d] shadow-lg shadow-black/20">
+      <Link prefetch={false} href={game.href} className="absolute inset-0 block">
+        <EditorialGameCoverArt gameId={game.id} immersive />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/15 to-transparent" />
+        <div className="absolute left-3 top-3 rounded-full bg-black/45 px-2 py-1 text-[7px] font-black uppercase tracking-[0.14em] text-white/75 backdrop-blur-sm">Featured</div>
+        <div className="absolute inset-x-3 bottom-3 text-sm font-black leading-tight text-white sm:text-base">{game.title}</div>
+      </Link>
+    </figure>
   );
 }
 

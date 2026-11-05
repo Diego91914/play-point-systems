@@ -60,9 +60,12 @@ describe("Play Amplified consumer home", () => {
   });
 
   it("keeps Last Call secondary among cross-category featured games", () => {
-    expect(home).toContain('const featuredIds = ["last-call", "clear-the-stack", "shot-chaos", "play-point-trivia"]');
+    expect(home).toContain('const featuredIds = ["shot-classic", "clear-the-stack", "phone-holdem", "live-craps", "quest-digital"]');
     expect(home.indexOf('aria-labelledby="featured-games-heading"')).toBeGreaterThan(home.indexOf('id="game-categories"'));
     expect(home).toContain("Featured games");
+    expect(home).toContain('game.id === "last-call"');
+    expect(gameCards).toContain('data-game-preview={game.id}');
+    expect(gameCards).toContain('href={game.href}');
     expect(home).not.toContain("min-h-[390px]");
   });
 
