@@ -68,12 +68,12 @@ describe("Clear the Stack platform resume", () => {
   it("discovers the account's authoritative room without local credentials", async () => {
     vi.stubGlobal("window", { localStorage: new MemoryStorage() });
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(Response.json({ room: {
-      id: "host-room", code: "ABC234", updated_at: "2026-11-04T18:00:00Z", game_state: { phase: "playing" },
+      id: "host-room", code: "ABC234", state_version: 7, updated_at: "2026-11-04T18:00:00Z", game_state: { phase: "playing" },
     } })));
     const { readResumeCandidates } = await import("../app/play-amplified/PlayAmplifiedResumeRuntime");
     const candidates = await readResumeCandidates();
     expect(candidates).toHaveLength(1);
-    expect(candidates[0]).toMatchObject({ title: "Clear the Stack", href: "/games/clear-the-stack", connection: "online" });
+    expect(candidates[0]).toMatchObject({ title: "Clear the Stack", href: "/games/clear-the-stack", connection: "online", endAction: { type: "clear-stack", roomId: "host-room", version: 7 } });
   });
   it.each([401, 503])("preserves the saved host route during HTTP %s", async status => {
     const localStorage = new MemoryStorage();

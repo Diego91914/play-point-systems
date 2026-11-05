@@ -4,6 +4,7 @@ export type ResumeCandidate = {
   href: string;
   code?: string;
   endHref?: string;
+  endAction?: { type: "clear-stack"; roomId: string; version: number };
   seenAt: number;
   clearKeys: string[];
   connection: "online" | "offline" | "reconnect";
@@ -220,6 +221,7 @@ async function validateClearStackResume(): Promise<ResumeCandidate | null> {
     if (!room?.id || !room.game_state || !["setup", "playing", "finished"].includes(room.game_state.phase)) return fallback("reconnect");
     const updated = Date.parse(room.updated_at);
     return { key, title: "Clear the Stack", href: "/games/clear-the-stack", code: room.code,
+      endAction: Number.isInteger(room.state_version) ? { type: "clear-stack", roomId: room.id, version: room.state_version } : undefined,
       seenAt: Number.isFinite(updated) ? updated : 0, clearKeys: [key], connection: "online" };
   } catch { return fallback("offline"); }
 }
