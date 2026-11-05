@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useMysterySession } from "./useMysterySession";
 
-type Session = { code: string; playerId: string; token: string };
 type Evidence = {
   available: boolean;
   id?: string;
@@ -14,20 +14,14 @@ type Evidence = {
   rule?: string;
 };
 
-const KEY = "pps-mystery-session";
 
 export function MysteryDormantEvidence() {
-  const [session, setSession] = useState<Session | null>(null);
+  const session = useMysterySession();
   const [evidence, setEvidence] = useState<Evidence | null>(null);
   const [busy, setBusy] = useState(false);
   const [dismissedId, setDismissedId] = useState("");
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setSession(JSON.parse(raw));
-    } catch {}
-  }, []);
 
   const refresh = useCallback(async () => {
     if (!session) return;
@@ -48,6 +42,7 @@ export function MysteryDormantEvidence() {
   async function decide(decision: string) {
     if (!session || !evidence?.id) return;
     setBusy(true);
+    setError("");
     try {
       const response = await fetch(`/api/games/mystery/${session.code}/dormant-evidence`, {
         method: "POST",
@@ -56,7 +51,10 @@ export function MysteryDormantEvidence() {
         body: JSON.stringify({ playerId: session.playerId, token: session.token, evidenceId: evidence.id, decision }),
       });
       const json = await response.json();
-      if (response.ok) setEvidence(json.evidence);
+      if (!response.ok) throw new Error(json.error || "Unable to save this private choice. Try again.");
+      setEvidence(json.evidence);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Unable to save this private choice. Try again.");
     } finally {
       setBusy(false);
     }
@@ -84,6 +82,7 @@ export function MysteryDormantEvidence() {
         {!awaitingDecision && evidence.decisionText && <div className="mt-6 rounded-2xl border border-amber-200/20 bg-amber-200/[.07] p-5"><div className="text-[10px] font-black uppercase tracking-widest text-amber-100">What you now know</div><p className="mt-3 text-base leading-7 text-white/80">{evidence.decisionText}</p></div>}
 
         {!awaitingDecision && <button onClick={() => setDismissedId(evidence.id ?? "dismissed")} className="mt-5 w-full rounded-2xl border border-white/15 px-5 py-4 font-black text-white">RETURN TO THE INVESTIGATION</button>}
+        {error && <p role="alert" className="mt-4 text-sm font-bold text-rose-200">{error}</p>}
         <p className="mt-4 text-xs leading-5 text-white/35">{evidence.rule}</p>
       </div>
     </div>

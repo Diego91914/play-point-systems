@@ -15,9 +15,6 @@ for (const route of marketingRoutes) {
   test(`${route} keeps its headline inside the mobile viewport`, async ({ page }) => {
     await page.goto(route);
     await page.waitForLoadState("domcontentloaded");
-    if (route === "/games/sign-in") {
-      await expect(page).toHaveURL(/\/builder-access\?next=/);
-    }
 
     const headline = page.locator("h1").first();
     await expect(headline).toBeVisible();
@@ -41,33 +38,32 @@ for (const route of marketingRoutes) {
   });
 }
 
-test("the mobile brand mark and company name remain fully visible", async ({ page }) => {
+test("the responsive brand mark and company name remain fully visible", async ({ page }) => {
   await page.goto("/");
 
-  const logo = page.locator('header img[src*="play-point-systems-emblem"]').first();
+  const desktopBrand = (page.viewportSize()?.width ?? 0) >= 640;
+  const logo = desktopBrand
+    ? page.locator('header img[alt="Play Point Systems"]').first()
+    : page.locator('header img[src*="play-point-systems-emblem"]').first();
   await expect(logo).toBeVisible();
   const logoBounds = await logo.boundingBox();
   expect(logoBounds).not.toBeNull();
   expect(logoBounds!.width).toBeGreaterThanOrEqual(32);
   expect(logoBounds!.height).toBeGreaterThanOrEqual(32);
 
-  const companyName = page.getByText("Play Point Systems", { exact: true }).first();
+  const companyName = desktopBrand ? logo : page.getByText("Play Point Systems", { exact: true }).first();
   await expect(companyName).toBeVisible();
   expect(
     await companyName.evaluate((element) => element.scrollWidth <= element.clientWidth + 1)
   ).toBe(true);
 });
 
-test("private game hosting routes send unsigned users to Founder / Builder Access", async ({ page }) => {
-  for (const route of [
-    "/games",
-    "/games/trivia/builder",
-  ]) {
+test("private game hosting routes offer account and builder access to unsigned hosts", async ({ page }) => {
+  for (const route of ["/games", "/games/trivia/builder"]) {
     await page.goto(route);
-    await expect(page).toHaveURL(/\/builder-access\?next=/);
-    await expect(
-      page.getByRole("heading", { name: /founder \/ builder access/i })
-    ).toBeVisible();
+    await expect(page).toHaveURL(/\/games\/sign-in\?next=/);
+    await expect(page.getByRole("link", { name: "Sign in to my Play Amplified account" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Use private builder access" })).toBeVisible();
   }
 });
 
@@ -87,14 +83,20 @@ test("guest-capable game APIs reject unusable room access without requiring a cu
   expect([200, 401, 403]).toContain(triviaResponse.status());
 });
 
-test("Games sign-in routes unsigned prelaunch users to the builder-password gate", async ({ page }) => {
+test("Games sign-in offers account and builder options rather than forcing a password loop", async ({ page }) => {
   await page.goto("/games/sign-in");
-  await expect(page).toHaveURL(/\/builder-access\?next=/);
-  await expect(page.getByRole("heading", { name: /founder \/ builder access/i })).toBeVisible();
+  await expect(page).toHaveURL(/\/games\/sign-in/);
+  await expect(page.getByRole("link", { name: "Sign in to my Play Amplified account" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Use private builder access" })).toBeVisible();
   await expect(page.getByPlaceholder("you@example.com")).toHaveCount(0);
-
-  const pageFits = await page.evaluate(
-    () => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1
-  );
+  const pageFits = await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1);
   expect(pageFits).toBe(true);
+});
+
+test("failed automatic account recovery retains explicit access choices", async ({ page }) => {
+  await page.route("**/api/games/account/builder-session", route => route.abort());
+  await page.goto("/games/sign-in");
+  await expect(page.locator('[role="alert"]:not(#__next-route-announcer__)')).toBeVisible();
+  await expect(page.getByRole("link", { name: "Sign in to my Play Amplified account" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Use private builder access" })).toBeVisible();
 });

@@ -3,7 +3,7 @@ import { MASTER_GAME_CATALOG } from "../lib/play-point-core/master-game-catalog"
 import { getGameHostingMode } from "../lib/play-point-core/game-hosting";
 
 for (const route of ["/play", "/play/host", "/play/join"] as const) {
-  test(`${route} fits the phone viewport and keeps Play Amplified navigation`, async ({ page }) => {
+  test(`${route} fits the viewport and keeps Play Amplified navigation`, async ({ page }) => {
     await page.goto(route);
     await expect(page.locator("h1").first()).toBeVisible();
     await expect(page.getByRole("link", { name: "Play Amplified home" })).toBeVisible();
@@ -14,9 +14,18 @@ for (const route of ["/play", "/play/host", "/play/join"] as const) {
     expect(fitsViewport).toBe(true);
 
     const menu = page.getByRole("button", { name: "Toggle navigation menu" });
-    await expect(menu).toBeVisible();
-    await menu.click();
-    const nav = page.locator("#mobile-navigation");
+    const desktop = (page.viewportSize()?.width ?? 0) >= 1024;
+    if (desktop) {
+      await expect(menu).toBeHidden();
+    } else {
+      await expect(menu).toBeVisible();
+      await menu.click();
+      await expect(menu).toHaveAttribute("aria-expanded", "true");
+    }
+    const nav = desktop
+      ? page.getByRole("navigation", { name: "Primary navigation", exact: true })
+      : page.getByRole("navigation", { name: "Mobile navigation", exact: true });
+    await expect(nav).toBeVisible();
     await expect(nav.getByRole("link", { name: "Discover" })).toHaveAttribute("href", "/play-amplified");
     await expect(nav.getByRole("link", { name: "Play", exact: true })).toHaveAttribute("href", "/play");
     await expect(nav.getByRole("link", { name: "My Games" })).toHaveAttribute("href", "/games");

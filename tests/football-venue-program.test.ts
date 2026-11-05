@@ -10,13 +10,11 @@ function makeTrigger(
   },
 ): PlayPointTrigger {
   return {
-    id: overrides.id,
     eventId: "event-bears-packers-2026-week-01",
     contestId: null,
     sourceMode: "manual",
     status: "processed",
     triggerType: "football.period_ended",
-    occurredAt: overrides.occurredAt,
     submittedByUserId: "host-1",
     idempotencyKey: overrides.id,
     payload: overrides.payload ?? {},

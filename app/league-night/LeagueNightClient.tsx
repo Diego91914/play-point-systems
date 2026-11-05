@@ -26,8 +26,22 @@ export function LeagueNightClient({ signedIn }: { signedIn:boolean }) {
     const r=await fetch("/api/league-night/roster?eventId="+encodeURIComponent(id),{cache:"no-store"});
     if(r.ok){const d=await r.json(); setPlayers(d.players??[]);}
   }
-  useEffect(()=>{void loadEvents();},[signedIn]);
-  useEffect(()=>{if(selected) void loadRoster(selected.id);},[selected]);
+  useEffect(()=>{
+    if(!signedIn) return;
+    let cancelled=false;
+    void fetch("/api/league-night",{cache:"no-store"})
+      .then(async r=>{if(r.ok){const d=await r.json();if(!cancelled)setEvents(d.events??[]);}})
+      .catch(()=>{if(!cancelled)setStatus("Could not load events. Try again.");});
+    return ()=>{cancelled=true;};
+  },[signedIn]);
+  useEffect(()=>{
+    if(!selected) return;
+    let cancelled=false;
+    void fetch("/api/league-night/roster?eventId="+encodeURIComponent(selected.id),{cache:"no-store"})
+      .then(async r=>{if(r.ok){const d=await r.json();if(!cancelled)setPlayers(d.players??[]);}})
+      .catch(()=>{if(!cancelled)setStatus("Could not load players. Try again.");});
+    return ()=>{cancelled=true;};
+  },[selected]);
 
   async function createEvent(){
     setStatus("Creating…");

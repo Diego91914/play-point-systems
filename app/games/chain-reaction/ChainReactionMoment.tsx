@@ -1,5 +1,6 @@
 "use client";
 
+import { useBrowserGameSession } from "../_components/browser-session-store";
 import { useEffect, useRef, useState } from "react";
 import styles from "@/app/games/_components/signature-moment.module.css";
 
@@ -14,16 +15,10 @@ type Game = {
 const KEY = "pps-chain-reaction-session";
 
 export function ChainReactionMoment() {
-  const [session, setSession] = useState<Session | null>(null);
+  const session = useBrowserGameSession<Session>(KEY);
   const [moment, setMoment] = useState<{ key: string; eyebrow: string; title: string; detail: string } | null>(null);
   const seen = useRef<string | null>(null);
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setSession(JSON.parse(raw));
-    } catch {}
-  }, []);
 
   useEffect(() => {
     if (!session) return;

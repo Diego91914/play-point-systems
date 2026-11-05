@@ -23,7 +23,7 @@ function error(message: string, status: number) {
 
 function viewRoom(row: Record<string, unknown>) {
   return {
-    id: row.id, code: row.code, spectator_token: row.spectator_token,
+    updated_at: row.updated_at, id: row.id, code: row.code, spectator_token: row.spectator_token,
     state_version: row.state_version, distance: row.distance,
     stack_size: row.stack_size, status: row.status,
     game_state: row.game_state,
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
   // The database has an additional unique index to cover concurrent requests.
   async function existingHostRoom() {
     return supabase.from("ppl_clear_stack_rooms")
-      .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state")
+      .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at")
       .eq("host_session_id", host)
       .not("spectator_token", "is", null)
       .neq("status", "closed")
@@ -63,7 +63,7 @@ export async function POST(request: Request) {
       spectator_token: spectatorToken,
       game_state: initialStackState(distance, stackSize),
     })
-    .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state")
+    .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at")
     .single();
   if (dbError?.code === "23505") {
     const { data: concurrent, error: conflictError } = await existingHostRoom();
@@ -79,12 +79,20 @@ export async function GET(request: Request) {
   const host = await hostIdentity();
   if (!host) return error("Host account required.", 401);
   const id = new URL(request.url).searchParams.get("id");
-  if (!id) return error("Missing room.", 400);
+  if (id && !/^[0-9a-f-]{36}$/i.test(id)) return error("Invalid room.", 400);
   const supabase = getSupabaseServerClient();
-  const { data, error: dbError } = await supabase.from("ppl_clear_stack_rooms")
-    .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state")
-    .eq("id", id).eq("host_session_id", host).maybeSingle();
-  if (dbError || !data || data.status === "closed") return error("Host room not found.", 404);
+  let query = supabase.from("ppl_clear_stack_rooms")
+    .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at")
+    .eq("host_session_id", host);
+  if (id) query = query.eq("id", id);
+  else query = query.not("spectator_token", "is", null).neq("status", "closed")
+    .order("created_at", { ascending: false }).limit(1);
+  const { data, error: dbError } = await query.maybeSingle();
+  if (dbError) return error("Could not check your saved game. Retry when connected.", 503);
+  if (!data) return id ? error("Host room not found.", 404)
+    : NextResponse.json({ room: null }, { headers: noStore });
+  // Only an owned, explicitly closed room proves that recovery can be cleared.
+  if (data.status === "closed") return error("This host session has ended.", 410);
   return NextResponse.json({ room: viewRoom(data) }, { headers: noStore });
 }
 
@@ -99,7 +107,7 @@ export async function PATCH(request: Request) {
 
   const supabase = getSupabaseServerClient();
   const { data: room, error: readError } = await supabase.from("ppl_clear_stack_rooms")
-    .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state")
+    .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at")
     .eq("id", id).eq("host_session_id", host).maybeSingle();
   if (readError || !room || room.status === "closed") return error("Host room not found.", 404);
   if (room.state_version !== version) return error("Game updated elsewhere. Reload and try again.", 409);
@@ -143,7 +151,7 @@ export async function PATCH(request: Request) {
       state_version: version + 1, updated_at: new Date().toISOString(),
     })
     .eq("id", id).eq("host_session_id", host).eq("state_version", version)
-    .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state")
+    .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at")
     .maybeSingle();
   if (updateError) return error("Failed to save game state. Please retry.", 500);
   if (!updated) return error("Another update occurred. Reload game state.", 409);

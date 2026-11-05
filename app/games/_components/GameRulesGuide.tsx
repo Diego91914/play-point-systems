@@ -57,7 +57,7 @@ export function GameRulesGuide({ gameName, goal, setup, turns, scoring, ending, 
           {example && <Rule number={nextNumber()} title="Example"><p>{example}</p></Rule>}
         </div>
 
-        <button type="button" onClick={() => setOpen(false)} className="relative mt-7 min-h-14 w-full rounded-2xl bg-[linear-gradient(135deg,#f5d58a,#d5ae5f)] px-4 py-4 font-black text-slate-950 shadow-[0_14px_38px_rgba(213,174,95,.18)] transition hover:brightness-105 active:scale-[.99]">GOT IT — LET'S PLAY</button>
+        <button type="button" onClick={() => setOpen(false)} className="relative mt-7 min-h-14 w-full rounded-2xl bg-[linear-gradient(135deg,#f5d58a,#d5ae5f)] px-4 py-4 font-black text-slate-950 shadow-[0_14px_38px_rgba(213,174,95,.18)] transition hover:brightness-105 active:scale-[.99]">GOT IT — LET’S PLAY</button>
       </div>
     </div>}
   </>;

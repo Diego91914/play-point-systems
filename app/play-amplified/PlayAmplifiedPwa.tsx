@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { usePathname } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ResumeCandidate } from "./PlayAmplifiedResumeRuntime";
 
 type BeforeInstallPromptEvent = Event & {
@@ -9,15 +8,7 @@ type BeforeInstallPromptEvent = Event & {
   userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
 };
 
-function removeLocalKeys(keys: readonly string[]) {
-  try {
-    for (const key of keys) window.localStorage.removeItem(key);
-  } catch {}
-}
-
 export function PlayAmplifiedPwa() {
-  const pathname = usePathname();
-  const [endGameConfirmation, setEndGameConfirmation] = useState(false);
   const [candidates, setCandidates] = useState<ResumeCandidate[]>([]);
   const [standalone, setStandalone] = useState(false);
   const [isIos, setIsIos] = useState(false);
@@ -26,7 +17,7 @@ export function PlayAmplifiedPwa() {
   const [installDismissed, setInstallDismissed] = useState(false);
   const [installCardOpen, setInstallCardOpen] = useState(false);
   const [installHelpOpen, setInstallHelpOpen] = useState(false);
-  const [resumeDismissed, setResumeDismissed] = useState(false);
+  const launchRedirected = useRef(false);
 
   useEffect(() => {
     const hostname = window.location.hostname.toLowerCase();
@@ -34,20 +25,23 @@ export function PlayAmplifiedPwa() {
     if (!isPlayAmplified) return;
 
     let cancelled = false;
-    queueMicrotask(() => {
-      void (async () => {
+    const refreshCandidates = async () => {
+      try {
         const { readResumeCandidates } = await import("./PlayAmplifiedResumeRuntime");
         const nextCandidates = await readResumeCandidates();
+        if (!cancelled) setCandidates(nextCandidates);
+      } catch {
+        // A discovery failure must not clear an existing resume prompt.
+      }
+    };
+    queueMicrotask(() => {
+      void (async () => {
+        await refreshCandidates();
         if (cancelled) return;
-        setCandidates(nextCandidates);
         const inStandalone = window.matchMedia?.("(display-mode: standalone)").matches || (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
         setStandalone(inStandalone);
         setIsIos(/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
         setInstallDismissed(window.sessionStorage.getItem("play-amplified-install-dismissed") === "1");
-        setResumeDismissed(
-          window.sessionStorage.getItem("play-amplified-resume-dismissed") === "1"
-          && !nextCandidates.some((candidate) => candidate.key.startsWith("shot-caddy:")),
-        );
         setClientReady(true);
       })();
     });
@@ -73,6 +67,12 @@ export function PlayAmplifiedPwa() {
       void serviceWorkerRegistration.update().catch(() => undefined);
     };
 
+    const refreshOnForeground = () => {
+      if (document.visibilityState === "visible") void refreshCandidates();
+    };
+    window.addEventListener("pageshow", refreshCandidates);
+    document.addEventListener("visibilitychange", refreshOnForeground);
+
     if ("serviceWorker" in navigator) {
       hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
       navigator.serviceWorker.addEventListener("controllerchange", onControllerChange);
@@ -93,23 +93,20 @@ export function PlayAmplifiedPwa() {
       if ("serviceWorker" in navigator) navigator.serviceWorker.removeEventListener("controllerchange", onControllerChange);
       document.removeEventListener("visibilitychange", updateServiceWorker);
       window.removeEventListener("pageshow", updateServiceWorker);
+      window.removeEventListener("pageshow", refreshCandidates);
+      document.removeEventListener("visibilitychange", refreshOnForeground);
     };
   }, []);
 
   const primary = useMemo(() => candidates[0] ?? null, [candidates]);
 
-  const saveResumeForLater = () => {
-    window.sessionStorage.setItem("play-amplified-resume-dismissed", "1");
-    setResumeDismissed(true);
-  };
-
-  const exitResume = () => {
-    if (!primary) return;
-    removeLocalKeys(primary.clearKeys);
-    setCandidates((current) => current.filter((candidate) => candidate.key !== primary.key));
-    window.sessionStorage.setItem("play-amplified-resume-dismissed", "1");
-    setResumeDismissed(true);
-  };
+  useEffect(() => {
+    if (!clientReady || !primary || launchRedirected.current) return;
+    const path = window.location.pathname;
+    if (path !== "/" && path !== "/play-amplified") return;
+    launchRedirected.current = true;
+    if (!primary.key.startsWith("shot-caddy:")) window.location.replace(primary.href);
+  }, [clientReady, primary]);
 
   const dismissInstall = () => {
     window.sessionStorage.setItem("play-amplified-install-dismissed", "1");
@@ -128,59 +125,26 @@ export function PlayAmplifiedPwa() {
 
   if (!clientReady) return null;
 
-  if (primary && !resumeDismissed && pathname === "/play-amplified") {
-    return (
-      <div className="fixed inset-0 z-[110] flex items-center justify-center overflow-y-auto bg-[#020711]/85 px-4 py-8 backdrop-blur-md" role="dialog" aria-modal="true" aria-label="Continue your active game">
-        <div className="w-full max-w-lg rounded-[28px] border border-cyan-300/35 bg-[#091827] p-6 text-center text-white shadow-[0_28px_100px_rgba(0,0,0,.75)] sm:p-9">
-          <div className="text-xs font-black uppercase tracking-[0.22em] text-cyan-200">Game in progress</div>
-          <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">{primary.title}</h2>
-          <p className="mt-2 text-base text-white/75">{primary.code ? `Session ${primary.code}` : "A game is waiting on this device."}</p>
-          <p className="mt-5 text-sm leading-6 text-white/75">Your round is still available. Resume where you left off, or choose the end-game flow after reviewing your scores.</p>
-          {endGameConfirmation && primary.endHref ? (
-            <div className="mt-6 rounded-2xl border border-amber-200/35 bg-amber-300/10 p-4 text-left" role="alertdialog" aria-label="Confirm end game">
-              <div className="text-base font-black text-amber-100">End this game?</div>
-              <p className="mt-2 text-sm leading-6 text-white/80">You will go to the Shot Caddy scorecard to review your saved scores and confirm Finish Round. Nothing is erased or ended until you confirm there.</p>
-              <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-                <button type="button" onClick={() => setEndGameConfirmation(false)} className="min-h-12 flex-1 rounded-xl border border-white/25 px-4 py-3 text-sm font-black">KEEP PLAYING</button>
-                <a href={primary.endHref} className="flex min-h-12 flex-1 items-center justify-center rounded-xl bg-amber-300 px-4 py-3 text-sm font-black text-slate-950">GO TO END GAME</a>
-              </div>
-            </div>
-          ) : (
-            <div className="mt-7 grid gap-3">
-              <a href={primary.href} className="flex min-h-16 items-center justify-center rounded-2xl bg-cyan-300 px-6 py-4 text-xl font-black text-slate-950 hover:bg-cyan-200">RESUME GAME</a>
-              {primary.endHref ? (
-                <button type="button" onClick={() => setEndGameConfirmation(true)} className="min-h-14 rounded-2xl border border-rose-200/40 bg-rose-400/10 px-6 py-3 text-lg font-black text-rose-100 hover:bg-rose-400/15">END GAME</button>
-              ) : !primary.key.startsWith("shot-caddy:") ? (
-                <button type="button" onClick={exitResume} className="min-h-12 rounded-2xl border border-white/20 px-4 py-3 text-sm font-black text-white/80">EXIT REMINDER ON THIS DEVICE</button>
-              ) : null}
-            </div>
-          )}
-          <button type="button" onClick={saveResumeForLater} className="mt-5 min-h-11 px-4 text-sm font-bold text-white/70 underline underline-offset-4 hover:text-white">Save for later</button>
-        </div>
-      </div>
-    );
-  }
-
-  if (primary && !resumeDismissed) {
+  if (primary) {
     return (
       <div className="fixed inset-x-3 bottom-3 z-[100] mx-auto max-w-2xl rounded-[20px] border border-cyan-200/25 bg-[#07111d]/95 p-3 text-white shadow-2xl backdrop-blur-xl sm:bottom-5 sm:p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="min-w-0 flex-1">
-            <div className="text-[9px] font-black uppercase tracking-[0.18em] text-cyan-100/55">{standalone ? "Play Amplified" : "Active game"}</div>
+            <div className="text-[9px] font-black uppercase tracking-[0.18em] text-cyan-100/55">{standalone ? "Play Amplified" : "Return to active game"}</div>
             <div className="mt-1 truncate text-sm font-black sm:text-base">{primary.title}</div>
-            <div className="mt-0.5 truncate text-[11px] text-white/55">{primary.code ? `Room ${primary.code} · recent on this device` : "Active session on this device"}</div>
+            <div className="mt-0.5 truncate text-[11px] text-white/55">{primary.connection === "offline" ? "Saved session · connection unavailable; retry when online" : primary.connection === "reconnect" ? "Saved session · reconnect required" : primary.code ? `Room ${primary.code} · active on this device` : "Active session on this device"}</div>
           </div>
           <div className="flex w-full gap-2 sm:w-auto sm:shrink-0">
-            <a href={primary.href} className="flex-1 rounded-xl bg-cyan-300 px-4 py-2.5 text-center text-xs font-black text-slate-950 transition hover:bg-cyan-200 sm:flex-none sm:text-sm">RESUME</a>
-            <button type="button" onClick={saveResumeForLater} title="Keep this active game and ask again next time" className="rounded-xl border border-white/12 bg-white/[0.06] px-3 py-2.5 text-[10px] font-black text-white/75 transition hover:bg-white/10 hover:text-white sm:text-xs">SAVE FOR LATER</button>
-{!primary.key.startsWith("shot-caddy:") ? (<button type="button" onClick={exitResume} title="Remove this remembered game from this device" className="rounded-xl border border-rose-200/15 bg-rose-300/[0.06] px-3 py-2.5 text-xs font-black text-rose-100/80 transition hover:bg-rose-300/10 hover:text-rose-50">EXIT</button>) : null}
+            <a href={primary.href} className="flex-1 rounded-xl bg-cyan-300 px-4 py-2.5 text-center text-xs font-black text-slate-950 transition hover:bg-cyan-200 sm:flex-none sm:text-sm">RETURN TO GAME</a>
+            {primary.endHref ? <a href={primary.endHref} className="flex-1 rounded-xl border border-rose-300/40 px-4 py-2.5 text-center text-xs font-black text-rose-100 sm:flex-none sm:text-sm">END GAME</a> : null}
+
           </div>
         </div>
       </div>
     );
   }
 
-  if (primary || resumeDismissed || standalone || installDismissed) return null;
+  if (standalone || installDismissed) return null;
 
   if (!installCardOpen) {
     return (

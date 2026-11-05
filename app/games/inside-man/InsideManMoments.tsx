@@ -1,5 +1,6 @@
 "use client";
 
+import { useBrowserGameSession } from "../_components/browser-session-store";
 import { useEffect, useRef, useState } from "react";
 
 type Session = { code: string; playerId: string; token: string };
@@ -20,16 +21,10 @@ type Moment = {
 const KEY = "pps-inside-man-session";
 
 export function InsideManMoments() {
-  const [session, setSession] = useState<Session | null>(null);
+  const session = useBrowserGameSession<Session>(KEY);
   const [moment, setMoment] = useState<Moment>(null);
   const seen = useRef(new Set<string>());
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setSession(JSON.parse(raw));
-    } catch {}
-  }, []);
 
   useEffect(() => {
     if (!session) return;

@@ -69,7 +69,7 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     const elapsed = Date.now() - Date.parse(sessionRow.updated_at);
     if (wagers.length >= players.length || elapsed >= WAGER_HOLD_MS) {
       if (elapsed >= WAGER_HOLD_MS && wagers.length < players.length) {
-        const wagered = new Set(wagers.map((wager: any) => wager.player_id));
+        const wagered = new Set(wagers.map((wager) => wager.player_id));
         for (const player of players) {
           if (wagered.has(player.id)) continue;
           const { error } = await supabase.rpc("ppl_trivia_submit_wager", {

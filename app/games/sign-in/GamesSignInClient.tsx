@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { getPlayPointBrowserSupabaseClient } from "@/lib/play-point-core/play-point-browser-supabase";
 import { getSafeGamesReturnPath } from "@/lib/play-point-core/safe-games-return-path";
 
 export function GamesSignInClient({ nextPath }: { nextPath: string }) {
   const destination = getSafeGamesReturnPath(nextPath, "/play-amplified");
   const [error, setError] = useState("");
+  const [showAccessChoices, setShowAccessChoices] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -34,6 +37,21 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
         return;
       }
 
+      // Restore a signed-in Founder account before attempting builder test access.
+      // Reinstalled PWAs can lose the game cookie while retaining Supabase auth.
+      const { data } = await getPlayPointBrowserSupabaseClient().auth.getSession();
+      if (data.session) {
+        const accountResponse = await fetch("/api/games/account/session", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${data.session.access_token}` },
+          cache: "no-store",
+        });
+        if (accountResponse.ok) {
+          if (!cancelled) window.location.replace(destination);
+          return;
+        }
+      }
+
       const builderResponse = await fetch("/api/games/account/builder-session", {
         method: "POST",
         cache: "no-store",
@@ -43,15 +61,14 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
         return;
       }
 
-      if (!cancelled) {
-        const target = new URL("/builder-access", window.location.origin);
-        target.searchParams.set("next", destination);
-        window.location.replace(target.toString());
-      }
+      // Account sign-in and the separate builder gate must be explicit choices.
+      // Neither allows access until independently verified by the server.
+      if (!cancelled) setShowAccessChoices(true);
     }
 
     void connect().catch((connectError) => {
       if (!cancelled) {
+        setShowAccessChoices(true);
         window.history.replaceState(
           null,
           "",
@@ -83,7 +100,7 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
         Opening Play Amplified…
       </h1>
       <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-white/66">
-        Private test access is checked first. If it is not active yet, Play Amplified will ask for the builder password—not an email account.
+        Your existing Founder or Play Amplified session is checked first. If you need to reconnect, choose account sign-in or private builder access below.
       </p>
 
       {error ? (
@@ -99,16 +116,32 @@ export function GamesSignInClient({ nextPath }: { nextPath: string }) {
             Retry
           </button>
         </>
-      ) : (
+      ) : null}
+      {showAccessChoices ? (
+        <div className="mt-7 grid gap-3 text-left">
+          <Link
+            href={`/account?returnTo=${encodeURIComponent(destination)}`}
+            className="rounded-2xl bg-cyan-300 px-5 py-4 text-center text-base font-black text-slate-950 transition hover:brightness-105"
+          >
+            Sign in to my Play Amplified account
+          </Link>
+          <Link
+            href={`/builder-access?next=${encodeURIComponent(destination)}`}
+            className="rounded-2xl border border-white/15 bg-white/[0.06] px-5 py-4 text-center text-sm font-bold text-white/85 transition hover:bg-white/[0.1]"
+          >
+            Use private builder access
+          </Link>
+        </div>
+      ) : !error ? (
         <div
           role="status"
           aria-label="Connecting"
           className="mx-auto mt-7 h-7 w-7 animate-spin rounded-full border-2 border-cyan-200/25 border-t-cyan-200"
         />
-      )}
+      ) : null}
 
       <p className="mt-6 text-xs leading-6 text-white/42">
-        Builder access is separate from customer accounts, email sign-in, purchases, and Founder account ownership.
+        Builder access is only for approved pre-launch testing and does not replace your Founder account.
       </p>
     </div>
   );

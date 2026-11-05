@@ -1,25 +1,18 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useMysterySession } from "./useMysterySession";
 import { BlackwoodPortrait } from "./blackwood-cast";
 
-type Session = { code: string; playerId: string; token: string };
 type CastMember = { id: string; name: string; seat: number; roleId: string | null; roleTitle: string | null };
 
-const KEY = "pps-mystery-session";
 
 export function MysteryCastPortraits() {
-  const [session, setSession] = useState<Session | null>(null);
+  const session = useMysterySession();
   const [cast, setCast] = useState<CastMember[]>([]);
   const [status, setStatus] = useState("lobby");
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setSession(JSON.parse(raw));
-    } catch {}
-  }, []);
 
   useEffect(() => {
     if (!session) return;
@@ -58,7 +51,7 @@ export function MysteryCastPortraits() {
           <div className="mx-auto max-w-3xl">
             <div className="flex items-start justify-between gap-5">
               <div>
-                <div className="text-[10px] font-black uppercase tracking-[.28em] text-amber-200/65">Blackwood House · Tonight's guests</div>
+                <div className="text-[10px] font-black uppercase tracking-[.28em] text-amber-200/65">Blackwood House · Tonight’s guests</div>
                 <h2 className="mt-2 font-serif text-4xl font-bold tracking-tight text-[#f7ecd2]">Put a face to every story.</h2>
                 <p className="mt-2 max-w-xl text-sm leading-6 text-white/55">Character identities are public. Memories, secrets, private evidence, and the truth of the murder remain private.</p>
               </div>

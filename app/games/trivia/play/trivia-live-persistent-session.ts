@@ -71,7 +71,7 @@ type PersistedWager = {
   wager: number;
 };
 
-type PersistedSessionBundle = {
+export type PersistedSessionBundle = {
   session: PersistedSession;
   players: PersistedPlayer[];
   answers: PersistedAnswer[];

@@ -1,25 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-function storageKey(code: string) {
-  return `pps-holdem-${code}`;
-}
+import { useBrowserGameSession, useBrowserLocationSearch } from "../../_components/browser-session-store";
 
 export function HoldemPublicExitControl() {
-  const [code, setCode] = useState("");
-  const [hasSeat, setHasSeat] = useState(false);
-
-  useEffect(() => {
-    const roomCode = new URLSearchParams(window.location.search)
-      .get("code")
-      ?.trim()
-      .toUpperCase()
-      .replace(/[^A-Z2-9]/g, "")
-      .slice(0, 6) ?? "";
-    setCode(roomCode);
-    if (roomCode) setHasSeat(Boolean(localStorage.getItem(storageKey(roomCode))));
-  }, []);
+  const search = useBrowserLocationSearch();
+  const code = new URLSearchParams(search).get("code")?.trim().toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 6) ?? "";
+  const hasSeat = Boolean(useBrowserGameSession<unknown>(`pps-holdem-${code}`));
 
   function exitTableView() {
     if (hasSeat && code) {
