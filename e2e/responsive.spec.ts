@@ -96,7 +96,7 @@ test("Games sign-in offers account and builder options rather than forcing a pas
 test("failed automatic account recovery retains explicit access choices", async ({ page }) => {
   await page.route("**/api/games/account/builder-session", route => route.abort());
   await page.goto("/games/sign-in");
-  await expect(page.getByRole("alert")).toBeVisible();
+  await expect(page.locator('[role="alert"]:not(#__next-route-announcer__)')).toBeVisible();
   await expect(page.getByRole("link", { name: "Sign in to my Play Amplified account" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Use private builder access" })).toBeVisible();
 });

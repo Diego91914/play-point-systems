@@ -36,7 +36,7 @@ test("auth interruption preserves the host pointer and displays a reconnect mess
   await page.route("**/api/games/clear-the-stack/room**", route => route.fulfill({ status: 401, json: { error: "Sign in again" } }));
   await page.route("**/api/games/clear-the-stack/leaderboard**", route => route.fulfill({ json: { entries: [] } }));
   await page.goto("/games/clear-the-stack");
-  await expect(page.getByRole("alert")).toContainText("Your recovery link has been kept");
+  await expect(page.getByRole("alert").filter({ hasText: "Your recovery link has been kept" })).toContainText("Your recovery link has been kept");
   expect(await page.evaluate(key => localStorage.getItem(key), ROOM_KEY)).toBe(room.id);
 });
 
