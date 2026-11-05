@@ -112,7 +112,9 @@ export default function PlayAmplifiedPage() {
               <p className="mt-2 text-xs leading-5 text-white/55 sm:text-sm">A rotating mix from across the Play Amplified library.</p>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-              {featuredGames.map((game) => <FeaturedGamePreviewCard key={game.id} game={game} />)}
+              {featuredGames.map((game) => game.status === "live"
+                ? <FeaturedGamePreviewCard key={game.id} game={game} />
+                : <GameGridCard key={game.id} game={game} />)}
               {lastCallGame ? <GameGridCard key={lastCallGame.id} game={lastCallGame} /> : null}
             </div>
           </section>
