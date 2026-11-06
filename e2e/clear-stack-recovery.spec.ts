@@ -103,8 +103,9 @@ test("multiplayer setup exposes configurable sets and cumulative-point ranking",
   await page.route("**/api/games/clear-the-stack/leaderboard**", route => route.fulfill({ json: { entries: [] } }));
   await page.goto("/games/clear-the-stack");
   await page.getByRole("button", { name: "3", exact: true }).click();
-  await expect(page.getByLabel("Sets to play")).toHaveValue("1");
+  await expect(page.getByLabel("Sets to play")).toHaveValue("3");
   await page.getByLabel("Sets to play").fill("4");
   await expect(page.getByLabel("Sets to play")).toHaveValue("4");
+  await expect(page.getByText("Recommended: 3 sets (9 scoring rounds).")).toBeVisible();
   await expect(page.getByText("Final rankings use cumulative points across all sets; sets won do not determine rank.")).toBeVisible();
 });
