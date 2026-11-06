@@ -7,6 +7,7 @@ import {
   joinMysteryRoom as joinMysteryRoomV2,
 } from "@/lib/play-point-core/mystery-server-v2";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
+import { assertPlayAmplifiedRoomActive } from "@/lib/play-point-core/play-amplified-room-state";
 import { getMysteryCaseVariant } from "@/lib/play-point-core/mystery-case-variants";
 import { applyMysteryFollowupLabels, followupLabelForQuestion } from "@/lib/play-point-core/mystery-followups";
 import { questionsPerEvidenceRound } from "@/lib/play-point-core/mystery-pacing";
@@ -95,6 +96,7 @@ async function readRaw(code: string): Promise<RawRow | null> {
 }
 
 async function saveRaw(row: RawRow, state: RawState) {
+  assertPlayAmplifiedRoomActive(row.state);
   const supabase = getSupabaseServerClient();
   const { data, error } = await supabase.from("ppl_mystery_rooms")
     .update({ state, version: row.version + 1, updated_at: new Date().toISOString(), expires_at: new Date(Date.now() + 86400000).toISOString() })

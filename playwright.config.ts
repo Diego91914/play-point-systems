@@ -34,5 +34,9 @@ export default defineConfig({
       name: "mobile-390",
       use: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, hasTouch: true, isMobile: true },
     },
+    {
+      name: "mobile-safari-webkit",
+      use: { browserName: "webkit", viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, hasTouch: true, isMobile: true },
+    },
   ],
 });

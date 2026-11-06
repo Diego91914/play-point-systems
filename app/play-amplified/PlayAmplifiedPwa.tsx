@@ -10,7 +10,7 @@ type BeforeInstallPromptEvent = Event & {
 };
 
 export function PlayAmplifiedPwa() {
-  const { activeGame, endActiveGame, blockNotice } = usePlayAmplifiedGameHub();
+  const { activeGame, endActiveGame, blockNotice, endingGame } = usePlayAmplifiedGameHub();
   const pathname = usePathname();
   const [standalone, setStandalone] = useState(false);
   const [isIos, setIsIos] = useState(false);
@@ -110,9 +110,8 @@ export function PlayAmplifiedPwa() {
             <div className="mt-0.5 truncate text-[11px] text-white/55">{activeGame.connection === "offline" ? "Saved session · connection unavailable; retry when online" : activeGame.connection === "reconnect" ? "Saved session · reconnect required" : activeGame.code ? `Room ${activeGame.code} · active on this device` : "Active session on this device"}</div>
           </div>
           <div className="flex w-full gap-2 sm:w-auto sm:shrink-0">
-            <a href={activeGame.href} className="flex-1 rounded-xl bg-cyan-300 px-4 py-2.5 text-center text-xs font-black text-slate-950 transition hover:bg-cyan-200 sm:flex-none sm:text-sm">RETURN TO GAME</a>
-            {activeGame.endAction ? <button type="button" onClick={() => void endActiveGame()} className="flex-1 rounded-xl border border-rose-300/40 px-4 py-2.5 text-center text-xs font-black text-rose-100 sm:flex-none sm:text-sm">END GAME</button> : null}
-            {activeGame.endHref ? <a href={activeGame.endHref} className="flex-1 rounded-xl border border-rose-300/40 px-4 py-2.5 text-center text-xs font-black text-rose-100 sm:flex-none sm:text-sm">END GAME</a> : null}
+            {!endingGame ? <a href={activeGame.href} className="flex-1 rounded-xl bg-cyan-300 px-4 py-2.5 text-center text-xs font-black text-slate-950 transition hover:bg-cyan-200 sm:flex-none sm:text-sm">RETURN TO GAME</a> : null}
+            {activeGame.endAction ? <button type="button" disabled={endingGame} onClick={() => void endActiveGame()} className="flex-1 rounded-xl border border-rose-300/40 px-4 py-2.5 text-center text-xs font-black text-rose-100 disabled:opacity-60 sm:flex-none sm:text-sm">{endingGame ? "ENDING…" : "END GAME"}</button> : null}
 
           </div>
         </div>

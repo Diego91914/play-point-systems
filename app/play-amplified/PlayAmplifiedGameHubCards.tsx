@@ -27,7 +27,7 @@ export function GuardedActionLink({ href, className, children }: { href: string;
 }
 
 export function ActiveGameCard() {
-  const { activeGame, endActiveGame, blockNotice } = usePlayAmplifiedGameHub();
+  const { activeGame, endActiveGame, blockNotice, endingGame } = usePlayAmplifiedGameHub();
   if (!activeGame) return null;
   return (
     <section aria-labelledby="active-game-heading" className="rounded-[26px] border border-cyan-100/20 bg-[linear-gradient(135deg,rgba(34,211,238,0.10),rgba(255,255,255,0.025))] p-5 shadow-xl sm:p-6">
@@ -38,9 +38,8 @@ export function ActiveGameCard() {
           <p className="mt-1 text-xs leading-5 text-white/60">{activeGame.connection === "offline" ? "Saved game · connection unavailable; reconnect to continue or end." : activeGame.connection === "reconnect" ? "Saved game · reconnect to verify its status." : activeGame.code ? `Room ${activeGame.code} · end this game before starting another.` : "Return to your saved game or end it before starting another."}</p>
         </div>
         <div className="flex gap-2 sm:shrink-0">
-          <Link prefetch={false} href={activeGame.href} className="flex-1 rounded-xl bg-cyan-200 px-4 py-3 text-center text-xs font-black text-slate-950 sm:flex-none">RETURN TO GAME</Link>
-          {activeGame.endAction ? <button type="button" onClick={() => void endActiveGame()} className="flex-1 rounded-xl border border-rose-200/30 px-4 py-3 text-xs font-black text-rose-100 sm:flex-none">END GAME</button> : null}
-          {activeGame.endHref ? <Link prefetch={false} href={activeGame.endHref} className="flex-1 rounded-xl border border-rose-200/30 px-4 py-3 text-center text-xs font-black text-rose-100 sm:flex-none">END GAME</Link> : null}
+          {!endingGame ? <Link prefetch={false} href={activeGame.href} className="flex-1 rounded-xl bg-cyan-200 px-4 py-3 text-center text-xs font-black text-slate-950 sm:flex-none">RETURN TO GAME</Link> : null}
+          {activeGame.endAction ? <button type="button" disabled={endingGame} onClick={() => void endActiveGame()} className="flex-1 rounded-xl border border-rose-200/30 px-4 py-3 text-xs font-black text-rose-100 disabled:opacity-60 sm:flex-none">{endingGame ? "ENDING…" : "END GAME"}</button> : null}
         </div>
       </div>
       {blockNotice ? <p role="alert" className="mt-3 text-sm text-rose-200">{blockNotice}</p> : null}

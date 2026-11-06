@@ -4,14 +4,17 @@ export type ResumeCandidate = {
   href: string;
   gameId?: string;
   code?: string;
-  endHref?: string;
-  endAction?: { type: "clear-stack"; roomId: string; version: number };
+  endAction?:
+    | { type: "clear-stack"; roomId: string; version: number }
+    | { type: "shot-caddy"; sessionCode: string; hostPlayerId: string }
+    | { type: "social-room"; game: SocialResumeGame | "mystery" | "holdem"; code: string; playerId: string; token: string }
+    | { type: "trivia"; sessionId: string };
   seenAt: number;
   clearKeys: string[];
   connection: "online" | "offline" | "reconnect";
 };
 
-type SocialResumeGame = "chain-reaction" | "how-close" | "inside-man" | "on-my-list" | "all-about-you";
+type SocialResumeGame = "chain-reaction" | "how-close" | "inside-man" | "on-my-list" | "all-about-you" | "mystery";
 
 type SessionSource = {
   key: string;
@@ -23,7 +26,7 @@ type SessionSource = {
 };
 
 const SESSION_SOURCES: readonly SessionSource[] = [
-  { key: "pps-mystery-session", title: "Last Call: Murder at Blackwood House", href: "/games/mystery", gameId: "last-call", roomApiBase: "/api/games/mystery" },
+  { key: "pps-mystery-session", title: "Last Call: Murder at Blackwood House", href: "/games/mystery", gameId: "last-call", game: "mystery" },
   { key: "pps-chain-reaction-session", title: "Chain Reaction", href: "/games/chain-reaction", gameId: "chain-reaction", game: "chain-reaction" },
   { key: "pps-how-close-session", title: "How Close Are We?", href: "/games/how-close", gameId: "how-close", game: "how-close" },
   { key: "pps-inside-man-session", title: "The Inside Man", href: "/games/inside-man", gameId: "inside-man", game: "inside-man" },
@@ -65,6 +68,7 @@ async function validateSessionSource(source: SessionSource): Promise<ResumeCandi
 
   const seenAt = typeof parsed.updatedAt === "number" ? parsed.updatedAt : 0;
   let connection: ResumeCandidate["connection"] = "online";
+  let isHost = false;
 
   try {
     if (source.game) {
@@ -79,6 +83,7 @@ async function validateSessionSource(source: SessionSource): Promise<ResumeCandi
       } else {
         const payload = await response.json().catch(() => ({}));
         if (payload?.ended === true) return null;
+        isHost = payload?.isHost === true;
       }
     } else if (source.roomApiBase) {
       const response = await fetch(
@@ -90,6 +95,9 @@ async function validateSessionSource(source: SessionSource): Promise<ResumeCandi
       } else {
         const payload = await response.json().catch(() => ({})) as Record<string, unknown>;
         if (terminalStatus(payload)) return null;
+        const state = payload.state && typeof payload.state === "object" ? payload.state as Record<string, unknown> : null;
+        const me = state?.me && typeof state.me === "object" ? state.me as Record<string, unknown> : null;
+        isHost = payload.isHost === true || me?.isHost === true;
       }
     }
   } catch {
@@ -102,6 +110,7 @@ async function validateSessionSource(source: SessionSource): Promise<ResumeCandi
     href: `${source.href}?code=${encodeURIComponent(code)}`,
     gameId: source.gameId,
     code,
+    endAction: isHost ? { type: "social-room", game: source.game ?? "mystery", code, playerId, token } : undefined,
     seenAt,
     clearKeys,
     connection,
@@ -123,6 +132,7 @@ async function validateHoldemSession(storageKey: string): Promise<ResumeCandidat
 
   const seenAt = typeof parsed?.updatedAt === "number" ? parsed.updatedAt : 0;
   let connection: ResumeCandidate["connection"] = "online";
+  let isHost = false;
 
   try {
     const response = await fetch("/api/games/social-room-control", {
@@ -136,6 +146,7 @@ async function validateHoldemSession(storageKey: string): Promise<ResumeCandidat
     } else {
       const payload = await response.json().catch(() => ({}));
       if (payload?.ended === true) return null;
+      isHost = payload?.isHost === true;
     }
   } catch {
     connection = "offline";
@@ -147,6 +158,7 @@ async function validateHoldemSession(storageKey: string): Promise<ResumeCandidat
     href: `/games/holdem?code=${encodeURIComponent(code)}`,
     gameId: "phone-holdem",
     code,
+    endAction: isHost ? { type: "social-room", game: "holdem", code, playerId, token } : undefined,
     seenAt,
     clearKeys,
     connection,
@@ -165,14 +177,14 @@ async function validateTriviaResume(): Promise<ResumeCandidate | null> {
         connection = "online";
         const payload = await response.json().catch(() => ({})) as Record<string, unknown>;
         if (terminalStatus(payload)) return null;
-        return { key: hostKey, title: "Play Point Trivia", href: "/games/trivia/builder", gameId: "play-point-trivia", seenAt: 0, clearKeys: [hostKey], connection };
+        return { key: hostKey, title: "Play Point Trivia", href: "/games/trivia/builder", gameId: "play-point-trivia", endAction: { type: "trivia", sessionId: hostSessionId }, seenAt: 0, clearKeys: [hostKey], connection };
       } else {
         connection = response.status >= 500 ? "offline" : "reconnect";
       }
     } catch {}
     // The server or connection may be unavailable while the local credential is
     // still valid. Keep it and offer the saved route so the game can retry.
-    if (hostSessionId) return { key: hostKey, title: "Play Point Trivia", href: "/games/trivia/builder", seenAt: 0, clearKeys: [hostKey], connection };
+    if (hostSessionId) return { key: hostKey, title: "Play Point Trivia", href: "/games/trivia/builder", gameId: "play-point-trivia", endAction: { type: "trivia", sessionId: hostSessionId }, seenAt: 0, clearKeys: [hostKey], connection };
   }
 
   const playerKey = "play-point-trivia-player-connection-v2";
@@ -284,14 +296,12 @@ async function validateShotCaddyResume(): Promise<ResumeCandidate | null> {
         AROUND_THE_WORLD: "atw-ladder",
         DISC_WARRIOR: "disc-warrior",
       };
-      if (isHost) params.set("dest", "summary");
-
       return {
         key: `shot-caddy:${code}`,
         title: mode === "CHALLENGE_SKINS_PRO" ? "Challenge Skins Pro" : "Shot Caddy",
         href,
         gameId: typeof saved.gameId === "string" ? saved.gameId : gameIdByMode[mode],
-        endHref: isHost ? `/shot-caddy/join/${encodeURIComponent(code)}?${params.toString()}` : undefined,
+        endAction: isHost ? { type: "shot-caddy", sessionCode: code, hostPlayerId: playerId } : undefined,
         code,
         seenAt: typeof saved.updatedAt === "number" ? saved.updatedAt : 0,
         // This is a live round. Never delete its resume pointer from Play Amplified.

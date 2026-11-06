@@ -113,7 +113,7 @@ describe("Shot Caddy recovery", () => {
     if (ended) expect(candidate).toBeUndefined();
     else {
       expect(candidate.href).toBe(`/shot-caddy/join/ABC234?resumePlayerId=${playerId}`);
-      expect(candidate.endHref).toBe(canEnd ? `${candidate.href}&dest=summary` : undefined);
+      expect(candidate.endAction).toEqual(canEnd ? { type: "shot-caddy", sessionCode: "ABC234", hostPlayerId: playerId } : undefined);
     }
     expect(localStorage.getItem(key)).toBe(saved);
   });

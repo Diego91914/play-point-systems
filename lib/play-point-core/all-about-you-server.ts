@@ -2,6 +2,7 @@ import "server-only";
 
 import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
+import { assertPlayAmplifiedRoomActive } from "@/lib/play-point-core/play-amplified-room-state";
 import {
   ALL_ABOUT_YOU_PROMPTS,
   ALL_ABOUT_YOU_ROUND_ORDER,
@@ -263,6 +264,7 @@ export async function joinAllAboutYouRoom(codeValue: unknown, nameValue: unknown
   const name = cleanName(nameValue);
   const row = await read(code);
   if (!row) throw new Error("Room not found.");
+  assertPlayAmplifiedRoomActive(row.state);
   if (row.state.status !== "lobby") throw new Error("That game has already started.");
   if (row.state.players.length >= 10) throw new Error("That room is full.");
   if (!row.state.occasion) row.state.occasion = "birthday";
@@ -277,6 +279,7 @@ export async function recoverAllAboutYouHost(codeValue: unknown, accountId: stri
   const code = cleanCode(codeValue);
   const row = await read(code);
   if (!row) throw new Error("Room not found.");
+  assertPlayAmplifiedRoomActive(row.state);
   if (row.state.hostAccountId !== accountId) throw new Error("This signed-in account is not the host of that room.");
   if (!row.state.occasion) row.state.occasion = "birthday";
   const host = row.state.players.find(player => player.id === row.state.hostPlayerId);
@@ -308,6 +311,7 @@ export async function actAllAboutYouRoom(
   const state = row.state;
   if (!state.occasion) state.occasion = "birthday";
   const me = auth(state, id, token);
+  assertPlayAmplifiedRoomActive(state);
   const star = guest(state);
   const prompt = promptFor(state);
 

@@ -280,6 +280,27 @@ export async function startPersistentTriviaLiveSession(sessionId: string, hostTo
   await callMutation("ppl_trivia_start_session", { p_session_id: sessionId });
 }
 
+export async function endPersistentTriviaLiveSession(sessionId: string, hostToken: string | null) {
+  const bundle = await loadSession(sessionId);
+  requireHost(bundle, hostToken);
+  if (bundle.session.status === "completed") return { ended: true, alreadyEnded: true, roomCode: bundle.session.room_code };
+
+  const endedAt = new Date().toISOString();
+  const { data, error } = await getSupabaseServerClient().from("ppl_trivia_sessions")
+    .update({ status: "completed", phase: "completed", updated_at: endedAt })
+    .eq("id", sessionId)
+    .in("status", ["lobby", "in-progress"])
+    .select("id")
+    .maybeSingle();
+  if (error) throw new Error(`Unable to end the trivia session: ${error.message}`);
+  if (data) return { ended: true, alreadyEnded: false, roomCode: bundle.session.room_code };
+
+  const current = await loadSession(sessionId);
+  requireHost(current, hostToken);
+  if (current.session.status === "completed") return { ended: true, alreadyEnded: true, roomCode: current.session.room_code };
+  throw new Error("The trivia session changed while ending. Retry END GAME.");
+}
+
 export async function submitPersistentTriviaLiveAnswer(
   sessionId: string,
   playerId: string,

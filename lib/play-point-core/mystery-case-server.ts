@@ -2,6 +2,7 @@ import "server-only";
 
 import { createHash, timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
+import { assertPlayAmplifiedRoomActive } from "@/lib/play-point-core/play-amplified-room-state";
 import { getMysteryCaseVariant, type MysteryBranchSignals, type MysteryCaseVariant } from "@/lib/play-point-core/mystery-case-variants";
 import { getBlackwoodVariantContent } from "@/lib/play-point-core/mystery-variant-content";
 
@@ -191,7 +192,7 @@ export async function getMysteryCase(codeValue: unknown, playerId: string, token
 }
 
 export async function submitMysteryCase(codeValue: unknown, playerId: string, token: string, payload: Record<string, unknown>) {
-  const code = cleanCode(codeValue); const row = await read(code); if (!row) throw new Error("Mystery room not found."); const state = row.state; const viewer = authenticate(state, playerId, token); if (state.status !== "accusation") throw new Error("Case building is not open right now.");
+  const code = cleanCode(codeValue); const row = await read(code); if (!row) throw new Error("Mystery room not found."); const state = row.state; const viewer = authenticate(state, playerId, token); assertPlayAmplifiedRoomActive(state); if (state.status !== "accusation") throw new Error("Case building is not open right now.");
   const variant = variantFor(state); if (!variant) throw new Error("The case truth has not finished resolving. Check your phones before building the final case.");
   const signature = runSignature(state); const existing = state.caseSubmissions?.runSignature === signature ? state.caseSubmissions.items : {}; if (existing[playerId]) throw new Error("Your case is already locked.");
   const suspectId = typeof payload.suspectId === "string" ? payload.suspectId : ""; const motiveId = typeof payload.motiveId === "string" ? payload.motiveId : ""; const locationId = typeof payload.locationId === "string" ? payload.locationId : ""; const windowId = typeof payload.windowId === "string" ? payload.windowId : ""; const supportIds = Array.isArray(payload.supportIds) ? payload.supportIds.filter((item): item is string => typeof item === "string") : [];

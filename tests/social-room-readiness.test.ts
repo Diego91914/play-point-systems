@@ -24,7 +24,7 @@ describe("Play Amplified social room readiness", () => {
   it("shared room controls keep start-over host-only and quit room-wide", () => {
     const controller = read("app/games/_components/SocialRoomController.tsx"); const route = read("app/api/games/social-room-control/route.ts");
     expect(controller).toContain("START OVER"); expect(controller).toContain("QUIT GAME"); expect(controller).toContain("End this game for everyone?");
-    expect(route).toContain("Only the host can end the game."); expect(route).toContain("Only the host can start over."); expect(route).toContain('.delete().eq("code", code)'); expect(route).toContain('"all-about-you": "ppl_all_about_you_rooms"');
+    expect(route).toContain("Only the host can end the game."); expect(route).toContain("Only the host can start over."); expect(route).toContain("playAmplifiedEndedAt: endedAt"); expect(route).toContain("releasePlayAmplifiedSession(code)"); expect(route).not.toContain('.delete().eq("code", code)'); expect(route).toContain('"all-about-you": "ppl_all_about_you_rooms"');
   });
 
   it("closed social rooms return every player to the public Play Amplified home", () => {
@@ -45,7 +45,7 @@ describe("Play Amplified social room readiness", () => {
     const resumeRuntime = read("app/play-amplified/PlayAmplifiedResumeRuntime.ts");
     expect(pwa).toContain("usePlayAmplifiedGameHub");
     expect(hubState).toContain("await readResumeCandidates()");
-    expect(hubState).toContain("setActiveGame(candidates[0] ?? null)");
+    expect(hubState).toContain("setActiveGame(candidates.find((candidate) => !endedKeysRef.current.has(candidate.key)) ?? null)");
     for (const marker of ["pps-chain-reaction-session", "pps-how-close-session", "pps-inside-man-session", "pps-on-my-list-session", "pps-all-about-you-session", "pps-holdem-", "play-point-trivia-host-connection-v2", "play-point-trivia-player-connection-v2"]) expect(resumeRuntime).toContain(marker);
   });
 
@@ -74,11 +74,11 @@ describe("Play Amplified social room readiness", () => {
     expect(client).toContain('value: "birthday"'); expect(client).toContain('value: "celebration"'); expect(client).toContain('value: "just-because"'); expect(server).toContain('action === "set-occasion"'); expect(server).toContain("Only the host can choose the occasion in the lobby."); expect(server).toContain("chooseAllAboutYouPrompts(state.occasion)"); expect(occasions).toContain("slice(0, 2)"); expect(occasions).toContain('occasion === "just-because"');
   });
 
-  it("All About You keeps Guest of Honor photos optional, host-owned, private, removable, and disposable", () => {
+  it("All About You keeps Guest of Honor photos optional, host-owned, private, and removable", () => {
     const page = read("app/games/all-about-you/page.tsx"); const photo = read("app/games/all-about-you/GuestHonorPhoto.tsx"); const upload = read("app/api/games/all-about-you/[code]/photo/route.ts"); const controls = read("app/api/games/social-room-control/route.ts");
     expect(page).toContain("GuestHonorPhoto"); expect(photo).toContain("Guest of Honor photo · optional"); expect(photo).toContain('capture="environment"'); expect(photo).toContain("PHOTO LIBRARY"); expect(photo).toContain("REMOVE PHOTO"); expect(photo).toContain("private to this game room");
     expect(upload).toContain("Only the host can manage the Guest of Honor photo in the lobby."); expect(upload).toContain("createSignedUrl(path, ROOM_SECONDS)"); expect(upload).toContain("previousPath"); expect(upload).toContain("remove([previousPath])"); expect(upload).toContain("export async function DELETE"); expect(upload).toContain("delete state.guestPhotoUrl");
-    expect(controls).toContain('ALL_ABOUT_YOU_PHOTO_BUCKET = "all-about-you-guest-photos"'); expect(controls).toContain("guestPhotoPath"); expect(controls).toContain("remove([photoPath])");
+    expect(controls).toContain("guestPhotoPath"); expect(controls).toContain("playAmplifiedEndedAt: endedAt"); expect(controls).not.toContain("remove([photoPath])");
   });
 
   it("All About You invite links and room APIs stay guest-accessible while host creation stays account-gated", () => {

@@ -8,6 +8,7 @@ export function MysteryHostControls() {
   const [isHost, setIsHost] = useState(false);
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [ended, setEnded] = useState(false);
 
   const check = useCallback(async () => {
     if (!session) return setIsHost(false);
@@ -19,6 +20,12 @@ export function MysteryHostControls() {
         body: JSON.stringify({ action: "status", game: "mystery", ...session }),
       });
       const json = await response.json();
+      if (response.ok && json.ended) {
+        clearMysterySession();
+        setEnded(true);
+        setIsHost(false);
+        return;
+      }
       setIsHost(response.ok && Boolean(json.isHost));
     } catch {}
   }, [session]);
@@ -70,6 +77,16 @@ export function MysteryHostControls() {
     }
   }
 
+  if (ended) {
+    return <div className="fixed inset-0 z-[100] grid place-items-center bg-black/90 px-5 text-center text-white backdrop-blur-md">
+      <section className="w-full max-w-md rounded-[30px] border border-cyan-200/15 bg-[#10141b] p-7 shadow-2xl">
+        <div className="text-xs font-black uppercase tracking-[.2em] text-cyan-100/60">Play Amplified · Room ended</div>
+        <h2 className="mt-3 text-3xl font-black">The host ended this game.</h2>
+        <p className="mt-3 text-sm leading-6 text-white/60">The mystery session has ended. Your completed game history is preserved.</p>
+        <button type="button" onClick={() => { window.location.href = "/play-amplified"; }} className="mt-6 min-h-14 w-full rounded-2xl bg-cyan-200 px-4 py-4 font-black text-slate-950">BACK TO PLAY AMPLIFIED</button>
+      </section>
+    </div>;
+  }
   if (!isHost) return null;
 
   return (

@@ -6,6 +6,7 @@ import {
   formatOnMyListPrompt,
 } from "@/lib/play-point-core/on-my-list-question-bank";
 import { scoreOnMyListAnswers } from "@/lib/play-point-core/on-my-list-scoring";
+import { assertPlayAmplifiedRoomActive } from "@/lib/play-point-core/play-amplified-room-state";
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 type Player = { id: string; name: string; tokenHash: string; score: number; seat: number };
@@ -196,6 +197,7 @@ export async function createOnMyListRoom(nameValue: unknown, hostAccountId: stri
 export async function joinOnMyListRoom(codeValue: unknown, nameValue: unknown) {
   const code = cleanCode(codeValue), name = cleanName(nameValue), row = await read(code);
   if (!row) throw new Error("Room not found.");
+  assertPlayAmplifiedRoomActive(row.state);
   if (row.state.status !== "lobby") throw new Error("That game has already started. If you were already in this room, use Rejoin as Host or return on the device that still has your player session.");
   if (row.state.players.length >= 8) throw new Error("That room is full.");
   const token = playerToken(), id = randomUUID();
@@ -208,6 +210,7 @@ export async function recoverOnMyListHost(codeValue: unknown, accountId: string,
   const code = cleanCode(codeValue), row = await read(code);
   if (!row) throw new Error("Room not found.");
   const state = row.state;
+  assertPlayAmplifiedRoomActive(state);
   const accountMatches = Boolean(state.hostAccountId && state.hostAccountId === accountId);
   const legacyFounderRecovery = Boolean(!state.hostAccountId && allowLegacyFounder);
   if (!accountMatches && !legacyFounderRecovery) throw new Error("This signed-in account is not the host of that room.");
@@ -233,6 +236,7 @@ export async function actOnMyListRoom(codeValue: unknown, id: string, token: str
   if (!row) throw new Error("Room not found.");
   const state = row.state;
   auth(state, id, token);
+  assertPlayAmplifiedRoomActive(state);
   const s = surveyed(state);
 
   if (action === "start") {

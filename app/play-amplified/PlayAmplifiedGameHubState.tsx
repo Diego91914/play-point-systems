@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { MASTER_GAME_CATALOG, type MasterGameEntry } from "@/lib/play-point-core/master-game-catalog";
 import type { ResumeCandidate } from "./PlayAmplifiedResumeRuntime";
@@ -10,6 +10,7 @@ type GameHubState = {
   activeGame: ResumeCandidate | null;
   recentGame: MasterGameEntry | null;
   blockNotice: string;
+  endingGame: boolean;
   refresh: () => Promise<void>;
   endActiveGame: () => Promise<boolean>;
   requestLaunch: () => boolean;
@@ -41,12 +42,15 @@ export function PlayAmplifiedGameHubStateProvider({ children }: { children: Reac
   const [activeGame, setActiveGame] = useState<ResumeCandidate | null>(null);
   const [recentId, setRecentId] = useState<string | null>(null);
   const [blockNotice, setBlockNotice] = useState("");
+  const [endingGame, setEndingGame] = useState(false);
+  const endingRef = useRef(false);
+  const endedKeysRef = useRef(new Set<string>());
 
   const refresh = useCallback(async () => {
     try {
       const { readResumeCandidates } = await import("./PlayAmplifiedResumeRuntime");
       const candidates = await readResumeCandidates();
-      setActiveGame(candidates[0] ?? null);
+      setActiveGame(candidates.find((candidate) => !endedKeysRef.current.has(candidate.key)) ?? null);
     } catch {
       // Keep the last known active game if discovery fails while offline.
     }
@@ -86,29 +90,37 @@ export function PlayAmplifiedGameHubStateProvider({ children }: { children: Reac
   const clearNotice = useCallback(() => setBlockNotice(""), []);
 
   const endActiveGame = useCallback(async () => {
-    if (!activeGame?.endAction) return false;
-    const confirmed = window.confirm("End Clear the Stack? This closes the live game for everyone and disconnects its spectator link.");
+    if (!activeGame?.endAction || endingRef.current) return false;
+    const confirmed = window.confirm(`End ${activeGame.title}? This ends the live session for everyone. Completed scores and records will be kept.`);
     if (!confirmed) return false;
+    endingRef.current = true;
+    setEndingGame(true);
+    setBlockNotice("");
     try {
-      const { closeClearStackGame } = await import("./PlayAmplifiedGameHubEndAction");
-      await closeClearStackGame(activeGame.endAction);
+      const { endPlayAmplifiedSession } = await import("./PlayAmplifiedGameHubEndAction");
+      await endPlayAmplifiedSession(activeGame.endAction);
+      endedKeysRef.current.add(activeGame.key);
       const recent = { id: activeGame.gameId ?? "clear-the-stack", playedAt: Date.now() };
       try {
+        for (const key of activeGame.clearKeys) window.localStorage.removeItem(key);
         window.localStorage.setItem(RECENT_GAME_STORAGE_KEY, JSON.stringify(recent));
-        window.localStorage.removeItem("pps-clear-stack-host-room");
       } catch {}
       setRecentId(recent.id);
+      setActiveGame(null);
       await refresh();
       setBlockNotice("");
       return true;
     } catch (error) {
       setBlockNotice(error instanceof Error ? error.message : "Could not end the game. Reconnect and try again.");
       return false;
+    } finally {
+      endingRef.current = false;
+      setEndingGame(false);
     }
   }, [activeGame, refresh]);
 
-  const value = useMemo(() => ({ activeGame, recentGame, blockNotice, refresh, endActiveGame, requestLaunch, recordPlayed, clearNotice }),
-    [activeGame, recentGame, blockNotice, refresh, endActiveGame, requestLaunch, recordPlayed, clearNotice]);
+  const value = useMemo(() => ({ activeGame, recentGame, blockNotice, endingGame, refresh, endActiveGame, requestLaunch, recordPlayed, clearNotice }),
+    [activeGame, recentGame, blockNotice, endingGame, refresh, endActiveGame, requestLaunch, recordPlayed, clearNotice]);
   return <GameHubContext.Provider value={value}>{children}</GameHubContext.Provider>;
 }
 

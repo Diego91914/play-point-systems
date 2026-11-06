@@ -2,6 +2,7 @@ import "server-only";
 
 import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
+import { assertPlayAmplifiedRoomActive } from "@/lib/play-point-core/play-amplified-room-state";
 import { HOW_CLOSE_QUESTIONS, formatHowClosePrompt } from "@/lib/play-point-core/how-close-questions";
 import { HOW_CLOSE_EXTRA_QUESTIONS } from "@/lib/play-point-core/how-close-questions-extra";
 import { HOW_CLOSE_EXTRA_QUESTIONS_2 } from "@/lib/play-point-core/how-close-questions-extra-2";
@@ -113,7 +114,7 @@ export async function createHowCloseRoom(nameValue: unknown, reservedCode?: stri
 
 export async function joinHowCloseRoom(codeValue: unknown, nameValue: unknown) {
   const code = cleanCode(codeValue); const name = cleanName(nameValue); const row = await read(code);
-  if (!row) throw new Error("Room not found."); if (row.state.status !== "lobby") throw new Error("That game has already started."); if (row.state.players.length >= 8) throw new Error("That room is full.");
+  if (!row) throw new Error("Room not found."); assertPlayAmplifiedRoomActive(row.state); if (row.state.status !== "lobby") throw new Error("That game has already started."); if (row.state.players.length >= 8) throw new Error("That room is full.");
   const token = playerToken(); const id = randomUUID(); row.state.players.push({ id, name, tokenHash: hash(token), score: 0, seat: row.state.players.length });
   const saved = await save(row, row.state); return { code, playerId: id, token, state: project(saved.state, id) };
 }
@@ -121,7 +122,7 @@ export async function joinHowCloseRoom(codeValue: unknown, nameValue: unknown) {
 export async function getHowCloseRoom(codeValue: unknown, id: string, token: string) { const code = cleanCode(codeValue); const row = await read(code); if (!row) throw new Error("Room not found."); auth(row.state, id, token); return { state: project(row.state, id) }; }
 
 export async function actHowCloseRoom(codeValue: unknown, id: string, token: string, action: string, payload: Record<string, unknown> = {}) {
-  const code = cleanCode(codeValue); const row = await read(code); if (!row) throw new Error("Room not found."); const state = row.state; auth(state, id, token);
+  const code = cleanCode(codeValue); const row = await read(code); if (!row) throw new Error("Room not found."); const state = row.state; auth(state, id, token); assertPlayAmplifiedRoomActive(state);
   if (action === "start") {
     if (state.hostPlayerId !== id) throw new Error("Only the host can start."); if (state.players.length < 2) throw new Error("Invite at least one more player.");
     state.status = "playing"; state.round = 0; state.maxRounds = state.players.length * 2; state.questionOrder = buildQuestionOrder(state.maxRounds); state.spotlightStartSeat = Math.floor(Math.random() * state.players.length); state.answers = {}; state.revealed = false; state.roundPoints = {}; state.roundDistances = {}; state.closestPlayerIds = [];

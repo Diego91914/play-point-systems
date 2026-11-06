@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { assertPlayAmplifiedRoomActive } from "@/lib/play-point-core/play-amplified-room-state";
 import { createHash, randomUUID, timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 
@@ -34,6 +35,7 @@ async function readHostLobby(code: string, playerId: string, token: string) {
   if (!data) throw new Error("Room not found.");
   const row = data as PhotoRoomRow;
   const state = row.state;
+  assertPlayAmplifiedRoomActive(state);
   const player = Array.isArray(state.players) ? state.players.find(candidate => candidate.id === playerId) : undefined;
   if (!player || typeof player.tokenHash !== "string" || !matches(player.tokenHash, token)) throw new Error("Invalid player session.");
   if (state.status !== "lobby" || state.hostPlayerId !== playerId) throw new Error("Only the host can manage the Guest of Honor photo in the lobby.");
