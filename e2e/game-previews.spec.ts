@@ -66,7 +66,7 @@ test("browsing all game details preserves sessions and never loads or mutates ga
     if (request.method() !== "POST" || pathname !== "/api/games/social-room-control") return false;
     try {
       const body = JSON.parse(request.postData() ?? "null");
-      return body?.action === "status" && ["chain-reaction", "how-close", "inside-man", "on-my-list", "all-about-you", "holdem"].includes(body.game);
+      return body?.action === "status";
     } catch {
       return false;
     }
