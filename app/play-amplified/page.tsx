@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PlayCategoryArt, type PlayCategoryArtKind } from "./PlayCategoryArt";
+import Image from "next/image";
 import {
   FINISHED_GAME_FORMATS,
   getMasterGamesByLane,
@@ -20,12 +20,12 @@ const featuredIds = ["shot-classic", "clear-the-stack", "phone-holdem", "live-cr
 const featuredGames = featuredIds.map((id) => MASTER_GAME_CATALOG.find((game) => game.id === id)).filter((game): game is MasterGameEntry => Boolean(game));
 const lastCallGame = MASTER_GAME_CATALOG.find((game) => game.id === "last-call");
 
-const categoryLinks: readonly [string, string, string, PlayCategoryArtKind][] = [
-  ["Disc Golf & Putting", "Course games, backyard play, and putting challenges", "#course-games", "course"],
-  ["Trivia", "Host a room and play together", "#trivia-games", "trivia"],
-  ["Social & Cards", "Word games, poker, and party play", "#social-games", "social"],
-  ["Mystery & Adventure", "Uncover a case or enter a Chronicle", "#adventure-games", "adventure"],
-];
+const categoryLinks = [
+  { title: "Disc Golf & Putting", href: "#course-games", image: "/images/play-amplified/categories/disc-golf-putting.webp" },
+  { title: "Trivia", href: "#trivia-games", image: "/images/play-amplified/categories/trivia.webp" },
+  { title: "Social & Cards", href: "#social-games", image: "/images/play-amplified/categories/social-cards.webp" },
+  { title: "Mystery & Adventure", href: "#adventure-games", image: "/images/play-amplified/categories/mystery-adventure.webp" },
+] as const;
 
 function CatalogSection({ id, eyebrow, title, description, games }: {
   id: string;
@@ -94,12 +94,9 @@ export default function PlayAmplifiedPage() {
               <a href="#all-games" className="shrink-0 rounded-full border border-white/10 px-3 py-2 text-[9px] font-black uppercase tracking-[0.12em] text-white/65 transition hover:bg-white/[0.06] hover:text-white">View all</a>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {categoryLinks.map(([title, body, href, art]) => (
-                <a key={title} href={href} className="group relative aspect-square overflow-hidden rounded-[22px] border border-white/[0.08] bg-gradient-to-br from-white/[0.06] to-white/[0.015] p-3.5 transition hover:-translate-y-0.5 hover:border-white/20 sm:p-4">
-                  <div className="pointer-events-none absolute -bottom-1 -right-2 opacity-75 transition duration-500 group-hover:scale-110 group-hover:opacity-100"><PlayCategoryArt kind={art} /></div>
-                  <div className="relative z-10 max-w-[82%] text-base font-black leading-tight text-white sm:text-lg">{title}</div>
-                  <p className="relative z-10 mt-2 max-w-[83%] text-[10px] leading-4 text-white/55 sm:text-xs sm:leading-5">{body}</p>
-                  <div className="absolute bottom-3 left-3.5 z-10 text-[9px] font-black uppercase tracking-[0.13em] text-white/70 sm:bottom-4 sm:left-4">Explore <span aria-hidden="true">→</span></div>
+              {categoryLinks.map(({ title, href, image }) => (
+                <a key={title} href={href} className="group relative block aspect-[762/506] overflow-hidden rounded-[22px] border border-white/[0.08] bg-[#0a0b10] transition hover:-translate-y-0.5 hover:border-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050609]">
+                  <Image src={image} alt={title} fill sizes="(min-width: 1024px) 25vw, 50vw" className="object-cover object-center transition duration-300 group-hover:scale-[1.02]" />
                 </a>
               ))}
             </div>
