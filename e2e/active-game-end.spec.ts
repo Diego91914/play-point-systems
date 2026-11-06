@@ -22,8 +22,8 @@ async function openActiveShotCaddy(page: Page) {
     contentType: "application/json",
     body: JSON.stringify({ room: null }),
   }));
-  await page.goto("http://localhost:3001/play-amplified");
-  await expect(page.getByRole("heading", { name: "Shot Caddy" })).toBeVisible();
+  await page.goto("/play-amplified");
+  await expect(page.locator('section[aria-labelledby="active-game-heading"]')).toBeVisible();
 }
 
 test("END GAME cancel keeps Shot Caddy active", async ({ page }) => {
@@ -38,7 +38,7 @@ test("END GAME cancel keeps Shot Caddy active", async ({ page }) => {
     await dialog.dismiss();
   });
   await page.getByRole("button", { name: "END GAME" }).click();
-  await expect(page.getByRole("heading", { name: "Shot Caddy" })).toBeVisible();
+  await expect(page.locator('section[aria-labelledby="active-game-heading"]')).toBeVisible();
   expect(endRequests).toBe(0);
 });
 
@@ -58,11 +58,11 @@ test("confirmed END GAME calls the server, clears recovery, and stays ended afte
   await openActiveShotCaddy(page);
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "END GAME" }).click();
-  await expect(page.getByRole("heading", { name: "Shot Caddy" })).toHaveCount(0);
+  await expect(page.locator('section[aria-labelledby="active-game-heading"]')).toHaveCount(0);
   await expect.poll(() => page.evaluate(() => localStorage.getItem("sc_active_round_resumes_v1"))).toBe("{}");
   expect(ended).toBe(true);
   await page.reload();
-  await expect(page.getByRole("heading", { name: "Shot Caddy" })).toHaveCount(0);
+  await expect(page.locator('section[aria-labelledby="active-game-heading"]')).toHaveCount(0);
 });
 
 test("server failure keeps the session available and displays a retry error", async ({ page }) => {
@@ -74,6 +74,6 @@ test("server failure keeps the session available and displays a retry error", as
   await openActiveShotCaddy(page);
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "END GAME" }).click();
-  await expect(page.getByRole("alert")).toContainText("no scores were deleted");
-  await expect(page.getByRole("heading", { name: "Shot Caddy" })).toBeVisible();
+  await expect(page.locator('p[role="alert"]')).toContainText("no scores were deleted");
+  await expect(page.locator('section[aria-labelledby="active-game-heading"]')).toBeVisible();
 });
