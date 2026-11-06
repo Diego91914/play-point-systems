@@ -474,6 +474,15 @@ export function startTriviaLiveSession(sessionId: string, hostToken: string | nu
   return session;
 }
 
+export function endTriviaLiveSession(sessionId: string, hostToken: string | null) {
+  const session = requireHost(sessionId, hostToken);
+  if (session.status === "completed") return { ended: true, alreadyEnded: true, roomCode: session.roomCode };
+  session.status = "completed";
+  session.phase = "completed";
+  session.updatedAtMs = now();
+  return { ended: true, alreadyEnded: false, roomCode: session.roomCode };
+}
+
 export function submitTriviaLiveAnswer(sessionId: string, playerId: string, response: RuntimeResponse, playerToken: string | null) {
   const { session, player } = requirePlayer(sessionId, playerId, playerToken);
   const card = getCurrentCard(session);

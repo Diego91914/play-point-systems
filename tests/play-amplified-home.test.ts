@@ -93,7 +93,7 @@ describe("Play Amplified consumer home", () => {
     }
   });
 
-  it("keeps active game credentials available through outages and foregrounds the current session", () => {
+  it("keeps active game recovery without allowing reentry during termination", () => {
     expect(gameHub).toContain('await import("./PlayAmplifiedResumeRuntime")');
     expect(gameHub).toContain("await readResumeCandidates()");
     expect(gameHub).toContain('await import("./PlayAmplifiedGameHubEndAction")');
@@ -105,6 +105,11 @@ describe("Play Amplified consumer home", () => {
     expect(resumeRuntime).toContain("payload?.ended === true");
     expect(resumeRuntime).toContain('connection = "offline"');
     expect(pwa).not.toContain("window.location.replace");
+    expect(gameHub).toContain("window.confirm(`End ${activeGame.title}?");
+    expect(gameHub).toContain("endPlayAmplifiedSession(activeGame.endAction)");
+    expect(gameHub).toContain("endedKeysRef.current.add(activeGame.key)");
+    expect(gameHub).toContain("for (const key of activeGame.clearKeys)");
+    expect(gameCards).not.toContain("activeGame.endHref");
     expect(gameHub).toContain('addEventListener("pageshow", onResume)');
     expect(pwa).not.toContain("candidates.length - 1");
   });

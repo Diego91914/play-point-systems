@@ -2,6 +2,7 @@ import "server-only";
 
 import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
+import { assertPlayAmplifiedRoomActive } from "@/lib/play-point-core/play-amplified-room-state";
 import {
   applyAction,
   createInitialState,
@@ -254,6 +255,7 @@ export async function joinTable(codeInput: unknown, nameInput: unknown) {
     const row = await readTable(code);
     if (!row) throw new Error("Table not found.");
     const state = normalizeManagedState(row.state);
+    assertPlayAmplifiedRoomActive(state);
     if (state.status === "playing") throw new Error("Wait until the current hand is complete before joining.");
     if (state.settings.mode === "tournament" && state.handNumber > 0) throw new Error("This tournament has already started.");
     if (state.players.length >= state.settings.maxPlayers) throw new Error("This table is full.");
@@ -310,6 +312,7 @@ export async function performTableAction(codeInput: string, playerId: string, to
     const row = await readTable(code);
     if (!row) throw new Error("Table not found.");
     const player = authenticate(row.state, playerId, token);
+    assertPlayAmplifiedRoomActive(row.state);
     let nextState: ManagedHoldemState;
 
     if (action.type === "start_hand") {

@@ -1,6 +1,7 @@
 import "server-only";
 import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
+import { assertPlayAmplifiedRoomActive } from "@/lib/play-point-core/play-amplified-room-state";
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const MIN_PLAYERS = 4;
@@ -404,6 +405,7 @@ export async function createMysteryRoom(nameValue: unknown, hostAccountId: strin
 export async function joinMysteryRoom(codeValue: unknown, nameValue: unknown) {
   const code = cleanCode(codeValue), name = cleanName(nameValue), row = await read(code);
   if (!row) throw new Error("Mystery room not found.");
+  assertPlayAmplifiedRoomActive(row.state);
   if (row.state.status !== "lobby") throw new Error("That mystery has already begun.");
   if (row.state.players.length >= MAX_PLAYERS) throw new Error("That mystery is full.");
   const token = playerToken(), playerId = randomUUID();
@@ -424,6 +426,7 @@ export async function actMysteryRoom(codeValue: unknown, playerId: string, token
   if (!row) throw new Error("Mystery room not found.");
   const state = normalize(row.state);
   auth(state, playerId, token);
+  assertPlayAmplifiedRoomActive(state);
 
   if (action === "start") {
     if (state.hostPlayerId !== playerId) throw new Error("Only the host can begin the mystery.");

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
 import { createInitialState } from "@/lib/play-point-core/holdem";
 import { configureManagedState } from "@/lib/play-point-core/holdem-management";
+import { releasePlayAmplifiedSession } from "@/lib/play-point-core/room-registry";
 
 const ROOM_TABLES = {
   "on-my-list": "ppl_on_my_list_rooms",
@@ -14,14 +15,12 @@ const ROOM_TABLES = {
   holdem: "ppl_holdem_tables",
 } as const;
 
-const ALL_ABOUT_YOU_PHOTO_BUCKET = "all-about-you-guest-photos";
-
 type SocialGame = keyof typeof ROOM_TABLES;
 type StoredPlayer = { id?: unknown; name?: unknown; seat?: unknown; tokenHash?: unknown };
 type StoredSettings = { startingStack?: unknown; smallBlind?: unknown; bigBlind?: unknown; maxPlayers?: unknown; mode?: unknown };
 type StoredTournament = { baseSmallBlind?: unknown; baseBigBlind?: unknown; preset?: unknown };
-type StoredState = { hostPlayerId?: unknown; players?: unknown; settings?: StoredSettings; tournament?: StoredTournament; guestPhotoPath?: unknown };
-type RoomRow = { code: string; state: StoredState };
+type StoredState = { hostPlayerId?: unknown; players?: unknown; settings?: StoredSettings; tournament?: StoredTournament; guestPhotoPath?: unknown; playAmplifiedEndedAt?: unknown };
+type RoomRow = { code: string; state: StoredState; updated_at?: string };
 
 const hash = (value: string) => createHash("sha256").update(value).digest("hex");
 
@@ -105,7 +104,7 @@ export async function POST(request: NextRequest) {
     const action = body.action === "quit" ? "quit" : body.action === "start-over" ? "start-over" : "status";
     const supabase = getSupabaseServerClient();
     const table = ROOM_TABLES[game];
-    const { data, error } = await supabase.from(table).select("code,state").eq("code", code).maybeSingle();
+    const { data, error } = await supabase.from(table).select("code,state,updated_at").eq("code", code).maybeSingle();
     if (error) throw new Error(error.message);
 
     if (!data) {
@@ -114,16 +113,28 @@ export async function POST(request: NextRequest) {
 
     const row = data as RoomRow;
     const session = authenticate(row.state, body.playerId, body.token);
+    if (row.state.playAmplifiedEndedAt) {
+      if (action === "quit" && session.isHost) await releasePlayAmplifiedSession(code);
+      return NextResponse.json({ success: true, ended: true, alreadyEnded: true, isHost: session.isHost }, { headers: { "Cache-Control": "private, no-store" } });
+    }
 
     if (action === "quit") {
       if (!session.isHost) return NextResponse.json({ error: "Only the host can end the game." }, { status: 403 });
-      const photoPath = game === "all-about-you" && typeof row.state.guestPhotoPath === "string" ? row.state.guestPhotoPath : null;
-      const { error: deleteError } = await supabase.from(table).delete().eq("code", code);
-      if (deleteError) throw new Error(deleteError.message);
-      if (photoPath) {
-        const { error: photoDeleteError } = await supabase.storage.from(ALL_ABOUT_YOU_PHOTO_BUCKET).remove([photoPath]);
-        if (photoDeleteError) console.warn("Unable to remove All About You room photo", photoDeleteError.message);
+      const endedAt = new Date().toISOString();
+      let update = supabase.from(table)
+        .update({ state: { ...row.state, playAmplifiedEndedAt: endedAt }, updated_at: endedAt })
+        .eq("code", code);
+      if (row.updated_at) update = update.eq("updated_at", row.updated_at);
+      const { data: saved, error: updateError } = await update.select("code").maybeSingle();
+      if (updateError) throw new Error(updateError.message);
+      if (!saved) {
+        const { data: current, error: rereadError } = await supabase.from(table).select("state").eq("code", code).maybeSingle();
+        if (rereadError) throw new Error(rereadError.message);
+        if (!current?.state?.playAmplifiedEndedAt) {
+          return NextResponse.json({ error: "The room changed while it was ending. Retry END GAME." }, { status: 409, headers: { "Cache-Control": "private, no-store" } });
+        }
       }
+      await releasePlayAmplifiedSession(code);
       return NextResponse.json({ success: true, ended: true, isHost: true }, { headers: { "Cache-Control": "private, no-store" } });
     }
 

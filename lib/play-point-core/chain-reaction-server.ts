@@ -2,6 +2,7 @@ import "server-only";
 
 import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
+import { assertPlayAmplifiedRoomActive } from "@/lib/play-point-core/play-amplified-room-state";
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const MAX_LINKS = 20;
@@ -370,6 +371,7 @@ export async function joinChainRoom(codeValue: unknown, nameValue: unknown) {
   const name = cleanName(nameValue);
   const row = await read(code);
   if (!row) throw new Error("Room not found.");
+  assertPlayAmplifiedRoomActive(row.state);
   if (row.state.status !== "lobby") throw new Error("That game has already started.");
   if (row.state.players.length >= 8) throw new Error("That room is full.");
 
@@ -407,6 +409,7 @@ export async function actChainRoom(
 
   const state = row.state;
   const me = auth(state, id, token);
+  assertPlayAmplifiedRoomActive(state);
 
   if (action === "start") {
     if (state.hostPlayerId !== id) throw new Error("Only the host can start.");

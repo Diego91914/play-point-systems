@@ -109,7 +109,11 @@ export async function PATCH(request: Request) {
   const { data: room, error: readError } = await supabase.from("ppl_clear_stack_rooms")
     .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at")
     .eq("id", id).eq("host_session_id", host).maybeSingle();
-  if (readError || !room || room.status === "closed") return error("Host room not found.", 404);
+  if (readError || !room) return error("Host room not found.", 404);
+  if (room.status === "closed") {
+    if (body.action === "close") return NextResponse.json({ room: viewRoom(room), ended: true, alreadyEnded: true }, { headers: noStore });
+    return error("Host room not found.", 404);
+  }
   if (room.state_version !== version) return error("Game updated elsewhere. Reload and try again.", 409);
 
   const state = room.game_state && typeof room.game_state === "object"
@@ -154,6 +158,16 @@ export async function PATCH(request: Request) {
     .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at")
     .maybeSingle();
   if (updateError) return error("Failed to save game state. Please retry.", 500);
-  if (!updated) return error("Another update occurred. Reload game state.", 409);
+  if (!updated) {
+    if (body.action === "close") {
+      const { data: afterRace, error: rereadError } = await supabase.from("ppl_clear_stack_rooms")
+        .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at")
+        .eq("id", id).eq("host_session_id", host).maybeSingle();
+      if (!rereadError && afterRace?.status === "closed") {
+        return NextResponse.json({ room: viewRoom(afterRace), ended: true, alreadyEnded: true }, { headers: noStore });
+      }
+    }
+    return error("Another update occurred. Reload game state.", 409);
+  }
   return NextResponse.json({ room: viewRoom(updated) }, { headers: noStore });
 }

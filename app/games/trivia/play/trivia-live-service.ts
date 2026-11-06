@@ -66,6 +66,14 @@ export async function startTriviaLiveSession(sessionId: string, hostToken: strin
   return memory.startTriviaLiveSession(sessionId, hostToken);
 }
 
+export async function endTriviaLiveSession(sessionId: string, hostToken: string | null) {
+  if (isPersistentStoreEnabled()) {
+    return (await persistentStore()).endPersistentTriviaLiveSession(sessionId, hostToken);
+  }
+
+  return memory.endTriviaLiveSession(sessionId, hostToken);
+}
+
 export async function submitTriviaLiveAnswer(
   sessionId: string,
   playerId: string,

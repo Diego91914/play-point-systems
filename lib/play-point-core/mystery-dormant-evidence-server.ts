@@ -2,6 +2,7 @@ import "server-only";
 
 import { createHash, timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
+import { assertPlayAmplifiedRoomActive } from "@/lib/play-point-core/play-amplified-room-state";
 import { blackwoodBranchProgress, resolveBlackwoodVariant, type MysteryBranchSignals } from "@/lib/play-point-core/mystery-case-variants";
 import { questionsPerEvidenceRound } from "@/lib/play-point-core/mystery-pacing";
 
@@ -133,6 +134,7 @@ export async function getMysteryDormantEvidence(codeValue: unknown, playerId: st
   const row = await read(code);
   if (!row) throw new Error("Mystery room not found.");
   const viewer = auth(row.state, playerId, token);
+  assertPlayAmplifiedRoomActive(row.state);
   return { evidence: project(row.state, viewer) };
 }
 
@@ -141,6 +143,7 @@ export async function decideMysteryDormantEvidence(codeValue: unknown, playerId:
   const row = await read(code);
   if (!row) throw new Error("Mystery room not found.");
   const viewer = auth(row.state, playerId, token);
+  assertPlayAmplifiedRoomActive(row.state);
   const evidenceId = typeof evidenceIdValue === "string" ? evidenceIdValue : "adrian_sealed_letter";
   const decision = typeof decisionValue === "string" ? decisionValue : "";
 
