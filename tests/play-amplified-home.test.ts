@@ -49,12 +49,16 @@ describe("Play Amplified consumer home", () => {
     expect(home).not.toContain("PREVIEW_GAME_FORMATS.map");
   });
 
-  it("shows a two-column category dashboard and square game tiles", () => {
+  it("shows rectangular image categories and square game tiles", () => {
     expect(home).toContain("Disc Golf & Putting");
     expect(home).toContain("Trivia");
     expect(home).toContain("Social & Cards");
     expect(home).toContain("Mystery & Adventure");
     expect(home).toContain("grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4");
+    expect(home).toContain('aspect-[762/506]');
+    expect(home).toContain('alt={title}');
+    expect(home).toContain('sizes="(min-width: 1024px) 25vw, 50vw"');
+    expect(home).not.toContain("PlayCategoryArt");
     expect(gameCards).toContain("aspect-square");
     expect(home).toContain("View all");
   });
