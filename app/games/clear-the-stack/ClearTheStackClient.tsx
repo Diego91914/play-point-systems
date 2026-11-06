@@ -151,7 +151,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
       ? playerCount === 2
         ? { mode: current.mode === "quick" || current.mode === "best_of_5" ? current.mode : "best_of_3", setsToPlay: current.mode === "quick" ? 1 : current.mode === "best_of_5" ? 5 : 3 }
         : { mode: "best_of_3", setsToPlay: 3 }
-      : next > 2 ? { mode: "points", setsToPlay: current.mode === "points" ? current.setsToPlay : 1 }
+      : next > 2 ? { mode: "points", setsToPlay: current.mode === "points" ? current.setsToPlay : 3 }
       : { mode: "quick", setsToPlay: 1 });
     // Keep the full draft roster even if the host temporarily selects fewer
     // players (including Solo). Only the visible inputs and active roster change.
@@ -356,7 +356,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
               </div> : null}
               {playerCount >= 3 ? <div className="mt-4 rounded-2xl border border-cyan-200/15 bg-cyan-300/[.04] p-4">
                 <label className="block text-[10px] font-black uppercase tracking-[.16em] text-cyan-100/55">Sets to play<input aria-label="Sets to play" type="number" min={1} max={25} value={match.setsToPlay} onChange={e => setMatch({ mode: "points", setsToPlay: Math.max(1, Math.min(25, Number(e.target.value) || 1)) })} className="mt-2 w-full rounded-xl border border-white/10 bg-black/25 px-3 py-3 text-base font-bold text-white outline-none focus:border-cyan-200/50" /></label>
-                <p className="mt-2 text-xs text-white/45">Three scoring rounds per set. Final rankings use cumulative points across all sets; sets won do not determine rank.</p>
+                <p className="mt-2 text-xs text-white/45"><strong className="font-black text-cyan-50/80">Recommended: 3 sets (9 scoring rounds).</strong> Three scoring rounds per set. Final rankings use cumulative points across all sets; sets won do not determine rank.</p>
               </div> : null}
               <button type="button" onClick={toggleJoin} className="mt-3 min-h-11 w-full rounded-2xl border border-cyan-200/20 bg-cyan-300/[.07] text-xs font-black uppercase tracking-[.14em] text-cyan-50">{showJoin ? "HIDE WATCH QR" : "SCAN TO WATCH"}</button>
               {joinStatus ? <div role="alert" className="mt-2 text-center text-xs font-bold text-rose-100">{joinStatus}</div> : null}

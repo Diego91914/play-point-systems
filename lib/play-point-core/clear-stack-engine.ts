@@ -35,7 +35,7 @@ export const STACK_ROUND_VALUES = [2, 1, 0.5] as const;
 
 export function defaultStackMatch(namesCount: number): StackMatchConfig {
   if (namesCount === 2) return { mode: "best_of_3", setsToPlay: 3 };
-  if (namesCount > 2) return { mode: "points", setsToPlay: 1 };
+  if (namesCount > 2) return { mode: "points", setsToPlay: 3 };
   return { mode: "quick", setsToPlay: 1 };
 }
 

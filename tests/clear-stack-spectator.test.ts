@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { changeStackPlayers, configureStack, initialStackState, normalizeStackState, preserveDraftPlayerNames, replayStack, scoreStack, startStack } from "@/lib/play-point-core/clear-stack-engine";
+import { changeStackPlayers, configureStack, defaultStackMatch, initialStackState, normalizeStackState, preserveDraftPlayerNames, replayStack, scoreStack, startStack } from "@/lib/play-point-core/clear-stack-engine";
 import { readFileSync } from "node:fs";
 
 describe("Clear the Stack host-owned scoring engine", () => {
@@ -135,6 +135,7 @@ describe("Clear the Stack host-owned scoring engine", () => {
   });
 
   it("uses cumulative points for multiplayer even when set winners differ", () => {
+    expect(defaultStackMatch(3)).toEqual({ mode: "points", setsToPlay: 3 });
     let state = startStack(initialStackState(20, 6), ["Chan", "Tyler", "Judy"], 20, 6,
       { mode: "points", setsToPlay: 2 });
     // Set 1: Chan wins narrowly on a low-scoring set.
