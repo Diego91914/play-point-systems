@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { recoverClearStackHostRoom } from "@/lib/play-point-core/clear-stack-recovery";
 import { QRCodeSVG } from "qrcode.react";
 import { ClearStackArcadeBoard } from "./ClearStackArcadeBoard";
-import { changeStackPlayers, initialStackState, replayStack, startStack, scoreStack, preserveDraftPlayerNames, type StackState, type StackPlayer } from "@/lib/play-point-core/clear-stack-engine";
+import { changeStackPlayers, defaultStackMatch, initialStackState, normalizeStackState, replayStack, startStack, scoreStack, preserveDraftPlayerNames, type StackMatchConfig, type StackState, type StackPlayer } from "@/lib/play-point-core/clear-stack-engine";
 
 type Phase = "setup" | "playing" | "finished";
 type Player = StackPlayer;
@@ -19,6 +19,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
   const [distance, setDistance] = useState(20);
   const [stackSize, setStackSize] = useState(10);
   const [playerCount, setPlayerCount] = useState(1);
+  const [match, setMatch] = useState<StackMatchConfig>(defaultStackMatch(1));
   const [hostName, setHostName] = useState("");
   const [manualNames, setManualNames] = useState<string[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
@@ -40,20 +41,23 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
   const maxScore = stackSize * 2;
   const leaderboard = useMemo(() => [...players].sort((a,b) => b.score-a.score), [players]);
   const leader = leaderboard[0];
-  const tied = leaderboard.length > 1 && leaderboard[0].score === leaderboard[1].score;
+  const tied = phase === "finished" && (room?.game_state.matchTied
+    ?? (leaderboard.length > 1 && leaderboard[0].score === leaderboard[1].score));
   const watchUrl = room && origin ? `${origin}/games/clear-the-stack/join/${room.spectator_token}` : "";
   useEffect(() => { setOrigin(window.location.origin); }, []);
   function applyState(state: StackState) {
-    setPhase(state.phase);
-    setDistance(state.distance);
-    setStackSize(state.stackSize);
-    setPlayers(state.players);
-    setRound(state.round);
-    setTurn(state.turn);
-    if (state.players.length) {
-      setPlayerCount(state.players.length);
-      setHostName(state.players[0]?.name ?? "");
-      setManualNames(state.players.slice(1).map(p => p.name));
+    const normalized = normalizeStackState(state, distance, stackSize);
+    setPhase(normalized.phase);
+    setDistance(normalized.distance);
+    setStackSize(normalized.stackSize);
+    setPlayers(normalized.players);
+    setRound(normalized.round);
+    setTurn(normalized.turn);
+    setMatch(normalized.match);
+    if (normalized.players.length) {
+      setPlayerCount(normalized.players.length);
+      setHostName(normalized.players[0]?.name ?? "");
+      setManualNames(normalized.players.slice(1).map(p => p.name));
     }
   }
 
@@ -66,6 +70,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
         const draft = JSON.parse(savedDraft);
         if (Number.isInteger(draft.playerCount) && draft.playerCount >= 1 && draft.playerCount <= 100) {
           setPlayerCount(draft.playerCount);
+          setMatch(draft.match && typeof draft.match.mode === "string" ? draft.match : defaultStackMatch(draft.playerCount));
           setHostName(typeof draft.hostName === "string" ? draft.hostName : "");
           setManualNames(Array.isArray(draft.manualNames) ? draft.manualNames.filter((name: unknown) => typeof name === "string").slice(0, 99) : []);
         }
@@ -94,10 +99,10 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
     if (restoring || phase !== "setup") return;
     try {
       window.localStorage.setItem("pps-clear-stack-host-draft", JSON.stringify({
-        distance, stackSize, playerCount, hostName, manualNames,
+        distance, stackSize, playerCount, hostName, manualNames, match,
       }));
     } catch { /* Server state remains authoritative when draft storage is unavailable. */ }
-  }, [restoring, phase, distance, stackSize, playerCount, hostName, manualNames]);
+  }, [restoring, phase, distance, stackSize, playerCount, hostName, manualNames, match]);
 
   // An existing spectator QR must not freeze setup. Publish changes only after
   // a short idle period so custom numeric input can be edited naturally.
@@ -108,7 +113,8 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
       setupTimer.current = null;
     }
     if (restoring || phase !== "setup" || !room || busy) return;
-    if (room.game_state?.distance === distance && room.game_state?.stackSize === stackSize) {
+    if (room.game_state?.distance === distance && room.game_state?.stackSize === stackSize
+      && JSON.stringify(room.game_state?.match) === JSON.stringify(match)) {
       setSetupSync("idle");
       return;
     }
@@ -118,7 +124,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
       setSetupSync("saving");
       void (async () => {
         try {
-          await postRoomAction("configure", { distance, stackSize });
+          await postRoomAction("configure", { distance, stackSize, match });
           setJoinStatus("");
           setSetupSync("idle");
         } catch (e) {
@@ -135,12 +141,18 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
         setupTimer.current = null;
       }
     };
-  }, [restoring, phase, room, distance, stackSize, busy]);
+  }, [restoring, phase, room, distance, stackSize, match, busy]);
 
 
   function setCount(nextCount: number) {
     const next = Math.max(1, Math.min(100, nextCount));
     setPlayerCount(next);
+    setMatch(current => next === 2
+      ? playerCount === 2
+        ? { mode: current.mode === "quick" || current.mode === "best_of_5" ? current.mode : "best_of_3", setsToPlay: current.mode === "quick" ? 1 : current.mode === "best_of_5" ? 5 : 3 }
+        : { mode: "best_of_3", setsToPlay: 3 }
+      : next > 2 ? { mode: "points", setsToPlay: current.mode === "points" ? current.setsToPlay : 1 }
+      : { mode: "quick", setsToPlay: 1 });
     // Keep the full draft roster even if the host temporarily selects fewer
     // players (including Solo). Only the visible inputs and active roster change.
     setManualNames((current) => preserveDraftPlayerNames(current, next));
@@ -188,7 +200,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
     const names = playerCount === 1 ? ["You"] : [hostName.trim(), ...manualNames.slice(0, playerCount - 1).map(name => name.trim())];
     try {
       // Validate before creating a room; no silent local-only game with a missing QR.
-      startStack(initialStackState(distance, stackSize), names, distance, stackSize);
+      startStack(initialStackState(distance, stackSize), names, distance, stackSize, match);
       setBusy(true);
       setJoinStatus("");
       let hostRoom = room;
@@ -203,7 +215,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
           return;
         }
       }
-      await postRoomAction("start", { names, distance, stackSize }, hostRoom);
+      await postRoomAction("start", { names, distance, stackSize, match }, hostRoom);
       // QR is now guaranteed by the host room, whether Solo or multiplayer.
       setShowJoin(true);
     } catch (e) {
@@ -234,7 +246,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
       let next: StackState;
       if (room) next = await postRoomAction("makes", { makes });
       else {
-        next = scoreStack({ phase, distance, stackSize, players, round, turn }, makes);
+        next = scoreStack(currentGameState(), makes);
         applyState(next);
       }
       if (next.phase === "finished") {
@@ -250,7 +262,10 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
   }
 
   function currentGameState(): StackState {
-    return { phase, distance, stackSize, players, round, turn };
+    return { ...initialStackState(distance, stackSize), phase, players, round, turn, match,
+      currentSet: room?.game_state.currentSet ?? 1, setResults: room?.game_state.setResults ?? [],
+      setsWon: room?.game_state.setsWon ?? players.map(() => 0), matchWinnerIndex: room?.game_state.matchWinnerIndex ?? null,
+      matchTied: room?.game_state.matchTied ?? false };
   }
 
   async function playAgain() {
@@ -332,6 +347,17 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
                 <label className="mt-3 block text-xs font-bold text-white/60">Host<input value={hostName} onChange={e=>setHostName(e.target.value)} placeholder="Host name" className="mt-2 w-full rounded-xl border border-cyan-200/20 bg-black/25 px-3 py-3 text-base font-bold text-white outline-none focus:border-cyan-200/50"/></label>
                 <div className="mt-3 grid gap-2">{manualNames.slice(0, Math.max(0, playerCount - 1)).map((name,i)=><input key={i} value={name} onChange={e=>setManualNames(current=>current.map((value,index)=>index===i?e.target.value:value))} placeholder={`Player ${i+2} name`} className="w-full rounded-xl border border-white/10 bg-black/25 px-3 py-3 text-sm font-bold text-white outline-none focus:border-cyan-200/40"/>)}</div>
               </div> : null}
+              {playerCount === 2 ? <div className="mt-4 rounded-2xl border border-cyan-200/15 bg-cyan-300/[.04] p-4">
+                <div className="text-[10px] font-black uppercase tracking-[.16em] text-cyan-100/55">Match length</div>
+                <div className="mt-3 grid grid-cols-3 gap-2">
+                  {([{ mode: "quick", label: "Quick Game", setsToPlay: 1 }, { mode: "best_of_3", label: "Best of 3", setsToPlay: 3 }, { mode: "best_of_5", label: "Best of 5", setsToPlay: 5 }] as const).map(option => <button key={option.mode} type="button" aria-pressed={match.mode === option.mode} onClick={() => setMatch({ mode: option.mode, setsToPlay: option.setsToPlay })} className={`min-h-11 rounded-xl border px-2 text-xs font-black ${match.mode === option.mode ? "border-cyan-200/40 bg-cyan-300/15 text-cyan-50" : "border-white/10 bg-black/20 text-white/65"}`}>{option.label}</button>)}
+                </div>
+                <p className="mt-2 text-xs text-white/45">Three scoring rounds per set. Set wins decide Best of 3 and Best of 5. A tied set awards neither player a set; a tied match after the final set is a draw.</p>
+              </div> : null}
+              {playerCount >= 3 ? <div className="mt-4 rounded-2xl border border-cyan-200/15 bg-cyan-300/[.04] p-4">
+                <label className="block text-[10px] font-black uppercase tracking-[.16em] text-cyan-100/55">Sets to play<input aria-label="Sets to play" type="number" min={1} max={25} value={match.setsToPlay} onChange={e => setMatch({ mode: "points", setsToPlay: Math.max(1, Math.min(25, Number(e.target.value) || 1)) })} className="mt-2 w-full rounded-xl border border-white/10 bg-black/25 px-3 py-3 text-base font-bold text-white outline-none focus:border-cyan-200/50" /></label>
+                <p className="mt-2 text-xs text-white/45">Three scoring rounds per set. Final rankings use cumulative points across all sets; sets won do not determine rank.</p>
+              </div> : null}
               <button type="button" onClick={toggleJoin} className="mt-3 min-h-11 w-full rounded-2xl border border-cyan-200/20 bg-cyan-300/[.07] text-xs font-black uppercase tracking-[.14em] text-cyan-50">{showJoin ? "HIDE WATCH QR" : "SCAN TO WATCH"}</button>
               {joinStatus ? <div role="alert" className="mt-2 text-center text-xs font-bold text-rose-100">{joinStatus}</div> : null}
               {room ? <p role="status" className="mt-2 text-center text-xs text-white/55">
@@ -356,7 +382,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
         <section className="rounded-[30px] border border-white/10 bg-white/[0.045] p-5 sm:p-7">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div><div className="text-xs font-black uppercase tracking-[0.18em] text-white/45">{distance} FT · {stackSize} DISC START</div><div className="mt-1 text-2xl font-black text-white">{current.name}</div></div>
-            <div className="rounded-full border border-cyan-200/20 bg-cyan-300/10 px-4 py-2 text-xs font-black text-cyan-50">ROUND {round + 1} · +{roundValue} EACH</div>
+            <div className="rounded-full border border-cyan-200/20 bg-cyan-300/10 px-4 py-2 text-xs font-black text-cyan-50">SET {room?.game_state.currentSet ?? 1}/{match.setsToPlay} · ROUND {round + 1}/3 · +{roundValue} EACH</div>
           </div>
           <div className="my-8 text-center">
             <div className="text-xs font-black uppercase tracking-[0.22em] text-white/45">Discs remaining</div>
@@ -366,7 +392,9 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
           <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
             {Array.from({length: current.remaining + 1}, (_, n) => <button key={n} type="button" disabled={busy} onClick={() => void recordMakes(n)} className="min-h-14 rounded-2xl border border-white/10 bg-black/25 text-lg font-black text-white transition hover:border-cyan-200/30 hover:bg-cyan-300/10">{n}</button>)}
           </div>
-          <div className="mt-6 border-t border-white/10 pt-4 text-center text-sm text-white/50">Current score: <span className="font-black text-white">{current.score}</span> · Maximum possible: {maxScore}</div>
+          <div className="mt-6 border-t border-white/10 pt-4 text-center text-sm text-white/50">Match points: <span className="font-black text-white">{current.score}</span> · This set: <span className="font-black text-white">{current.setScore}</span> · Sets won: <span className="font-black text-white">{room?.game_state.setsWon?.[turn] ?? 0}</span> · Maximum per set: {maxScore}</div>
+          {room?.game_state.setResults.length ? <div className="mt-3 text-center text-xs text-white/45">{room.game_state.setResults.map(result => `Set ${result.set}: ${result.tied ? "tied" : `${players[result.winnerIndex!]?.name} won`} (${result.scores.join("–")})`).join(" · ")}</div> : null}
+          <div className="mt-4 grid gap-2" aria-label="Live match scores">{players.map((player, index) => <div key={player.name} className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm"><span className="font-bold text-white">{player.name} · Set {player.setScore} · Sets won {room?.game_state.setsWon?.[index] ?? 0}</span><span className="font-black text-cyan-100">{player.score} match pts</span></div>)}</div>
         </section>
       ) : null}
 
@@ -379,7 +407,10 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
 
       {phase === "finished" ? (
         <section className="rounded-[30px] border border-white/10 bg-white/[0.045] p-5 sm:p-7">
-          <div className="text-center"><div className="text-xs font-black uppercase tracking-[0.2em] text-emerald-100/60">Stack complete</div><div className="mt-3 text-4xl font-black text-white">{players.length === 1 ? `${players[0]?.score ?? 0} POINTS` : tied ? "TIE GAME" : `${leader?.name ?? "Winner"} WINS`}</div><div className="mt-2 text-sm text-white/50">{distance} FT · {stackSize} DISCS</div></div>
+          <div className="text-center"><div className="text-xs font-black uppercase tracking-[0.2em] text-emerald-100/60">Match complete</div><div className="mt-3 text-4xl font-black text-white">{players.length === 1 ? `${players[0]?.score ?? 0} POINTS` : tied ? "MATCH TIED" : `${players[room?.game_state.matchWinnerIndex ?? 0]?.name ?? leader?.name ?? "Winner"} WINS`}</div><div className="mt-2 text-sm text-white/50">{distance} FT · {stackSize} DISCS · {room?.game_state.setResults.length ?? 1} SETS PLAYED</div>
+            {players.length === 2 && match.mode !== "quick" ? <div className="mt-2 text-xs font-bold text-cyan-100/65">Sets won: {players.map((p,i)=>`${p.name} ${room?.game_state.setsWon?.[i] ?? 0}`).join(" · ")}</div> : null}
+            {room?.game_state.setResults.length ? <div className="mt-2 text-xs text-white/45">{room.game_state.setResults.map(result => `Set ${result.set}: ${result.tied ? "tied" : `${players[result.winnerIndex!]?.name} won`} (${result.scores.join("–")})`).join(" · ")}</div> : null}
+          </div>
           <div className="mt-7 grid gap-3">
             {[...players].sort((a,b) => b.score-a.score).map((p,i) => (
               <div key={p.name} className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-black/20 p-4">

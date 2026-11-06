@@ -63,7 +63,8 @@ export function ClearStackJoinClient({ code }: { code: string }) {
   const current = game?.players[game.turn];
   const standings = [...(game?.players ?? [])].sort((a, b) => b.score - a.score);
   const winner = standings[0];
-  const tied = standings.length > 1 && standings[1].score === winner?.score;
+  const tied = game?.phase === "finished" && (game.matchTied
+    ?? (standings.length > 1 && standings[1].score === winner?.score));
 
   return (
     <main className="mx-auto w-full max-w-2xl px-4 py-8 sm:py-12">
@@ -93,20 +94,20 @@ export function ClearStackJoinClient({ code }: { code: string }) {
             {game.phase === "setup" ? (
               <div className="mt-8 text-center">
                 <h2 className="text-2xl font-black text-white">WAITING FOR HOST</h2>
-                <p className="mt-3 text-sm text-white/55">The host is adding players. Gameplay will appear here automatically.</p>
+                <p className="mt-3 text-sm text-white/55">The host is setting the match. Spectators stay connected until the host ends the session.</p>
               </div>
             ) : game.phase === "finished" ? (
               <div className="mt-8 text-center">
                 <div className="text-xs font-black uppercase tracking-[.2em] text-emerald-100/75">Stack complete</div>
                 <h2 className="mt-3 text-3xl font-black text-white">
-                  {tied ? "TIE GAME" : game.players.length === 1 ? "ROUND COMPLETE" : `${winner?.name ?? "Winner"} WINS`}
+                  {tied ? "MATCH TIED" : game.players.length === 1 ? `${winner?.score ?? 0} POINTS` : `${game.players[game.matchWinnerIndex ?? 0]?.name ?? winner?.name ?? "Winner"} WINS`}
                 </h2>
-                <p className="mt-2 text-sm text-white/55">Final scores are below.</p>
+                <p className="mt-2 text-sm text-white/55">{game.match.mode === "points" ? "Ranked by cumulative match points." : game.match.mode === "quick" ? "Quick Game · one set." : "Match decided by sets won."}</p>
               </div>
             ) : (
               <div className="mt-7 text-center">
                 <div className="text-xs font-black uppercase tracking-[.2em] text-cyan-100/75">
-                  ROUND {game.round + 1} · +{STACK_ROUND_VALUES[game.round]} EACH
+                  SET {game.currentSet}/{game.match.setsToPlay} · ROUND {game.round + 1}/3 · +{STACK_ROUND_VALUES[game.round]} EACH
                 </div>
                 <h2 className="mt-4 text-2xl font-black text-white">{current?.name}</h2>
                 <p className="mt-2 text-sm text-white/45">Current player</p>
@@ -126,7 +127,7 @@ export function ClearStackJoinClient({ code }: { code: string }) {
                     <div>
                       <div className="font-black text-white">#{index + 1} · {player.name}</div>
                       <div className="mt-1 text-xs text-white/45">
-                        R1 {player.rounds[0] ?? "—"} · R2 {player.rounds[1] ?? "—"} · R3 {player.rounds[2] ?? "—"} · {player.remaining} left
+                        Match {player.score} pts · Set {player.setScore} pts · Sets won {game.setsWon?.[index] ?? 0} · R1 {player.rounds[0] ?? "—"} · R2 {player.rounds[1] ?? "—"} · R3 {player.rounds[2] ?? "—"} · {player.remaining} left
                       </div>
                     </div>
                     <div className="text-2xl font-black text-white">{player.score} <span className="text-xs font-medium text-white/40">pts</span></div>
@@ -135,6 +136,10 @@ export function ClearStackJoinClient({ code }: { code: string }) {
               </div>
             </section>
           ) : null}
+          {game.setResults.length ? <section className="mt-4 rounded-2xl border border-white/10 bg-white/[.045] p-4 text-center text-xs text-white/55">
+            <h3 className="mb-2 font-black uppercase tracking-[.18em]">Set scores</h3>
+            {game.setResults.map(result => <div key={result.set}>Set {result.set}: {result.tied ? "tied" : `${game.players[result.winnerIndex!]?.name} won`} · {result.scores.map((score, index) => `${game.players[index]?.name} ${score}`).join(" · ")}</div>)}
+          </section> : null}
           {(game.phase === "setup" || game.phase === "finished") ? <ClearStackArcadeBoard distance={game.distance} stackSize={game.stackSize} allowAccountViews={false} refreshKey={game.phase === "finished" ? 1 : 0} /> : null}
         </>
       )}

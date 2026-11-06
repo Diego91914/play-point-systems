@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServerClient } from "@/lib/play-point-core/quick-score-supabase";
-import { initialStackState, type StackState } from "@/lib/play-point-core/clear-stack-engine";
+import { normalizeStackState } from "@/lib/play-point-core/clear-stack-engine";
 
 const headers = { "Cache-Control": "private, no-store" };
 
@@ -21,19 +21,19 @@ export async function GET(request: Request) {
   if (data.status === "closed")
     return NextResponse.json({ error: "The host ended this live session.", ended: true }, { status: 410, headers });
 
-  const state = data.game_state && typeof data.game_state === "object" && "phase" in data.game_state
-    ? data.game_state as StackState
-    : initialStackState(data.distance, data.stack_size);
+  const state = normalizeStackState(data.game_state, data.distance, data.stack_size);
   return NextResponse.json({
     game: {
       phase: state.phase,
       distance: state.distance,
       stackSize: state.stackSize,
       players: state.players.map(player => ({
-        name: player.name, score: player.score,
+        name: player.name, score: player.score, setScore: player.setScore, setScores: player.setScores,
         remaining: player.remaining, rounds: player.rounds,
       })),
-      round: state.round, turn: state.turn,
+      round: state.round, turn: state.turn, match: state.match,
+      currentSet: state.currentSet, setResults: state.setResults, setsWon: state.setsWon,
+      matchWinnerIndex: state.matchWinnerIndex, matchTied: state.matchTied,
     },
   }, { headers });
 }
