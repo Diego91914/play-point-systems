@@ -66,14 +66,26 @@ test("confirmed END GAME calls the server, clears recovery, and stays ended afte
 });
 
 test("server failure keeps the session available and displays a retry error", async ({ page }) => {
-  await page.route("**/api/sessions/ABC234/end", (route) => route.fulfill({
-    status: 503,
-    contentType: "application/json",
-    body: JSON.stringify({ error: "Unable to finish the round; no scores were deleted." }),
-  }));
+  let endRequests = 0;
+  await page.route("**/api/sessions/ABC234/end", async (route) => {
+    endRequests += 1;
+    if (endRequests === 1) {
+      await route.fulfill({
+        status: 503,
+        contentType: "application/json",
+        body: JSON.stringify({ error: "Unable to finish the round; no scores were deleted." }),
+      });
+      return;
+    }
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ success: true }) });
+  });
   await openActiveShotCaddy(page);
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "END GAME" }).click();
   await expect(page.locator('p[role="alert"]')).toContainText("no scores were deleted");
   await expect(page.locator('section[aria-labelledby="active-game-heading"]')).toBeVisible();
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.getByRole("button", { name: "END GAME" }).click();
+  await expect(page.locator('section[aria-labelledby="active-game-heading"]')).toHaveCount(0);
+  expect(endRequests).toBe(2);
 });
