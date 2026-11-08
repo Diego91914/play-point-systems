@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <SiteShell current="games">
-      <GameAtmosphere variant="social">
+      <GameAtmosphere variant="social" showOrbit={false}>
         <RoomInviteSessionGuard storageKey="pps-on-my-list-session" roomApiBase="/api/games/on-my-list">
           <OnMyListClient />
           <OnMyListMoments />
