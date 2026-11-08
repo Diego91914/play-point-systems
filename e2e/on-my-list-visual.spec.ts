@@ -49,6 +49,6 @@ test("On My List answer entry keeps its gradients without the shared orbit", asy
   await expect(page.getByText("Build your board privately")).toBeVisible();
   await expect(page.getByPlaceholder("Answer 1 · required")).toBeVisible();
   await expect(page.locator('[aria-hidden="true"] [class*="orbit"]')).toHaveCount(0);
-  const backdropImage = await page.locator('[aria-hidden="true"]').evaluate(element => getComputedStyle(element).backgroundImage);
+  const backdropImage = await page.locator('[aria-hidden="true"][class*="backdrop"]').evaluate(element => getComputedStyle(element).backgroundImage);
   expect(backdropImage).toContain("radial-gradient");
 });
