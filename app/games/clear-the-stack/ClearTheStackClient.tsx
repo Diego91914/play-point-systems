@@ -37,6 +37,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
   const [origin, setOrigin] = useState("");
 
   const current = players[turn];
+  const multiplayer = players.length >= 3;
   const roundValue = ROUND_VALUES[round] ?? 0;
   const maxScore = stackSize * 2;
   const leaderboard = useMemo(() => [...players].sort((a,b) => b.score-a.score), [players]);
@@ -387,14 +388,14 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
           <div className="my-8 text-center">
             <div className="text-xs font-black uppercase tracking-[0.22em] text-white/45">Discs remaining</div>
             <div className="mt-2 text-8xl font-black tracking-[-0.07em] text-white">{current.remaining}</div>
-            <p className="mt-3 text-sm text-white/55">Throw all {current.remaining}. Then tap how many you made.</p>
+            <p className="mt-3 text-sm text-white/55">Throw all {current.remaining} remaining disc{current.remaining === 1 ? "" : "s"}. Then tap how many you made.{round > 0 && current.remaining > 0 ? ` This disc carried forward from Round ${round}.` : ""}</p>
           </div>
           <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
             {Array.from({length: current.remaining + 1}, (_, n) => <button key={n} type="button" disabled={busy} onClick={() => void recordMakes(n)} className="min-h-14 rounded-2xl border border-white/10 bg-black/25 text-lg font-black text-white transition hover:border-cyan-200/30 hover:bg-cyan-300/10">{n}</button>)}
           </div>
-          <div className="mt-6 border-t border-white/10 pt-4 text-center text-sm text-white/50">Match points: <span className="font-black text-white">{current.score}</span> · This set: <span className="font-black text-white">{current.setScore}</span> · Sets won: <span className="font-black text-white">{room?.game_state.setsWon?.[turn] ?? 0}</span> · Maximum per set: {maxScore}</div>
-          {room?.game_state.setResults.length ? <div className="mt-3 text-center text-xs text-white/45">{room.game_state.setResults.map(result => `Set ${result.set}: ${result.tied ? "tied" : `${players[result.winnerIndex!]?.name} won`} (${result.scores.join("–")})`).join(" · ")}</div> : null}
-          <div className="mt-4 grid gap-2" aria-label="Live match scores">{players.map((player, index) => <div key={player.name} className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm"><span className="font-bold text-white">{player.name} · Set {player.setScore} · Sets won {room?.game_state.setsWon?.[index] ?? 0}</span><span className="font-black text-cyan-100">{player.score} match pts</span></div>)}</div>
+          <div className="mt-6 border-t border-white/10 pt-4 text-center text-sm text-white/50">Cumulative match points: <span className="font-black text-white">{current.score}</span> · Current set: <span className="font-black text-white">{current.setScore}</span>{!multiplayer ? <> · Sets won: <span className="font-black text-white">{room?.game_state.setsWon?.[turn] ?? 0}</span></> : null} · Maximum per set: {maxScore}</div>
+          {room?.game_state.setResults.length ? <div className="mt-3 rounded-xl border border-white/10 bg-black/20 p-3 text-center text-xs text-white/55"><div className="mb-1 font-black uppercase tracking-[.14em]">Completed sets</div>{room.game_state.setResults.map(result => `Set ${result.set}: ${result.tied ? "tied" : `${players[result.winnerIndex!]?.name} won`} (${result.scores.join("–")})`).join(" · ")}</div> : null}
+          <div className="mt-4 grid gap-2" aria-label={multiplayer ? "Cumulative standings" : "Live match scores"}><div className="text-xs font-black uppercase tracking-[.14em] text-white/45">{multiplayer ? "Cumulative standings · current set points" : "Live match scores"}</div>{[...players].sort((a,b) => b.score - a.score).map((player) => { const index = players.indexOf(player); return <div key={player.name} className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm"><span className="font-bold text-white">{player.name} · Set {player.setScore}{!multiplayer ? ` · Sets won ${room?.game_state.setsWon?.[index] ?? 0}` : ""}</span><span className="font-black text-cyan-100">{player.score} match pts</span></div>})}</div>
         </section>
       ) : null}
 

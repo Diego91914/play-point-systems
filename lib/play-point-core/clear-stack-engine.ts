@@ -87,7 +87,10 @@ export function normalizeStackState(value: unknown, distance: number, stackSize:
     distance: typeof raw.distance === "number" && Number.isFinite(raw.distance) ? raw.distance : distance,
     stackSize: typeof raw.stackSize === "number" && Number.isFinite(raw.stackSize) ? raw.stackSize : stackSize,
     players,
-    round: typeof raw.round === "number" && Number.isInteger(raw.round) ? raw.round : 0,
+    // A stale/corrupt persisted cursor must never expose a fourth round or
+    // index beyond STACK_ROUND_VALUES.
+    round: typeof raw.round === "number" && Number.isInteger(raw.round)
+      ? Math.max(0, Math.min(2, raw.round)) : 0,
     turn: typeof raw.turn === "number" && Number.isInteger(raw.turn) ? raw.turn : 0,
     match: { mode, setsToPlay: legacy ? 1 : setsToPlay },
     currentSet: typeof raw.currentSet === "number" && Number.isInteger(raw.currentSet) ? raw.currentSet : 1,
@@ -159,7 +162,13 @@ export function changeStackPlayers(previous: StackState): StackState {
 }
 
 function finishSet(state: StackState, players: StackPlayer[]): StackState {
-  const scores = players.map(player => player.setScore);
+  // Players who clear their stack early do not take empty throws. Keep the
+  // completed set's three-round record explicit without asking for another turn.
+  const completedPlayers = players.map(player => ({
+    ...player,
+    rounds: [...player.rounds, ...Array.from({ length: Math.max(0, 3 - player.rounds.length) }, () => 0)],
+  }));
+  const scores = completedPlayers.map(player => player.setScore);
   const highest = Math.max(...scores);
   const winners = scores.flatMap((score, index) => score === highest ? [index] : []);
   const tied = winners.length !== 1;
@@ -182,18 +191,18 @@ function finishSet(state: StackState, players: StackPlayer[]): StackState {
     }
     // Quick Game and multiplayer use cumulative points for final ranking.
     if (state.match.mode === "quick" || state.match.mode === "points") {
-      const totals = players.map(player => player.score);
+      const totals = completedPlayers.map(player => player.score);
       const high = Math.max(...totals);
       const leaders = totals.flatMap((score, index) => score === high ? [index] : []);
       matchWinnerIndex = leaders.length === 1 ? leaders[0] : null;
     }
     return {
-      ...state, phase: "finished", players, setsWon, setResults,
+      ...state, phase: "finished", players: completedPlayers, setsWon, setResults,
       matchWinnerIndex, matchTied: matchWinnerIndex === null,
     };
   }
   return {
-    ...state, players: players.map(player => ({ ...player, setScore: 0, remaining: state.stackSize, rounds: [] })),
+    ...state, players: completedPlayers.map(player => ({ ...player, setScore: 0, remaining: state.stackSize, rounds: [] })),
     round: 0, turn: 0, currentSet: state.currentSet + 1, setsWon, setResults,
     matchWinnerIndex: null, matchTied: false,
   };
@@ -201,6 +210,8 @@ function finishSet(state: StackState, players: StackPlayer[]): StackState {
 
 export function scoreStack(previous: StackState, makes: number): StackState {
   if (previous.phase !== "playing") throw new Error("Game is not in progress.");
+  if (!Number.isInteger(previous.round) || previous.round < 0 || previous.round > 2)
+    throw new Error("The scoring round is invalid. Reload the saved game.");
   const active = previous.players[previous.turn];
   if (!active || active.remaining <= 0) throw new Error("No active player.");
   if (!Number.isInteger(makes) || makes < 0 || makes > active.remaining)
