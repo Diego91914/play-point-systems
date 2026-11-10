@@ -20,6 +20,32 @@ function playSet(state: StackState, makesByRound: number[][]): StackState {
 }
 
 describe("Clear the Stack scoring audit", () => {
+  it("scores the specified 5-disc sequence and restores all five discs for Set 2", () => {
+    let state = startStack(initialStackState(20, 5), ["Gary", "Channing"], 20, 5,
+      { mode: "best_of_3", setsToPlay: 3 });
+
+    // Gary makes 2 in R1, 1 in R2 and 1 in R3, leaving one disc for the set-end penalty.
+    state = scoreStack(state, 2);
+    expect(state.players[0].remaining).toBe(3);
+    expect(state.round).toBe(0);
+    state = scoreStack(state, 0); // Channing's R1
+    expect(state.round).toBe(1);
+    state = scoreStack(state, 1); // Gary's R2
+    expect(state.players[0].remaining).toBe(2);
+    state = scoreStack(state, 0); // Channing's R2
+    state = scoreStack(state, 1); // Gary's R3
+    expect(state.players[0].remaining).toBe(1);
+    state = scoreStack(state, 0); // Channing's R3; the set now closes.
+
+    expect(state.setResults[0].scores[0]).toBe(3.5);
+    expect(state.players[0].score).toBe(3.5);
+    expect(state.currentSet).toBe(2);
+    expect(state.round).toBe(0);
+    expect(state.players.map(player => player.remaining)).toEqual([5, 5]);
+    expect(state.players.map(player => player.setScore)).toEqual([0, 0]);
+    expect(state.players.map(player => player.score)).toEqual([3.5, -10]);
+  });
+
   it("reproduces the three-player screenshot: cumulative ranking and tied Set 2", () => {
     let state = startStack(initialStackState(20, 5), ["Channing", "Gary", "Gianna"], 20, 5,
       { mode: "points", setsToPlay: 3 });
