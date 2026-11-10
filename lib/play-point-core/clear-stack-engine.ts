@@ -214,6 +214,8 @@ export function scoreStack(previous: StackState, makes: number): StackState {
     throw new Error("The scoring round is invalid. Reload the saved game.");
   const active = previous.players[previous.turn];
   if (!active || active.remaining <= 0) throw new Error("No active player.");
+  if (active.rounds.length > previous.round || active.rounds.length >= 3)
+    throw new Error("This player's score for the current round is already recorded.");
   if (!Number.isInteger(makes) || makes < 0 || makes > active.remaining)
     throw new Error("Makes must be between zero and the remaining discs.");
   const players = previous.players.map((player, index) => index === previous.turn

@@ -77,6 +77,15 @@ describe("Clear the Stack scoring audit", () => {
     expect(() => scoreStack({ ...normalized, round: 3 }, 0)).toThrow(/round is invalid/);
   });
 
+  it("rejects a duplicate player's score in the same round", () => {
+    const state = startStack(initialStackState(20, 5), ["A", "B"], 20, 5);
+    const staleDuplicate = {
+      ...state,
+      players: state.players.map((player, index) => index === 0 ? { ...player, rounds: [0] } : player),
+    };
+    expect(() => scoreStack(staleDuplicate, 1)).toThrow(/already recorded/);
+  });
+
   it("makes the live and spectator views prioritize completed sets and cumulative multiplayer standings", () => {
     const host = readFileSync("app/games/clear-the-stack/ClearTheStackClient.tsx", "utf8");
     const spectator = readFileSync("app/games/clear-the-stack/join/[code]/ClearStackJoinClient.tsx", "utf8");
