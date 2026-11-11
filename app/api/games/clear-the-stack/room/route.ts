@@ -217,7 +217,7 @@ export async function PATCH(request: Request) {
   if (body.action === "makes") {
     const { data: result, error: rpcError } = await supabase.rpc("ppl_clear_stack_commit_score", {
       p_room_id: id, p_host_session_id: host, p_expected_version: version,
-      p_action_id: actionId, p_next_state: next, p_next_status: status,
+      p_action_id: actionId, p_discs_made: Number(body.makes), p_next_state: next, p_next_status: status,
     });
     if (rpcError) return error("Score could not be confirmed. Refresh the game before scoring again.", 503);
     const value = result as Record<string, unknown>;

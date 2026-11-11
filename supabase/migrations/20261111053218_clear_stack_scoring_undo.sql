@@ -10,6 +10,7 @@ create table if not exists public.ppl_clear_stack_score_actions (
   room_id uuid not null references public.ppl_clear_stack_rooms(id) on delete cascade,
   action_id uuid not null,
   action_type text not null check (action_type in ('score', 'undo')),
+  discs_made integer,
   game_run_id uuid,
   target_action_id uuid,
   result_version integer not null check (result_version > 0),
@@ -23,7 +24,9 @@ create table if not exists public.ppl_clear_stack_score_actions (
   unique (room_id, result_version),
   foreign key (room_id, target_action_id)
     references public.ppl_clear_stack_score_actions (room_id, action_id),
-  check ((action_type = 'undo') = (target_action_id is not null))
+  check ((action_type = 'undo') = (target_action_id is not null)),
+  check ((action_type = 'score') = (discs_made is not null)),
+  check (discs_made is null or discs_made >= 0)
 );
 
 create index if not exists ppl_clear_stack_score_actions_latest_idx
@@ -41,6 +44,7 @@ create or replace function public.ppl_clear_stack_commit_score(
   p_host_session_id text,
   p_expected_version integer,
   p_action_id uuid,
+  p_discs_made integer,
   p_next_state jsonb,
   p_next_status text
 ) returns jsonb
@@ -82,6 +86,10 @@ begin
     return jsonb_build_object('ok', false, 'error', 'Invalid scoring status.', 'status', 400,
       'room', to_jsonb(v_room));
   end if;
+  if p_discs_made is null or p_discs_made < 0 then
+    return jsonb_build_object('ok', false, 'error', 'Invalid disc count.', 'status', 400,
+      'room', to_jsonb(v_room));
+  end if;
 
   update public.ppl_clear_stack_rooms
   set game_state = p_next_state, status = p_next_status,
@@ -89,10 +97,10 @@ begin
   where id = p_room_id;
 
   insert into public.ppl_clear_stack_score_actions (
-    room_id, action_id, action_type, game_run_id, result_version,
+    room_id, action_id, action_type, discs_made, game_run_id, result_version,
     before_state, after_state, before_status, after_status
   ) values (
-    p_room_id, p_action_id, 'score', v_room.scoring_run_id, p_expected_version + 1,
+    p_room_id, p_action_id, 'score', p_discs_made, v_room.scoring_run_id, p_expected_version + 1,
     v_room.game_state, p_next_state, v_room.status, p_next_status
   );
 
@@ -184,7 +192,7 @@ begin
 end;
 $$;
 
-revoke all on function public.ppl_clear_stack_commit_score(uuid, text, integer, uuid, jsonb, text) from public, anon, authenticated;
+revoke all on function public.ppl_clear_stack_commit_score(uuid, text, integer, uuid, integer, jsonb, text) from public, anon, authenticated;
 revoke all on function public.ppl_clear_stack_undo_score(uuid, text, integer, uuid) from public, anon, authenticated;
-grant execute on function public.ppl_clear_stack_commit_score(uuid, text, integer, uuid, jsonb, text) to service_role;
+grant execute on function public.ppl_clear_stack_commit_score(uuid, text, integer, uuid, integer, jsonb, text) to service_role;
 grant execute on function public.ppl_clear_stack_undo_score(uuid, text, integer, uuid) to service_role;

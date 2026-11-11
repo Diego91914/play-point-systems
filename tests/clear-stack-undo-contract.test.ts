@@ -11,6 +11,7 @@ describe("Clear the Stack undo contract", () => {
     expect(migration).toContain("unique (room_id, result_version)");
     expect(migration).toContain("before_state jsonb not null");
     expect(migration).toContain("after_state jsonb not null");
+    expect(migration).toContain("discs_made integer");
     expect(migration).toContain("for update");
     expect(migration).toContain("v_room.state_version <> p_expected_version");
     expect(migration).toContain("v_target.after_state is distinct from v_room.game_state");
