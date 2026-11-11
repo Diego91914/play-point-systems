@@ -8,7 +8,8 @@ import { changeStackPlayers, defaultStackMatch, initialStackState, normalizeStac
 
 type Phase = "setup" | "playing" | "finished";
 type Player = StackPlayer;
-type HostRoom = { id: string; code: string; spectator_token: string; state_version: number; game_state: StackState; };
+type HostRoom = { id: string; code: string; spectator_token: string; state_version: number; game_state: StackState; undo_action_id?: string | null; scoring_run_id?: string | null; };
+type PendingScoreAction = { actionId: string; action: "makes" | "undo"; version: number; makes?: number };
 
 const DISTANCES = [10, 15, 20, 25, 30];
 const STACKS = [5, 10, 15, 20];
@@ -35,6 +36,8 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
   const [restoring, setRestoring] = useState(true);
   const [joinStatus, setJoinStatus] = useState("");
   const [origin, setOrigin] = useState("");
+  const scoreLock = useRef(false);
+  const undoLock = useRef(false);
 
   const current = players[turn];
   const multiplayer = players.length >= 3;
@@ -60,6 +63,25 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
       setHostName(normalized.players[0]?.name ?? "");
       setManualNames(normalized.players.slice(1).map(p => p.name));
     }
+  }
+
+  function readPendingAction(targetRoom: HostRoom): PendingScoreAction | null {
+    try {
+      const raw = window.localStorage.getItem(`pps-clear-stack-pending-${targetRoom.id}`);
+      if (!raw) return null;
+      const value = JSON.parse(raw) as Partial<PendingScoreAction>;
+      if (typeof value.actionId !== "string" || !["makes", "undo"].includes(String(value.action))
+        || !Number.isInteger(value.version) || (value.action === "makes" && !Number.isInteger(value.makes))) return null;
+      return value as PendingScoreAction;
+    } catch { return null; }
+  }
+
+  function savePendingAction(targetRoom: HostRoom, value: PendingScoreAction | null) {
+    try {
+      const key = `pps-clear-stack-pending-${targetRoom.id}`;
+      if (value) window.localStorage.setItem(key, JSON.stringify(value));
+      else window.localStorage.removeItem(key);
+    } catch { /* The server still rejects stale revisions if browser storage is unavailable. */ }
   }
 
   useEffect(() => {
@@ -175,17 +197,26 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
   }
 
   async function postRoomAction(
-    action: "configure" | "start" | "makes" | "replay" | "change_players" | "close",
+    action: "configure" | "start" | "makes" | "undo" | "replay" | "change_players" | "close",
     extra: Record<string, unknown> = {},
     targetRoom: HostRoom | null = room,
+    actionId?: string,
+    expectedVersion?: number,
   ) {
     if (!targetRoom) throw new Error("No shared game is active.");
+    const commitActionId = ["makes", "undo"].includes(action) ? (actionId ?? crypto.randomUUID()) : undefined;
     const response = await fetch("/api/games/clear-the-stack/room", {
       method: "PATCH", headers: { "content-type": "application/json" },
-      body: JSON.stringify({ id: targetRoom.id, version: targetRoom.state_version, action, ...extra }),
+      body: JSON.stringify({ id: targetRoom.id, version: expectedVersion ?? targetRoom.state_version, action, ...(commitActionId ? { action_id: commitActionId } : {}), ...extra }),
     });
     const payload = await response.json();
-    if (!response.ok) throw new Error(payload.error || "Could not save. Do not score again until reconnected.");
+    if (!response.ok) {
+      if (payload.room) {
+        setRoom(payload.room as HostRoom);
+        applyState((payload.room as HostRoom).game_state);
+      }
+      throw new Error(payload.error || "Could not save. Game state was refreshed before another action.");
+    }
     const updated = payload.room as HostRoom;
     setRoom(updated);
     applyState(updated.game_state);
@@ -241,11 +272,45 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
   }
 
   async function recordMakes(makes: number) {
-    if (!current || busy) return;
+    if (!current || busy || scoreLock.current) return;
+    scoreLock.current = true;
     setBusy(true);
     try {
       let next: StackState;
-      if (room) next = await postRoomAction("makes", { makes });
+      if (room) {
+        const pending = readPendingAction(room);
+        let actionId = "";
+        let expectedVersion = room.state_version;
+        if (pending) {
+          const statusResponse = await fetch(`/api/games/clear-the-stack/room?id=${encodeURIComponent(room.id)}&action_id=${encodeURIComponent(pending.actionId)}`, { cache: "no-store" });
+          const statusPayload = await statusResponse.json();
+          if (!statusResponse.ok || !statusPayload.room) throw new Error(statusPayload.error || "Could not confirm the previous score. Refresh before continuing.");
+          const latest = statusPayload.room as HostRoom;
+          if (statusPayload.action_confirmed === true) {
+            setRoom(latest); applyState(latest.game_state); savePendingAction(room, null);
+            setJoinStatus(pending.action === "undo" ? "The previous undo was confirmed. Game state refreshed." : "The previous score was confirmed. Game state refreshed.");
+            return;
+          }
+          if (latest.state_version !== pending.version) {
+            setRoom(latest); applyState(latest.game_state); savePendingAction(room, null);
+            setJoinStatus("Game state changed while reconnecting. It has been refreshed; verify the current player before scoring.");
+            return;
+          }
+          if (pending.action === "makes" && pending.makes === makes) {
+            actionId = pending.actionId;
+            expectedVersion = pending.version;
+          } else {
+            savePendingAction(room, null);
+          }
+        }
+        if (!actionId) {
+          actionId = crypto.randomUUID();
+          expectedVersion = room.state_version;
+          savePendingAction(room, { actionId, action: "makes", version: expectedVersion, makes });
+        }
+        next = await postRoomAction("makes", { makes }, room, actionId, expectedVersion);
+        savePendingAction(room, null);
+      }
       else {
         next = scoreStack(currentGameState(), makes);
         applyState(next);
@@ -259,7 +324,52 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
       setJoinStatus("");
     } catch (e) {
       setJoinStatus(e instanceof Error ? e.message : "Could not record makes.");
-    } finally { setBusy(false); }
+    } finally { scoreLock.current = false; setBusy(false); }
+  }
+
+  async function undoLastScore() {
+    if (busy || restoring || !room?.undo_action_id || undoLock.current) return;
+    undoLock.current = true;
+    setBusy(true);
+    try {
+      const pending = room ? readPendingAction(room) : null;
+      let actionId = "";
+      let expectedVersion = room.state_version;
+      if (pending) {
+        const statusResponse = await fetch(`/api/games/clear-the-stack/room?id=${encodeURIComponent(room.id)}&action_id=${encodeURIComponent(pending.actionId)}`, { cache: "no-store" });
+        const statusPayload = await statusResponse.json();
+        if (!statusResponse.ok || !statusPayload.room) throw new Error(statusPayload.error || "Could not confirm the previous action. Refresh before undoing.");
+        const latest = statusPayload.room as HostRoom;
+        if (statusPayload.action_confirmed === true) {
+          setRoom(latest); applyState(latest.game_state); savePendingAction(room, null);
+          setJoinStatus(pending.action === "undo" ? "Last score undone." : "The previous score was confirmed. Game state refreshed.");
+          return;
+        }
+        if (latest.state_version !== pending.version) {
+          setRoom(latest); applyState(latest.game_state); savePendingAction(room, null);
+          setJoinStatus("Game state changed while reconnecting. It has been refreshed; review the score before undoing.");
+          return;
+        }
+        if (pending.action === "undo") {
+          actionId = pending.actionId;
+          expectedVersion = pending.version;
+        } else {
+          savePendingAction(room, null);
+        }
+      }
+      if (!actionId) {
+        actionId = crypto.randomUUID();
+        expectedVersion = room.state_version;
+        savePendingAction(room, { actionId, action: "undo", version: expectedVersion });
+      }
+      await postRoomAction("undo", {}, room, actionId, expectedVersion);
+      savePendingAction(room, null);
+      setJoinStatus("Last score undone.");
+      setRecordStatus("idle");
+      setLeaderboardRevision(value => value + 1);
+    } catch (e) {
+      setJoinStatus(e instanceof Error ? e.message : "Could not undo the last score. The game state has been refreshed.");
+    } finally { undoLock.current = false; setBusy(false); }
   }
 
   function currentGameState(): StackState {
@@ -393,6 +503,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
           <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
             {Array.from({length: current.remaining + 1}, (_, n) => <button key={n} type="button" disabled={busy} onClick={() => void recordMakes(n)} className="min-h-14 rounded-2xl border border-white/10 bg-black/25 text-lg font-black text-white transition hover:border-cyan-200/30 hover:bg-cyan-300/10">{n}</button>)}
           </div>
+          <button type="button" disabled={busy || restoring || !room?.undo_action_id} onClick={() => void undoLastScore()} className="mt-3 min-h-12 w-full rounded-2xl border border-amber-200/25 bg-amber-200/[.08] px-4 text-sm font-black text-amber-100 disabled:cursor-not-allowed disabled:opacity-35">UNDO LAST SCORE</button>
           <div className="mt-6 border-t border-white/10 pt-4 text-center text-sm text-white/50">Cumulative match points: <span className="font-black text-white">{current.score}</span> · Current set: <span className="font-black text-white">{current.setScore}</span>{!multiplayer ? <> · Sets won: <span className="font-black text-white">{room?.game_state.setsWon?.[turn] ?? 0}</span></> : null} · Maximum per set: {maxScore}</div>
           {room?.game_state.setResults.length ? <div className="mt-3 rounded-xl border border-white/10 bg-black/20 p-3 text-center text-xs text-white/55"><div className="mb-1 font-black uppercase tracking-[.14em]">Completed sets</div>{room.game_state.setResults.map(result => `Set ${result.set}: ${result.tied ? "tied" : `${players[result.winnerIndex!]?.name} won`} (${result.scores.join("–")})`).join(" · ")}</div> : null}
           <div className="mt-4 grid gap-2" aria-label={multiplayer ? "Cumulative standings" : "Live match scores"}><div className="text-xs font-black uppercase tracking-[.14em] text-white/45">{multiplayer ? "Cumulative standings · current set points" : "Live match scores"}</div>{[...players].sort((a,b) => b.score - a.score).map((player) => { const index = players.indexOf(player); return <div key={player.name} className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm"><span className="font-bold text-white">{player.name} · Set {player.setScore}{!multiplayer ? ` · Sets won ${room?.game_state.setsWon?.[index] ?? 0}` : ""}</span><span className="font-black text-cyan-100">{player.score} match pts</span></div>})}</div>
@@ -412,6 +523,7 @@ export function ClearTheStackClient({ recordsEnabled = false }: { recordsEnabled
             {players.length === 2 && match.mode !== "quick" ? <div className="mt-2 text-xs font-bold text-cyan-100/65">Sets won: {players.map((p,i)=>`${p.name} ${room?.game_state.setsWon?.[i] ?? 0}`).join(" · ")}</div> : null}
             {room?.game_state.setResults.length ? <div className="mt-2 text-xs text-white/45">{room.game_state.setResults.map(result => `Set ${result.set}: ${result.tied ? "tied" : `${players[result.winnerIndex!]?.name} won`} (${result.scores.join("–")})`).join(" · ")}</div> : null}
           </div>
+          <button type="button" disabled={busy || restoring || !room?.undo_action_id} onClick={() => void undoLastScore()} className="mt-5 min-h-12 w-full rounded-2xl border border-amber-200/25 bg-amber-200/[.08] px-4 text-sm font-black text-amber-100 disabled:cursor-not-allowed disabled:opacity-35">UNDO LAST SCORE</button>
           <div className="mt-7 grid gap-3">
             {[...players].sort((a,b) => b.score-a.score).map((p,i) => (
               <div key={p.name} className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-black/20 p-4">
