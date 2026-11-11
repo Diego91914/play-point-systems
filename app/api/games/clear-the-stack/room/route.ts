@@ -25,9 +25,39 @@ function viewRoom(row: Record<string, unknown>) {
   return {
     updated_at: row.updated_at, id: row.id, code: row.code, spectator_token: row.spectator_token,
     state_version: row.state_version, distance: row.distance,
-    stack_size: row.stack_size, status: row.status,
+    stack_size: row.stack_size, status: row.status, scoring_run_id: row.scoring_run_id ?? null,
     game_state: row.game_state,
   };
+}
+
+function canonicalJson(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
+  if (value && typeof value === "object") {
+    return `{${Object.entries(value).sort(([a], [b]) => a.localeCompare(b))
+      .map(([key, item]) => `${JSON.stringify(key)}:${canonicalJson(item)}`).join(",")}}`;
+  }
+  return JSON.stringify(value) ?? "undefined";
+}
+
+async function latestUndoAction(supabase: ReturnType<typeof getSupabaseServerClient>, room: Record<string, unknown>) {
+  if (room.status === "closed") return null;
+  try {
+    let query = supabase.from("ppl_clear_stack_score_actions")
+      .select("action_id,after_state,after_status")
+      .eq("room_id", room.id).eq("action_type", "score").is("undone_at", null);
+    query = room.scoring_run_id == null ? query.is("game_run_id", null) : query.eq("game_run_id", room.scoring_run_id);
+    const { data } = await query.order("result_version", { ascending: false }).limit(1).maybeSingle();
+    if (!data || data.after_status !== room.status || canonicalJson(data.after_state) !== canonicalJson(room.game_state)) return null;
+    return String(data.action_id);
+  } catch {
+    // Host recovery remains available if a deployment is being rolled out
+    // before the additive undo-history migration is applied.
+    return null;
+  }
+}
+
+function roomFromRpc(value: Record<string, unknown>) {
+  return value.room && typeof value.room === "object" ? viewRoom(value.room as Record<string, unknown>) : null;
 }
 
 export async function POST(request: Request) {
@@ -44,7 +74,7 @@ export async function POST(request: Request) {
   // The database has an additional unique index to cover concurrent requests.
   async function existingHostRoom() {
     return supabase.from("ppl_clear_stack_rooms")
-      .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at")
+      .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at,scoring_run_id")
       .eq("host_session_id", host)
       .not("spectator_token", "is", null)
       .neq("status", "closed")
@@ -53,7 +83,10 @@ export async function POST(request: Request) {
   }
   const { data: activeRoom, error: lookupError } = await existingHostRoom();
   if (lookupError) return error("Could not check for an existing active game.", 500);
-  if (activeRoom) return NextResponse.json({ room: viewRoom(activeRoom), reused: true }, { headers: noStore });
+  if (activeRoom) {
+    const undoActionId = await latestUndoAction(supabase, activeRoom);
+    return NextResponse.json({ room: { ...viewRoom(activeRoom), undo_action_id: undoActionId }, reused: true }, { headers: noStore });
+  }
 
   const spectatorToken = Array.from(crypto.getRandomValues(new Uint8Array(32)),
     byte => byte.toString(16).padStart(2, "0")).join("");
@@ -63,7 +96,7 @@ export async function POST(request: Request) {
       spectator_token: spectatorToken,
       game_state: initialStackState(distance, stackSize),
     })
-    .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at")
+    .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at,scoring_run_id")
     .single();
   if (dbError?.code === "23505") {
     const { data: concurrent, error: conflictError } = await existingHostRoom();
@@ -82,7 +115,7 @@ export async function GET(request: Request) {
   if (id && !/^[0-9a-f-]{36}$/i.test(id)) return error("Invalid room.", 400);
   const supabase = getSupabaseServerClient();
   let query = supabase.from("ppl_clear_stack_rooms")
-    .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at")
+    .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at,scoring_run_id")
     .eq("host_session_id", host);
   if (id) query = query.eq("id", id);
   else query = query.not("spectator_token", "is", null).neq("status", "closed")
@@ -93,7 +126,15 @@ export async function GET(request: Request) {
     : NextResponse.json({ room: null }, { headers: noStore });
   // Only an owned, explicitly closed room proves that recovery can be cleared.
   if (data.status === "closed") return error("This host session has ended.", 410);
-  return NextResponse.json({ room: viewRoom(data) }, { headers: noStore });
+  const undoActionId = await latestUndoAction(supabase, data);
+  const actionId = new URL(request.url).searchParams.get("action_id");
+  let actionConfirmed: boolean | null = null;
+  if (actionId && /^[0-9a-f-]{36}$/i.test(actionId)) {
+    const { data: action } = await supabase.from("ppl_clear_stack_score_actions")
+      .select("action_id").eq("room_id", data.id).eq("action_id", actionId).maybeSingle();
+    actionConfirmed = !!action;
+  }
+  return NextResponse.json({ room: { ...viewRoom(data), undo_action_id: undoActionId }, action_confirmed: actionConfirmed }, { headers: noStore });
 }
 
 export async function PATCH(request: Request) {
@@ -102,14 +143,24 @@ export async function PATCH(request: Request) {
   const body = await request.json().catch(() => ({}));
   const id = String(body.id ?? "");
   const version = Number(body.version);
-  if (!/^[0-9a-f-]{36}$/i.test(id) || !Number.isInteger(version) || version < 0)
+  const actionId = String(body.action_id ?? "");
+  if (!/^[0-9a-f-]{36}$/i.test(id) || !Number.isInteger(version) || version < 0
+    || (["makes", "undo"].includes(String(body.action)) && !/^[0-9a-f-]{36}$/i.test(actionId)))
     return error("Invalid room or version.", 400);
 
   const supabase = getSupabaseServerClient();
   const { data: room, error: readError } = await supabase.from("ppl_clear_stack_rooms")
-    .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at")
+    .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at,scoring_run_id")
     .eq("id", id).eq("host_session_id", host).maybeSingle();
   if (readError || !room) return error("Host room not found.", 404);
+  if (["makes", "undo"].includes(String(body.action))) {
+    const { data: duplicateAction } = await supabase.from("ppl_clear_stack_score_actions")
+      .select("action_id").eq("room_id", id).eq("action_id", actionId).maybeSingle();
+    if (duplicateAction) {
+      const undoActionId = await latestUndoAction(supabase, room);
+      return NextResponse.json({ room: { ...viewRoom(room), undo_action_id: undoActionId }, duplicate: true }, { headers: noStore });
+    }
+  }
   if (room.status === "closed") {
     if (body.action === "close") return NextResponse.json({ room: viewRoom(room), ended: true, alreadyEnded: true }, { headers: noStore });
     return error("Host room not found.", 404);
@@ -130,6 +181,21 @@ export async function PATCH(request: Request) {
     } else if (body.action === "start") {
       next = startStack(state, body.names, Number(body.distance), Number(body.stackSize), matchBody);
       status = "playing";
+    } else if (body.action === "undo") {
+      const { data: result, error: rpcError } = await supabase.rpc("ppl_clear_stack_undo_score", {
+        p_room_id: id, p_host_session_id: host, p_expected_version: version, p_action_id: actionId,
+      });
+      if (rpcError) return error("Undo could not be saved. Refresh the game before trying again.", 500);
+      const value = result as Record<string, unknown>;
+      const updated = roomFromRpc(value);
+      if (!value.ok) {
+        const undoActionId = updated ? await latestUndoAction(supabase, value.room as Record<string, unknown>) : null;
+        return NextResponse.json({ error: String(value.error ?? "Undo failed."), ...(updated ? { room: { ...updated, undo_action_id: undoActionId } } : {}) },
+          { status: Number(value.status ?? 409), headers: noStore });
+      }
+      if (!updated) return error("Undo response was incomplete. Refresh the game.", 500);
+      const undoActionId = await latestUndoAction(supabase, value.room as Record<string, unknown>);
+      return NextResponse.json({ room: { ...updated, undo_action_id: undoActionId }, duplicate: value.duplicate === true }, { headers: noStore });
     } else if (body.action === "makes") {
       next = scoreStack(state, Number(body.makes));
       status = next.phase === "finished" ? "finished" : "playing";
@@ -148,20 +214,39 @@ export async function PATCH(request: Request) {
     return error(e instanceof Error ? e.message : "Invalid game action.", 400);
   }
 
+  if (body.action === "makes") {
+    const { data: result, error: rpcError } = await supabase.rpc("ppl_clear_stack_commit_score", {
+      p_room_id: id, p_host_session_id: host, p_expected_version: version,
+      p_action_id: actionId, p_next_state: next, p_next_status: status,
+    });
+    if (rpcError) return error("Score could not be confirmed. Refresh the game before scoring again.", 503);
+    const value = result as Record<string, unknown>;
+    const updated = roomFromRpc(value);
+    if (!value.ok) {
+      const undoActionId = updated ? await latestUndoAction(supabase, value.room as Record<string, unknown>) : null;
+      return NextResponse.json({ error: String(value.error ?? "Score could not be saved."), ...(updated ? { room: { ...updated, undo_action_id: undoActionId } } : {}) },
+        { status: Number(value.status ?? 409), headers: noStore });
+    }
+    if (!updated) return error("Score response was incomplete. Refresh the game.", 500);
+    const undoActionId = await latestUndoAction(supabase, value.room as Record<string, unknown>);
+    return NextResponse.json({ room: { ...updated, undo_action_id: undoActionId }, duplicate: value.duplicate === true }, { headers: noStore });
+  }
+
   const { data: updated, error: updateError } = await supabase.from("ppl_clear_stack_rooms")
     .update({
       game_state: next, status,
       distance: next.distance, stack_size: next.stackSize,
+      ...(body.action === "start" || body.action === "replay" ? { scoring_run_id: crypto.randomUUID() } : {}),
       state_version: version + 1, updated_at: new Date().toISOString(),
     })
     .eq("id", id).eq("host_session_id", host).eq("state_version", version)
-    .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at")
+    .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at,scoring_run_id")
     .maybeSingle();
   if (updateError) return error("Failed to save game state. Please retry.", 500);
   if (!updated) {
     if (body.action === "close") {
       const { data: afterRace, error: rereadError } = await supabase.from("ppl_clear_stack_rooms")
-        .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at")
+        .select("id,code,spectator_token,state_version,distance,stack_size,status,game_state,updated_at,scoring_run_id")
         .eq("id", id).eq("host_session_id", host).maybeSingle();
       if (!rereadError && afterRace?.status === "closed") {
         return NextResponse.json({ room: viewRoom(afterRace), ended: true, alreadyEnded: true }, { headers: noStore });

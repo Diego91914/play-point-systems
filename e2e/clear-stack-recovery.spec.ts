@@ -97,6 +97,56 @@ test("two-player Best of 5 setup persists score, set, round and match length acr
   await expect(page.getByText("Tyler", { exact: true })).toBeVisible();
 });
 
+test("Undo Last Score returns to the same scorer and replaces the mistaken points", async ({ page, context }) => {
+  await signIn(context);
+  const hostRoom = { ...room, state_version: 0, game_state: initialStackState(20, 5), undo_action_id: null as string | null };
+  let persisted = hostRoom;
+  const scoreHistory: Array<{ actionId: string; before: StackState }> = [];
+  await page.route("**/api/games/clear-the-stack/room**", async route => {
+    const request = route.request();
+    if (request.method() === "GET") {
+      const actionId = new URL(request.url()).searchParams.get("action_id");
+      return route.fulfill({ json: { room: persisted, action_confirmed: actionId ? false : null } });
+    }
+    if (request.method() === "POST") return route.fulfill({ json: { room: persisted, reused: false } });
+    const body = request.postDataJSON();
+    let state = persisted.game_state;
+    if (body.action === "start") state = startStack(state, body.names, body.distance, body.stackSize, body.match);
+    if (body.action === "makes") {
+      scoreHistory.push({ actionId: body.action_id, before: structuredClone(state) });
+      state = scoreStack(state, body.makes);
+      persisted = { ...persisted, undo_action_id: body.action_id };
+    }
+    if (body.action === "undo") {
+      const previous = scoreHistory.pop();
+      if (previous) state = previous.before;
+      persisted = { ...persisted, undo_action_id: scoreHistory.at(-1)?.actionId ?? null };
+    }
+    persisted = { ...persisted, state_version: persisted.state_version + 1, game_state: state };
+    return route.fulfill({ json: { room: persisted } });
+  });
+  await page.route("**/api/games/clear-the-stack/leaderboard**", route => route.fulfill({ json: { entries: [] } }));
+  await page.goto("/games/clear-the-stack");
+  await page.getByRole("button", { name: "2", exact: true }).click();
+  await page.getByLabel("Host", { exact: false }).fill("Chan");
+  await page.getByPlaceholder("Player 2 name").fill("Gary");
+  await page.getByRole("button", { name: "START NEW GAME", exact: true }).click();
+  await expect(page.getByText("Chan", { exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: "2", exact: true }).click(); // Mistaken result: +4
+  await expect(page.getByText("Gary", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "UNDO LAST SCORE", exact: true }).click();
+  await expect(page.getByText("Last score undone.")).toBeVisible();
+  await expect(page.getByText("Chan", { exact: true })).toBeVisible();
+  await expect(page.getByText("Cumulative match points: 0 · Current set: 0 · Sets won: 0 · Maximum per set: 10")).toBeVisible();
+
+  await page.getByRole("button", { name: "1", exact: true }).click(); // Corrected result: +2
+  expect(persisted.game_state.players[0].score).toBe(2);
+  expect(persisted.game_state.players[1].score).toBe(0);
+  expect(persisted.game_state.players[0].remaining).toBe(4);
+  await expect(page.getByText("Gary", { exact: true })).toBeVisible();
+});
+
 test("multiplayer setup exposes configurable sets and cumulative-point ranking", async ({ page, context }) => {
   await signIn(context);
   await page.route("**/api/games/clear-the-stack/room**", route => route.fulfill({ json: { room: null } }));
