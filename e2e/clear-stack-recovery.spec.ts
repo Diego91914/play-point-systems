@@ -66,6 +66,12 @@ test("cancel keeps the recovered game intact and confirmed End Game closes only 
 
 test("two-player Best of 5 setup persists score, set, round and match length across refresh", async ({ page, context }) => {
   await signIn(context);
+  await page.addInitScript(() => {
+    if (sessionStorage.getItem("cts-clean-setup-once")) return;
+    localStorage.removeItem("pps-clear-stack-host-draft");
+    localStorage.removeItem("pps-clear-stack-host-room");
+    sessionStorage.setItem("cts-clean-setup-once", "1");
+  });
   const hostRoom = { ...room, state_version: 0, game_state: initialStackState(20, 5) };
   let persisted: typeof hostRoom = hostRoom;
   await page.route("**/api/games/clear-the-stack/room**", async route => {
