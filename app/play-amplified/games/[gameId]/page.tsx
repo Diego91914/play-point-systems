@@ -25,7 +25,6 @@ export default async function GameExperiencePage({ params }: { params: Promise<{
   const game = getGame(gameId);
   if (!game) notFound();
   const demo = getGameExperienceDemo(game);
-  const external = game.launchHref.startsWith("http");
   const statusLabel = game.status === "live" ? "Finished & playable" : "Playable preview";
 
   return (
@@ -50,7 +49,6 @@ export default async function GameExperiencePage({ params }: { params: Promise<{
 
           <section className="pb-16 sm:pb-20"><GameExperienceDemo gameId={game.id} title={game.title} launchHref={game.launchHref} /></section>
 
-          <section className="pb-20 sm:pb-24"><div className="overflow-hidden rounded-[34px] border border-cyan-200/18 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.12),transparent_42%),rgba(255,255,255,0.035)] p-7 sm:p-10"><div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between"><div className="max-w-3xl"><div className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-100/55">Know the game before you start</div><h2 className="mt-3 text-4xl font-black tracking-[-0.04em] text-white sm:text-5xl">Ready to put it on the table?</h2><p className="mt-4 text-sm leading-7 text-white/58 sm:text-base">You now know the flow, the decisions players make, and what creates the payoff. Open the full game when your group is ready to play.</p></div>{external ? <a href={game.launchHref} target="_blank" rel="noreferrer" className="inline-flex shrink-0 items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/14 px-7 py-4 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/20">PLAY {game.title.toUpperCase()} →</a> : <Link prefetch={false} href={game.launchHref} className="inline-flex shrink-0 items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/14 px-7 py-4 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/20">PLAY {game.title.toUpperCase()} →</Link>}</div></div></section>
         </main>
       </div>
     </div>

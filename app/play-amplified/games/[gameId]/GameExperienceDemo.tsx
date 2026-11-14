@@ -18,6 +18,7 @@ export function GameExperienceDemo({ gameId, title, launchHref }: { gameId: stri
 
   const demo = getGameExperienceDemo(game);
   const external = launchHref.startsWith("http");
+  const launchTitle = title.replace(/^Play\s+/i, "").toUpperCase();
 
   return (
     <div data-game-experience-demo={gameId} className="overflow-hidden rounded-[34px] border border-white/10 bg-white/[0.035] p-6 shadow-2xl sm:p-8">
@@ -61,9 +62,9 @@ export function GameExperienceDemo({ gameId, title, launchHref }: { gameId: stri
           </div>
         </div>
         {external ? (
-          <GuardedActionLink href={launchHref} className="inline-flex shrink-0 items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">Open full game →</GuardedActionLink>
+          <GuardedActionLink href={launchHref} className="inline-flex shrink-0 items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">PLAY {launchTitle} →</GuardedActionLink>
         ) : (
-          <GameLaunchLink game={game} className="inline-flex shrink-0 items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">Open full game →</GameLaunchLink>
+          <GameLaunchLink game={game} className="inline-flex shrink-0 items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">PLAY {launchTitle} →</GameLaunchLink>
         )}
       </div>
     </div>
