@@ -136,7 +136,8 @@ test("browsing all game details preserves sessions and never loads or mutates ga
     await expect(experience.locator("[data-experience-step]").first().getByRole("heading", { level: 3 })).toBeVisible();
     await expect(page.locator("[data-game-preview]")).toHaveCount(0);
     await expect(page.locator("iframe, object, embed")).toHaveCount(0);
-    const launch = experience.getByRole("link", { name: `PLAY ${game!.title.toUpperCase()} →` });
+    const launchTitle = game!.title.replace(/^Play\s+/i, "").toUpperCase();
+    const launch = experience.getByRole("link", { name: `PLAY ${launchTitle} →` });
     await expect(launch).toHaveAttribute("href", game.launchHref);
     await expect(experience.getByRole("link")).toHaveCount(1);
     await expect(page.getByRole("heading", { name: "Ready to put it on the table?" })).toHaveCount(0);
