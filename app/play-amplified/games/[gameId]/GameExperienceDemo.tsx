@@ -61,9 +61,9 @@ export function GameExperienceDemo({ gameId, title, launchHref }: { gameId: stri
           </div>
         </div>
         {external ? (
-          <GuardedActionLink href={launchHref} className="inline-flex shrink-0 items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">Open full game →</GuardedActionLink>
+          <GuardedActionLink href={launchHref} className="inline-flex shrink-0 items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">PLAY {title.toUpperCase()} →</GuardedActionLink>
         ) : (
-          <GameLaunchLink game={game} className="inline-flex shrink-0 items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">Open full game →</GameLaunchLink>
+          <GameLaunchLink game={game} className="inline-flex shrink-0 items-center justify-center rounded-2xl border border-cyan-200/30 bg-cyan-300/12 px-6 py-3.5 text-sm font-black text-cyan-50 transition hover:-translate-y-0.5 hover:bg-cyan-300/18">PLAY {title.toUpperCase()} →</GameLaunchLink>
         )}
       </div>
     </div>
