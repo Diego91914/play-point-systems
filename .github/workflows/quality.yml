@@ -55,7 +55,7 @@ jobs:
         run: npm run test:e2e -- --project=desktop --project=mobile-320 --project=mobile-390
 
       - name: iPhone Safari active-session regression
-        run: npx playwright test e2e/active-game-end.spec.ts e2e/play-amplified-category-images.spec.ts --project=mobile-safari-webkit
+        run: npx playwright test e2e/active-game-end.spec.ts e2e/play-amplified-category-images.spec.ts e2e/on-my-list-visual.spec.ts --project=mobile-safari-webkit
 
       - name: Upload browser-test artifacts
         if: failure()
