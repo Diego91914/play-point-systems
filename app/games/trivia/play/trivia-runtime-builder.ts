@@ -162,6 +162,42 @@ function getCategoryOrThrow(category: string): RuntimeSourceCatalogCategory {
   return foundCategory;
 }
 
+function getRecordTopicId(category: RuntimeSourceCatalogCategory, record: RuntimeSourceCatalogRecord): string | null {
+  if (record.topic) return record.topic;
+  if (category.category !== "bible") return null;
+  // Only broad Bible classifications are safe to reveal before the question.
+  if (record.tags.includes("old-testament")) return "old-testament";
+  if (record.tags.includes("new-testament")) return "new-testament";
+  return null;
+}
+
+function getRecordTopicLabel(category: RuntimeSourceCatalogCategory, record: RuntimeSourceCatalogRecord): string {
+  const topicId = getRecordTopicId(category, record);
+  if (!topicId) return category.label;
+  if (topicId === "old-testament") return "Old Testament";
+  if (topicId === "new-testament") return "New Testament";
+  return category.topics?.find((topic) => topic.topic === topicId)?.label
+    ?? topicId.split("-").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(" ");
+}
+
+function getBibleTopicSummaries(category: RuntimeSourceCatalogCategory): RuntimeCatalogTopicSummary[] {
+  return ([
+    { topic: "old-testament", label: "Old Testament" },
+    { topic: "new-testament", label: "New Testament" },
+  ] as const).map(({ topic, label }) => {
+    const records = category.records.filter((record) => getRecordTopicId(category, record) === topic);
+    const countsByDifficulty: Record<RuntimeDifficulty, number> = { easy: 0, medium: 0, hard: 0, expert: 0 };
+    records.forEach((record) => { countsByDifficulty[record.difficulty] += 1; });
+    return {
+      topic,
+      label,
+      totalGoldTriviaCount: records.length,
+      countsByDifficulty,
+      isPlayable: records.length > 0,
+    };
+  }).filter((topic) => topic.isPlayable);
+}
+
 function getFilteredRecords(
   category: RuntimeSourceCatalogCategory,
   difficultyFilter: RuntimeDifficultyFilter,
@@ -170,7 +206,7 @@ function getFilteredRecords(
   const selectedTopics = new Set(topicIds);
 
   return [...category.records]
-    .filter((record) => selectedTopics.size === 0 || Boolean(record.topic && selectedTopics.has(record.topic)))
+    .filter((record) => selectedTopics.size === 0 || selectedTopics.has(getRecordTopicId(category, record) ?? ""))
     .filter((record) => difficultyFilter === "mixed" || record.difficulty === difficultyFilter)
     .sort((left, right) => {
       const difficultyComparison = compareDifficulty(left.difficulty, right.difficulty);
@@ -205,7 +241,7 @@ export function summarizeRuntimeCatalogCategory(
     countsByDifficulty: category.countsByDifficulty,
     availableDifficultyFilters,
     isPlayable: category.totalGoldTriviaCount > 0,
-    topics: category.topics ?? [],
+    topics: category.category === "bible" ? getBibleTopicSummaries(category) : (category.topics ?? []),
   };
 }
 
@@ -337,6 +373,7 @@ export function buildRuntimeDeckFromCategory(
       cards.push({
         sourceId: record.id,
         category: record.category,
+        topicLabel: getRecordTopicLabel(category, record),
         difficulty: record.difficulty,
         prompt: record.question,
         choices: buildChoices(record, random),

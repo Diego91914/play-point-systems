@@ -27,6 +27,9 @@ describe("live trivia question countdown", () => {
     expect(hostCountdown.questionOpenedAtMs).toBe(Date.now() + 3_000);
     expect(hostCountdown.currentCard).toBeNull();
     expect(playerCountdown.currentCard).toBeNull();
+    expect(hostCountdown.upcomingTopicLabel).toBe(hostCountdown.deck.cards[0].topicLabel);
+    expect(playerCountdown.upcomingTopicLabel).toBe(hostCountdown.upcomingTopicLabel);
+    expect(playerCountdown.upcomingTopicLabel).toBeTruthy();
     expect(() => submitTriviaLiveAnswer(room.sessionId, player.playerId, "A", player.playerToken)).toThrow("not currently accepting answers");
 
     vi.advanceTimersByTime(2_999);
@@ -36,6 +39,7 @@ describe("live trivia question countdown", () => {
     const opened = buildTriviaLiveHostSnapshot(room.sessionId, "https://example.com", room.hostToken);
     const correctSlot = opened.currentCard!.choices.find((choice) => choice.isCorrect)!.slot;
     expect(opened.phase).toBe("question-open");
+    expect(opened.currentCard?.topicLabel).toBe(hostCountdown.upcomingTopicLabel);
 
     vi.advanceTimersByTime(1_000);
     submitTriviaLiveAnswer(room.sessionId, player.playerId, correctSlot, player.playerToken);
@@ -47,5 +51,6 @@ describe("live trivia question countdown", () => {
     const nextCountdown = buildTriviaLiveHostSnapshot(room.sessionId, "https://example.com", room.hostToken);
     expect(nextCountdown.phase).toBe("question-countdown");
     expect(nextCountdown.currentCard).toBeNull();
+    expect(nextCountdown.upcomingTopicLabel).toBe(nextCountdown.deck.cards[1].topicLabel);
   });
 });

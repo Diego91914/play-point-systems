@@ -75,6 +75,7 @@ type HostSnapshot = {
   cardIndex: number;
   deck: RuntimeDeck;
   currentCard: RuntimeDeckCard | null;
+  upcomingTopicLabel?: string | null;
   questionOpenedAtMs: number | null;
   questionTimerSeconds: number | null;
   pacingMode: TriviaPacingMode;
@@ -834,6 +835,7 @@ export function TriviaLiveBuilderExperience() {
                 {snapshot.phase === "question-countdown" ? (
                   <div className="rounded-[28px] border border-cyan-300/25 bg-[linear-gradient(180deg,rgba(45,139,190,0.24),rgba(255,255,255,0.03))] p-7 text-center sm:p-10">
                     <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-cyan-100/70">Next question</div>
+                    <div className="mt-4 text-xl font-black text-cyan-100">Topic: {snapshot.upcomingTopicLabel ?? snapshot.deck.categoryLabel}</div>
                     <div className="mt-5 text-7xl font-black text-white sm:text-8xl">{questionStartCountdown || "Go"}</div>
                     <h3 className="mt-4 text-2xl font-black text-white">Question begins for everyone together</h3>
                     <p className="mt-3 text-sm text-white/64">Prompts and answer choices stay hidden until the countdown ends.</p>
@@ -847,6 +849,7 @@ export function TriviaLiveBuilderExperience() {
                         <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/50">
                           {currentCard.roundLabel} | Question {currentCard.questionNumberInRound} of {currentCard.totalQuestionsInRound}
                         </div>
+                        <div className="mt-3 text-sm font-black uppercase tracking-[0.16em] text-cyan-200">Topic: {currentCard.topicLabel ?? snapshot.deck.categoryLabel}</div>
                         <h3 className="mt-3 text-3xl font-black text-white sm:text-4xl">{currentCard.prompt}</h3>
                         <p className="mt-4 max-w-2xl text-sm leading-7 text-white/70">{currentCard.roundIntro}</p>
                       </div>

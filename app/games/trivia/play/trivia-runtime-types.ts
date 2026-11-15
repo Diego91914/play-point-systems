@@ -86,6 +86,8 @@ export interface RuntimeDeckRound {
 export interface RuntimeDeckCard {
   sourceId: string;
   category: string;
+  /** Broad, safe-to-preview topic; never the answer or raw question tags. */
+  topicLabel?: string;
   difficulty: RuntimeDifficulty;
   prompt: string;
   choices: RuntimeChoice[];
@@ -105,6 +107,7 @@ export interface RuntimeDeckCard {
 
 export interface RuntimePublicDeckCard {
   category: string;
+  topicLabel?: string;
   difficulty: RuntimeDifficulty;
   prompt: string;
   choices: RuntimePublicChoice[];
