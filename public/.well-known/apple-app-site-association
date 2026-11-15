@@ -5,8 +5,15 @@
       {
         "appID": "VNZQ78Z2VB.com.playamplified.app",
         "paths": [
+          "/account",
+          "/account/*",
+          "/games",
           "/games/*",
-          "/play-amplified*",
+          "/play",
+          "/play/*",
+          "/play-amplified",
+          "/play-amplified/*",
+          "/shot-caddy",
           "/shot-caddy/*"
         ]
       }

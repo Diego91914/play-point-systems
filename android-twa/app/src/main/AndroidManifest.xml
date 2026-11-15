@@ -10,7 +10,7 @@
             android:exported="true">
             <meta-data
                 android:name="android.support.customtabs.trusted.DEFAULT_URL"
-                android:value="https://playamplified.com/play-amplified" />
+                android:value="https://www.playamplified.com/play-amplified" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -19,7 +19,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="playamplified.com" />
+                <data android:scheme="https" android:host="www.playamplified.com" />
             </intent-filter>
         </activity>
     </application>
