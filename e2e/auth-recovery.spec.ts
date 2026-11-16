@@ -28,9 +28,11 @@ test("standalone app with retained Google session restores host cookie and table
     await context.addCookies([{ name: "pps_games_session", value: token, url: "http://127.0.0.1:3001", httpOnly: true, sameSite: "Lax" }]);
     return route.fulfill({ json: { success: true } });
   });
-  await page.route("**/api/games/live-craps", route => {
+  await page.route("**/api/games/live-craps", async route => {
     creates++;
-    if (!route.request().headers().cookie?.includes("pps_games_session=")) return route.fulfill({ status: 401, json: { error: "Sign in to host Live Craps." } });
+    if (creates === 1) return route.fulfill({ status: 401, json: { error: "Sign in to host Live Craps." } });
+    expect(exchanges).toBe(1);
+    expect((await context.cookies()).find(cookie => cookie.name === "pps_games_session")?.value).toBe(token);
     return route.fulfill({ status: 201, json: room });
   });
   await page.route("**/api/games/live-craps/ABC234?**", route => {
@@ -42,6 +44,9 @@ test("standalone app with retained Google session restores host cookie and table
   await page.getByRole("button", { name: "CREATE TABLE", exact: true }).click();
   await expect(page.getByText("LIVE CRAPS · ABC234", { exact: true })).toBeVisible();
   expect(exchanges).toBe(1); expect(creates).toBe(2);
+  // WebKit omits Cookie from intercepted fetch headers. Verify it over a real
+  // request to the existing server-side privileged-session check instead.
+  expect(await page.evaluate(async () => (await (await fetch("/api/games/account/shot-caddy-access")).json()).authorized)).toBe(true);
   await page.reload();
   await expect(page.getByText("LIVE CRAPS · ABC234", { exact: true })).toBeVisible();
   expect(creates).toBe(2);
