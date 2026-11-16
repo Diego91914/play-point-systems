@@ -26,7 +26,7 @@ export default async function AccountPage({
     cookieStore.get(GAMES_SESSION_COOKIE)?.value,
   );
 
-  if (claims) {
+  if (claims && claims.role !== "builder") {
     redirect(destination);
   }
 

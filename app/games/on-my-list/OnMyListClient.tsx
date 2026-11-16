@@ -1,4 +1,6 @@
 "use client";
+
+import { gamesHostFetch } from "@/lib/play-point-core/games-host-fetch";
 import { saveBrowserGameSession } from "../_components/browser-session-store";
 import { useCallback,useEffect,useMemo,useState } from "react";
 import { RoomJoinPanel } from "@/app/games/_components/RoomJoinPanel";
@@ -13,7 +15,7 @@ const KEY="pps-on-my-list-session",MIN=5,MAX=10;
 
 export function OnMyListClient(){
 const[game,setGame]=useState<Game|null>(null),[session,setSession]=useState<Session|null>(null),[name,setName]=useState(""),[code,setCode]=useState(""),[draft,setDraft]=useState<string[]>(Array(MAX).fill("")),[busy,setBusy]=useState(false),[error,setError]=useState("");
-const request=useCallback(async(url:string,init?:RequestInit)=>{const r=await fetch(url,{...init,cache:"no-store",headers:{"content-type":"application/json",...(init?.headers||{})}});const j=await r.json();if(!r.ok)throw new Error(j.error||"Something went wrong.");return j},[]);
+const request=useCallback(async(url:string,init?:RequestInit)=>{const r=await gamesHostFetch(url,{...init,cache:"no-store",headers:{"content-type":"application/json",...(init?.headers||{})}});const j=await r.json();if(!r.ok)throw new Error(j.error||"Something went wrong.");return j},[]);
 useEffect(()=>{const q=new URLSearchParams(location.search).get("code");if(q)setCode(q.toUpperCase());try{const raw=localStorage.getItem(KEY);if(raw)setSession(JSON.parse(raw))}catch{}},[]);
 const refresh=useCallback(async()=>{if(!session)return;try{const j=await request(`/api/games/on-my-list/${session.code}?playerId=${encodeURIComponent(session.playerId)}&token=${encodeURIComponent(session.token)}`);setGame(j.state)}catch{}},[request,session]);
 useEffect(()=>{if(!session)return;refresh();const t=setInterval(refresh,1000);return()=>clearInterval(t)},[session,refresh]);

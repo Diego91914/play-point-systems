@@ -1,4 +1,6 @@
 "use client";
+
+import { gamesHostFetch } from "@/lib/play-point-core/games-host-fetch";
 import { saveBrowserGameSession } from "../_components/browser-session-store";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -12,7 +14,7 @@ const KEY="pps-inside-man-session";
 
 export function InsideManClient(){
   const[game,setGame]=useState<Game|null>(null),[session,setSession]=useState<Session|null>(null),[name,setName]=useState(""),[code,setCode]=useState(""),[selected,setSelected]=useState<number[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState("");
-  const request=useCallback(async(url:string,init?:RequestInit)=>{const r=await fetch(url,{...init,cache:"no-store",headers:{"content-type":"application/json",...(init?.headers||{})}});const j=await r.json();if(!r.ok)throw new Error(j.error||"Something went wrong.");return j},[]);
+  const request=useCallback(async(url:string,init?:RequestInit)=>{const r=await gamesHostFetch(url,{...init,cache:"no-store",headers:{"content-type":"application/json",...(init?.headers||{})}});const j=await r.json();if(!r.ok)throw new Error(j.error||"Something went wrong.");return j},[]);
   const store=(s:Session,g:Game)=>{saveBrowserGameSession(KEY, s);setSession(s);setGame(g)};
   useEffect(()=>{const q=new URLSearchParams(location.search).get("code");if(q)setCode(q.toUpperCase());try{const raw=localStorage.getItem(KEY);if(raw)setSession(JSON.parse(raw))}catch{}},[]);
   const refresh=useCallback(async()=>{if(!session)return;try{const j=await request(`/api/games/inside-man/${session.code}?playerId=${encodeURIComponent(session.playerId)}&token=${encodeURIComponent(session.token)}`);setGame(j.state)}catch(e){setError(e instanceof Error?e.message:"Unable to refresh.")}},[request,session]);
