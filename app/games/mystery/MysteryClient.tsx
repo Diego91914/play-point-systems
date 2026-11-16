@@ -1,5 +1,7 @@
 "use client";
 
+import { gamesHostFetch } from "@/lib/play-point-core/games-host-fetch";
+
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { RoomJoinPanel } from "@/app/games/_components/RoomJoinPanel";
 import { saveMysterySession, useMysterySession, type MysterySession } from "./useMysterySession";
@@ -92,7 +94,7 @@ export function MysteryClient() {
   const refreshInFlight = useRef(false);
 
   const request = useCallback(async (url: string, init?: RequestInit) => {
-    const response = await fetch(url, {
+    const response = await gamesHostFetch(url, {
       ...init,
       cache: "no-store",
       headers: { "content-type": "application/json", ...(init?.headers ?? {}) },

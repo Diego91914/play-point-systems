@@ -1,5 +1,7 @@
 "use client";
 
+import { gamesHostFetch } from "@/lib/play-point-core/games-host-fetch";
+
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { RoomJoinPanel } from "@/app/games/_components/RoomJoinPanel";
 
@@ -53,7 +55,7 @@ export function AllAboutYouClient() {
   const [error, setError] = useState("");
 
   const request = useCallback(async (url: string, init?: RequestInit) => {
-    const response = await fetch(url, { ...init, cache: "no-store", headers: { "content-type": "application/json", ...(init?.headers || {}) } });
+    const response = await gamesHostFetch(url, { ...init, cache: "no-store", headers: { "content-type": "application/json", ...(init?.headers || {}) } });
     const json = await response.json();
     if (!response.ok) throw new Error(json.error || "Something went wrong.");
     return json;

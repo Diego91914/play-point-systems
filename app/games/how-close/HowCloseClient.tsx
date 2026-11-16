@@ -1,4 +1,6 @@
 "use client";
+
+import { gamesHostFetch } from "@/lib/play-point-core/games-host-fetch";
 import { saveBrowserGameSession } from "../_components/browser-session-store";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -38,7 +40,7 @@ export function HowCloseClient() {
   const [error, setError] = useState("");
 
   const request = useCallback(async (url: string, init?: RequestInit) => {
-    const response = await fetch(url, {
+    const response = await gamesHostFetch(url, {
       ...init,
       cache: "no-store",
       headers: { "content-type": "application/json", ...(init?.headers || {}) },

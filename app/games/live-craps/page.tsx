@@ -1,5 +1,7 @@
 "use client";
 
+import { gamesHostFetch } from "@/lib/play-point-core/games-host-fetch";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { projectStoredLiveCrapsRoom } from "@/lib/play-point-core/live-craps-room-store";
@@ -17,13 +19,31 @@ const props:{kind:PropKind;label:string;divisor?:number}[]=[
 ];
 
 export default function LiveCrapsPage(){
- const [name,setName]=useState(""); const [code,setCode]=useState(""); const [mode,setMode]=useState<"physical"|"virtual">("physical"); const [session,setSession]=useState<Session|null>(null); const sessionRef=useRef<Session|null>(null); const [error,setError]=useState(""); const [busy,setBusy]=useState(false); const [die1,setDie1]=useState(1); const [die2,setDie2]=useState(1); const [chip,setChip]=useState(10); const [lastBet,setLastBet]=useState<BetRequest|null>(null); const [pullHolding,setPullHolding]=useState<number|null>(null); const [pullArmed,setPullArmed]=useState<number|null>(null); const [exoticsOpen,setExoticsOpen]=useState(false); const pullHoldTimer=useRef<ReturnType<typeof setTimeout>|null>(null); const pullArmedRef=useRef<number|null>(null); const suppressPlaceTap=useRef(false);
+ const [name,setName]=useState(""); const [code,setCode]=useState(""); const [mode,setMode]=useState<"physical"|"virtual">("physical"); const [session,setSession]=useState<Session|null>(null); const sessionRef=useRef<Session|null>(null); const [error,setError]=useState(""); const [busy,setBusy]=useState(true); const [die1,setDie1]=useState(1); const [die2,setDie2]=useState(1); const [chip,setChip]=useState(10); const [lastBet,setLastBet]=useState<BetRequest|null>(null); const [pullHolding,setPullHolding]=useState<number|null>(null); const [pullArmed,setPullArmed]=useState<number|null>(null); const [exoticsOpen,setExoticsOpen]=useState(false); const pullHoldTimer=useRef<ReturnType<typeof setTimeout>|null>(null); const pullArmedRef=useRef<number|null>(null); const suppressPlaceTap=useRef(false);
  useEffect(()=>{sessionRef.current=session},[session]);
+ useEffect(()=>{
+  let cancelled=false;
+  async function restore(){
+   try{
+    const raw=window.localStorage.getItem("pps-live-craps-session");
+    if(!raw)return;
+    const saved=JSON.parse(raw);
+    const invite=new URLSearchParams(window.location.search).get("code")?.toUpperCase();
+    if(typeof saved.code!=="string"||!/^[A-Z0-9]{6}$/.test(saved.code)||typeof saved.playerId!=="string"||typeof saved.token!=="string"||(invite&&invite!==saved.code))return;
+    const q=new URLSearchParams({playerId:saved.playerId,token:saved.token});
+    const r=await fetch(`/api/games/live-craps/${saved.code}?${q}`,{cache:"no-store"});
+    const j=await r.json();
+    if(!r.ok){if(r.status===401||r.status===403||r.status===404)window.localStorage.removeItem("pps-live-craps-session");return;}
+    if(!cancelled){setSession({...saved,state:j.state});setCode(saved.code);}
+   }catch{ /* Keep credentials so a network interruption can be retried on refresh. */ }
+  }
+  void restore().finally(()=>{if(!cancelled)setBusy(false)});return()=>{cancelled=true};
+ },[]);
  useEffect(()=>()=>{if(pullHoldTimer.current)clearTimeout(pullHoldTimer.current)},[]);
  useEffect(()=>{if(!session)return;let cancelled=false;let inFlight=false;const sync=async()=>{const current=sessionRef.current;if(cancelled||inFlight||!current)return;inFlight=true;try{const q=new URLSearchParams({playerId:current.playerId,token:current.token});const r=await fetch(`/api/games/live-craps/${current.code}?${q.toString()}`,{cache:"no-store"});const j=await r.json();if(!r.ok)throw new Error(j.error);if(!cancelled)setSession(prev=>prev&&prev.code===current.code&&prev.playerId===current.playerId?{...prev,state:j.state}:prev);}catch(e){if(!cancelled)setError(e instanceof Error?e.message:"Unable to synchronize table.");}finally{inFlight=false}};sync();const timer=window.setInterval(sync,750);return()=>{cancelled=true;window.clearInterval(timer)}},[session?.code,session?.playerId,session?.token]);
  const state=session?.state; const me=state?.me; const shooter=state?.shooterId===me?.id; const phase=state?.actionClock?.phase; const title=useMemo(()=>state?.point?`POINT ${state.point}`:"COME OUT",[state?.point]);
  const bettingOpen=state?.phase==="playing"&&phase==="post-roll-betting"; const pointOn=state?.point!=null; const reveal=state?.virtualReveal; const myNewBetCount=Number(state?.myNewBetCount??0);
- async function enter(action:"create"|"join"){setBusy(true);setError("");try{const r=await fetch("/api/games/live-craps",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({action,name,code,diceMode:mode})});const j=await r.json();if(!r.ok)throw new Error(j.error);setSession(j);setCode(j.code);setLastBet(null);}catch(e){setError(e instanceof Error?e.message:"Unable to enter table.");}finally{setBusy(false)}}
+ async function enter(action:"create"|"join"){setBusy(true);setError("");try{const r=await gamesHostFetch("/api/games/live-craps",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({action,name,code,diceMode:mode})});const j=await r.json();if(!r.ok)throw new Error(j.error);setSession(j);try{window.localStorage.setItem("pps-live-craps-session",JSON.stringify({code:j.code,playerId:j.playerId,token:j.token}))}catch{}setCode(j.code);setLastBet(null);}catch(e){setError(e instanceof Error?e.message:"Unable to enter table.");}finally{setBusy(false)}}
  async function act(action:string,payload:Record<string, unknown>={}){const current=sessionRef.current;if(!current)return false;setBusy(true);setError("");try{const r=await fetch(`/api/games/live-craps/${current.code}`,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({playerId:current.playerId,token:current.token,commandId:crypto.randomUUID(),action,payload})});const j=await r.json();if(!r.ok)throw new Error(j.error);setSession(prev=>prev?{...prev,state:j.state}:prev);return true;}catch(e){setError(e instanceof Error?e.message:"Table action failed.");return false;}finally{setBusy(false)}}
  function friendlyAmount(kind:string,number?:number){if(kind!=="place"||!number)return chip;if(number===6||number===8)return Math.max(6,Math.round(chip/6)*6);return Math.max(5,Math.round(chip/5)*5)}
  function divisibleChip(divisor=1){return Math.max(divisor,Math.round(chip/divisor)*divisor)}

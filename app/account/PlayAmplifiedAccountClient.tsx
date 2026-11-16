@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getPlayPointBrowserSupabaseClient } from "@/lib/play-point-core/play-point-browser-supabase";
 import { getSafeGamesReturnPath } from "@/lib/play-point-core/safe-games-return-path";
 
@@ -9,7 +9,6 @@ export function PlayAmplifiedAccountClient({ returnTo }: { returnTo: string }) {
     () => getSafeGamesReturnPath(returnTo, "/games"),
     [returnTo],
   );
-  const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(true);
   const [message, setMessage] = useState("Checking your Play Amplified session…");
 
@@ -17,10 +16,8 @@ export function PlayAmplifiedAccountClient({ returnTo }: { returnTo: string }) {
     const supabase = getPlayPointBrowserSupabaseClient();
     let cancelled = false;
 
-    async function finishAccountSession() {
-      const { data } = await supabase.auth.getSession();
+    async function finishAccountSession(session: import("@supabase/supabase-js").Session | null) {
       if (cancelled) return;
-      const session = data.session;
       if (!session) {
         setBusy(false);
         setMessage("Sign in to your Play Amplified account.");
@@ -35,6 +32,7 @@ export function PlayAmplifiedAccountClient({ returnTo }: { returnTo: string }) {
         cache: "no-store",
       });
       const payload = await response.json().catch(() => ({}));
+      if (cancelled) return;
       if (!response.ok) {
         setBusy(false);
         setMessage(
@@ -48,9 +46,13 @@ export function PlayAmplifiedAccountClient({ returnTo }: { returnTo: string }) {
       window.location.replace(destination);
     }
 
-    void finishAccountSession();
+    function recoveryFailed() {
+      if (!cancelled) { setBusy(false); setMessage("Unable to restore your account. Please sign in with Google."); }
+    }
+    void supabase.auth.getSession().then(({ data }) => finishAccountSession(data.session)).catch(recoveryFailed);
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) void finishAccountSession();
+      // Do not call getSession inside the auth callback: it holds the auth lock.
+      if (session) void finishAccountSession(session).catch(recoveryFailed);
     });
 
     return () => {
@@ -59,28 +61,21 @@ export function PlayAmplifiedAccountClient({ returnTo }: { returnTo: string }) {
     };
   }, [destination]);
 
-  async function sendMagicLink(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const normalizedEmail = email.trim().toLowerCase();
-    if (!normalizedEmail) {
-      setMessage("Enter your email address.");
-      return;
-    }
-
+  async function signInGoogle() {
     setBusy(true);
-    setMessage("Sending your Play Amplified sign-in link…");
-    const supabase = getPlayPointBrowserSupabaseClient();
-    const redirectTo = `${window.location.origin}/account?returnTo=${encodeURIComponent(destination)}`;
-    const { error } = await supabase.auth.signInWithOtp({
-      email: normalizedEmail,
-      options: { emailRedirectTo: redirectTo },
-    });
-    setBusy(false);
-    setMessage(
-      error
-        ? error.message
-        : "Check your email and open the Play Amplified sign-in link.",
-    );
+    setMessage("Opening Google sign-in…");
+    try {
+      const redirectTo = new URL("/account", window.location.origin);
+      redirectTo.searchParams.set("returnTo", destination);
+      const { error } = await getPlayPointBrowserSupabaseClient().auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: redirectTo.toString() },
+      });
+      if (error) throw error;
+    } catch (error) {
+      setBusy(false);
+      setMessage(error instanceof Error ? error.message : "Unable to open Google sign-in.");
+    }
   }
 
   return (
@@ -94,27 +89,14 @@ export function PlayAmplifiedAccountClient({ returnTo }: { returnTo: string }) {
           Your Play Amplified account controls your game ownership across the website, PWA, and native app. Builder access is separate and never requires email verification.
         </p>
 
-        <form onSubmit={sendMagicLink} className="mt-7 grid gap-4">
-          <label className="grid gap-2 text-sm font-bold text-white/78">
-            Email
-            <input
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              autoComplete="email"
-              disabled={busy}
-              className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none focus:border-cyan-300/40 disabled:opacity-50"
-              placeholder="you@example.com"
-            />
-          </label>
-          <button
-            type="submit"
-            disabled={busy}
-            className="rounded-2xl bg-cyan-300 px-5 py-4 text-base font-black text-slate-950 transition hover:brightness-105 disabled:opacity-50"
-          >
-            {busy ? "Checking…" : "Email me a sign-in link"}
-          </button>
-        </form>
+        <button
+          type="button"
+          onClick={() => void signInGoogle()}
+          disabled={busy}
+          className="mt-7 w-full rounded-2xl bg-cyan-300 px-5 py-4 text-base font-black text-slate-950 transition hover:brightness-105 disabled:opacity-50"
+        >
+          {busy ? "Connecting…" : "Continue with Google"}
+        </button>
 
         <div className="mt-5 rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-sm leading-6 text-white/60">
           {message}

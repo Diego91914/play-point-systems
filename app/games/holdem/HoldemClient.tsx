@@ -1,4 +1,6 @@
 "use client";
+
+import { gamesHostFetch } from "@/lib/play-point-core/games-host-fetch";
 import { saveBrowserGameSession } from "../_components/browser-session-store";
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -201,7 +203,7 @@ export function HoldemClient() {
     setBusy(true);
     setError("");
     try {
-      const response = await fetch("/api/games/holdem", {
+      const response = await gamesHostFetch("/api/games/holdem", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(
