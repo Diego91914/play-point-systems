@@ -6,6 +6,7 @@ import { configureManagedState } from "@/lib/play-point-core/holdem-management";
 import { releasePlayAmplifiedSession } from "@/lib/play-point-core/room-registry";
 
 const ROOM_TABLES = {
+  "thats-your-story": "ppl_thats_your_story_rooms",
   "on-my-list": "ppl_on_my_list_rooms",
   "chain-reaction": "ppl_chain_reaction_rooms",
   "how-close": "ppl_how_close_rooms",
