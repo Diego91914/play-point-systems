@@ -20,8 +20,8 @@ type SocialGame = keyof typeof ROOM_TABLES;
 type StoredPlayer = { id?: unknown; name?: unknown; seat?: unknown; tokenHash?: unknown };
 type StoredSettings = { startingStack?: unknown; smallBlind?: unknown; bigBlind?: unknown; maxPlayers?: unknown; mode?: unknown };
 type StoredTournament = { baseSmallBlind?: unknown; baseBigBlind?: unknown; preset?: unknown };
-type StoredState = { hostPlayerId?: unknown; players?: unknown; settings?: StoredSettings; tournament?: StoredTournament; guestPhotoPath?: unknown; playAmplifiedEndedAt?: unknown };
-type RoomRow = { code: string; state: StoredState; updated_at?: string };
+type StoredState = { hostPlayerId?: unknown; players?: unknown; settings?: StoredSettings; tournament?: StoredTournament; guestPhotoPath?: unknown; playAmplifiedEndedAt?: unknown; roundId?: string };
+type RoomRow = { code: string; state: StoredState; updated_at?: string; expires_at?: string };
 
 const hash = (value: string) => createHash("sha256").update(value).digest("hex");
 
@@ -105,7 +105,10 @@ export async function POST(request: NextRequest) {
     const action = body.action === "quit" ? "quit" : body.action === "start-over" ? "start-over" : "status";
     const supabase = getSupabaseServerClient();
     const table = ROOM_TABLES[game];
-    const { data, error } = await supabase.from(table).select("code,state,updated_at").eq("code", code).maybeSingle();
+    const query = supabase.from(table);
+    const { data, error } = await (game === "thats-your-story"
+      ? query.select("code,state,updated_at,expires_at")
+      : query.select("code,state,updated_at")).eq("code", code).maybeSingle();
     if (error) throw new Error(error.message);
 
     if (!data) {
@@ -114,14 +117,16 @@ export async function POST(request: NextRequest) {
 
     const row = data as RoomRow;
     const session = authenticate(row.state, body.playerId, body.token);
-    if (row.state.playAmplifiedEndedAt) {
+    if (row.state.playAmplifiedEndedAt || (game === "thats-your-story" && row.expires_at && Date.parse(row.expires_at) <= Date.now())) {
       if (action === "quit" && session.isHost) await releasePlayAmplifiedSession(code);
       return NextResponse.json({ success: true, ended: true, alreadyEnded: true, isHost: session.isHost }, { headers: { "Cache-Control": "private, no-store" } });
     }
 
     if (action === "quit") {
       if (!session.isHost) return NextResponse.json({ error: "Only the host can end the game." }, { status: 403 });
-      const endedAt = new Date().toISOString();
+      const endedAt = new Date(game === "thats-your-story" && row.updated_at
+        ? Math.max(Date.now(), Date.parse(row.updated_at) + 1)
+        : Date.now()).toISOString();
       let update = supabase.from(table)
         .update({ state: { ...row.state, playAmplifiedEndedAt: endedAt }, updated_at: endedAt })
         .eq("code", code);
@@ -148,7 +153,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true, ended: false, isHost: true }, { headers: { "Cache-Control": "private, no-store" } });
     }
 
-    return NextResponse.json({ success: true, ended: false, isHost: session.isHost }, { headers: { "Cache-Control": "private, no-store" } });
+    return NextResponse.json({ success: true, ended: false, isHost: session.isHost, ...(game === "thats-your-story" && session.isHost ? { roundId: row.state.roundId } : {}) }, { headers: { "Cache-Control": "private, no-store" } });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to control room.";
     const status = message === "Invalid player session." ? 403 : 400;

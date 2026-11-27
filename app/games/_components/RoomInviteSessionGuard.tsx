@@ -20,10 +20,12 @@ export function RoomInviteSessionGuard({
   storageKey,
   roomApiBase,
   children,
+  credentialsInHeaders = false,
 }: {
   storageKey: string;
   roomApiBase: string;
   children: ReactNode;
+  credentialsInHeaders?: boolean;
 }) {
   useEffect(() => {
     let cancelled = false;
@@ -107,10 +109,10 @@ export function RoomInviteSessionGuard({
       }
 
       try {
-        const response = await fetch(
-          `${roomApiBase}/${encodeURIComponent(invitedCode)}?playerId=${encodeURIComponent(saved.playerId)}&token=${encodeURIComponent(saved.token)}`,
-          { cache: "no-store" },
-        );
+        const url = `${roomApiBase}/${encodeURIComponent(invitedCode)}`;
+        const response = credentialsInHeaders
+          ? await fetch(url, { cache: "no-store", headers: { "x-room-player": saved.playerId, authorization: `Bearer ${saved.token}` } })
+          : await fetch(`${url}?playerId=${encodeURIComponent(saved.playerId)}&token=${encodeURIComponent(saved.token)}`, { cache: "no-store" });
         if (!response.ok) return;
         const payload = await response.json().catch(() => ({}));
         const isHost = payload?.state?.me?.isHost === true;
@@ -143,7 +145,7 @@ export function RoomInviteSessionGuard({
       cancelled = true;
       if (pollTimer !== null) window.clearInterval(pollTimer);
     };
-  }, [roomApiBase, storageKey]);
+  }, [credentialsInHeaders, roomApiBase, storageKey]);
 
   return children;
 }
