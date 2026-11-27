@@ -22,7 +22,10 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     if (body.intent === "join")
       return NextResponse.json(
-        { success: true, ...(await joinStoryRoom(body.code, body.name)) },
+        {
+          success: true,
+          ...(await joinStoryRoom(body.code, body.name, body.joinToken)),
+        },
         { headers: { "Cache-Control": "no-store" } },
       );
     if (body.intent !== "create" && body.intent !== "rejoin_host")

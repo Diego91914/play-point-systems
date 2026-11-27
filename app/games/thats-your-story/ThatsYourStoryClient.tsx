@@ -4,6 +4,8 @@ import { RoomJoinPanel } from "@/app/games/_components/RoomJoinPanel";
 import type { StoryView } from "@/lib/play-point-core/thats-your-story-engine";
 const KEY = "pps-thats-your-story-session",
   API = "/api/games/thats-your-story";
+const PENDING_JOIN_KEY = `${KEY}:pending-join`;
+type PendingJoin = { code: string; name: string; token: string };
 type Session = { code: string; playerId: string; token: string };
 const btn =
   "w-full rounded-2xl bg-cyan-300 px-4 py-3 font-black text-slate-950 disabled:opacity-40 min-h-12";
@@ -23,6 +25,7 @@ export function ThatsYourStoryClient() {
     [origin, setOrigin] = useState("");
   const [connectionError, setConnectionError] = useState("");
   const [selected, setSelected] = useState<string | null>(null);
+  const pendingJoin = useRef<PendingJoin | null>(null);
   const busyRef = useRef(false),
     sequence = useRef(0),
     applied = useRef(0);
@@ -38,7 +41,21 @@ export function ThatsYourStoryClient() {
       const s = JSON.parse(
         localStorage.getItem(KEY) ?? "null",
       ) as Session | null;
-      if (invite && s?.code === invite && s.playerId && s.token) setSession(s);
+      if (invite && s?.code === invite && s.playerId && s.token) {
+        setSession(s);
+      } else {
+        const pending = JSON.parse(
+          localStorage.getItem(PENDING_JOIN_KEY) ?? "null",
+        ) as PendingJoin | null;
+        if (
+          pending?.code === invite &&
+          pending.name &&
+          /^[a-f0-9]{64}$/.test(pending.token)
+        ) {
+          pendingJoin.current = pending;
+          setName(pending.name);
+        }
+      }
     } catch {}
     setReady(true);
   }, []);
@@ -87,10 +104,29 @@ export function ThatsYourStoryClient() {
     setBusy(true);
     setError("");
     try {
+      let joinToken: string | undefined;
+      if (intent === "join") {
+        const previous = pendingJoin.current;
+        if (previous?.code === code && previous.name === name.trim()) {
+          joinToken = previous.token;
+        } else {
+          joinToken = Array.from(
+            crypto.getRandomValues(new Uint8Array(32)),
+            (byte) => byte.toString(16).padStart(2, "0"),
+          ).join("");
+          pendingJoin.current = { code, name: name.trim(), token: joinToken };
+          try {
+            localStorage.setItem(
+              PENDING_JOIN_KEY,
+              JSON.stringify(pendingJoin.current),
+            );
+          } catch {}
+        }
+      }
       const r = await fetch(API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ intent, code, name }),
+        body: JSON.stringify({ intent, code, name, joinToken }),
       });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error ?? "Unable to enter room.");
@@ -105,6 +141,7 @@ export function ThatsYourStoryClient() {
           KEY,
           JSON.stringify({ ...s, updatedAt: Date.now() }),
         );
+        localStorage.removeItem(PENDING_JOIN_KEY);
       } catch {}
       setConnectionError("");
       setSession(s);

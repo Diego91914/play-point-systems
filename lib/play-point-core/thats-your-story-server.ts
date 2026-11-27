@@ -111,25 +111,56 @@ export async function createStoryRoom(
   if (error) throw new Error(error.message);
   return { code, playerId: id, token: secret, state: projectStory(state, id) };
 }
-export async function joinStoryRoom(codeValue: unknown, nameValue: unknown) {
-  const code = codeOf(codeValue),
-    name = nameOf(nameValue),
-    id = randomUUID(),
-    secret = token();
-  const { state } = await mutate(code, (s) => {
-    if (s.phase !== "lobby") throw new Error("The game has already started.");
-    if (s.players.length >= 12) throw new Error("The room is full.");
-    if (s.players.some((p) => p.name.toLowerCase() === name.toLowerCase()))
-      throw new Error("Choose a different display name.");
-    s.players.push({
-      id,
-      name,
-      tokenHash: hash(secret),
-      seat: s.players.length,
-      score: 0,
-    });
-  });
-  return { code, playerId: id, token: secret, state: projectStory(state, id) };
+export async function joinStoryRoom(
+  codeValue: unknown,
+  nameValue: unknown,
+  joinToken: unknown,
+) {
+  const code = codeOf(codeValue);
+  const name = nameOf(nameValue);
+  if (
+    joinToken !== undefined &&
+    (typeof joinToken !== "string" || !/^[a-f0-9]{64}$/.test(joinToken))
+  ) {
+    throw new Error("Invalid join attempt.");
+  }
+  const secret = typeof joinToken === "string" ? joinToken : token();
+  const tokenHash = hash(secret);
+  const { state, result } = await mutate(
+    code,
+    (room) => {
+      const previous = room.players.find(
+        (player) => player.tokenHash === tokenHash,
+      );
+      if (previous) return { id: previous.id, reused: true };
+      if (room.phase !== "lobby")
+        throw new Error("The game has already started.");
+      if (room.players.length >= 12) throw new Error("The room is full.");
+      if (
+        room.players.some(
+          (player) => player.name.toLowerCase() === name.toLowerCase(),
+        )
+      ) {
+        throw new Error("Choose a different display name.");
+      }
+      const id = randomUUID();
+      room.players.push({
+        id,
+        name,
+        tokenHash,
+        seat: room.players.length,
+        score: 0,
+      });
+      return { id, reused: false };
+    },
+    (result) => result.reused,
+  );
+  return {
+    code,
+    playerId: result.id,
+    token: secret,
+    state: projectStory(state, result.id),
+  };
 }
 export async function recoverStoryHost(codeValue: unknown, accountId: string) {
   const code = codeOf(codeValue),
