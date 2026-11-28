@@ -42,9 +42,9 @@ function entry(s: StoryState, id: string) {
   return s.entries.find((e) => e.authorId === id)!.id;
 }
 describe("That's Your Story game engine", () => {
-  it("ships 100 unique scenarios for each edition", () => {
+  it("ships 125 unique scenarios for each edition", () => {
     for (const list of Object.values(STORY_PROMPTS)) {
-      expect(list.length).toBe(100);
+      expect(list.length).toBe(125);
       expect(new Set(list).size).toBe(list.length);
     }
   });
