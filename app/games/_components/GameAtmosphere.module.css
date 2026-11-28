@@ -114,7 +114,9 @@
 .social .glowA { background: rgba(53, 190, 255, .78); }
 .social .glowB { background: rgba(150, 92, 255, .68); }
 .social .glowC { background: rgba(45, 227, 179, .56); }
-.social .orbit { border-color: rgba(112,214,255,.08); }
+/* Social rooms use the shared ambient glow without a centered ring; the orbit
+   reads like a scope overlay behind the room controls on phone screens. */
+.social .orbit { display: none; }
 .social .sparkField { opacity: .12; animation-duration: 42s; }
 
 .deduction .backdrop {
