@@ -17,6 +17,7 @@ const covers: Record<string, CoverIdentity> = {
   "on-my-list": { kicker: "RANK IT", mark: "#1?", frame: "from-fuchsia-600 via-slate-950 to-cyan-950", scene: "ranked", glow: "bg-fuchsia-300/25" },
   "all-about-you": { kicker: "GUEST OF HONOR", mark: "YOU", frame: "from-amber-500 via-rose-950 to-pink-950", scene: "spotlight", glow: "bg-amber-300/25" },
   "inside-man": { kicker: "SOCIAL DEDUCTION", mark: "INSIDE MAN", frame: "from-red-700 via-slate-950 to-cyan-950", scene: "spy", glow: "bg-red-400/20" },
+  "thats-your-story": { kicker: "WRITE · VOTE · REVEAL", mark: "YOUR STORY?", frame: "from-amber-700 via-violet-950 to-slate-950", scene: "ranked", glow: "bg-amber-300/25" },
   "phone-holdem": { kicker: "PRIVATE-SEAT POKER", mark: "HOLD'EM", frame: "from-rose-700 via-fuchsia-950 to-slate-950", scene: "poker", glow: "bg-rose-400/25" },
   "live-craps": { kicker: "LIVE TABLE", mark: "7 · 11", frame: "from-amber-500 via-emerald-950 to-slate-950", scene: "dice", glow: "bg-amber-300/25" },
   "last-call": { kicker: "BLACKWOOD HOUSE", mark: "LAST CALL", frame: "from-amber-500 via-rose-950 to-black", scene: "mansion", glow: "bg-amber-200/20" },

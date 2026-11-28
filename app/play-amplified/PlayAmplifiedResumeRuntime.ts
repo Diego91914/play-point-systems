@@ -14,7 +14,7 @@ export type ResumeCandidate = {
   connection: "online" | "offline" | "reconnect";
 };
 
-type SocialResumeGame = "chain-reaction" | "how-close" | "inside-man" | "on-my-list" | "all-about-you" | "mystery";
+type SocialResumeGame = "thats-your-story" | "chain-reaction" | "how-close" | "inside-man" | "on-my-list" | "all-about-you" | "mystery";
 
 type SessionSource = {
   key: string;
@@ -26,6 +26,7 @@ type SessionSource = {
 };
 
 const SESSION_SOURCES: readonly SessionSource[] = [
+  { key: "pps-thats-your-story-session", title: "That's Your Story?", href: "/games/thats-your-story", gameId: "thats-your-story", game: "thats-your-story" },
   { key: "pps-mystery-session", title: "Last Call: Murder at Blackwood House", href: "/games/mystery", gameId: "last-call", game: "mystery" },
   { key: "pps-chain-reaction-session", title: "Chain Reaction", href: "/games/chain-reaction", gameId: "chain-reaction", game: "chain-reaction" },
   { key: "pps-how-close-session", title: "How Close Are We?", href: "/games/how-close", gameId: "how-close", game: "how-close" },

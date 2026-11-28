@@ -7,7 +7,7 @@ describe("Play Amplified social room readiness", () => {
   const roomGames = [
     ["chain-reaction", "pps-chain-reaction-session"], ["how-close", "pps-how-close-session"],
     ["inside-man", "pps-inside-man-session"], ["on-my-list", "pps-on-my-list-session"],
-    ["all-about-you", "pps-all-about-you-session"],
+    ["all-about-you", "pps-all-about-you-session"], ["thats-your-story", "pps-thats-your-story-session"],
   ] as const;
 
   for (const [game, storageKey] of roomGames) {

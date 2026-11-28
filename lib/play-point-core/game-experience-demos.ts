@@ -17,6 +17,16 @@ export type GameExperienceDemo = {
 };
 
 const demos: Record<string, GameExperienceDemo> = {
+  "thats-your-story": {
+    hook: "The library put your photo on a wanted poster. The only clue is an overdue cookbook.",
+    payoff: "Wait until the votes are in to find out who came up with your favorite explanation.",
+    facts: ["3–12 players", "5, 10 or 15 rounds", "Family and Christmas editions"],
+    steps: [
+      { eyebrow: "Write", headline: "Everybody has a story", detail: "Make up your own explanation, then lock it in privately.", phoneLabel: "YOUR STORY", phoneBody: "I was following a recipe for disaster.", accent: "amber" },
+      { eyebrow: "Vote", headline: "Pick the funniest explanation", detail: "The stories appear in shuffled order without names. Vote once for someone else's story.", accent: "cyan" },
+      { eyebrow: "Reveal", headline: "Find out who wrote what", detail: "Every vote earns the writer one point. The highest total wins, and ties are shared.", accent: "emerald" },
+    ],
+  },
   "chain-reaction": {
     hook: "Watch a normal table turn into a race to connect the dots.",
     payoff: "The fun is hearing everyone confidently say the wrong thing right before somebody suddenly sees the connection.",

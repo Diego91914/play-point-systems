@@ -1066,6 +1066,52 @@
       "blockedRequests": [],
       "allowedApiRequests": [],
       "pageErrors": []
+    },
+    {
+      "id": "thats-your-story",
+      "gameIds": [
+        "thats-your-story"
+      ],
+      "launchHref": "/games/thats-your-story",
+      "captureRoute": "/games/thats-your-story",
+      "sourceUrl": "http://127.0.0.1:3013/games/thats-your-story?code=ABC234",
+      "resolvedUrl": "http://127.0.0.1:3013/games/thats-your-story?code=ABC234",
+      "sourceRepository": "Diego91914/play-point-systems",
+      "sourceRevision": "546f138f12d438b665b320a935b6b531d4be00ab",
+      "capturedAt": "2026-11-27T22:20:56.750Z",
+      "width": 1280,
+      "height": 960,
+      "label": "That's Your Story? · guest invite screenshot",
+      "alt": "Play Amplified guest invite form with a display name and prefilled room code",
+      "sharedSelector": false,
+      "files": [
+        {
+          "src": "/images/game-previews/thats-your-story-9bcba8abeab1-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 6832,
+          "sha256": "5df50bfdcef0462f16cc2d220e976446415b3255b4241e0fbe5a6916d0823c28"
+        },
+        {
+          "src": "/images/game-previews/thats-your-story-9bcba8abeab1-800.webp",
+          "width": 800,
+          "height": 600,
+          "bytes": 13638,
+          "sha256": "3d40399ea7d48e482c7b7f6cf4a41a9e9dae9a11e6969e77a2b4c24cf0928faf"
+        },
+        {
+          "src": "/images/game-previews/thats-your-story-9bcba8abeab1-1280.webp",
+          "width": 1280,
+          "height": 960,
+          "bytes": 24684,
+          "sha256": "8d7a425e43aa26bce0d91a4701c70d9ea31cdc0081528f7604c07db41c7df603"
+        }
+      ],
+      "rawSha256": "9bcba8abeab1ac975afddfe2678b1347e8966bddd799412b33371f9f0ff46fd5",
+      "environment": "Loopback Chromium with service workers blocked. Genuine guest invite UI, no database state used.",
+      "blockedRequests": [],
+      "allowedApiRequests": [],
+      "pageErrors": []
     }
   ]
 }

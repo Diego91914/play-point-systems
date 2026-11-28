@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-type SocialGame = "on-my-list" | "chain-reaction" | "how-close" | "inside-man" | "all-about-you" | "holdem";
+type SocialGame = "thats-your-story" | "on-my-list" | "chain-reaction" | "how-close" | "inside-man" | "all-about-you" | "holdem";
 type Session = { code: string; playerId: string; token: string };
 
 export function SocialRoomController({
@@ -21,6 +21,7 @@ export function SocialRoomController({
   const [ended, setEnded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [open, setOpen] = useState(false);
+  const roundIdRef = useRef<string | undefined>(undefined);
   const observerRef = useRef<MutationObserver | null>(null);
 
   const activeStorageKey = useCallback(() => {
@@ -88,6 +89,7 @@ export function SocialRoomController({
         body: JSON.stringify({ action: "status", game, ...session }),
       });
       const json = await response.json();
+      if (game === "thats-your-story" && getSession()?.token !== session.token) return;
       if (!response.ok) {
         if ([401, 403, 404, 410].includes(response.status)) {
           clearSession();
@@ -100,6 +102,7 @@ export function SocialRoomController({
         setEnded(true);
         setIsHost(false);
       } else {
+        roundIdRef.current = json.roundId;
         setIsHost(Boolean(json.isHost));
       }
     } catch {}
@@ -144,7 +147,7 @@ export function SocialRoomController({
             method: "POST",
             cache: "no-store",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ playerId: session.playerId, token: session.token, action: "restart", payload: {} }),
+            body: JSON.stringify({ playerId: session.playerId, token: session.token, action: "restart", payload: game === "thats-your-story" ? { roundId: roundIdRef.current } : {} }),
           });
       const json = await response.json();
       if (!response.ok) throw new Error(json.error || "Unable to start over.");

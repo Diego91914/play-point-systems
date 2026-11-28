@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MASTER_GAME_CATALOG } from "@/lib/play-point-core/master-game-catalog";
 import { getGameExperienceDemo } from "@/lib/play-point-core/game-experience-demos";
+import { GameScreenshot } from "../../GameScreenshot";
 import { GameExperienceDemo } from "./GameExperienceDemo";
 
 function getGame(gameId: string) {
@@ -46,6 +47,8 @@ export default async function GameExperiencePage({ params }: { params: Promise<{
             </div>
             <div className="rounded-[30px] border border-white/10 bg-white/[0.035] p-6 sm:p-7"><div className="text-[10px] font-black uppercase tracking-[0.2em] text-white/42">Why people remember it</div><p className="mt-4 text-lg font-bold leading-8 text-white/82">{demo.payoff}</p><div className="mt-6 flex flex-wrap gap-2">{demo.facts.map((fact) => <span key={fact} className="rounded-full border border-white/10 bg-black/20 px-3 py-2 text-[10px] font-black uppercase tracking-[0.12em] text-white/55">{fact}</span>)}</div></div>
           </section>
+
+          {game.id === "thats-your-story" ? <div className="mb-8 max-w-2xl"><GameScreenshot gameId={game.id} detail /></div> : null}
 
           <section className="pb-16 sm:pb-20"><GameExperienceDemo gameId={game.id} title={game.title} launchHref={game.launchHref} /></section>
 

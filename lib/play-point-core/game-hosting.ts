@@ -2,6 +2,7 @@ export type GameHostingMode = "shared-room" | "game-engine";
 
 /** Games that create a shared Play Amplified room before play begins. */
 export const SHARED_ROOM_GAME_IDS: ReadonlySet<string> = new Set([
+  "thats-your-story",
   "chain-reaction",
   "how-close",
   "on-my-list",

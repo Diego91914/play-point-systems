@@ -25,6 +25,11 @@
     "launchHref": "/games/inside-man"
   },
   {
+    "id": "thats-your-story",
+    "href": "/play-amplified/games/thats-your-story",
+    "launchHref": "/games/thats-your-story"
+  },
+  {
     "id": "phone-holdem",
     "href": "/play-amplified/games/phone-holdem",
     "launchHref": "/games/holdem"

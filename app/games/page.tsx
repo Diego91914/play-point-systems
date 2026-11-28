@@ -34,6 +34,7 @@ const MASTER_TO_PRODUCT_SKU: Record<string, string | undefined> = {
   "last-call": "game.last_call_blackwood",
   "phone-holdem": "game.phone_holdem",
   "play-point-trivia": "game.play_point_trivia",
+  "thats-your-story": "game.thats_your_story",
   "clear-the-stack": "game.clear_the_stack",
   "shot-classic": "shot_caddy.mode.classic",
   "shot-chaos": "shot_caddy.mode.chaos",
