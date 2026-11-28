@@ -189,6 +189,30 @@ describe("That's Your Story Phase 1 selection and Phase 2 voting", () => {
     expect(state.players.reduce((total, candidate) => total + candidate.score, 0)).toBe(6);
   });
 
+  it.each([3, 6, 12])("handles overlapping submissions and votes for %i players", async (count) => {
+    const state = writing(count);
+    await Promise.all(state.players.map((candidate) => Promise.resolve().then(() =>
+      submit(state, candidate.id, `A distinct explanation from ${candidate.name}`),
+    )));
+    expect(state.phase).toBe("voting");
+    expect(state.submissions).toHaveLength(count);
+    expect(state.entries).toHaveLength(count);
+
+    const target = state.entries.find((entry) => entry.authorIds[0] === "p0")!;
+    await Promise.all(state.players.map((candidate) => Promise.resolve().then(() => {
+      const own = state.entries.find((entry) => entry.authorIds.includes(candidate.id))!;
+      const voteTarget = own.id === target.id
+        ? state.entries.find((entry) => entry.id !== own.id)!
+        : target;
+      vote(state, candidate.id, voteTarget.id);
+    })));
+
+    expect(state.phase).toBe("reveal");
+    expect(state.entries.reduce((total, entry) => total + entry.additionalVotes, 0)).toBe(count);
+    expect(state.roundPoints.p0).toBe(count + 1);
+    expect(state.players.reduce((total, candidate) => total + candidate.score, 0)).toBe(count * 2 + 1);
+  });
+
   it("upgrades saved rooms using the earlier per-player answer and vote format", () => {
     const state = writing(3);
     state.phase = "reveal";
