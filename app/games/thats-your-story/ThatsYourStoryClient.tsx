@@ -341,13 +341,11 @@ export function ThatsYourStoryClient() {
                 </h2>
                 {game.phase === "writing" && (
                   <>
-                    <p>
-                      {game.submittedCount} / {game.players.length} stories
-                      locked
-                    </p>
+                    <p className="font-bold text-amber-100">Phase 1 · Choose or Create</p>
+                    <p>{game.submittedCount} / {game.players.length} answers locked</p>
                     {game.ownStory !== null ? (
                       <p className="rounded-xl bg-white/10 p-3 break-words">
-                        Story locked. Waiting for the group.
+                        Your answer is locked as your first vote. Waiting for Phase 1 to close.
                       </p>
                     ) : (
                       <>
@@ -394,7 +392,7 @@ export function ThatsYourStoryClient() {
                         </button>
                       </>
                     )}
-                    {game.me.isHost && game.submittedCount >= 2 && (
+                    {game.me.isHost && game.submittedCount >= 1 && (
                       <button
                         className={alt}
                         disabled={busy}
@@ -407,62 +405,55 @@ export function ThatsYourStoryClient() {
                             void act("open-voting");
                         }}
                       >
-                        OPEN VOTING NOW
+                        CLOSE PHASE 1
                       </button>
                     )}
                   </>
                 )}
                 {game.phase === "voting" && (
                   <>
-                    <p>
-                      Vote for the funniest story. {game.votedCount}/
-                      {game.players.length} votes locked.
-                    </p>
+                    <p className="font-bold text-amber-100">Phase 2 · Cast Your Second Vote</p>
+                    <p>Your votes selected: <strong>{game.voteProgress}</strong></p>
+                    {game.ownInitialAnswerId ? (
+                      <p className="text-sm text-white/70">Your Phase 1 answer is your first locked vote. Choose one different answer for your second vote.</p>
+                    ) : (
+                      <p className="text-sm text-amber-100">You did not submit during Phase 1, so you cannot vote this round.</p>
+                    )}
                     {game.entries.map((entry, index) => (
                       <button
                         key={entry.id}
-                        aria-pressed={
-                          selected === entry.id || game.ownVote === entry.id
-                        }
-                        className={
-                          alt +
-                          " break-words text-left " +
-                          (selected === entry.id ? "ring-2 ring-cyan-300" : "")
-                        }
-                        disabled={busy || entry.own || game.ownVote !== null}
+                        aria-pressed={selected === entry.id || game.ownVote === entry.id || entry.ownInitial}
+                        className={alt + " break-words text-left " + (selected === entry.id ? "ring-2 ring-cyan-300" : "")}
+                        disabled={busy || entry.ownInitial || game.ownVote !== null || !game.ownInitialAnswerId}
                         onClick={() => setSelected(entry.id)}
                       >
-                        <span className="mr-2 text-cyan-200">Story {String.fromCharCode(65 + index)}.</span>
+                        <span className="mr-2 text-cyan-200">Answer {String.fromCharCode(65 + index)}.</span>
                         {entry.text}
-                        {entry.own ? " (Your story)" : ""}
-                        {game.ownVote === entry.id ? " ✓" : ""}
+                        {entry.ownInitial ? " · YOUR FIRST VOTE (LOCKED)" : ""}
+                        {game.ownVote === entry.id ? " · SECOND VOTE LOCKED" : ""}
                       </button>
                     ))}
                     {game.ownVote !== null ? (
-                      <p>Vote locked. Waiting for the group.</p>
-                    ) : (
-                      <button
-                        className={btn}
-                        disabled={busy || !selected}
-                        onClick={() => void act("vote", { entryId: selected })}
-                      >
-                        CAST MY VOTE
+                      <p>Your two votes are locked. Waiting for voting to close.</p>
+                    ) : game.ownInitialAnswerId ? (
+                      <button className={btn} disabled={busy || !selected} onClick={() => void act("vote", { entryId: selected })}>
+                        LOCK MY SECOND VOTE
                       </button>
-                    )}
-                    {game.me.isHost && game.votedCount > 0 && (
+                    ) : null}
+                    {game.me.isHost && (
                       <button
                         className={alt}
                         disabled={busy}
                         onClick={() => {
                           if (
                             window.confirm(
-                              "Close voting and score submitted votes?",
+                              "Close Phase 2 and score the votes cast so far?",
                             )
                           )
                             void act("finish-voting");
                         }}
                       >
-                        REVEAL RESULTS NOW
+                        CLOSE VOTING & REVEAL
                       </button>
                     )}
                   </>
@@ -489,24 +480,24 @@ export function ThatsYourStoryClient() {
                     <h3 className="text-xl font-bold">
                       {game.phase === "finished"
                         ? "Final results"
-                        : "The stories revealed"}
+                        : "Phase 3 · Reveal and Score"}
                     </h3>
                     {game.entries.length === 0 && <p>Round skipped.</p>}
                     {[...game.entries]
-                      .sort((a, b) => (b.points ?? 0) - (a.points ?? 0))
+                      .sort((a, b) => (b.totalVotes ?? 0) - (a.totalVotes ?? 0))
                       .map((e) => (
                         <div
                           key={e.id}
                           className="rounded-xl border border-white/15 p-3 break-words"
                         >
                           <p>{e.text}</p>
-                          <p className="mt-2 text-cyan-200 font-bold">
-                            {
-                              game.players.find((p) => p.id === e.authorId)
-                                ?.name
-                            }{" "}
-                            · {e.points ?? 0} votes
-                          </p>
+                          <div className="mt-2 space-y-1 text-sm">
+                            <p>Initial selections · {e.initialVotes ?? 0}</p>
+                            <p>Additional votes · {e.additionalVotes ?? 0}</p>
+                            <p className="font-black text-cyan-100">Total votes · {e.totalVotes ?? 0}</p>
+                            <p>Submitted by · {(e.authors ?? []).join(", ")}</p>
+                            {e.bonusEarned ? <p className="font-bold text-amber-200">Original author bonus · {(e.originalAuthors ?? []).join(", ")} (+1 each)</p> : null}
+                          </div>
                         </div>
                       ))}
                     {game.phase === "reveal" && game.me.isHost && (
@@ -549,14 +540,14 @@ export function ThatsYourStoryClient() {
                 )}
               </section>
               <section className="rounded-3xl border border-white/15 p-4">
-                <h3 className="font-black text-lg">Leaderboard</h3>
+                <h3 className="font-black text-lg">Cumulative leaderboard</h3>
                 {leaders.map((p) => (
                   <div
                     key={p.id}
                     className="flex justify-between gap-2 border-b border-white/10 py-2"
                   >
                     <span className="break-words">{p.name}</span>
-                    <b>{p.score}</b>
+                    <b>{p.score}{game.phase === "reveal" || game.phase === "finished" ? ` · round +${p.roundPoints ?? 0}` : ""}</b>
                   </div>
                 ))}
               </section>
