@@ -351,8 +351,29 @@ export function ThatsYourStoryClient() {
                       </p>
                     ) : (
                       <>
+                        <fieldset className="space-y-2">
+                          <legend className="mb-2 text-sm font-bold text-cyan-200">
+                            Pick a story or write your own
+                          </legend>
+                          {game.storyChoices.map((choice, index) => (
+                            <button
+                              key={choice}
+                              type="button"
+                              aria-pressed={draft === choice}
+                              className={alt + " break-words text-left " + (draft === choice ? "ring-2 ring-cyan-300" : "")}
+                              disabled={busy}
+                              onClick={() => setDraft(choice)}
+                            >
+                              <span className="mr-2 text-cyan-200">{String.fromCharCode(65 + index)}.</span>
+                              {choice}
+                            </button>
+                          ))}
+                          <button type="button" className={alt} disabled={busy} onClick={() => setDraft("")}>
+                            WRITE MY OWN
+                          </button>
+                        </fieldset>
                         <label className="block">
-                          Your explanation
+                          Your explanation (edit or write your own)
                           <textarea
                             className={field + " min-h-32 resize-y"}
                             maxLength={240}
@@ -397,7 +418,7 @@ export function ThatsYourStoryClient() {
                       Vote for the funniest story. {game.votedCount}/
                       {game.players.length} votes locked.
                     </p>
-                    {game.entries.map((entry) => (
+                    {game.entries.map((entry, index) => (
                       <button
                         key={entry.id}
                         aria-pressed={
@@ -411,6 +432,7 @@ export function ThatsYourStoryClient() {
                         disabled={busy || entry.own || game.ownVote !== null}
                         onClick={() => setSelected(entry.id)}
                       >
+                        <span className="mr-2 text-cyan-200">Story {String.fromCharCode(65 + index)}.</span>
                         {entry.text}
                         {entry.own ? " (Your story)" : ""}
                         {game.ownVote === entry.id ? " ✓" : ""}

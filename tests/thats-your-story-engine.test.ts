@@ -6,6 +6,7 @@ import {
   type StoryState,
 } from "../lib/play-point-core/thats-your-story-engine";
 import { STORY_PROMPTS } from "../lib/play-point-core/thats-your-story-prompts";
+import { STORY_CHOICES, storyChoicesFor } from "../lib/play-point-core/thats-your-story-choices";
 
 const player = (id: string, seat: number) => ({
   id,
@@ -47,6 +48,38 @@ describe("That's Your Story game engine", () => {
       expect(list.length).toBe(125);
       expect(new Set(list).size).toBe(list.length);
     }
+  });
+  it("provides three distinct selectable explanations for every scenario", () => {
+    for (const edition of ["family", "christmas"] as const) {
+      expect(STORY_CHOICES[edition]).toHaveLength(STORY_PROMPTS[edition].length);
+      for (let i = 0; i < STORY_PROMPTS[edition].length; i++) {
+        const choices = storyChoicesFor(edition, i);
+        expect(choices).toHaveLength(3);
+        expect(new Set(choices).size).toBe(3);
+        expect(choices.every(text => text.trim() === text && text.length > 0 && text.length <= 240)).toBe(true);
+      }
+    }
+    expect(storyChoicesFor("christmas", 0)[0]).toContain("baptize a squirrel");
+  });
+  it("projects choices for the current prompt during writing and allows selectable and original stories", () => {
+    const s = writing();
+    const choices = projectStory(s, "a").storyChoices;
+    expect(choices).toEqual(storyChoicesFor(s.edition, s.promptOrder[s.round]));
+    expect(projectStory(s, "b").storyChoices).toEqual(choices);
+    action(s, "a", "submit", { text: choices[0] });
+    action(s, "b", "submit", { text: choices[0] });
+    action(s, "c", "submit", { text: "An original explanation" });
+    expect(s.phase).toBe("voting");
+    expect(projectStory(s, "a").storyChoices).toEqual([]);
+    const entries = projectStory(s, "a").entries.filter(e => e.text === choices[0]);
+    expect(entries).toHaveLength(2);
+    expect(entries.filter(e => e.own)).toHaveLength(1);
+    expect(new Set(entries.map(e => e.id)).size).toBe(2);
+    expect(() => action(s, "a", "vote", { entryId: entry(s, "a") })).toThrow();
+    action(s, "a", "vote", { entryId: entry(s, "b") });
+    action(s, "b", "vote", { entryId: entry(s, "a") });
+    action(s, "c", "vote", { entryId: entry(s, "b") });
+    expect(s.players.map(p => p.score)).toEqual([1, 2, 0]);
   });
   it("requires a host and at least three players, with host-only settings", () => {
     const s = lobby();

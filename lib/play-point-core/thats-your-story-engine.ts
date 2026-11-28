@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { STORY_PROMPTS, type StoryEdition } from "./thats-your-story-prompts";
+import { storyChoicesFor } from "./thats-your-story-choices";
 
 export type StoryPlayer = {
   id: string;
@@ -109,6 +110,9 @@ export function projectStory(state: StoryState, viewer: string) {
       state.phase === "lobby"
         ? ""
         : (STORY_PROMPTS[state.edition][state.promptOrder[state.round]] ?? ""),
+    storyChoices: state.phase === "writing"
+      ? storyChoicesFor(state.edition, state.promptOrder[state.round])
+      : [],
     players: state.players.map((p) => ({
       id: p.id,
       name: p.name,
